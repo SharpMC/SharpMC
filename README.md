@@ -1,5 +1,5 @@
 # SharpMC-Rewrite
-Rewrite of SharpMC
+Build state: <image src="https://ci.appveyor.com/api/projects/status/qlviwrgvaeqa1u06?svg=true" width="300">
 
 Current Specs
 -----------------
@@ -10,7 +10,6 @@ Current Specs
   - Entities: Planned
   - Scripting: Planned - C# plugin system
   - Platforms: Windows. Mac & Linux using Mono.
-
 
 Made possible by
 ------------------
