@@ -3,3 +3,8 @@
 /Users/Elios/SharpMC-Rewrite/SharpMC-Rewrite/SharpMC-Rewrite/bin/Debug/SharpMC-Rewrite.exe
 /Users/Elios/SharpMC-Rewrite/SharpMC-Rewrite/SharpMC-Rewrite/obj/x86/Debug/SharpMC-Rewrite.exe
 /Users/Elios/SharpMC-Rewrite/SharpMC-Rewrite/SharpMC-Rewrite/obj/x86/Debug/SharpMC-Rewrite.exe.mdb
+/Users/Elios/Documents/Rewrite-SharpMC/SharpMC-Rewrite/obj/x86/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/Users/Elios/Documents/Rewrite-SharpMC/SharpMC-Rewrite/bin/Debug/SharpMC-Rewrite.exe.mdb
+/Users/Elios/Documents/Rewrite-SharpMC/SharpMC-Rewrite/bin/Debug/SharpMC-Rewrite.exe
+/Users/Elios/Documents/Rewrite-SharpMC/SharpMC-Rewrite/obj/x86/Debug/SharpMC-Rewrite.exe
+/Users/Elios/Documents/Rewrite-SharpMC/SharpMC-Rewrite/obj/x86/Debug/SharpMC-Rewrite.exe.mdb

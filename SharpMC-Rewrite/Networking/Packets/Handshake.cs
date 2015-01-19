@@ -41,10 +41,10 @@ namespace SharpMCRewrite.Packets
 
         private void HandleLoginRequest (ClientWrapper state, MSGBuffer buffer)
         {
-            string Username = buffer.ReadString ();
+            string Username = buffer.ReadUsername ();
             string UUID = getUUID (Username);
 
-            new LoginSuccess().Write(state, new object[] {Username, UUID});
+            new LoginSuccess().Write(state, new object[] {UUID, Username});
         }
 
         private string getUUID(string username)
@@ -52,9 +52,15 @@ namespace SharpMCRewrite.Packets
             WebClient wc = new WebClient();
             string result = wc.DownloadString("https://api.mojang.com/users/profiles/minecraft/" + username);
             string[] _result = result.Split('"');
-
-            string UUID = _result[3];
-            return UUID;
+            if (_result.Length > 1)
+            {
+                string UUID = _result [3];
+                return new Guid(UUID).ToString();
+            } 
+            else
+            {
+                return "";
+            }
         }
 
         public void Write(ClientWrapper state, object[] Arguments)

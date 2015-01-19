@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using System.Text;
+using System.Collections.Generic;
 
 namespace SharpMCRewrite
 {
@@ -10,7 +11,6 @@ namespace SharpMCRewrite
         public int Size = 0;
         private int LastByte = 0;
         public byte[] BufferedData = new byte[4096];
-        private int DebugByte = 0;
 
         public MSGBuffer (ClientWrapper client)
         {
@@ -24,13 +24,6 @@ namespace SharpMCRewrite
             return returnData;
         }
 
-        private int ReadDebugByte()
-        {
-            byte returnData = BufferedData [DebugByte];
-            DebugByte++;
-            return returnData;
-        }
-
         private byte[] Read(int Length)
         {
             byte[] Buffered = new byte[Length];
@@ -40,20 +33,6 @@ namespace SharpMCRewrite
         }
 
         #region Reader
-        public int ReadVarIntDebug()
-        {
-            int value = 0;
-            int size = 0;
-            int b;
-            while (((b = ReadDebugByte()) & 0x80) == 0x80) {
-                value |= (b & 0x7F) << (size++ * 7);
-                if (size > 5) {
-                    throw new IOException("VarInt too long. Hehe that's punny.");
-                }
-            }
-            return value | ((b & 0x7F) << (size * 7));
-        }
-
         public int ReadVarInt()
         {
             int value = 0;
@@ -97,7 +76,31 @@ namespace SharpMCRewrite
         public string ReadString()
         {
             int Length = ReadVarInt ();
-            return Encoding.UTF8.GetString (Read(Length));
+            byte[] StringValue = Read (Length);
+            return Encoding.UTF8.GetString (StringValue);
+        }
+
+        /// <summary>
+        /// Reads the username. (We cannot just use ReadString() because of some bug)...
+        /// Idk what happend, but it seems to send an extra Short for the username there...
+        /// Also, worst solution there is xD
+        /// </summary>
+        /// <returns>The username.</returns>
+        public string ReadUsername()
+        {
+            byte[] NoEdit = Encoding.UTF8.GetBytes(ReadString ());
+            List<byte> t = new List<byte> ();
+
+            int D = 0;
+            foreach (byte i in NoEdit)
+            {
+                if (D > 1)
+                {
+                    t.Add (i);
+                }
+                D++;
+            }
+            return Encoding.UTF8.GetString(t.ToArray());
         }
         #endregion
     }
