@@ -1,5 +1,5 @@
 # SharpMC-Rewrite
-Build state: <image src="https://ci.appveyor.com/api/projects/status/qlviwrgvaeqa1u06?svg=true" width="300">
+Build state:        ![alt tag](https://ci.appveyor.com/api/projects/status/qlviwrgvaeqa1u06?svg=true)
 
 Current Specs
 -----------------
