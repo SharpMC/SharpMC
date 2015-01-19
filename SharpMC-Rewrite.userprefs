@@ -1,0 +1,24 @@
+﻿<Properties>
+  <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
+  <MonoDevelop.Ide.Workbench ActiveDocument="SharpMC-Rewrite/Networking/ByteBuffer.cs">
+    <Files>
+      <File FileName="SharpMC-Rewrite/Networking/Packets/LoginSuccess.cs" Line="1" Column="1" />
+      <File FileName="SharpMC-Rewrite/Networking/Packets/Handshake.cs" Line="13" Column="13" />
+      <File FileName="SharpMC-Rewrite/Program.cs" Line="37" Column="37" />
+      <File FileName="SharpMC-Rewrite/Networking/Packets/Ping.cs" Line="66" Column="66" />
+      <File FileName="SharpMC-Rewrite/Globals.cs" Line="1" Column="1" />
+      <File FileName="SharpMC-Rewrite/Networking/Listener.cs" Line="43" Column="43" />
+      <File FileName="SharpMC-Rewrite/Classes/ClientWrapper.cs" Line="36" Column="36" />
+      <File FileName="../../SharpMC/Networking/TCPServer.cs" Line="1" Column="1" />
+      <File FileName="SharpMC-Rewrite/Networking/ByteBuffer.cs" Line="1" Column="1" />
+    </Files>
+  </MonoDevelop.Ide.Workbench>
+  <MonoDevelop.Ide.DebuggingService.Breakpoints>
+    <BreakpointStore />
+  </MonoDevelop.Ide.DebuggingService.Breakpoints>
+  <MonoDevelop.Ide.DebuggingService.PinnedWatches>
+    <Watch file="../../SharpMC/Networking/PacketHandler/Packets/Handshake.cs" line="32" offsetX="574" offsetY="465" expression="Data" liveUpdate="False" />
+    <Watch file="../../SharpMC/Networking/PacketHandler/Packets/Outgoing/ChangeGameState.cs" line="22" offsetX="541" offsetY="336" expression="Client" liveUpdate="False" />
+    <Watch file="../../SharpMC/Networking/PacketHandler/Packets/Outgoing/WindowItems.cs" line="33" offsetX="559" offsetY="480" expression="_ItemID" liveUpdate="False" />
+  </MonoDevelop.Ide.DebuggingService.PinnedWatches>
+</Properties>
