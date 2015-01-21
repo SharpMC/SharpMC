@@ -69,17 +69,24 @@ namespace SharpMCRewrite.Packets
 
         private string getUUID(string username)
         {
-            WebClient wc = new WebClient();
-            string result = wc.DownloadString("https://api.mojang.com/users/profiles/minecraft/" + username);
-            string[] _result = result.Split('"');
-            if (_result.Length > 1)
+            try
             {
-                string UUID = _result [3];
-                return new Guid(UUID).ToString();
-            } 
-            else
+                WebClient wc = new WebClient();
+                string result = wc.DownloadString("https://api.mojang.com/users/profiles/minecraft/" + username);
+                string[] _result = result.Split('"');
+                if (_result.Length > 1)
+                {
+                    string UUID = _result [3];
+                    return new Guid(UUID).ToString();
+                } 
+                else
+                {
+                    return Guid.NewGuid().ToString();
+                }
+            }
+            catch
             {
-                return "";
+                return Guid.NewGuid().ToString();
             }
         }
 

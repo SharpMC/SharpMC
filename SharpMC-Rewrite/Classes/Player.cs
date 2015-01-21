@@ -43,6 +43,11 @@ namespace SharpMCRewrite
             Globals.AddPlayer (this);
         }
 
+        public void BroadcastMovement()
+        {
+
+        }
+
         public static Player GetPlayer(ClientWrapper wrapper)
         {
             foreach (Player  i in Globals.Players)

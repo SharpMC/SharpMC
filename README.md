@@ -1,6 +1,9 @@
 # SharpMC-Rewrite
 Build state:        ![alt tag](https://ci.appveyor.com/api/projects/status/qlviwrgvaeqa1u06?svg=true)
 
+Demo server: 94.23.50.5:25565
+	-Might not be online at some moments!
+
 Current Specs
 -----------------
   - Protocol: 47

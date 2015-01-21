@@ -118,6 +118,21 @@ namespace SharpMCRewrite
             ConsoleFunctions.WriteInfoLine ("Chat: " + Message);
         }
 
+        public static void Broadcast(byte[] Data)
+        {
+            Thread broadcaster = new Thread(() => Broadcaster(Data));
+            broadcaster.IsBackground = true;
+            broadcaster.Start ();
+        }
+
+        private static void Broadcaster(byte[] Data)
+        {
+            foreach (Player i in Players)
+            {
+                i.Wrapper.SendData (Data);
+            }
+        }
+
     }
 }
 

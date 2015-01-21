@@ -72,6 +72,9 @@
     <Compile Include="Worlds\IWorldProvider.cs" />
     <Compile Include="Networking\Packets\ChatMessage.cs" />
     <Compile Include="Networking\Packets\Disconnect.cs" />
+    <Compile Include="Networking\Packets\PlayerDigging.cs" />
+    <Compile Include="Networking\Packets\PlayerAnimation.cs" />
+    <Compile Include="Networking\Packets\EntityRelativeMove.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

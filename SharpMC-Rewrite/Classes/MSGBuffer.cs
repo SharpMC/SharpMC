@@ -100,6 +100,21 @@ namespace SharpMCRewrite
             return Encoding.UTF8.GetString (StringValue);
         }
 
+        public long ReadLong()
+        {
+            byte[] l = Read (8);
+            return IPAddress.NetworkToHostOrder(BitConverter.ToInt64 (l, 0));
+        }
+
+        public Vector3 ReadPosition()
+        {
+            long val = ReadLong ();
+            long x = val >> 38;
+            long y = (val >> 26) & 0xFFF;
+            long z = val << 38 >> 38;
+            return new Vector3 ((double)x, (double)y, (double)z);
+        }
+
         /// <summary>
         /// Reads the username. (We cannot just use ReadString() because of some weird bug)...
         /// Idk what happend, but it seems to send an extra byte for the username there...
