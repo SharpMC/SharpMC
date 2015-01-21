@@ -1,12 +1,12 @@
 ﻿namespace SharpMCRewrite
 {
-    public class MapChunkBulk : IPacket
+    public class PlayerLook : IPacket
     {
         public int PacketID
         {
             get
             {
-                return 0x26;
+                return 0x05;
             }
         }
 
@@ -20,19 +20,16 @@
 
         public void Read(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
-
+            float Yaw = buffer.ReadFloat ();
+            float Pitch = buffer.ReadFloat ();
+            bool OnGround = buffer.ReadBool ();
+            state.Player.Yaw = Yaw;
+            state.Player.Pitch = Pitch;
         }
 
         public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
-            buffer.WriteVarInt (PacketID);
-            buffer.WriteBool (true);
-            buffer.WriteVarInt (49);
-            //for (int i = 0; i < 1; i++)
-            //{
-                buffer.Write (Globals.ChunkColums [0].GetBytes ());
-           // }
-            buffer.FlushData ();
+
         }
     }
 }

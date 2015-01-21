@@ -64,6 +64,11 @@
     <Compile Include="Networking\Packets\PlayerPositionAndLook.cs" />
     <Compile Include="Networking\Packets\SpawnPosition.cs" />
     <Compile Include="Networking\Packets\KeepAlive.cs" />
+    <Compile Include="Networking\Packets\PlayerPosition.cs" />
+    <Compile Include="Networking\Packets\PlayerLook.cs" />
+    <Compile Include="Networking\Packets\ClientSettings.cs" />
+    <Compile Include="Networking\Packets\TimeUpdate.cs" />
+    <Compile Include="Networking\Packets\OnGround.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

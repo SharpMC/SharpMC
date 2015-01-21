@@ -3,6 +3,7 @@ using System.IO;
 using System.Text;
 using System.Collections.Generic;
 using System.Net.Sockets;
+using System.Net;
 
 namespace SharpMCRewrite
 {
@@ -20,7 +21,7 @@ namespace SharpMCRewrite
         }
 
         #region Reader
-        private int ReadByte()
+        public int ReadByte()
         {
             byte returnData = BufferedData [LastByte];
             LastByte++;
@@ -33,6 +34,27 @@ namespace SharpMCRewrite
             Array.Copy (BufferedData, LastByte, Buffered, 0, Length);
             LastByte += Length;
             return Buffered;
+        }
+
+        public float ReadFloat()
+        {
+            byte[] Almost = Read (4);
+            return BitConverter.ToSingle (Almost, 0);
+        }
+
+        public bool ReadBool()
+        {
+            int Answer = ReadByte ();
+            if (Answer == 1)
+                return true;
+            else
+                return false;
+        }
+
+        public double ReadDouble()
+        {
+            byte[] AlmostValue = Read (8);
+            return BitConverter.ToDouble (AlmostValue, 0);
         }
 
         public int ReadVarInt()
@@ -147,7 +169,7 @@ namespace SharpMCRewrite
 
         public void WriteInt(int Data)
         {
-            byte[] Buffer = BitConverter.GetBytes (Data);
+            byte[] Buffer = BitConverter.GetBytes (IPAddress.HostToNetworkOrder(Data));
             Write (Buffer);
         }
 
@@ -186,7 +208,7 @@ namespace SharpMCRewrite
 
         public void WriteLong(long Data)
         {
-            Write (BitConverter.GetBytes (Data));
+            Write (BitConverter.GetBytes (IPAddress.HostToNetworkOrder(Data)));
         }
 
         /// <summary>

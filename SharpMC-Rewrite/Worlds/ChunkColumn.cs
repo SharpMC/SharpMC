@@ -12,17 +12,18 @@ namespace SharpMCRewrite.Worlds
         public byte[] BiomeId = ArrayOf<byte>.Create(256, 2);
         public int[] BiomeColor = ArrayOf<int>.Create(256, 1);
 
-        public byte[] Blocks = new byte[16*16*256]; // two bytes per block
-        public byte[] Metadata = new byte[16*16*256];
-        public NibbleArray Blocklight = new NibbleArray(16*16*256);
-        public NibbleArray Skylight = new NibbleArray(16*16*256);
+        public byte[] Blocks = new byte[16*16*256]; // two bytes per block (USHORT'S)
+        //public NibbleArray Blocklight = new NibbleArray(16*16*256);
+       // public NibbleArray Skylight = new NibbleArray(16*16*256);
+        public byte[] Skylight = new byte[16*16*256]; // two bytes per block (USHORT'S)
+        public byte[] Blocklight = new byte[16*16*256]; // two bytes per block (USHORT'S)
 
         private byte[] _cache = null;
 
         public ChunkColumn()
         {
-            for (int i = 0; i < Skylight.Length; i++)
-                Skylight[i] = 0xff;
+            for (int i = 0; i < Skylight.Length; i ++)
+                Skylight [i] = 0xff;
 
             for (int i = 0; i < BiomeColor.Length; i++)
                 BiomeColor[i] = 8761930; // Grass color?
@@ -45,17 +46,6 @@ namespace SharpMCRewrite.Worlds
             Blocklight[(x*2048) + (z*256) + y] = data;
         }
 
-        public byte GetMetadata(int x, int y, int z)
-        {
-            return Metadata[(x*2048) + (z*256) + y];
-        }
-
-        public void SetMetadata(int x, int y, int z, byte data)
-        {
-            _cache = null;
-            Metadata[(x*2048) + (z*256) + y] = data;
-        }
-
         public void SetSkylight(int x, int y, int z, byte data)
         {
             _cache = null;
@@ -73,14 +63,12 @@ namespace SharpMCRewrite.Worlds
                     writer.Write (IPAddress.HostToNetworkOrder (Y));
                     writer.Write (true);
                     writer.Write ((ushort)0xffff); // bitmap
-                    writer.WriteVarInt (1000 + 195864);
-                    for (int i = 0;i<Blocks.Length; i++)
-                    {
-                        writer.Write (Metadata[i]);
-                        writer.Write (Blocks [i]);
-                    }
-                    writer.Write (Blocklight.Data);
-                    writer.Write (Skylight.Data);
+                    writer.WriteVarInt (Blocks.Length + Skylight.Length + 33024 + 32768);
+
+                    writer.Write (Blocks);
+
+                    writer.Write (Blocklight);
+                    writer.Write (Skylight);
 
                     writer.Write (BiomeId); //OK
 

@@ -6,7 +6,7 @@
         {
             get
             {
-                return 0x08;
+                return 0x06;
             }
         }
 
@@ -20,12 +20,22 @@
 
         public void Read(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
+            double X = buffer.ReadDouble ();
+            double FeetY = buffer.ReadDouble ();
+            double Z = buffer.ReadDouble ();
+            float Yaw = buffer.ReadFloat ();
+            float Pitch = buffer.ReadFloat ();
+            bool OnGround = buffer.ReadBool ();
 
+            state.Player.OnGround = OnGround;
+            state.Player.Yaw = Yaw;
+            state.Player.Pitch = Pitch;
+            state.Player.Coordinates = new Vector3 (X, FeetY, Z);
         }
 
         public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
-            buffer.WriteVarInt (PacketID);
+            buffer.WriteVarInt (0x08);
             buffer.WriteDouble (Globals.WorldGen.GetSpawnPoint ().X);
             buffer.WriteDouble (Globals.WorldGen.GetSpawnPoint ().Y);
             buffer.WriteDouble (Globals.WorldGen.GetSpawnPoint ().Z);

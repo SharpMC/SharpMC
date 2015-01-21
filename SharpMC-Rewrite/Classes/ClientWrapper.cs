@@ -72,7 +72,6 @@ namespace SharpMCRewrite
 
         public void DisplayTimeEvent(object source, ElapsedEventArgs e)
         {
-            ConsoleFunctions.WriteWarningLine ("Sending KEEP ALIVE!");
             new KeepAlive ().Write (this, new MSGBuffer (this), new object[0]);
         }
     }

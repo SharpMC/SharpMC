@@ -56,6 +56,10 @@ namespace SharpMCRewrite.Networking
             }
             //Close the connection with the client. :)
             Client.StopKeepAliveTimer ();
+
+            if (Client.Player != null)
+                Globals.Players.Remove (Client.Player);
+
             Client.TCPClient.Close ();
         }
     }

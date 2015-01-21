@@ -52,25 +52,16 @@ namespace SharpMCRewrite.Worlds
 
         public void PopulateChunk(ChunkColumn chunk)
         {
-            var random = new CryptoRandom();
+         //   var random = new CryptoRandom();
             var blocks = new byte[16 * 16 * 256];
-            var meta = new byte[16 * 16 * 256];
-
-            for (int i = 0; i < 256; i++)
+            for (int i = 0; i < (256 * 2); i += 2)
             {
-                blocks[i] = 7; // Bedrock
-                meta [i] = 0;
+                byte[] Blockie = BitConverter.GetBytes ((ushort)(7 << 4) | 0);
+                blocks [i] = Blockie [0];
+                blocks [i + 1] = Blockie [1];
             }
-            chunk.Blocks = blocks;
-            chunk.Metadata = meta;
 
-
-
-            //chunk.biomeColor = ArrayOf<int>.Create(256, random.Next(6761930, 8761930));
-            //          for (int i = 0; i < chunk.biomeColor.Length; i++)
-            //          {
-            //              chunk.biomeColor[i] = random.Next(6761930, 8761930);
-            //          }
+            chunk.Blocks = blocks.ToArray();
         }
 
     }

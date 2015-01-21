@@ -2,6 +2,7 @@ using System;
 using System.IO;
 using System.Text;
 using fNbt;
+using System.Net;
 
 namespace MiNET.Utils
 {
@@ -40,7 +41,7 @@ namespace MiNET.Utils
 		{
 			if (BitConverter.IsLittleEndian == bigEndian)
 			{
-				base.Write(Swap(value));
+                base.Write(IPAddress.HostToNetworkOrder(value));
 			}
 			else
 			{
