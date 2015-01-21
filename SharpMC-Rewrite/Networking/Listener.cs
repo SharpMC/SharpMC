@@ -1,5 +1,6 @@
 ﻿using System.Net.Sockets;
 using System.Threading;
+using System;
 
 namespace SharpMCRewrite.Networking
 {
@@ -26,31 +27,41 @@ namespace SharpMCRewrite.Networking
 
             while (true)
             {
-                MSGBuffer Buf = new MSGBuffer (Client);
-                int ReceivedData = clientStream.Read (Buf.BufferedData, 0, Buf.BufferedData.Length);
-                if (ReceivedData > 0)
+                try
                 {
-                    int length = Buf.ReadVarInt ();
-                    Buf.Size = length;
-                    int packid = Buf.ReadVarInt();
-                    bool found = false;
-                    foreach (IPacket i in Globals.Packets)
+                    MSGBuffer Buf = new MSGBuffer (Client);
+                    int ReceivedData = clientStream.Read (Buf.BufferedData, 0, Buf.BufferedData.Length);
+                    if (ReceivedData > 0)
                     {
-                        if (i.PacketID == packid && i.IsPlayePacket == Client.PlayMode)
+                        int length = Buf.ReadVarInt ();
+                        Buf.Size = length;
+                        int packid = Buf.ReadVarInt();
+                        bool found = false;
+                        foreach (IPacket i in Globals.Packets)
                         {
-                            i.Read(Client, Buf, new object[0]);
-                            found = true;
-                            break;
+                            if (i.PacketID == packid && i.IsPlayePacket == Client.PlayMode)
+                            {
+                                i.Read(Client, Buf, new object[0]);
+                                found = true;
+                                break;
+                            }
                         }
-                    }
-                    if (!found)
+                        if (!found)
+                        {
+                            ConsoleFunctions.WriteWarningLine ("Unknown packet received! \"0x" + packid.ToString("X2") + "\"");
+                        }
+                    } 
+                    else
                     {
-                        ConsoleFunctions.WriteWarningLine ("Unknown packet received! \"0x" + packid.ToString("X2") + "\"");
+                        //Stop the while loop. Client disconnected!
+                        break;
                     }
-                } 
-                else
+                }
+                catch(Exception ex)
                 {
-                    //Stop the while loop. Client disconnected!
+                    //Exception, disconnect!
+                    ConsoleFunctions.WriteDebugLine ("Error: \n" + ex);
+                    new Disconnect ().Write (Client, new MSGBuffer (Client), new object[] { "§4SharpMC\n§fServer threw an exception!" });
                     break;
                 }
             }
@@ -58,7 +69,7 @@ namespace SharpMCRewrite.Networking
             Client.StopKeepAliveTimer ();
 
             if (Client.Player != null)
-                Globals.Players.Remove (Client.Player);
+                Globals.RemovePlayer (Client.Player);
 
             Client.TCPClient.Close ();
         }

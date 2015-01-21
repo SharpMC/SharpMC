@@ -1,12 +1,12 @@
 ﻿namespace SharpMCRewrite
 {
-    public class PlayerPosition : IPacket
+    public class Disconnect : IPacket
     {
         public int PacketID
         {
             get
             {
-                return 0x04;
+                return 0x40;
             }
         }
 
@@ -20,20 +20,15 @@
 
         public void Read(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
-            Player targetplayer = state.Player;
-            double X = buffer.ReadDouble ();
-            double FeetY = buffer.ReadDouble ();
-            double Z = buffer.ReadDouble ();
-            bool OnGround = buffer.ReadBool ();
-            targetplayer.Coordinates = new Vector3 (X, FeetY, Z);
-            state.Player.OnGround = OnGround;
-            state.Player.SendChunksFromPosition ();
+
         }
 
         public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
-
+            buffer.WriteVarInt (PacketID);
+            buffer.WriteString ("{ \"text\": \"" + (string)Arguments[0] + "\" }");
+            buffer.FlushData ();
         }
     }
 }
-
+    

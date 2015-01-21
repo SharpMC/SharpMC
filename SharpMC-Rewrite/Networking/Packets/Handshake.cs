@@ -60,16 +60,11 @@ namespace SharpMCRewrite.Packets
                 new SetCompression().Write (state, buffer, new object[] { -1 }); //Turn off compression.
 
             new JoinGame ().Write (state, buffer, new object[0]);
-            for (int i = 0; i < Globals.ChunkColums.Count; i++)
-            {
-                new ChunkData ().Write (state, buffer, new object[] { Globals.ChunkColums[i].GetBytes () }); //Just testing if the packet get's received correctly by the client...
-            }
-          //  new MapChunkBulk ().Write (state, buffer, new object[0]);
+  //          new ChunkData ().Write (state, buffer, new object[] { Globals.WorldGen._chunkCache[0].GetBytes() });
             new SpawnPosition ().Write (state, buffer, new object[0]);
-            new PlayerPositionAndLook().Write(state,buffer, new object[0]);
-            //new KeepAlive ().Write (state, buffer, new object[0]);
+//            new PlayerPositionAndLook().Write(state,buffer, new object[0]);
             state.StartKeepAliveTimer ();
-            state.Player.AddToList ();
+            state.Player.SendChunksFromPosition ();
         }
 
         private string getUUID(string username)

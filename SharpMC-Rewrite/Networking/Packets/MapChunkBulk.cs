@@ -30,7 +30,7 @@
             buffer.WriteVarInt (49);
             //for (int i = 0; i < 1; i++)
             //{
-                buffer.Write (Globals.ChunkColums [0].GetBytes ());
+               // buffer.Write (Globals.ChunkColums [0].GetBytes ());
            // }
             buffer.FlushData ();
         }

@@ -2,6 +2,7 @@
 using System.IO;
 using MiNET.Utils;
 using System.Net;
+using System;
 
 namespace SharpMCRewrite.Worlds
 {
@@ -9,14 +10,14 @@ namespace SharpMCRewrite.Worlds
     {
         public int X { get; set; }
         public int Y { get; set; }
-        public byte[] BiomeId = ArrayOf<byte>.Create(256, 2);
+        public byte[] BiomeId = ArrayOf<byte>.Create(256, 1);
         public int[] BiomeColor = ArrayOf<int>.Create(256, 1);
 
         public byte[] Blocks = new byte[16*16*256]; // two bytes per block (USHORT'S)
         //public NibbleArray Blocklight = new NibbleArray(16*16*256);
        // public NibbleArray Skylight = new NibbleArray(16*16*256);
-        public byte[] Skylight = new byte[16*16*256]; // two bytes per block (USHORT'S)
-        public byte[] Blocklight = new byte[16*16*256]; // two bytes per block (USHORT'S)
+        public byte[] Skylight = new byte[16*16*256];
+        public byte[] Blocklight = new byte[16*16*256];
 
         private byte[] _cache = null;
 
@@ -29,15 +30,17 @@ namespace SharpMCRewrite.Worlds
                 BiomeColor[i] = 8761930; // Grass color?
         }
 
-        public byte GetBlock(int x, int y, int z)
+        public ushort GetBlock(int x, int y, int z)
         {
-            return Blocks[(x*2048) + (z*256) + y];
+            return BitConverter.ToUInt16(new byte[2] {Blocks[(x*2048) + (z*256) + y], Blocks[(x*2048) + (z*256) + (y + 1)]}, 0);
         }
 
-        public void SetBlock(int x, int y, int z, byte bid)
+        public void SetBlock(int x, int y, int z, ushort BlockID)
         {
+            byte[] bID = BitConverter.GetBytes (BlockID);
             _cache = null;
-            Blocks[(x*2048) + (z*256) + y] = bid;
+            Blocks[(x*2048) + (z*256) + y] = bID[0];
+            Blocks [(x * 2048) + (z * 256) + (y + 1)] = bID [1];
         }
 
         public void SetBlocklight(int x, int y, int z, byte data)

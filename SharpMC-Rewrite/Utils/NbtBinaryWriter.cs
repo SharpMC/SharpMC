@@ -50,7 +50,7 @@ namespace MiNET.Utils
 		}
 
 
-		public override void Write(int value)
+		/*public override void Write(int value)
 		{
 			if (BitConverter.IsLittleEndian == bigEndian)
 			{
@@ -60,7 +60,7 @@ namespace MiNET.Utils
 			{
 				base.Write(value);
 			}
-		}
+		}*/
 
 
 		public override void Write(long value)

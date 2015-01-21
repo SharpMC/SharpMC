@@ -24,7 +24,6 @@ namespace SharpMCRewrite
 
         #region WorldGeneration
         public static FlatLandGenerator WorldGen =  new FlatLandGenerator();
-        public static List<ChunkColumn> ChunkColums = new List<ChunkColumn>();
         public static string LVLType = "flat";
         #endregion
 
@@ -97,6 +96,27 @@ namespace SharpMCRewrite
             }
         }
         #endregion
+
+        public static void RemovePlayer(Player p)
+        {
+            Players.Remove (p);
+            BroadcastMessage ("§e" + p.Username + " has left the server!");
+        }
+
+        public static void AddPlayer(Player p)
+        {
+            Players.Add (p);
+            BroadcastMessage ("§e" + p.Username + " has joined the server!");
+        }
+
+        public static void BroadcastMessage(string Message)
+        {
+            foreach(Player i in Players)
+            {
+                new ChatMessage ().Write (i.Wrapper, new MSGBuffer (i.Wrapper), new object[] { Message });
+            }
+            ConsoleFunctions.WriteInfoLine ("Chat: " + Message);
+        }
 
     }
 }

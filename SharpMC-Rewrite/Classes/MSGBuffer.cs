@@ -39,7 +39,8 @@ namespace SharpMCRewrite
         public float ReadFloat()
         {
             byte[] Almost = Read (4);
-            return BitConverter.ToSingle (Almost, 0);
+            float f = BitConverter.ToSingle (Almost, 0);
+            return NetworkToHostOrder (f);
         }
 
         public bool ReadBool()
@@ -54,7 +55,7 @@ namespace SharpMCRewrite
         public double ReadDouble()
         {
             byte[] AlmostValue = Read (8);
-            return BitConverter.ToDouble (AlmostValue, 0);
+            return NetworkToHostOrder (AlmostValue);
         }
 
         public int ReadVarInt()
@@ -87,15 +88,10 @@ namespace SharpMCRewrite
 
         public short ReadShort()
         {
-            int o = ReadByte ();
-            int i = ReadByte ();
-
-            if (BitConverter.IsLittleEndian)
-                return BitConverter.ToInt16(new byte[2] {(byte)i , (byte)o }, 0);
-            else
-                return BitConverter.ToInt16(new byte[2] {(byte)o , (byte)i }, 0);
-
-        }
+            byte[] Da = Read (2);
+            short D = BitConverter.ToInt16 (Da, 0);
+            return IPAddress.NetworkToHostOrder (D);
+       }
 
         public string ReadString()
         {
@@ -124,6 +120,25 @@ namespace SharpMCRewrite
                 D++;
             }
             return Encoding.UTF8.GetString(t.ToArray());
+        }
+
+        private double NetworkToHostOrder(byte[] data)
+        {
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(data);
+            }
+            return BitConverter.ToDouble(data, 0);
+        }
+
+        private float NetworkToHostOrder(float network)
+        {
+            byte[] bytes = BitConverter.GetBytes(network);
+
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(bytes);
+
+            return BitConverter.ToSingle(bytes, 0);
         }
         #endregion
 
@@ -198,12 +213,12 @@ namespace SharpMCRewrite
 
         public void WriteDouble(double Data)
         {
-            Write (BitConverter.GetBytes (Data));
+            Write(HostToNetworkOrder(Data));
         }
 
         public void WriteFloat(float Data)
         {
-            Write (BitConverter.GetBytes (Data));
+            Write (HostToNetworkOrder(Data));
         }
 
         public void WriteLong(long Data)
@@ -224,16 +239,36 @@ namespace SharpMCRewrite
                 WriteVarInt (AllData.Length);
                 byte[] Buffer = bffr.ToArray ();
 
-                ConsoleFunctions.WriteDebugLine ("Specified Data length: " + AllData.Length);
-                ConsoleFunctions.WriteDebugLine ("Full packet length: " + (AllData.Length + Buffer.Length));
+               // ConsoleFunctions.WriteDebugLine ("Specified Data length: " + AllData.Length);
+              //  ConsoleFunctions.WriteDebugLine ("Full packet length: " + (AllData.Length + Buffer.Length));
                 mStream.Write (Buffer, 0, Buffer.Length);
                 mStream.Write (AllData, 0, AllData.Length);
                 bffr.Clear ();
             }
-            catch
+            catch(Exception ex)
             {
-                ConsoleFunctions.WriteErrorLine ("Failed to send a packet!");
+                ConsoleFunctions.WriteErrorLine ("Failed to send a packet!\n" + ex.ToString());
             }
+        }
+
+        private byte[] HostToNetworkOrder(double d)
+        {
+            byte[] data = BitConverter.GetBytes(d);
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(data);
+            }
+            return data;
+        }
+
+        private byte[] HostToNetworkOrder(float host)
+        {
+            byte[] bytes = BitConverter.GetBytes(host);
+
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(bytes);
+
+            return bytes;
         }
 
         #endregion

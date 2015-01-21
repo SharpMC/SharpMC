@@ -69,6 +69,9 @@
     <Compile Include="Networking\Packets\ClientSettings.cs" />
     <Compile Include="Networking\Packets\TimeUpdate.cs" />
     <Compile Include="Networking\Packets\OnGround.cs" />
+    <Compile Include="Worlds\IWorldProvider.cs" />
+    <Compile Include="Networking\Packets\ChatMessage.cs" />
+    <Compile Include="Networking\Packets\Disconnect.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
