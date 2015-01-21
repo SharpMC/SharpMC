@@ -1,17 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Net.Sockets;
-using System.Net;
+﻿using System.Net.Sockets;
 using System.Threading;
-using System.Text;
-using System.Collections.Generic;
 
 namespace SharpMCRewrite.Networking
 {
     public class BasicListener
     {
-        public static ManualResetEvent allDone = new ManualResetEvent(false);
-
         public void ListenForClients()
         {
             Globals.ServerListener.Start();
@@ -30,7 +23,6 @@ namespace SharpMCRewrite.Networking
             TcpClient tcpClient = (TcpClient)client;
             NetworkStream clientStream = tcpClient.GetStream();
             ClientWrapper Client = new ClientWrapper(tcpClient);
-            Client.MinecraftStream = new ByteBuffer (clientStream, Client);
 
             while (true)
             {
@@ -44,12 +36,16 @@ namespace SharpMCRewrite.Networking
                     bool found = false;
                     foreach (IPacket i in Globals.Packets)
                     {
-                        if (i.PacketID == packid)
+                        if (i.PacketID == packid && i.IsPlayePacket == Client.PlayMode)
                         {
                             i.Read(Client, Buf, new object[0]);
                             found = true;
                             break;
                         }
+                    }
+                    if (!found)
+                    {
+                        ConsoleFunctions.WriteWarningLine ("Unknown packet received! \"0x" + packid.ToString("X2") + "\"");
                     }
                 } 
                 else
@@ -58,6 +54,9 @@ namespace SharpMCRewrite.Networking
                     break;
                 }
             }
+            //Close the connection with the client. :)
+            Client.StopKeepAliveTimer ();
+            Client.TCPClient.Close ();
         }
     }
 

@@ -1,0 +1,5 @@
+/Users/Elios/Documents/Rewrite-SharpMC/SharpMC-Tests/obj/x86/Debug/.NETFramework,Version=v4.5.AssemblyAttribute.cs
+/Users/Elios/Documents/Rewrite-SharpMC/SharpMC-Tests/bin/Debug/SharpMC-Tests.exe.mdb
+/Users/Elios/Documents/Rewrite-SharpMC/SharpMC-Tests/bin/Debug/SharpMC-Tests.exe
+/Users/Elios/Documents/Rewrite-SharpMC/SharpMC-Tests/obj/x86/Debug/SharpMC-Tests.exe
+/Users/Elios/Documents/Rewrite-SharpMC/SharpMC-Tests/obj/x86/Debug/SharpMC-Tests.exe.mdb

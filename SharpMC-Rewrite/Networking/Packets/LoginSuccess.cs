@@ -1,6 +1,4 @@
-﻿using System;
-
-namespace SharpMCRewrite
+﻿namespace SharpMCRewrite
 {
     public class LoginSuccess : IPacket
     {
@@ -12,16 +10,24 @@ namespace SharpMCRewrite
             }
         }
 
+        public bool IsPlayePacket
+        {
+            get
+            {
+                return true;
+            }
+        }
+
         public void Read(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
         }
 
-        public void Write(ClientWrapper state, object[] Arguments)
+        public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
-            state.MinecraftStream.WriteVarInt (PacketID);
-            state.MinecraftStream.WriteString ((string)Arguments[0]);
-            state.MinecraftStream.WriteString ((string)Arguments[1]);
-            state.MinecraftStream.FlushData ();
+            buffer.WriteVarInt (PacketID);
+            buffer.WriteString ((string)Arguments[0]);
+            buffer.WriteString ((string)Arguments[1]);
+            buffer.FlushData ();
         }
     }
 }

@@ -1,0 +1,32 @@
+﻿namespace SharpMCRewrite
+{
+    public class PACKETNAME : IPacket
+    {
+        public int PacketID
+        {
+            get
+            {
+                return 0x00;
+            }
+        }
+
+        public bool IsPlayePacket
+        {
+            get
+            {
+                return false;
+            }
+        }
+
+        public void Read(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
+        {
+           
+        }
+
+        public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
+        {
+
+        }
+    }
+}
+

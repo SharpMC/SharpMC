@@ -1,5 +1,4 @@
 ﻿using System;
-using SharpMCRewrite.Networking;
 using System.Net;
 
 namespace SharpMCRewrite.Packets
@@ -14,6 +13,14 @@ namespace SharpMCRewrite.Packets
             }
         }
 
+        public bool IsPlayePacket
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public void Read(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
             int Protocol = buffer.ReadVarInt ();
@@ -24,7 +31,7 @@ namespace SharpMCRewrite.Packets
             switch (State)
             {
                 case 1:
-                    HandleStatusRequest (state);
+                    HandleStatusRequest (state, buffer);
                     break;
                 case 2:
                     HandleLoginRequest (state, buffer);
@@ -32,11 +39,11 @@ namespace SharpMCRewrite.Packets
             }
         }
 
-        private void HandleStatusRequest (ClientWrapper state)
+        private void HandleStatusRequest (ClientWrapper state, MSGBuffer buffer)
         {
-            state.MinecraftStream.WriteVarInt (PacketID);
-            state.MinecraftStream.WriteString("{\"version\": {\"name\": \"" + Globals.ProtocolName + "\",\"protocol\": " + Globals.ProtocolVersion + "},\"players\": {\"max\": " + Globals.MaxPlayers + ",\"online\": " + Globals.PlayersOnline + "},\"description\": {\"text\":\"" + Globals.ServerMOTD + "\"}}");
-            state.MinecraftStream.FlushData();
+            buffer.WriteVarInt (PacketID);
+            buffer.WriteString("{\"version\": {\"name\": \"" + Globals.ProtocolName + "\",\"protocol\": " + Globals.ProtocolVersion + "},\"players\": {\"max\": " + Globals.MaxPlayers + ",\"online\": " + Globals.PlayersOnline + "},\"description\": {\"text\":\"" + Globals.RandomMOTD + "\"}}");
+            buffer.FlushData();
         }
 
         private void HandleLoginRequest (ClientWrapper state, MSGBuffer buffer)
@@ -44,7 +51,24 @@ namespace SharpMCRewrite.Packets
             string Username = buffer.ReadUsername ();
             string UUID = getUUID (Username);
 
-            new LoginSuccess().Write(state, new object[] {UUID, Username});
+            new LoginSuccess().Write(state, buffer, new object[] {UUID, Username});
+            Globals.LastUniqueID++;
+            state.Player = new Player () { UUID = UUID, Username = Username, UniqueServerID = Globals.LastUniqueID, Wrapper = state, Gamemode = Gamemode.Creative };
+            state.PlayMode = true; //Toggle the boolean to PlayMode so we know we are not handling Status stuff anymore.
+
+            if (!Globals.UseCompression)
+                new SetCompression().Write (state, buffer, new object[] { -1 }); //Turn off compression.
+
+            new JoinGame ().Write (state, buffer, new object[0]);
+         //   for (int i = 0; i < 49; i++)
+          //  {
+                new ChunkData ().Write (state, buffer, new object[] { Globals.ChunkColums [0].GetBytes () }); //Just testing if the packet get's received correctly by the client...
+        //    }
+            new SpawnPosition ().Write (state, buffer, new object[0]);
+            new PlayerPositionAndLook().Write(state,buffer, new object[0]);
+            //new KeepAlive ().Write (state, buffer, new object[0]);
+            state.StartKeepAliveTimer ();
+                //new MapChunkBulk ().Write (state, buffer, new object[0]);
         }
 
         private string getUUID(string username)
@@ -63,7 +87,7 @@ namespace SharpMCRewrite.Packets
             }
         }
 
-        public void Write(ClientWrapper state, object[] Arguments)
+        public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
 
         }

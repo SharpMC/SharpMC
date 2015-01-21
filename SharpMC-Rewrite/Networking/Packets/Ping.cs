@@ -1,7 +1,4 @@
-﻿using System;
-using SharpMCRewrite.Networking;
-
-namespace SharpMCRewrite
+﻿namespace SharpMCRewrite
 {
     public class Ping : IPacket
     {
@@ -13,12 +10,20 @@ namespace SharpMCRewrite
             }
         }
 
+        public bool IsPlayePacket
+        {
+            get
+            {
+                return false;
+            }
+        }
+
         public void Read(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
             state.SendData (buffer.BufferedData); //Echo the received packet back. :)
         }
 
-        public void Write(ClientWrapper state, object[] Arguments)
+        public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
 
         }

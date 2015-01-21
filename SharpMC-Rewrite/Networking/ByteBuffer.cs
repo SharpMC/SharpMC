@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Text;
-using SharpMCRewrite.Networking;
 using System.Net.Sockets;
-using System.IO;
 
 namespace SharpMCRewrite
 {
@@ -23,6 +21,14 @@ namespace SharpMCRewrite
             for (int i = 0; i < Length; i++)
             {
                 bffr.Add (Data [i + Offset]);
+            }
+        }
+
+        public void Write(byte[] Data)
+        {
+            foreach (byte i in Data)
+            {
+                bffr.Add (i);
             }
         }
 
@@ -49,29 +55,30 @@ namespace SharpMCRewrite
         public void WriteInt(int Data)
         {
             byte[] Buffer = BitConverter.GetBytes (Data);
-            foreach (byte i in Buffer)
-            {
-                bffr.Add (i);
-            }
+            Write (Buffer);
         }
 
         public void WriteString(string Data)
         {
             byte[] StringData = Encoding.UTF8.GetBytes (Data);
             WriteVarInt (StringData.Length);
-            foreach (byte i in StringData)
-            {
-                bffr.Add (i);
-            }
+            Write (StringData);
         }
 
         public void WriteShort(short Data)
         {
             byte[] ShortData = BitConverter.GetBytes (Data);
-            foreach (byte i in ShortData)
-            {
-                bffr.Add (i);
-            }
+            Write (ShortData);
+        }
+
+        public void WriteByte(byte Data)
+        {
+            bffr.Add (Data);
+        }
+
+        public void WriteBool(bool Data)
+        {
+            Write(BitConverter.GetBytes (Data));
         }
 
         /// <summary>

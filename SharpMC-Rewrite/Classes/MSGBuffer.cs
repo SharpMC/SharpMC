@@ -2,6 +2,7 @@
 using System.IO;
 using System.Text;
 using System.Collections.Generic;
+using System.Net.Sockets;
 
 namespace SharpMCRewrite
 {
@@ -15,8 +16,10 @@ namespace SharpMCRewrite
         public MSGBuffer (ClientWrapper client)
         {
             _Client = client;
+            mStream = client.TCPClient.GetStream ();
         }
 
+        #region Reader
         private int ReadByte()
         {
             byte returnData = BufferedData [LastByte];
@@ -32,7 +35,6 @@ namespace SharpMCRewrite
             return Buffered;
         }
 
-        #region Reader
         public int ReadVarInt()
         {
             int value = 0;
@@ -81,9 +83,8 @@ namespace SharpMCRewrite
         }
 
         /// <summary>
-        /// Reads the username. (We cannot just use ReadString() because of some bug)...
-        /// Idk what happend, but it seems to send an extra Short for the username there...
-        /// Also, worst solution there is xD
+        /// Reads the username. (We cannot just use ReadString() because of some weird bug)...
+        /// Idk what happend, but it seems to send an extra byte for the username there...
         /// </summary>
         /// <returns>The username.</returns>
         public string ReadUsername()
@@ -102,6 +103,117 @@ namespace SharpMCRewrite
             }
             return Encoding.UTF8.GetString(t.ToArray());
         }
+        #endregion
+
+        #region Writer
+        private List<byte> bffr = new List<byte>();
+        private NetworkStream mStream;
+
+        public void Write(byte[] Data, int Offset, int Length)
+        {
+            for (int i = 0; i < Length; i++)
+            {
+                bffr.Add (Data [i + Offset]);
+            }
+        }
+
+        public void Write(byte[] Data)
+        {
+            foreach (byte i in Data)
+            {
+                bffr.Add (i);
+            }
+        }
+
+        public void WriteVarInt(int Integer)
+        {
+            while ((Integer & -128) != 0)
+            {
+                bffr.Add((byte)(Integer & 127 | 128));
+                Integer = (int)(((uint)Integer) >> 7);
+            }
+            bffr.Add((byte)Integer);
+        }
+
+        public void WriteVarLong(long i)
+        {
+            long Fuck = i;
+            while ((Fuck & ~0x7F) != 0) {
+                bffr.Add((byte)((Fuck & 0x7F) | 0x80));
+                Fuck >>= 7;
+            }
+            bffr.Add((byte)Fuck);
+        }
+
+        public void WriteInt(int Data)
+        {
+            byte[] Buffer = BitConverter.GetBytes (Data);
+            Write (Buffer);
+        }
+
+        public void WriteString(string Data)
+        {
+            byte[] StringData = Encoding.UTF8.GetBytes (Data);
+            WriteVarInt (StringData.Length);
+            Write (StringData);
+        }
+
+        public void WriteShort(short Data)
+        {
+            byte[] ShortData = BitConverter.GetBytes (Data);
+            Write (ShortData);
+        }
+
+        public void WriteByte(byte Data)
+        {
+            bffr.Add (Data);
+        }
+
+        public void WriteBool(bool Data)
+        {
+            Write(BitConverter.GetBytes (Data));
+        }
+
+        public void WriteDouble(double Data)
+        {
+            Write (BitConverter.GetBytes (Data));
+        }
+
+        public void WriteFloat(float Data)
+        {
+            Write (BitConverter.GetBytes (Data));
+        }
+
+        public void WriteLong(long Data)
+        {
+            Write (BitConverter.GetBytes (Data));
+        }
+
+        /// <summary>
+        /// Flush all data to the TCPClient NetworkStream.
+        /// </summary>
+        public void FlushData()
+        {
+            try
+            {
+                byte[] AllData = bffr.ToArray ();
+                bffr.Clear ();
+
+                WriteVarInt (AllData.Length);
+                byte[] Buffer = bffr.ToArray ();
+
+                ConsoleFunctions.WriteDebugLine ("Specified Data length: " + AllData.Length);
+                ConsoleFunctions.WriteDebugLine ("Full packet length: " + (AllData.Length + Buffer.Length));
+                mStream.Write (Buffer, 0, Buffer.Length);
+                mStream.Write (AllData, 0, AllData.Length);
+                bffr.Clear ();
+            }
+            catch
+            {
+                ConsoleFunctions.WriteErrorLine ("Failed to send a packet!");
+            }
+        }
+
         #endregion
     }
 }

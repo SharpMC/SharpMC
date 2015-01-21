@@ -1,7 +1,4 @@
-﻿using System;
-using SharpMCRewrite.Networking;
-
-namespace SharpMCRewrite
+﻿namespace SharpMCRewrite
 {
     public interface IPacket
     {
@@ -10,8 +7,13 @@ namespace SharpMCRewrite
             get;
         }
 
+        bool IsPlayePacket
+        {
+            get;
+        }
+
         void Read(ClientWrapper state, MSGBuffer buffer, object[] Arguments);
-        void Write(ClientWrapper state, object[] Arguments);
+        void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments);
     }
 }
 

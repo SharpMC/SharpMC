@@ -1,5 +1,5 @@
-﻿using System;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
+using System.Timers;
 
 namespace SharpMCRewrite
 {
@@ -8,7 +8,6 @@ namespace SharpMCRewrite
         public TcpClient TCPClient;
         public Player Player;
         public bool PlayMode = false;
-        public ByteBuffer MinecraftStream;
 
         public ClientWrapper(TcpClient client)
         {
@@ -17,23 +16,64 @@ namespace SharpMCRewrite
 
         public void SendData(byte[] Data, int Length)
         {
-            NetworkStream a = TCPClient.GetStream ();
-            a.Write (Data, 0, Length);
-            a.Flush ();
+            try
+            {
+                NetworkStream a = TCPClient.GetStream ();
+                a.Write (Data, 0, Length);
+                a.Flush ();
+            }
+            catch
+            {
+                ConsoleFunctions.WriteErrorLine ("Failed to send a packet!");
+            }
         }
        
         public void SendData(byte[] Data, int Offset, int Length)
         {
-            NetworkStream a = TCPClient.GetStream ();
-            a.Write (Data, Offset, Length);
-            a.Flush ();
+            try
+            {
+                NetworkStream a = TCPClient.GetStream ();
+                a.Write (Data, Offset, Length);
+                a.Flush ();
+            }
+            catch
+            {
+                ConsoleFunctions.WriteErrorLine ("Failed to send a packet!");
+            }
         }
 
         public void SendData(byte[] Data)
         {
-            NetworkStream a = TCPClient.GetStream ();
-            a.Write (Data, 0, Data.Length);
-            a.Flush ();
+            try
+            {
+                NetworkStream a = TCPClient.GetStream ();
+                a.Write (Data, 0, Data.Length);
+                a.Flush ();
+            }
+            catch
+            {
+                ConsoleFunctions.WriteErrorLine ("Failed to send a packet!");
+            }
+        }
+
+        Timer kTimer = new Timer();
+
+        public void StartKeepAliveTimer()
+        {
+            kTimer.Elapsed += new ElapsedEventHandler(DisplayTimeEvent);
+            kTimer.Interval = 5000;
+            kTimer.Start();
+        }
+
+        public void StopKeepAliveTimer()
+        {
+            kTimer.Stop ();
+        }
+
+        public void DisplayTimeEvent(object source, ElapsedEventArgs e)
+        {
+            ConsoleFunctions.WriteWarningLine ("Sending KEEP ALIVE!");
+            new KeepAlive ().Write (this, new MSGBuffer (this), new object[0]);
         }
     }
 }

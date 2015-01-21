@@ -3,6 +3,10 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 2012
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMC-Rewrite", "SharpMC-Rewrite\SharpMC-Rewrite.csproj", "{089ABA36-C58C-40C3-8F88-988BEA720974}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fNbt", "Externals\fNbt\fNbt.csproj", "{4488498D-976D-4DA3-BF72-109531AF0488}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMC-Tests", "SharpMC-Tests\SharpMC-Tests.csproj", "{0A2CDC25-815C-41A9-9995-CC542EC2A900}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|x86 = Debug|x86
@@ -19,6 +23,22 @@ Global
 		{089ABA36-C58C-40C3-8F88-988BEA720974}.Release|x64.Build.0 = Release|x86
 		{089ABA36-C58C-40C3-8F88-988BEA720974}.Release|x86.ActiveCfg = Release|x86
 		{089ABA36-C58C-40C3-8F88-988BEA720974}.Release|x86.Build.0 = Release|x86
+		{0A2CDC25-815C-41A9-9995-CC542EC2A900}.Debug|x64.ActiveCfg = Debug|x86
+		{0A2CDC25-815C-41A9-9995-CC542EC2A900}.Debug|x64.Build.0 = Debug|x86
+		{0A2CDC25-815C-41A9-9995-CC542EC2A900}.Debug|x86.ActiveCfg = Debug|x86
+		{0A2CDC25-815C-41A9-9995-CC542EC2A900}.Debug|x86.Build.0 = Debug|x86
+		{0A2CDC25-815C-41A9-9995-CC542EC2A900}.Release|x64.ActiveCfg = Release|x86
+		{0A2CDC25-815C-41A9-9995-CC542EC2A900}.Release|x64.Build.0 = Release|x86
+		{0A2CDC25-815C-41A9-9995-CC542EC2A900}.Release|x86.ActiveCfg = Release|x86
+		{0A2CDC25-815C-41A9-9995-CC542EC2A900}.Release|x86.Build.0 = Release|x86
+		{4488498D-976D-4DA3-BF72-109531AF0488}.Debug|x64.ActiveCfg = Debug|Any CPU
+		{4488498D-976D-4DA3-BF72-109531AF0488}.Debug|x64.Build.0 = Debug|Any CPU
+		{4488498D-976D-4DA3-BF72-109531AF0488}.Debug|x86.ActiveCfg = Debug|Any CPU
+		{4488498D-976D-4DA3-BF72-109531AF0488}.Debug|x86.Build.0 = Debug|Any CPU
+		{4488498D-976D-4DA3-BF72-109531AF0488}.Release|x64.ActiveCfg = Release|Any CPU
+		{4488498D-976D-4DA3-BF72-109531AF0488}.Release|x64.Build.0 = Release|Any CPU
+		{4488498D-976D-4DA3-BF72-109531AF0488}.Release|x86.ActiveCfg = Release|Any CPU
+		{4488498D-976D-4DA3-BF72-109531AF0488}.Release|x86.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = SharpMC-Rewrite\SharpMC-Rewrite.csproj

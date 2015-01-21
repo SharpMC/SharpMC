@@ -1,0 +1,5 @@
+/Users/Elios/Documents/Rewrite-SharpMC/Externals/fNbt/obj/Debug/.NETFramework,Version=v4.0.AssemblyAttribute.cs
+/Users/Elios/Documents/Rewrite-SharpMC/Externals/bin/Debug/fNbt.dll.mdb
+/Users/Elios/Documents/Rewrite-SharpMC/Externals/bin/Debug/fNbt.dll
+/Users/Elios/Documents/Rewrite-SharpMC/Externals/fNbt/obj/Debug/fNbt.dll
+/Users/Elios/Documents/Rewrite-SharpMC/Externals/fNbt/obj/Debug/fNbt.dll.mdb
