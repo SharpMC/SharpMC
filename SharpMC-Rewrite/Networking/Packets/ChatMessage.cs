@@ -23,7 +23,7 @@ namespace SharpMCRewrite
         public void Read(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
             string MSG = RemoveSpecialCharacters(buffer.ReadString ());
-            Globals.BroadcastMessage ("<" + state.Player.Username + "> " + MSG);
+            Globals.Level.BroadcastChat ("<" + state.Player.Username + "> " + MSG);
         }
 
         string RemoveSpecialCharacters(string str) {

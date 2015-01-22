@@ -9,22 +9,12 @@ namespace SharpMCRewrite
     {
         public static void Main (string[] args)
         {
-            LoadDebugChunks ();
+            Globals.ConfigParser = new ConfigFileReader ("server.properties");
+            ConsoleFunctions.WriteInfoLine ("Loading config file...");
+            Globals.MaxPlayers = Globals.ConfigParser.ReadInt ("MaxPlayers");
             LoadPacketHandlers ();
-
-            ConsoleFunctions.WriteInfoLine ("Starting time of day thread...");
-            Globals.StartTimeOfDayTimer ();
-            ConsoleFunctions.WriteInfoLine ("Started time of day thread...");
-
             var ClientListener = new Thread (() => new SharpMCRewrite.Networking.BasicListener ().ListenForClients ());
             ClientListener.Start ();
-        }
-
-        private static void LoadDebugChunks()
-        {
-            ConsoleFunctions.WriteInfoLine ("Generating chunks in debug mode...");
-            Globals.WorldGen.GenerateChunkColumn (new Vector2 (0, 0));
-            ConsoleFunctions.WriteInfoLine ("Done generating chunks!");
         }
 
         private static void LoadPacketHandlers()

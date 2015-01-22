@@ -26,8 +26,8 @@
         public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
             buffer.WriteVarInt (PacketID);
-            buffer.WriteLong (Globals.WorldAge);
-            buffer.WriteLong (Globals.TimeOfDay);
+            buffer.WriteLong (Globals.Level.Day);
+            buffer.WriteLong (Globals.Level.Tick);
             buffer.FlushData ();
         }
     }

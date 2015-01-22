@@ -42,7 +42,7 @@ namespace SharpMCRewrite.Packets
         private void HandleStatusRequest (ClientWrapper state, MSGBuffer buffer)
         {
             buffer.WriteVarInt (PacketID);
-            buffer.WriteString("{\"version\": {\"name\": \"" + Globals.ProtocolName + "\",\"protocol\": " + Globals.ProtocolVersion + "},\"players\": {\"max\": " + Globals.MaxPlayers + ",\"online\": " + Globals.PlayersOnline + "},\"description\": {\"text\":\"" + Globals.RandomMOTD + "\"}}");
+            buffer.WriteString("{\"version\": {\"name\": \"" + Globals.ProtocolName + "\",\"protocol\": " + Globals.ProtocolVersion + "},\"players\": {\"max\": " + Globals.MaxPlayers + ",\"online\": " + Globals.Level.OnlinePlayers.Count + "},\"description\": {\"text\":\"" + Globals.RandomMOTD + "\"}}");
             buffer.FlushData();
         }
 
@@ -59,10 +59,8 @@ namespace SharpMCRewrite.Packets
             if (!Globals.UseCompression)
                 new SetCompression().Write (state, buffer, new object[] { -1 }); //Turn off compression.
 
-            new JoinGame ().Write (state, buffer, new object[0]);
-  //          new ChunkData ().Write (state, buffer, new object[] { Globals.WorldGen._chunkCache[0].GetBytes() });
+            new JoinGame ().Write (state, buffer, new object[ ] { state.Player });
             new SpawnPosition ().Write (state, buffer, new object[0]);
-//            new PlayerPositionAndLook().Write(state,buffer, new object[0]);
             state.StartKeepAliveTimer ();
             state.Player.SendChunksFromPosition ();
         }

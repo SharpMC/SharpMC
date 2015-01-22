@@ -36,9 +36,9 @@
         public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
             buffer.WriteVarInt (0x08);
-            buffer.WriteDouble (Globals.WorldGen.GetSpawnPoint ().X);
-            buffer.WriteDouble (Globals.WorldGen.GetSpawnPoint ().Y);
-            buffer.WriteDouble (Globals.WorldGen.GetSpawnPoint ().Z);
+            buffer.WriteDouble (Globals.Level.Generator.GetSpawnPoint ().X);
+            buffer.WriteDouble (Globals.Level.Generator.GetSpawnPoint().Y);
+            buffer.WriteDouble (Globals.Level.Generator.GetSpawnPoint ().Z);
             buffer.WriteFloat (0f);
             buffer.WriteFloat (0f);
             buffer.WriteByte (111);

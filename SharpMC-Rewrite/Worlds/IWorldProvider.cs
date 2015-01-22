@@ -1,5 +1,6 @@
 ﻿using SharpMCRewrite.Worlds;
 using SharpMCRewrite;
+using System.Collections.Generic;
 
 namespace MiNET.Worlds
 {
@@ -9,5 +10,6 @@ namespace MiNET.Worlds
 		void Initialize();
         ChunkColumn GenerateChunkColumn(Vector2 chunkCoordinates);
         Vector3 GetSpawnPoint();
+        IEnumerable<ChunkColumn> GenerateChunks (int _viewDistance, double playerX, double playerZ, Dictionary<string, ChunkColumn> chunksUsed);
 	}
 }

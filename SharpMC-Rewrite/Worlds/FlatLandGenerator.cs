@@ -86,8 +86,6 @@ namespace SharpMCRewrite.Worlds
 
                     yield return chunk;
                 }
-
-                if (chunksUsed.Count != 96) Debug.WriteLine("Too many chunks used: {0}", chunksUsed.Count);
             }
         }
             

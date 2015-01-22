@@ -40,7 +40,7 @@ namespace SharpMCRewrite
 
         public void AddToList()
         {
-            Globals.AddPlayer (this);
+            Globals.Level.AddPlayer (this);
         }
 
         public void BroadcastMovement()
@@ -50,7 +50,7 @@ namespace SharpMCRewrite
 
         public static Player GetPlayer(ClientWrapper wrapper)
         {
-            foreach (Player  i in Globals.Players)
+            foreach (Player  i in Globals.Level.OnlinePlayers)
             {
                 if (i.Wrapper == wrapper)
                 {
@@ -64,7 +64,7 @@ namespace SharpMCRewrite
         {
             if (Coordinates == null)
             {
-                Coordinates = Globals.WorldGen.GetSpawnPoint ();
+                Coordinates = Globals.Level.Generator.GetSpawnPoint();
                 ViewDistance = 9;
             }
             SendChunksForKnownPosition (false);
@@ -85,7 +85,7 @@ namespace SharpMCRewrite
             {
                 BackgroundWorker worker = sender as BackgroundWorker;
                 int Counted = 0;
-                foreach (var chunk in Globals.WorldGen.GenerateChunks(ViewDistance, Coordinates.X, Coordinates.Z, force ? new Dictionary<string, ChunkColumn>() : _chunksUsed))
+                foreach (var chunk in Globals.Level.Generator.GenerateChunks(ViewDistance, Coordinates.X, Coordinates.Z, force ? new Dictionary<string, ChunkColumn>() : _chunksUsed))
                 { 
                     if (worker.CancellationPending)
                     {
@@ -100,11 +100,10 @@ namespace SharpMCRewrite
                 }
                 if (Counted >= ViewDistance && !IsSpawned)
                 {
-                    ConsoleFunctions.WriteDebugLine("Sending PlayerPositonAndLook");
                     new PlayerPositionAndLook().Write(Wrapper, new MSGBuffer(Wrapper), new object[0]);
 
                     IsSpawned = true;
-                    Globals.AddPlayer(this);
+                    Globals.Level.AddPlayer(this);
                 }
 
             };

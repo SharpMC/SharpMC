@@ -75,6 +75,10 @@
     <Compile Include="Networking\Packets\PlayerDigging.cs" />
     <Compile Include="Networking\Packets\PlayerAnimation.cs" />
     <Compile Include="Networking\Packets\EntityRelativeMove.cs" />
+    <Compile Include="Networking\Packets\SpawnPlayer.cs" />
+    <Compile Include="Worlds\FlatLandLevel.cs" />
+    <Compile Include="Classes\Level.cs" />
+    <Compile Include="Utils\ConfigFileReader.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

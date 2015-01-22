@@ -25,13 +25,14 @@
 
         public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
+            Player p = (Player)Arguments [0];
             buffer.WriteVarInt (PacketID);
-            buffer.WriteInt (state.Player.UniqueServerID);
-            buffer.WriteByte ((byte)state.Player.Gamemode);
-            buffer.WriteByte ((byte)state.Player.Dimension);
-            buffer.WriteByte ((byte)Globals.Difficulty);
+            buffer.WriteInt (p.UniqueServerID);
+            buffer.WriteByte ((byte)p.Gamemode);
+            buffer.WriteByte ((byte)p.Dimension);
+            buffer.WriteByte ((byte)Globals.Level.Difficulty);
             buffer.WriteByte ((byte)Globals.MaxPlayers);
-            buffer.WriteString (Globals.LVLType);
+            buffer.WriteString (Globals.Level.LevelType.ToString());
             buffer.WriteBool (false);
             buffer.FlushData ();
         }

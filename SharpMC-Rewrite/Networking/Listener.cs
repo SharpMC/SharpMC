@@ -69,7 +69,7 @@ namespace SharpMCRewrite.Networking
             Client.StopKeepAliveTimer ();
 
             if (Client.Player != null)
-                Globals.RemovePlayer (Client.Player);
+                Globals.Level.RemovePlayer (Client.Player);
 
             Client.TCPClient.Close ();
         }
