@@ -76,9 +76,10 @@ namespace SharpMCRewrite
             int centerZ = (int) Coordinates.Z/16;
 
             if (!force && IsSpawned && CurrentChunkPosition == new Vector2(centerX, centerZ)) return;
-            CurrentChunkPosition.X = centerX;
 
+            CurrentChunkPosition.X = centerX;
             CurrentChunkPosition.Y = centerZ;
+
             var _worker = new BackgroundWorker();
             _worker.WorkerSupportsCancellation = true;
             _worker.DoWork += delegate(object sender, DoWorkEventArgs args)
@@ -92,20 +93,19 @@ namespace SharpMCRewrite
                         args.Cancel = true;
                         break;
                     }
-                    Counted++;
+                        
                     new ChunkData().Write(Wrapper, new MSGBuffer(Wrapper), new object[]{ chunk.GetBytes() });
+                    Thread.Yield();
 
+                    if (Counted >= ViewDistance && !IsSpawned)
+                    {
+                        new PlayerPositionAndLook().Write(Wrapper, new MSGBuffer(Wrapper), new object[0]);
 
-                    //Thread.Yield();
+                        IsSpawned = true;
+                        Globals.Level.AddPlayer(this);
+                    }
+                    Counted++;
                 }
-                if (Counted >= ViewDistance && !IsSpawned)
-                {
-                    new PlayerPositionAndLook().Write(Wrapper, new MSGBuffer(Wrapper), new object[0]);
-
-                    IsSpawned = true;
-                    Globals.Level.AddPlayer(this);
-                }
-
             };
             _worker.RunWorkerAsync();
         }

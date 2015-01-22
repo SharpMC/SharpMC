@@ -12,6 +12,7 @@ namespace SharpMCRewrite
             Generator = new FlatLandGenerator();
             LevelType = LVLType.flat;
         }
+
     }
 }
 

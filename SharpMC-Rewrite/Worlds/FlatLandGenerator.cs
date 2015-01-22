@@ -9,7 +9,7 @@ namespace SharpMCRewrite.Worlds
 {
     public class FlatLandGenerator : IWorldProvider
     {
-        public List<ChunkColumn> _chunkCache = new List<ChunkColumn>();
+        public Dictionary<string, ChunkColumn> _chunkCache = new Dictionary<string, ChunkColumn>();
         public bool IsCaching { get; private set; }
 
         public FlatLandGenerator()
@@ -96,10 +96,14 @@ namespace SharpMCRewrite.Worlds
 
         public ChunkColumn GenerateChunkColumn(Vector2 chunkCoordinates)
         {
-            var firstOrDefault = _chunkCache.FirstOrDefault(chunk2 => chunk2 != null && chunk2.X == chunkCoordinates.X && chunk2.Y == chunkCoordinates.Y);
-            if (firstOrDefault != null)
+            if (_chunkCache.ContainsKey (chunkCoordinates.X + ":" + chunkCoordinates.Y))
             {
-                return firstOrDefault;
+                ChunkColumn c;
+                if (_chunkCache.TryGetValue (chunkCoordinates.X + ":" + chunkCoordinates.Y, out c))
+                {
+                    Debug.WriteLine ("Chunk " + chunkCoordinates.X + ":" + chunkCoordinates.Y  + " was already generated!");
+                    return c;
+                }
             }
 
             var generator = new FlatLandGenerator();
@@ -108,14 +112,7 @@ namespace SharpMCRewrite.Worlds
             chunk.X = chunkCoordinates.X;
             chunk.Y = chunkCoordinates.Y;
             generator.PopulateChunk(chunk);
-
-           /* chunk.SetBlock(0, 5, 0, 7);
-            chunk.SetBlock(1, 5, 0, 41);
-            chunk.SetBlock(2, 5, 0, 41);
-            chunk.SetBlock(3, 5, 0, 41);
-            chunk.SetBlock(3, 5, 0, 41);
-            */
-            _chunkCache.Add(chunk);
+            _chunkCache.Add(chunkCoordinates.X + ":" + chunkCoordinates.Y, chunk);
 
             return chunk;
         }
