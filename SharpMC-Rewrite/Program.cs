@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Collections.Generic;
 using SharpMCRewrite.Packets;
+using System.IO;
 
 namespace SharpMCRewrite
 {
@@ -12,9 +13,32 @@ namespace SharpMCRewrite
             Globals.ConfigParser = new ConfigFileReader ("server.properties");
             ConsoleFunctions.WriteInfoLine ("Loading config file...");
             Globals.MaxPlayers = Globals.ConfigParser.ReadInt ("MaxPlayers");
+            string Lvltype = Globals.ConfigParser.ReadString ("Leveltype");
+            switch (Lvltype)
+            {
+                case "FlatLand":
+                    Globals.Level = new FlatLandLevel(Globals.ConfigParser.ReadString ("WorldName"));
+                    break;
+                default:
+                    Globals.Level = new FlatLandLevel(Globals.ConfigParser.ReadString ("WorldName"));
+                    break;
+            }
+            ConsoleFunctions.WriteInfoLine ("Checking files...");
+
+            if (!Directory.Exists (Globals.Level.LVLName))
+                Directory.CreateDirectory (Globals.Level.LVLName);
+
             LoadPacketHandlers ();
             var ClientListener = new Thread (() => new SharpMCRewrite.Networking.BasicListener ().ListenForClients ());
             ClientListener.Start ();
+
+            Console.CancelKeyPress += delegate
+            {
+                ConsoleFunctions.WriteInfoLine("Shutting down...");
+                Globals.Level.BroadcastPacket(new Disconnect(), new object[] { "Server shutting down!" });
+                ConsoleFunctions.WriteInfoLine("Saving chunks...");
+                Globals.Level.SaveChunks();
+            };
         }
 
         private static void LoadPacketHandlers()

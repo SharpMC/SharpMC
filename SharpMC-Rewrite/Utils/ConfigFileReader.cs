@@ -15,7 +15,8 @@ namespace SharpMCRewrite
                 "MaxPlayers=10",
                 "Leveltype=FlatLand",
                 "ProxyCheck=false",
-                "OriginalIP=127.0.0.1"
+                "OriginalIP=127.0.0.1",
+                "WorldName=world"
             };
             if (Check ())
                 return;

@@ -11,5 +11,7 @@ namespace MiNET.Worlds
         ChunkColumn GenerateChunkColumn(Vector2 chunkCoordinates);
         Vector3 GetSpawnPoint();
         IEnumerable<ChunkColumn> GenerateChunks (int _viewDistance, double playerX, double playerZ, Dictionary<string, ChunkColumn> chunksUsed);
-	}
+        void SaveChunks(string Folder);
+        ChunkColumn LoadChunk(int x, int y);
+    }
 }

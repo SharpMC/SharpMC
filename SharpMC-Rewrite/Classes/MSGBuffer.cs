@@ -20,6 +20,11 @@ namespace SharpMCRewrite
             mStream = client.TCPClient.GetStream ();
         }
 
+        public MSGBuffer (byte[] Data)
+        {
+            BufferedData = Data;
+        }
+
         #region Reader
         public int ReadByte()
         {
@@ -28,12 +33,19 @@ namespace SharpMCRewrite
             return returnData;
         }
 
-        private byte[] Read(int Length)
+        public byte[] Read(int Length)
         {
             byte[] Buffered = new byte[Length];
             Array.Copy (BufferedData, LastByte, Buffered, 0, Length);
             LastByte += Length;
             return Buffered;
+        }
+
+        public int ReadInt()
+        {
+            byte[] Dat = Read (4);
+            int Value = BitConverter.ToInt32 (Dat, 0);
+            return IPAddress.NetworkToHostOrder (Value);
         }
 
         public float ReadFloat()
@@ -239,6 +251,14 @@ namespace SharpMCRewrite
         public void WriteLong(long Data)
         {
             Write (BitConverter.GetBytes (IPAddress.HostToNetworkOrder(Data)));
+        }
+
+        public void WriteUUID(string UUID)
+        {
+            byte[] i = Encoding.UTF8.GetBytes (UUID.ToCharArray(), 0, 8);
+            byte[] b = Encoding.UTF8.GetBytes (UUID.ToCharArray(), 8, 8);
+            Write (i);
+            Write (b);
         }
 
         /// <summary>

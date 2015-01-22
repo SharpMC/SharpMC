@@ -4,6 +4,8 @@ using System.Linq;
 using MiNET.Utils;
 using System.Diagnostics;
 using MiNET.Worlds;
+using System.IO;
+using System.Reflection;
 
 namespace SharpMCRewrite.Worlds
 {
@@ -11,9 +13,11 @@ namespace SharpMCRewrite.Worlds
     {
         public Dictionary<string, ChunkColumn> _chunkCache = new Dictionary<string, ChunkColumn>();
         public bool IsCaching { get; private set; }
+        private string Folder = "world";
 
-        public FlatLandGenerator()
+        public FlatLandGenerator(string folder)
         {
+            Folder = folder;
             IsCaching = true;
         }
 
@@ -106,7 +110,15 @@ namespace SharpMCRewrite.Worlds
                 }
             }
 
-            var generator = new FlatLandGenerator();
+            ChunkColumn cd = LoadChunk (chunkCoordinates.X, chunkCoordinates.Y);
+            if (cd.Blocks.Length != 0)
+            {
+                _chunkCache.Add (cd.X + ":" + cd.Y, (ChunkColumn)cd);
+                return (ChunkColumn)cd;
+            } 
+
+            Debug.WriteLine ("ChunkFile not found, generating...");
+            var generator = new FlatLandGenerator(Folder);
 
             var chunk = new ChunkColumn();
             chunk.X = chunkCoordinates.X;
@@ -163,6 +175,45 @@ namespace SharpMCRewrite.Worlds
             chunk.Blocks = blocks.ToArray();
         }
 
+        public void SaveChunks (string folder)
+        {
+            foreach (var i in _chunkCache)
+            {
+                File.WriteAllBytes (folder + "/" + i.Value.X + "." + i.Value.Y + ".cfile", i.Value.GetBytes());
+            }
+        }
+
+        public ChunkColumn LoadChunk (int x, int y)
+        {
+            if (File.Exists ((Folder + "/" + x + "." + y + ".cfile")))
+            {
+                byte[] u = File.ReadAllBytes (Folder + "/" + x + "." + y + ".cfile");
+                MSGBuffer reader = new MSGBuffer (u);
+                int X = reader.ReadInt ();
+                int Y = reader.ReadInt ();
+                bool t = reader.ReadBool ();
+                int Length = reader.ReadVarInt ();
+                byte[] Block = reader.Read (16 * 16 * 256);
+                byte[] BlockLight = reader.Read (16 * 16 * 256);
+                byte[] SkyLight = reader.Read (16 * 16 * 256);
+                byte[] BiomeID = reader.Read (256);
+
+                ChunkColumn CC = new ChunkColumn ();
+                CC.Blocks = Block;
+                CC.Blocklight = BlockLight;
+                CC.Skylight = SkyLight;
+                CC.BiomeId = BiomeID;
+                CC.X = X;
+                CC.Y = Y;
+                Debug.WriteLine ("We should have loaded " + X + ", " + Y);
+                return CC;
+            }
+            else
+            {
+                Debug.WriteLine ("We couldn't find the file :|");
+                return new ChunkColumn() { Blocks = new byte[0] {  } };
+            }
+        }
     }
 }
 

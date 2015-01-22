@@ -1,4 +1,6 @@
 ﻿using System.Text;
+using System.Text.RegularExpressions;
+using System;
 
 namespace SharpMCRewrite
 {
@@ -22,18 +24,8 @@ namespace SharpMCRewrite
 
         public void Read(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
-            string MSG = RemoveSpecialCharacters(buffer.ReadString ());
-            Globals.Level.BroadcastChat ("<" + state.Player.Username + "> " + MSG);
-        }
-
-        string RemoveSpecialCharacters(string str) {
-            StringBuilder sb = new StringBuilder();
-            foreach (char c in str) {
-                if ((c >= '0' && c <= '9') || (c >= 'A' && c <= 'Z') || (c >= 'a' && c <= 'z') || c == '.' || c == '_' || c == ' ') {
-                    sb.Append(c);
-                }
-            }
-            return sb.ToString();
+            string MSG = buffer.ReadString ();
+            Globals.Level.BroadcastChat ("<" + state.Player.Username + "> " + MSG.RemoveLineBreaks().Replace("\\","\\\\"));
         }
 
         public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)

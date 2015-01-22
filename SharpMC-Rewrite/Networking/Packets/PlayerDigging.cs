@@ -23,8 +23,6 @@
             int Status = buffer.ReadByte ();
             Vector3 Position = buffer.ReadPosition ();
             int Face = buffer.ReadByte ();
-
-            ConsoleFunctions.WriteInfoLine ("Player dig: " + Position.GetString());
         }
 
         public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)

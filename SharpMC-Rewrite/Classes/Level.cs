@@ -23,7 +23,6 @@ namespace SharpMCRewrite
         public LVLType LevelType { get; set; }
 
         public List<Player> OnlinePlayers { get; set; }
-        public List<ChunkColumn> ChunkCache { get; set; }
 
         public int Tick { get; set; }
         public int Day { get; set; }
@@ -35,7 +34,6 @@ namespace SharpMCRewrite
             Tick = 1200;
             Day = 0;
             OnlinePlayers = new List<Player> ();
-            ChunkCache = new List<ChunkColumn> ();
             DefaultGamemode = Gamemode.Creative;
         }
 
@@ -71,6 +69,19 @@ namespace SharpMCRewrite
             {
                 i.Wrapper.SendData (Data);
             }
+        }
+
+        public void BroadcastPacket(IPacket packet, object[] Arguments)
+        {
+            foreach (Player i in OnlinePlayers)
+            {
+                packet.Write (i.Wrapper, new MSGBuffer (i.Wrapper), Arguments);
+            }
+        }
+
+        public void SaveChunks()
+        {
+            Generator.SaveChunks (LVLName);
         }
 
         #region TickTimer

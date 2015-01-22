@@ -5,14 +5,14 @@ namespace SharpMCRewrite
 {
     public class FlatLandLevel : ILevel
     {
-        public FlatLandLevel ()
+        public FlatLandLevel(string world)
         {
-            LVLName = "Flatland";
             Difficulty = 0;
-            Generator = new FlatLandGenerator();
+            LVLName = world;
+            Generator = new FlatLandGenerator(world);
             LevelType = LVLType.flat;
         }
-
+    
     }
 }
 
