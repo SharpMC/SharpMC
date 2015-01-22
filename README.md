@@ -1,13 +1,13 @@
 # SharpMC-Rewrite
 Build state:        ![alt tag](https://ci.appveyor.com/api/projects/status/qlviwrgvaeqa1u06?svg=true)
 
-Demo server: 94.23.50.5:25565
+Demo server: 94.23.50.5:25565<br>
 	-Might not be online at some moments!
 
 Current Specs
 -----------------
   - Protocol: 47
-  - World Format: Planned
+  - World Format: Custom
   - Multiworld: Planned
   - Physics: Planned
   - Entities: Planned
@@ -16,15 +16,15 @@ Current Specs
 
 Made possible by
 ------------------
-  - <a href="http://wiki.vg/">Wiki.VG</a> for providing Protocol information.
-  - All people that helped me!
+  - <a href="http://wiki.vg/">Wiki.VG</a> for providing Protocol information.<br>
+  - All people that helped me!<br><br>
 
 
 Licensing
 ----------
-SharpMC uses the permissive MIT license.
+SharpMC uses the permissive MIT license.<br><br>
 
-In a nutshell:
-You are not restricted on usage of SharpMC; commercial, private, etc, all fine.
-The developers are not liable for what you do with it.
-SharpMC is provided "as is" with no warranty.
+In a nutshell:<br>
+You are not restricted on usage of SharpMC; commercial, private, etc, all fine.<br>
+The developers are not liable for what you do with it.<br>
+SharpMC is provided "as is" with no warranty.<br>
