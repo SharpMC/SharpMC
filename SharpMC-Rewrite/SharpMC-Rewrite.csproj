@@ -80,6 +80,8 @@
     <Compile Include="Utils\ConfigFileReader.cs" />
     <Compile Include="Interfaces\IWorldProvider.cs" />
     <Compile Include="ExtentionMethods\StringExtentions.cs" />
+    <Compile Include="Networking\Packets\SetSlot.cs" />
+    <Compile Include="Networking\Packets\PlayerBlockPlacement.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

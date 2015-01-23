@@ -9,15 +9,13 @@ namespace SharpMCRewrite.Worlds
     public class ChunkColumn
     {
         public int X { get; set; }
-        public int Y { get; set; }
+        public int Z { get; set; }
         public byte[] BiomeId = ArrayOf<byte>.Create(256, 1);
         public int[] BiomeColor = ArrayOf<int>.Create(256, 1);
 
-        public byte[] Blocks = new byte[16*16*256]; // two bytes per block (USHORT'S)
-        //public NibbleArray Blocklight = new NibbleArray(16*16*256);
-       // public NibbleArray Skylight = new NibbleArray(16*16*256);
-        public byte[] Skylight = new byte[16*16*256];
-        public byte[] Blocklight = new byte[16*16*256];
+        public ushort[] Blocks = new ushort[16*16*256];
+        public NibbleArray Skylight = new NibbleArray(16*16*256);
+        public NibbleArray Blocklight = new NibbleArray(16*16*256);
 
         private byte[] _cache = null;
 
@@ -25,22 +23,20 @@ namespace SharpMCRewrite.Worlds
         {
             for (int i = 0; i < Skylight.Length; i ++)
                 Skylight [i] = 0xff;
-
             for (int i = 0; i < BiomeColor.Length; i++)
                 BiomeColor[i] = 8761930; // Grass color?
         }
 
         public ushort GetBlock(int x, int y, int z)
         {
-            return BitConverter.ToUInt16(new byte[2] {Blocks[(x*2048) + (z*256) + y], Blocks[(x*2048) + (z*256) + (y + 1)]}, 0);
+            return 0; //Will be doing this later xD
+           // return BitConverter.ToUInt16(new byte[2] {Blocks[(x*4096) + (z*256) + y], Blocks[(x*4096) + (z*256) + y +1]}, 0);
         }
 
         public void SetBlock(int x, int y, int z, ushort BlockID)
         {
-            byte[] bID = BitConverter.GetBytes (BlockID);
-            _cache = null;
-            Blocks[(x*2048) + (z*256) + y] = bID[0];
-            Blocks [(x * 2048) + (z * 256) + (y + 1)] = bID [1];
+            int Index = x + 16*z + 16*16*y;
+            Blocks[Index] = Convert.ToUInt16((BlockID << 4) | 0);
         }
 
         public void SetBlocklight(int x, int y, int z, byte data)
@@ -63,15 +59,16 @@ namespace SharpMCRewrite.Worlds
                 using (var writer = new NbtBinaryWriter (stream, true))
                 {
                     writer.Write (IPAddress.HostToNetworkOrder (X));
-                    writer.Write (IPAddress.HostToNetworkOrder (Y));
+                    writer.Write (IPAddress.HostToNetworkOrder (Z));
                     writer.Write (true);
                     writer.Write ((ushort)0xffff); // bitmap
-                    writer.WriteVarInt (Blocks.Length + Skylight.Length + 33024 + 32768);
+                    writer.WriteVarInt ((Blocks.Length*2) + Skylight.Data.Length + Blocklight.Data.Length + BiomeId.Length);
 
-                    writer.Write (Blocks);
+                    foreach (ushort i in Blocks)
+                        writer.Write (i);
 
-                    writer.Write (Blocklight);
-                    writer.Write (Skylight);
+                    writer.Write (Blocklight.Data);
+                    writer.Write (Skylight.Data);
 
                     writer.Write (BiomeId); //OK
 
@@ -80,6 +77,27 @@ namespace SharpMCRewrite.Worlds
                 }
                 return stream.ToArray();
             }
+        }
+
+        public byte[] Export()
+        {
+                MSGBuffer buffer = new MSGBuffer (new byte[0]);
+
+                buffer.WriteInt (Blocks.Length);
+                foreach (ushort i in Blocks)
+                    buffer.WriteUShort (i);
+
+                buffer.WriteInt (Blocklight.Data.Length);
+                buffer.Write (Blocklight.Data);
+
+                buffer.WriteInt (Skylight.Data.Length);
+                buffer.Write (Skylight.Data);
+
+                buffer.WriteInt (BiomeId.Length);
+                buffer.Write (BiomeId);
+
+                return buffer.ExportWriter;
+           
         }
     }
 

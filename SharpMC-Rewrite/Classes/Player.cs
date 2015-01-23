@@ -31,11 +31,11 @@ namespace SharpMCRewrite
 
         Vector2 CurrentChunkPosition = new Vector2 (0, 0);
         public bool ForceChunkReload { get; set; }
-        private Dictionary<string, ChunkColumn> _chunksUsed;
+        private Dictionary<Tuple<int,int>, ChunkColumn> _chunksUsed;
 
         public Player()
         {
-            _chunksUsed = new Dictionary<string, ChunkColumn>();
+            _chunksUsed = new Dictionary<Tuple<int,int>, ChunkColumn>();
         }
 
         public void AddToList()
@@ -78,7 +78,7 @@ namespace SharpMCRewrite
             if (!force && IsSpawned && CurrentChunkPosition == new Vector2(centerX, centerZ)) return;
 
             CurrentChunkPosition.X = centerX;
-            CurrentChunkPosition.Y = centerZ;
+            CurrentChunkPosition.Z = centerZ;
 
             var _worker = new BackgroundWorker();
             _worker.WorkerSupportsCancellation = true;
@@ -86,7 +86,7 @@ namespace SharpMCRewrite
             {
                 BackgroundWorker worker = sender as BackgroundWorker;
                 int Counted = 0;
-                foreach (var chunk in Globals.Level.Generator.GenerateChunks(ViewDistance, Coordinates.X, Coordinates.Z, force ? new Dictionary<string, ChunkColumn>() : _chunksUsed))
+                foreach (var chunk in Globals.Level.Generator.GenerateChunks(ViewDistance, Coordinates.X, Coordinates.Z, force ? new Dictionary<Tuple<int,int>, ChunkColumn>() : _chunksUsed))
                 { 
                     if (worker.CancellationPending)
                     {

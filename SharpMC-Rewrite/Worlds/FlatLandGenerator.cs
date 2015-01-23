@@ -6,12 +6,13 @@ using System.Diagnostics;
 using MiNET.Worlds;
 using System.IO;
 using System.Reflection;
+using Craft.Net.Anvil;
 
 namespace SharpMCRewrite.Worlds
 {
     public class FlatLandGenerator : IWorldProvider
     {
-        public Dictionary<string, ChunkColumn> _chunkCache = new Dictionary<string, ChunkColumn>();
+        public Dictionary<Tuple<int,int>, ChunkColumn> _chunkCache = new Dictionary<Tuple<int,int>, ChunkColumn>();
         public bool IsCaching { get; private set; }
         private string Folder = "world";
 
@@ -25,15 +26,15 @@ namespace SharpMCRewrite.Worlds
         {
         }
 
-        public IEnumerable<ChunkColumn> GenerateChunks(int _viewDistance, double playerX, double playerZ, Dictionary<string, ChunkColumn> chunksUsed)
+        public IEnumerable<ChunkColumn> GenerateChunks(int _viewDistance, double playerX, double playerZ, Dictionary<Tuple<int,int>, ChunkColumn> chunksUsed)
         {
             lock (chunksUsed)
             {
-                Dictionary<string, double> newOrders = new Dictionary<string, double>();
+                Dictionary<Tuple<int, int>, double> newOrders = new Dictionary<Tuple<int,int>, double>();
                 double radiusSquared = _viewDistance/Math.PI;
                 double radius = Math.Ceiling(Math.Sqrt(radiusSquared));
-                var centerX = ((int)playerX)/16;
-                var centerZ = ((int)playerZ)/16;
+                double centerX = Math.Floor((playerX)/16);
+                double centerZ = Math.Floor((playerZ)/16);
 
                 for (double x = -radius; x <= radius; ++x)
                 {
@@ -44,9 +45,10 @@ namespace SharpMCRewrite.Worlds
                         {
                             continue;
                         }
-                        var chunkX = x + centerX;
-                        var chunkZ = z + centerZ;
-                        string index = GetChunkHash(chunkX, chunkZ);
+                        int chunkX = (int)Math.Floor(x + centerX);
+                        int chunkZ = (int)Math.Floor(z + centerZ);
+
+                        Tuple<int,int> index = new Tuple<int, int> ((int)chunkX, (int)chunkZ);
                         newOrders[index] = distance;
                     }
                 }
@@ -77,8 +79,8 @@ namespace SharpMCRewrite.Worlds
 
                     stopwatch.Restart();
 
-                    int x = Int32.Parse(pair.Key.Split(new[] {':'})[0]);
-                    int z = Int32.Parse(pair.Key.Split(new[] {':'})[1]);
+                    int x = pair.Key.Item1;
+                    int z = pair.Key.Item2;
 
                     ChunkColumn chunk = GenerateChunkColumn(new Vector2(x, z));
                     chunksUsed.Add(pair.Key, chunk);
@@ -100,21 +102,21 @@ namespace SharpMCRewrite.Worlds
 
         public ChunkColumn GenerateChunkColumn(Vector2 chunkCoordinates)
         {
-            if (_chunkCache.ContainsKey (chunkCoordinates.X + ":" + chunkCoordinates.Y))
+            if (_chunkCache.ContainsKey (new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z)))
             {
                 ChunkColumn c;
-                if (_chunkCache.TryGetValue (chunkCoordinates.X + ":" + chunkCoordinates.Y, out c))
+                if (_chunkCache.TryGetValue (new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z), out c))
                 {
-                    Debug.WriteLine ("Chunk " + chunkCoordinates.X + ":" + chunkCoordinates.Y  + " was already generated!");
+                    Debug.WriteLine ("Chunk " + chunkCoordinates.X + ":" + chunkCoordinates.Z  + " was already generated!");
                     return c;
                 }
             }
 
-            ChunkColumn cd = LoadChunk (chunkCoordinates.X, chunkCoordinates.Y);
-            if (cd.Blocks.Length != 0)
+            if (File.Exists ((Folder + "/" + chunkCoordinates.X + "." + chunkCoordinates.Z + ".cfile")))
             {
-                _chunkCache.Add (cd.X + ":" + cd.Y, (ChunkColumn)cd);
-                return (ChunkColumn)cd;
+                ChunkColumn cd = LoadChunk (chunkCoordinates.X, chunkCoordinates.Z);
+                _chunkCache.Add (new Tuple<int, int>(cd.X, cd.Z), cd);
+                return cd;
             } 
 
             Debug.WriteLine ("ChunkFile not found, generating...");
@@ -122,9 +124,9 @@ namespace SharpMCRewrite.Worlds
 
             var chunk = new ChunkColumn();
             chunk.X = chunkCoordinates.X;
-            chunk.Y = chunkCoordinates.Y;
+            chunk.Z = chunkCoordinates.Z;
             generator.PopulateChunk(chunk);
-            _chunkCache.Add(chunkCoordinates.X + ":" + chunkCoordinates.Y, chunk);
+            _chunkCache.Add(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z), chunk);
 
             return chunk;
         }
@@ -137,82 +139,74 @@ namespace SharpMCRewrite.Worlds
         public void PopulateChunk(ChunkColumn chunk)
         {
             var random = new CryptoRandom();
-            var blocks = new byte[16 * 16 * 256];
+            var blocks = new ushort[16 * 16 * 256];
             int Last = 0;
-
-            //for (int i = 0; i < (256 * 2); i += 2)
-            for (int i = 0; i < blocks.Length; i += 2)
+            for (int x = 0; x < 256; x ++)
             {
-                if (i < (256 * 2))
-                {
-                    byte[] Bedrock = BitConverter.GetBytes ((ushort)(7 << 4) | 0);
-                    blocks [i] = Bedrock [0];
-                    blocks [i + 1] = Bedrock [1];
-                }
-
-                if (i >= (256 * 2) && i < (256 * 4))
-                {
-                    byte[] Grass = BitConverter.GetBytes ((ushort)(3 << 4) | 0);
-                    blocks [i] = Grass [0];
-                    blocks [i + 1] = Grass [1];
-                }
-
-                if (i >= (256 * 4) && i < (256 * 6))
-                {
-                    byte[] Grass = BitConverter.GetBytes ((ushort)(3 << 4) | 0);
-                    blocks [i] = Grass [0];
-                    blocks [i + 1] = Grass [1];
-                }
-
-                if (i >= (256 * 6) && i < (256 * 8))
-                {
-                    byte[] Grass = BitConverter.GetBytes ((ushort)(2 << 4) | 0);
-                    blocks [i] = Grass [0];
-                    blocks [i + 1] = Grass [1];
-                }
+                blocks[x] = (7 << 4) | 0; // Bedrock
+                Last++;
             }
 
-            chunk.Blocks = blocks.ToArray();
+            for (int x = Last; x < (256 * 3); x ++)
+            {
+                blocks[x] = (3 << 4) | 0; // Dirt?
+                Last++;
+            }
+
+            for (int x = Last; x < (256 * 4); x ++)
+            {
+                blocks[x] = (2 << 4) | 0; // Grass??
+                Last++;
+            }
+
+            chunk.Blocks = blocks;
         }
 
         public void SaveChunks (string folder)
         {
             foreach (var i in _chunkCache)
             {
-                File.WriteAllBytes (folder + "/" + i.Value.X + "." + i.Value.Y + ".cfile", i.Value.GetBytes());
+                File.WriteAllBytes (folder + "/" + i.Value.X + "." + i.Value.Z + ".cfile", i.Value.Export());
             }
         }
 
-        public ChunkColumn LoadChunk (int x, int y)
+        public ChunkColumn LoadChunk (int x, int z)
         {
-            if (File.Exists ((Folder + "/" + x + "." + y + ".cfile")))
-            {
-                byte[] u = File.ReadAllBytes (Folder + "/" + x + "." + y + ".cfile");
+                byte[] u = File.ReadAllBytes (Folder + "/" + x + "." + z + ".cfile");
                 MSGBuffer reader = new MSGBuffer (u);
-                int X = reader.ReadInt ();
-                int Y = reader.ReadInt ();
-                bool t = reader.ReadBool ();
-                int Length = reader.ReadVarInt ();
-                byte[] Block = reader.Read (16 * 16 * 256);
-                byte[] BlockLight = reader.Read (16 * 16 * 256);
-                byte[] SkyLight = reader.Read (16 * 16 * 256);
-                byte[] BiomeID = reader.Read (256);
+
+                int BlockLength = reader.ReadInt ();
+                ushort[] Block = reader.ReadUShortLocal (BlockLength);
+
+                int SkyLength = reader.ReadInt ();
+                byte[] Skylight = reader.Read (SkyLength);
+
+                int LightLength = reader.ReadInt ();
+                byte[] Blocklight = reader.Read (LightLength);
+
+                int BiomeIDLength = reader.ReadInt ();
+                byte[] BiomeID = reader.Read (BiomeIDLength);
 
                 ChunkColumn CC = new ChunkColumn ();
                 CC.Blocks = Block;
-                CC.Blocklight = BlockLight;
-                CC.Skylight = SkyLight;
+                CC.Blocklight.Data = Blocklight;
+                CC.Skylight.Data = Skylight;
                 CC.BiomeId = BiomeID;
-                CC.X = X;
-                CC.Y = Y;
-                Debug.WriteLine ("We should have loaded " + X + ", " + Y);
+                CC.X = x;
+                CC.Z = z;
+                Debug.WriteLine ("We should have loaded " + x + ", " + z);
                 return CC;
-            }
-            else
+        }
+
+        public void SetBlock(Vector3 cords, ushort blockID)
+        {
+            ChunkColumn c;
+            if (_chunkCache.TryGetValue(new Tuple<int, int>((int)Math.Floor(cords.X / 16), (int)Math.Floor(cords.Z / 16)), out c))
             {
-                Debug.WriteLine ("We couldn't find the file :|");
-                return new ChunkColumn() { Blocks = new byte[0] {  } };
+                c.SetBlock (((int)Math.Floor(cords.X) & 0x0f), ((int)Math.Floor(cords.Y) & 0x7f), ((int)Math.Floor(cords.Z) & 0x0f), blockID);
+                return;
             }
+            throw new Exception ("No chunk found!");
         }
     }
 }

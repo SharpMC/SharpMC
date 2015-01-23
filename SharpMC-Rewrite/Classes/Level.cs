@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using SharpMCRewrite.Worlds;
 using MiNET.Worlds;
 using System.Threading;
 using System.Timers;
@@ -83,7 +82,6 @@ namespace SharpMCRewrite
         {
             Generator.SaveChunks (LVLName);
         }
-
         #region TickTimer
         private Thread TimerThread;
 

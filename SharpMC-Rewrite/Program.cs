@@ -56,6 +56,7 @@ namespace SharpMCRewrite
             temp.Add (new ChatMessage ());
             temp.Add (new PlayerDigging ());
             temp.Add (new PlayerAnimation ());
+            temp.Add (new PlayerBlockPlacement ());
             Globals.Packets = temp.ToArray ();
             temp.Clear ();
             ConsoleFunctions.WriteInfoLine ("Done loading packet handlers...");

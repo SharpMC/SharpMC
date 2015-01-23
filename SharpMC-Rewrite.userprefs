@@ -1,15 +1,15 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="SharpMC-Rewrite/Program.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="SharpMC-Rewrite/Worlds/FlatLandGenerator.cs">
     <Files>
-      <File FileName="SharpMC-Rewrite/Networking/Packets/LoginSuccess.cs" Line="1" Column="1" />
-      <File FileName="SharpMC-Rewrite/Networking/Packets/Handshake.cs" Line="48" Column="48" />
-      <File FileName="SharpMC-Rewrite/Program.cs" Line="18" Column="18" />
-      <File FileName="SharpMC-Rewrite/Networking/Packets/ChunkData.cs" Line="31" Column="31" />
-      <File FileName="SharpMC-Rewrite/Networking/ByteBuffer.cs" Line="27" Column="27" />
-      <File FileName="SharpMC-Rewrite/Worlds/FlatLandGenerator.cs" Line="56" Column="56" />
-      <File FileName="SharpMC-Rewrite/Worlds/ChunkColumn.cs" Line="9" Column="9" />
-      <File FileName="SharpMC-Tests/Program.cs" Line="117" Column="117" />
+      <File FileName="SharpMC-Rewrite/Networking/Packets/PlayerDigging.cs" Line="14" Column="14" />
+      <File FileName="SharpMC-Rewrite/Networking/Packets/PlayerBlockPlacement.cs" Line="43" Column="43" />
+      <File FileName="SharpMC-Rewrite/Program.cs" Line="52" Column="52" />
+      <File FileName="SharpMC-Rewrite/Classes/MSGBuffer.cs" Line="30" Column="30" />
+      <File FileName="SharpMC-Rewrite/Classes/Player.cs" Line="10" Column="10" />
+      <File FileName="SharpMC-Rewrite/Interfaces/IWorldProvider.cs" Line="2" Column="2" />
+      <File FileName="SharpMC-Rewrite/Worlds/ChunkColumn.cs" Line="92" Column="92" />
+      <File FileName="SharpMC-Rewrite/Worlds/FlatLandGenerator.cs" Line="10" Column="10" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -103,7 +103,39 @@ namespace SharpMCRewrite
             byte[] Da = Read (2);
             short D = BitConverter.ToInt16 (Da, 0);
             return IPAddress.NetworkToHostOrder (D);
-       }
+        }
+
+        public ushort ReadUShort()
+        {
+            byte[] Da = Read (2);
+            return BitConverter.ToUInt16 (Da, 0);
+        }
+
+        public ushort[] ReadUShort(int count)
+        {
+            ushort[] us = new ushort[count];
+            for (int i = 0; i < us.Length; i++ )
+            {
+                byte[] Da = Read (2);
+                ushort D = BitConverter.ToUInt16 (Da, 0);
+                us [i] = D;
+            }
+            return NetworkToHostOrder (us);
+            //return IPAddress.NetworkToHostOrder (D);
+        }
+
+        public ushort[] ReadUShortLocal(int count)
+        {
+            ushort[] us = new ushort[count];
+            for (int i = 0; i < us.Length; i++ )
+            {
+                byte[] Da = Read (2);
+                ushort D = BitConverter.ToUInt16 (Da, 0);
+                us [i] = D;
+            }
+            return us;
+            //return IPAddress.NetworkToHostOrder (D);
+        }
 
         public string ReadString()
         {
@@ -121,10 +153,10 @@ namespace SharpMCRewrite
         public Vector3 ReadPosition()
         {
             long val = ReadLong ();
-            long x = val >> 38;
-            long y = (val >> 26) & 0xFFF;
-            long z = val << 38 >> 38;
-            return new Vector3 ((double)x, (double)y, (double)z);
+            double x = val >> 38;
+            double y = (val >> 26) & 0xFFF;
+            double z = val << 38 >> 38;
+            return new Vector3 (x, y, z);
         }
 
         /// <summary>
@@ -167,9 +199,23 @@ namespace SharpMCRewrite
 
             return BitConverter.ToSingle(bytes, 0);
         }
+
+        private ushort[] NetworkToHostOrder(ushort[] network)
+        {
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse (network);
+            return network;
+        }
         #endregion
 
         #region Writer
+        public byte[] ExportWriter
+        {
+            get
+            {
+                return bffr.ToArray ();
+            }
+        }
         private List<byte> bffr = new List<byte>();
         private NetworkStream mStream;
 
@@ -226,6 +272,12 @@ namespace SharpMCRewrite
         {
             byte[] ShortData = BitConverter.GetBytes (Data);
             Write (ShortData);
+        }
+
+        public void WriteUShort(ushort Data)
+        {
+            byte[] UShortData = BitConverter.GetBytes (Data);
+            Write (UShortData);
         }
 
         public void WriteByte(byte Data)
