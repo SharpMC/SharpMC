@@ -23,6 +23,28 @@
             int Status = buffer.ReadByte ();
             Vector3 Position = buffer.ReadPosition ();
             int Face = buffer.ReadByte ();
+            switch (Face)
+            {
+                case 0:
+                    Position.Y--;
+                    break;
+                case 1:
+                    Position.Y++;
+                    break;
+                case 2:
+                    Position.Z--;
+                    break;
+                case 3:
+                    Position.Z++;
+                    break;
+                case 4:
+                    Position.X--;
+                    break;
+                case 5:
+                    Position.X++;
+                    break;
+
+            }
             Globals.Level.Generator.SetBlock (Position, 0);
         }
 

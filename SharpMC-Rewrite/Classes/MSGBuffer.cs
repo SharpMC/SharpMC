@@ -108,7 +108,7 @@ namespace SharpMCRewrite
         public ushort ReadUShort()
         {
             byte[] Da = Read (2);
-            return BitConverter.ToUInt16 (Da, 0);
+            return NetworkToHostOrder(BitConverter.ToUInt16 (Da, 0));
         }
 
         public ushort[] ReadUShort(int count)
@@ -153,9 +153,9 @@ namespace SharpMCRewrite
         public Vector3 ReadPosition()
         {
             long val = ReadLong ();
-            double x = val >> 38;
-            double y = (val >> 26) & 0xFFF;
-            double z = val << 38 >> 38;
+            double x = Convert.ToDouble(val >> 38);
+            double y = Convert.ToDouble((val >> 26) & 0xFFF);
+            double z = Convert.ToDouble(val << 38 >> 38);
             return new Vector3 (x, y, z);
         }
 
@@ -205,6 +205,14 @@ namespace SharpMCRewrite
             if (BitConverter.IsLittleEndian)
                 Array.Reverse (network);
             return network;
+        }
+
+        private ushort NetworkToHostOrder(ushort network)
+        {
+            byte[] net = BitConverter.GetBytes (network);
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse (net);
+            return BitConverter.ToUInt16(net, 0);
         }
         #endregion
 
