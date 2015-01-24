@@ -4,6 +4,7 @@ using System.Text;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Net;
+using System.ComponentModel;
 
 namespace SharpMCRewrite
 {
@@ -321,12 +322,15 @@ namespace SharpMCRewrite
             Write (BitConverter.GetBytes (IPAddress.HostToNetworkOrder(Data)));
         }
 
-        public void WriteUUID(string UUID)
+        public void WriteUUID(Guid uuid)
         {
-            byte[] i = Encoding.UTF8.GetBytes (UUID.ToCharArray(), 0, 8);
-            byte[] b = Encoding.UTF8.GetBytes (UUID.ToCharArray(), 8, 8);
-            Write (i);
-            Write (b);
+            byte[] guid = uuid.ToByteArray ();
+            byte[] Long1 = new byte[8];
+            byte[] Long2 = new byte[8];
+            Array.Copy (guid, 0, Long1, 0, 8);
+            Array.Copy (guid, 8, Long2, 0, 8);
+            Write (Long1);
+            Write (Long2);
         }
 
         /// <summary>

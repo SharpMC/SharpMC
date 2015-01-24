@@ -83,6 +83,8 @@
     <Compile Include="Networking\Packets\SetSlot.cs" />
     <Compile Include="Networking\Packets\PlayerBlockPlacement.cs" />
     <Compile Include="Networking\Packets\BlockChange.cs" />
+    <Compile Include="Networking\Packets\EntityTeleport.cs" />
+    <Compile Include="Networking\Packets\PlayerListItem.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

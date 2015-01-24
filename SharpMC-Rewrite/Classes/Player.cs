@@ -74,7 +74,7 @@ namespace SharpMCRewrite
             }
             SendChunksForKnownPosition (false);
         }
-
+            
         public void SendChunksForKnownPosition(bool force = false)
         {
             int centerX = (int) Coordinates.X/16;
@@ -91,6 +91,7 @@ namespace SharpMCRewrite
             {
                 BackgroundWorker worker = sender as BackgroundWorker;
                 int Counted = 0;
+
                 foreach (var chunk in Globals.Level.Generator.GenerateChunks(ViewDistance, Coordinates.X, Coordinates.Z, force ? new Dictionary<Tuple<int,int>, ChunkColumn>() : _chunksUsed))
                 { 
                     if (worker.CancellationPending)
@@ -104,10 +105,14 @@ namespace SharpMCRewrite
 
                     if (Counted >= ViewDistance && !IsSpawned)
                     {
+
                         new PlayerPositionAndLook().Write(Wrapper, new MSGBuffer(Wrapper), new object[0]);
 
                         IsSpawned = true;
                         Globals.Level.AddPlayer(this);
+                        Globals.Level.BroadcastPacket(new PlayerListItem(), new object[] { this, 0 });
+                        Globals.Level.BroadcastExistingPlayers(Wrapper);
+                        Globals.Level.BroadcastNewPlayer(Wrapper);
                     }
                     Counted++;
                 }

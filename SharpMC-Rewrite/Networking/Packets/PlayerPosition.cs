@@ -28,6 +28,7 @@
             targetplayer.Coordinates = new Vector3 (X, FeetY, Z);
             state.Player.OnGround = OnGround;
             state.Player.SendChunksFromPosition ();
+            Globals.Level.BroadcastPacket (new EntityTeleport (), new object[] {state.Player});
         }
 
         public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)

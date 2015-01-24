@@ -93,21 +93,43 @@ namespace SharpMCRewrite
                 if (i.Wrapper != newPlayer)
                 {
                     new SpawnPlayer ().Write (i.Wrapper, new MSGBuffer (i.Wrapper), new object[] { newPlayer.Player });
+                    new SpawnPlayer ().Write (newPlayer, new MSGBuffer (newPlayer), new object[] { i });
                 }
             }
+        }
+
+        public void BroadcastExistingPlayers(ClientWrapper Caller)
+        {
+            foreach (Player i in OnlinePlayers)
+            {
+                if (i.Wrapper != Caller)
+                {
+                    new PlayerListItem ().Write (Caller, new MSGBuffer (Caller), new object[] { i, 0 });
+                }
+            }
+        }
+
+        public void BroadcastPlayerRemoval(ClientWrapper player)
+        {
+            BroadcastPacket (new PlayerListItem (), new object[] { player.Player, 4});
         }
 
         public void SaveChunks()
         {
             Generator.SaveChunks (LVLName);
         }
+
         #region TickTimer
         private Thread TimerThread;
+        private Thread GameTickThread;
 
         public void StartTimeOfDayTimer()
         {
             TimerThread = new Thread (() => StartTimeTimer());
             TimerThread.Start ();
+
+            GameTickThread = new Thread (() => StartTickTimer());
+            GameTickThread.Start ();
         }
 
         public void StopTimeOfDayTimer()
@@ -117,12 +139,20 @@ namespace SharpMCRewrite
         }
 
         static System.Timers.Timer kTimer = new System.Timers.Timer();
+        static System.Timers.Timer kTTimer = new System.Timers.Timer();
 
         private void StartTimeTimer()
         {
-            kTimer.Elapsed += new ElapsedEventHandler(RunTick);
+            kTimer.Elapsed += new ElapsedEventHandler(RunDayTick);
             kTimer.Interval = 1000;
             kTimer.Start();
+        }
+            
+        private void StartTickTimer()
+        {
+            kTTimer.Elapsed += new ElapsedEventHandler(GameTick);
+            kTTimer.Interval = 50;
+            kTTimer.Start();
         }
 
         private void StopTimeTimer()
@@ -130,7 +160,7 @@ namespace SharpMCRewrite
             kTimer.Stop ();
         }
 
-        private void RunTick(object source, ElapsedEventArgs e)
+        private void RunDayTick(object source, ElapsedEventArgs e)
         {
             if (Tick < 24000)
             {
@@ -146,6 +176,11 @@ namespace SharpMCRewrite
             {
                 new TimeUpdate ().Write (i.Wrapper, new MSGBuffer (i.Wrapper), new object[0]);
             }
+        }
+
+        private void GameTick(object source, ElapsedEventArgs e)
+        {
+           
         }
         #endregion
     }

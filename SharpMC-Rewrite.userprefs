@@ -1,14 +1,12 @@
 ﻿<Properties>
   <MonoDevelop.Ide.Workspace ActiveConfiguration="Debug|x86" />
-  <MonoDevelop.Ide.Workbench ActiveDocument="SharpMC-Rewrite/Networking/Packets/PlayerBlockPlacement.cs">
+  <MonoDevelop.Ide.Workbench ActiveDocument="SharpMC-Rewrite/Classes/Level.cs">
     <Files>
-      <File FileName="SharpMC-Rewrite/Networking/Packets/PlayerDigging.cs" Line="26" Column="26" />
-      <File FileName="SharpMC-Rewrite/Program.cs" Line="1" Column="1" />
-      <File FileName="SharpMC-Rewrite/Classes/MSGBuffer.cs" Line="1" Column="1" />
-      <File FileName="SharpMC-Rewrite/Classes/Level.cs" Line="1" Column="1" />
-      <File FileName="SharpMC-Rewrite/Networking/Packets/PlayerBlockPlacement.cs" Line="24" Column="24" />
-      <File FileName="SharpMC-Rewrite/Networking/Packets/Handshake.cs" Line="1" Column="1" />
-      <File FileName="SharpMC-Rewrite/Networking/Listener.cs" Line="30" Column="30" />
+      <File FileName="SharpMC-Rewrite/Networking/Packets/EntityTeleport.cs" Line="47" Column="47" />
+      <File FileName="SharpMC-Rewrite/Networking/Packets/PlayerPosition.cs" Line="59" Column="59" />
+      <File FileName="SharpMC-Rewrite/Networking/Packets/SpawnPlayer.cs" Line="14" Column="14" />
+      <File FileName="SharpMC-Rewrite/Classes/Vector3.cs" Line="5" Column="5" />
+      <File FileName="SharpMC-Rewrite/Classes/Level.cs" Line="12" Column="12" />
     </Files>
   </MonoDevelop.Ide.Workbench>
   <MonoDevelop.Ide.DebuggingService.Breakpoints>

@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 
 namespace SharpMCRewrite
 {
@@ -30,15 +31,17 @@ namespace SharpMCRewrite
             Player target = (Player)Arguments [0];
 
             buffer.WriteVarInt (PacketID);
-            buffer.Write (new Guid (target.UUID).ToByteArray());
+            buffer.WriteVarInt (target.UniqueServerID);
+            buffer.WriteUUID (new Guid (target.UUID));
             buffer.WriteInt((int)target.Coordinates.X * 32);
             buffer.WriteInt((int)target.Coordinates.Y * 32);
             buffer.WriteInt((int)target.Coordinates.Z * 32);
             buffer.WriteByte ((byte)target.Yaw);
             buffer.WriteByte ((byte)target.Pitch);
             buffer.WriteShort (0);
-            buffer.WriteByte ((0 << 5 | 0 & 0x1F) & 0xFF);
+            buffer.WriteByte (127);
             buffer.FlushData ();
+
         }
     }
 }
