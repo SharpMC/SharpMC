@@ -82,6 +82,7 @@
     <Compile Include="ExtentionMethods\StringExtentions.cs" />
     <Compile Include="Networking\Packets\SetSlot.cs" />
     <Compile Include="Networking\Packets\PlayerBlockPlacement.cs" />
+    <Compile Include="Networking\Packets\BlockChange.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

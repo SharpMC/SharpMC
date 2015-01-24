@@ -63,7 +63,7 @@ namespace SharpMCRewrite.Packets
             new SpawnPosition ().Write (state, buffer, new object[0]);
             state.StartKeepAliveTimer ();
             state.Player.SendChunksFromPosition ();
-            new SetSlot ().Write (state, new MSGBuffer (state), new object[] { (byte)0, (short)44, (short)1, (byte)1, (short)0, (byte)0 });
+            //new SetSlot ().Write (state, new MSGBuffer (state), new object[] { (byte)0, (short)44, (short)1, (byte)1, (short)0, (byte)0 });
         }
 
         private string getUUID(string username)

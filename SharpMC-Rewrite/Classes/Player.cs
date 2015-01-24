@@ -60,6 +60,11 @@ namespace SharpMCRewrite
             throw new ArgumentOutOfRangeException ("The specified player could not be found ;(");
         }
 
+        public void SendChat(string Message)
+        {
+            new ChatMessage ().Write (Wrapper, new MSGBuffer (Wrapper), new object[1] { Message });
+        }
+
         public void SendChunksFromPosition()
         {
             if (Coordinates == null)

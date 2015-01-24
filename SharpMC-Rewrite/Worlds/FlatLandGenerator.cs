@@ -166,13 +166,13 @@ namespace SharpMCRewrite.Worlds
         {
             foreach (var i in _chunkCache)
             {
-                File.WriteAllBytes (folder + "/" + i.Value.X + "." + i.Value.Z + ".cfile", i.Value.Export());
+                File.WriteAllBytes (folder + "/" + i.Value.X + "." + i.Value.Z + ".cfile", Globals.Compress (i.Value.Export()));
             }
         }
 
         public ChunkColumn LoadChunk (int x, int z)
         {
-                byte[] u = File.ReadAllBytes (Folder + "/" + x + "." + z + ".cfile");
+                byte[] u = Globals.Decompress(File.ReadAllBytes (Folder + "/" + x + "." + z + ".cfile"));
                 MSGBuffer reader = new MSGBuffer (u);
 
                 int BlockLength = reader.ReadInt ();

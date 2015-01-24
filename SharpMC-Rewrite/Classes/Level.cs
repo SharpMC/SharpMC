@@ -78,6 +78,25 @@ namespace SharpMCRewrite
             }
         }
 
+        public void BroadcastPlayers(ClientWrapper Target)
+        {
+            foreach (Player i in OnlinePlayers)
+            {
+                new SpawnPlayer ().Write (Target, new MSGBuffer (Target), new object[] { i });
+            }
+        }
+
+        public void BroadcastNewPlayer(ClientWrapper newPlayer)
+        {
+            foreach (Player i in OnlinePlayers)
+            {
+                if (i.Wrapper != newPlayer)
+                {
+                    new SpawnPlayer ().Write (i.Wrapper, new MSGBuffer (i.Wrapper), new object[] { newPlayer.Player });
+                }
+            }
+        }
+
         public void SaveChunks()
         {
             Generator.SaveChunks (LVLName);

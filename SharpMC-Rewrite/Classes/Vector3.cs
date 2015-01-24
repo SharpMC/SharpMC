@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net;
 
 namespace SharpMCRewrite
 {
@@ -19,6 +20,51 @@ namespace SharpMCRewrite
         {
             return X + ", " + Y + ", " + Z;
         }
+
+        public void ConvertToNetwork()
+        {
+            X = HostToNetworkOrder (X);
+            Y = HostToNetworkOrder (Y);
+            Z = HostToNetworkOrder (Z);
+        }
+
+        public void ConvertToHost()
+        {
+            X = NetworkToHostOrder (X);
+            Y = NetworkToHostOrder (Y);
+            Z = NetworkToHostOrder (Z);
+        }
+
+        private double HostToNetworkOrder(double d)
+        {
+            byte[] data = BitConverter.GetBytes(d);
+            if (BitConverter.IsLittleEndian)
+            {
+                Array.Reverse(data);
+            }
+            return BitConverter.ToDouble(data, 0);
+        }
+
+        private double NetworkToHostOrder(double d)
+        {
+            byte[] data = BitConverter.GetBytes(d);
+            if (!BitConverter.IsLittleEndian)
+                Array.Reverse(data);
+            return BitConverter.ToDouble(data, 0);
+        }
+            
+        public double DistanceBetween(Vector3 other)
+        {
+            return Math.Sqrt(Square(other.X - X) +
+                Square(other.Y - Y) +
+                Square(other.Z - Z));
+        }
+
+        private double Square(double num)
+        {
+            return num * num;
+        }
+
     }
 
     public class INTVector3

@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Net;
+using System.IO.Compression;
+using System.IO;
+using System.Collections.Generic;
 
 namespace SharpMCRewrite
 {
@@ -35,6 +38,42 @@ namespace SharpMCRewrite
         public static TcpListener ServerListener = new TcpListener (IPAddress.Any, 25565);
         public static ILevel Level;
         public static ConfigFileReader ConfigParser;
+
+
+        #region Global Functions
+
+        public static byte[] Compress(byte[] input)
+        {
+            using (MemoryStream output = new MemoryStream()) 
+            {
+                using (GZipStream zip = new GZipStream(output,CompressionMode.Compress) ) 
+                {
+                    zip.Write(input, 0, input.Length);
+                }
+                return output.ToArray();
+            }
+        }
+
+        public static byte[] Decompress(byte[] input)
+        {
+            using (MemoryStream output = new MemoryStream (input))
+            {
+                using (GZipStream zip = new GZipStream (output, CompressionMode.Decompress))
+                {
+                    List<byte> bytes = new List<byte> ();
+                    int b = zip.ReadByte ();
+                    while (b != -1)
+                    {
+                        bytes.Add ((byte)b);
+                        b = zip.ReadByte ();
+
+                    }
+                    return bytes.ToArray ();
+                }
+            }
+        }
+
+        #endregion
     }
 }
 

@@ -40,6 +40,7 @@ namespace SharpMCRewrite
             LastByte += Length;
             return Buffered;
         }
+           
 
         public int ReadInt()
         {
@@ -242,6 +243,13 @@ namespace SharpMCRewrite
                 bffr.Add (i);
             }
         }
+
+        public void WritePosition(Vector3 Position)
+        {
+            Position.ConvertToNetwork ();
+            long ToSend = (((((int)Position.X) & 0x3FFFFFF) << 38) | ((((int)Position.Y) & 0xFFF) << 26) | (((int)Position.Z) & 0x3FFFFFF));
+            WriteLong (ToSend);
+        }            
 
         public void WriteVarInt(int Integer)
         {

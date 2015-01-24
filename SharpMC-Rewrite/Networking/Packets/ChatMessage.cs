@@ -25,7 +25,7 @@ namespace SharpMCRewrite
         public void Read(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
             string MSG = buffer.ReadString ();
-            Globals.Level.BroadcastChat ("<" + state.Player.Username + "> " + MSG.RemoveLineBreaks().Replace("\\","\\\\"));
+            Globals.Level.BroadcastChat ("<" + state.Player.Username + "> " + MSG.RemoveLineBreaks().Replace("\\","\\\\").Replace("\"","\'\'"));
         }
 
         public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)

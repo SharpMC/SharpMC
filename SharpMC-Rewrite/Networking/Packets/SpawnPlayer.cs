@@ -30,7 +30,7 @@ namespace SharpMCRewrite
             Player target = (Player)Arguments [0];
 
             buffer.WriteVarInt (PacketID);
-            buffer.WriteUUID (new Guid (target.UUID).ToString());
+            buffer.Write (new Guid (target.UUID).ToByteArray());
             buffer.WriteInt((int)target.Coordinates.X * 32);
             buffer.WriteInt((int)target.Coordinates.Y * 32);
             buffer.WriteInt((int)target.Coordinates.Z * 32);

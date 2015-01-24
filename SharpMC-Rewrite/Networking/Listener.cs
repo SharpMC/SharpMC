@@ -49,6 +49,7 @@ namespace SharpMCRewrite.Networking
                         if (!found)
                         {
                             ConsoleFunctions.WriteWarningLine ("Unknown packet received! \"0x" + packid.ToString("X2") + "\"");
+                           // Client.Player.SendChat("We received an unknown packet from you! 0x" + packid.ToString("X2") + "");
                         }
                     } 
                     else
@@ -61,7 +62,7 @@ namespace SharpMCRewrite.Networking
                 {
                     //Exception, disconnect!
                     ConsoleFunctions.WriteDebugLine ("Error: \n" + ex);
-                    new Disconnect ().Write (Client, new MSGBuffer (Client), new object[] { "§4SharpMC\n§fServer threw an exception!" });
+                    new Disconnect ().Write (Client, new MSGBuffer (Client), new object[] { "§4SharpMC\n§fServer threw an exception!\n\nFor the nerdy people: \n" + ex.Message });
                     break;
                 }
             }

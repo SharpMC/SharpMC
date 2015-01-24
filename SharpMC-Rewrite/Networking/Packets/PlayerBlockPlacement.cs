@@ -25,7 +25,7 @@ namespace SharpMCRewrite
             Vector3 Position = buffer.ReadPosition ();
            //Position.Y++;//Temporaily!
 
-            if (Position.Z > 256)
+            if (Position.Y > 256)
                 return;
 
             int Direction = buffer.ReadByte ();
@@ -54,11 +54,42 @@ namespace SharpMCRewrite
             }
 
             short HeldItem = buffer.ReadShort (); // I guess?
+            int Type = HeldItem >> 5;
+
+            switch (Type)
+            {
+                case 0:
+                    //BYTE
+                    break;
+                case 1:
+                    //Short
+                    break;
+                case 2:
+                    //Int
+                    break;
+                case 3:
+                    //Float
+                    break;
+                case 4:
+                    //string
+                    break;
+                case 5:
+                    //Slot
+                    break;
+                case 6:
+                    //Vector
+                    break;
+                case 7:
+                    //rotation
+                    break;
+            }
+
             int CursorX = buffer.ReadByte ();
             int CursorY = buffer.ReadByte ();
             int CursorZ = buffer.ReadByte ();
 
             Globals.Level.Generator.SetBlock (Position, (ushort)HeldItem);
+            Globals.Level.BroadcastPacket (new BlockChange (), new object[] { Position, (int)HeldItem, (int)0 });
         }
 
         public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)

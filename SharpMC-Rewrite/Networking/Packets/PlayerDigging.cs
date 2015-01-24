@@ -20,6 +20,7 @@
 
         public void Read(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
+            ConsoleFunctions.WriteDebugLine ("Received 'Player Digging'");
             int Status = buffer.ReadByte ();
             Vector3 Position = buffer.ReadPosition ();
             int Face = buffer.ReadByte ();
