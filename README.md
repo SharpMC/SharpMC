@@ -10,7 +10,7 @@ Current Specs
   - World Format: Custom
   - Multiworld: Planned
   - Physics: Planned
-  - Entities: Planned
+  - Entities: Players (Experimental. W.I.P)
   - Scripting: Planned - C# plugin system
   - Platforms: Windows. Mac & Linux using Mono.
 
