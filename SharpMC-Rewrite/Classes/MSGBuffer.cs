@@ -247,8 +247,8 @@ namespace SharpMCRewrite
 
         public void WritePosition(Vector3 Position)
         {
-            Position.ConvertToNetwork ();
-            long ToSend = (((((int)Position.X) & 0x3FFFFFF) << 38) | ((((int)Position.Y) & 0xFFF) << 26) | (((int)Position.Z) & 0x3FFFFFF));
+            //Position.ConvertToNetwork ();
+            long ToSend = (((((long)Position.X) & 0x3FFFFFF) << 38) | ((((long)Position.Y) & 0xFFF) << 26) | (((long)Position.Z) & 0x3FFFFFF));
             WriteLong (ToSend);
         }            
 

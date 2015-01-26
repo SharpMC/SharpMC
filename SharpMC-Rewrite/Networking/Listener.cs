@@ -73,6 +73,7 @@ namespace SharpMCRewrite.Networking
             {
                 Globals.Level.RemovePlayer (Client.Player);
                 Globals.Level.BroadcastPlayerRemoval (Client);
+                Client.Player.SavePlayer ();
             }
             Client.TCPClient.Close ();
         }

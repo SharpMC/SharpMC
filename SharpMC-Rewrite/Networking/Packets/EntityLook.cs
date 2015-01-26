@@ -1,12 +1,12 @@
 ﻿namespace SharpMCRewrite
 {
-    public class EntityRelativeMove : IPacket
+    public class EntityLook : IPacket
     {
         public int PacketID
         {
             get
             {
-                return 0x15;
+                return 0x16;
             }
         }
 
@@ -24,26 +24,23 @@
         }
 
         /// <summary>
-        /// Arg 0: Player
-        /// Arg 1: X Movement
-        /// Arg 2: Y Movement
-        /// Arg 3: Z Movement
-        /// Arg 4: onGround
+        /// Argument 0: Entity ID
+        /// Argument 1: Yaw
+        /// Argument 2: Pitch
+        /// Argument 3: OnGround
         /// </summary>
         /// <param name="state">State.</param>
         /// <param name="buffer">Buffer.</param>
         /// <param name="Arguments">Arguments.</param>
         public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
-            Player target = (Player)Arguments [0];
-            if (state.Player != target)
-            {  
-                buffer.WriteVarInt (0x15);
-                buffer.WriteVarInt (target.UniqueServerID);
-                buffer.WriteByte ((byte)((double)Arguments [1] * 32));
-                buffer.WriteByte ((byte)((double)Arguments [2] * 32));
-                buffer.WriteByte ((byte)((double)Arguments [3] * 32));
-                buffer.WriteBool ((bool)Arguments [4]);
+            if ((int)Arguments [0] != state.Player.UniqueServerID)
+            {
+                buffer.WriteVarInt (PacketID);
+                buffer.WriteVarInt ((int)Arguments [0]);
+                buffer.WriteByte ((byte)Arguments [1]);
+                buffer.WriteByte ((byte)Arguments [2]);
+                buffer.WriteBool ((bool)Arguments [3]);
                 buffer.FlushData ();
             }
         }

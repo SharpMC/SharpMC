@@ -1,12 +1,12 @@
 ﻿namespace SharpMCRewrite
 {
-    public class PlayerLook : IPacket
+    public class WindowItems : IPacket
     {
         public int PacketID
         {
             get
             {
-                return 0x05;
+                return 0x30;
             }
         }
 
@@ -20,18 +20,19 @@
 
         public void Read(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
-            float Yaw = buffer.ReadFloat ();
-            float Pitch = buffer.ReadFloat ();
-            bool OnGround = buffer.ReadBool ();
-            state.Player.Yaw = Yaw;
-            state.Player.Pitch = Pitch;
-            state.Player.OnGround = OnGround;
-            Globals.Level.BroadcastPacket (new EntityLook (), new object[] { state.Player.UniqueServerID, (byte)Yaw, (byte)Pitch, OnGround });
+
         }
 
         public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
-
+            byte windowID = (byte)Arguments [0];
+            byte[] Data = (byte[])Arguments [1];
+            short Items = (short)Arguments [2];
+            buffer.WriteVarInt (PacketID);
+            buffer.WriteByte (windowID);
+            buffer.WriteShort (Items);
+            buffer.Write (Data, 0, Data.Length);
+            buffer.FlushData ();
         }
     }
 }

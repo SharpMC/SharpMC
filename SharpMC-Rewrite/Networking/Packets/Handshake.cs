@@ -54,6 +54,7 @@ namespace SharpMCRewrite.Packets
             new LoginSuccess().Write(state, buffer, new object[] {UUID, Username});
             Globals.LastUniqueID++;
             state.Player = new Player () { UUID = UUID, Username = Username, UniqueServerID = Globals.LastUniqueID, Wrapper = state, Gamemode = Gamemode.Creative };
+            state.Player.FromFile ();
             state.PlayMode = true; //Toggle the boolean to PlayMode so we know we are not handling Status stuff anymore.
 
             if (!Globals.UseCompression)
