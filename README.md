@@ -19,6 +19,7 @@ Made possible by
   - <a href="http://wiki.vg/">Wiki.VG</a> for providing Protocol information.<br>
   - All people that helped me!<br><br>
 
+
 Licensing
 ----------
 SharpMC uses the permissive MIT license.<br><br>
@@ -27,8 +28,3 @@ In a nutshell:<br>
 You are not restricted on usage of SharpMC; commercial, private, etc, all fine.<br>
 The developers are not liable for what you do with it.<br>
 SharpMC is provided "as is" with no warranty.<br>
-
-Pocket edition fan?
-------------------
-I'm currently working on a Minecraft Pocket Edition server with Niclas Olofsson.<br>
-The server is called MiNET. You can check it out here: <a href="https://github.com/NiclasOlofsson/MiNET/">MiNET on Github</a>
