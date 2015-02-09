@@ -51,29 +51,6 @@ namespace SharpMCRewrite.Worlds
             Skylight[(x*2048) + (z*256) + y] = data;
         }
 
-		public byte[] GetChunkMeta()
-		{
-			MSGBuffer buffer = new MSGBuffer (new Byte[0]);
-			buffer.WriteInt (X);
-			buffer.WriteInt (Z);
-			buffer.WriteUShort(0xffff);
-			return buffer.ExportWriter;
-		}
-
-		public byte[] GetChunkData()
-		{
-			MSGBuffer buffer = new MSGBuffer (new byte[0]);
-			buffer.WriteVarInt ((Blocks.Length*2) + Skylight.Data.Length + Blocklight.Data.Length + BiomeId.Length);
-
-			foreach (ushort i in Blocks)
-				buffer.WriteUShort (i);
-
-			buffer.Write (Blocklight.Data);
-			buffer.Write (Skylight.Data);
-			buffer.Write (BiomeId);
-			return buffer.ExportWriter;
-		}
-
         public byte[] GetBytes()
         {
 

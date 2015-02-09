@@ -1,6 +1,4 @@
-﻿using SharpMCRewrite.Worlds;
-
-namespace SharpMCRewrite
+﻿namespace SharpMCRewrite
 {
     public class MapChunkBulk : IPacket
     {
@@ -27,19 +25,13 @@ namespace SharpMCRewrite
 
         public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
-			ChunkColumn[] chunks = (ChunkColumn[])Arguments [0];
-
             buffer.WriteVarInt (PacketID);
             buffer.WriteBool (true);
-			buffer.WriteVarInt (chunks.Length);
-			foreach (ChunkColumn i in chunks)
-			{
-				buffer.Write(i.GetChunkMeta());
-			}
-			foreach (ChunkColumn i in chunks)
-			{
-				buffer.Write(i.GetChunkData());
-			}
+            buffer.WriteVarInt (49);
+            //for (int i = 0; i < 1; i++)
+            //{
+               // buffer.Write (Globals.ChunkColums [0].GetBytes ());
+           // }
             buffer.FlushData ();
         }
     }

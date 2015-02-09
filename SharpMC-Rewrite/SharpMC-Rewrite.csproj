@@ -85,12 +85,6 @@
     <Compile Include="Networking\Packets\BlockChange.cs" />
     <Compile Include="Networking\Packets\EntityTeleport.cs" />
     <Compile Include="Networking\Packets\PlayerListItem.cs" />
-    <Compile Include="Networking\Packets\EntityLook.cs" />
-    <Compile Include="Networking\Packets\EntityHeadLook.cs" />
-    <Compile Include="Classes\Inventory.cs" />
-    <Compile Include="Networking\Packets\HeldItemChange.cs" />
-    <Compile Include="Networking\Packets\CreativeInventoryAction.cs" />
-    <Compile Include="Networking\Packets\WindowItems.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

@@ -25,8 +25,6 @@
             bool OnGround = buffer.ReadBool ();
             state.Player.Yaw = Yaw;
             state.Player.Pitch = Pitch;
-            state.Player.OnGround = OnGround;
-            Globals.Level.BroadcastPacket (new EntityLook (), new object[] { state.Player.UniqueServerID, (byte)Yaw, (byte)Pitch, OnGround });
         }
 
         public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
