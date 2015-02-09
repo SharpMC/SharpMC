@@ -54,7 +54,7 @@ namespace SharpMCRewrite.Packets
 	        {
 				new Disconnect().Write(state, buffer, new []{"Username invalid!"});
 		        return;
-	        }
+	        } 
             string UUID = getUUID (Username);
 
             new LoginSuccess().Write(state, buffer, new object[] {UUID, Username});

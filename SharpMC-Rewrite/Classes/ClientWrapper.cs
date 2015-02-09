@@ -8,7 +8,6 @@ namespace SharpMCRewrite
         public TcpClient TCPClient;
         public Player Player;
         public bool PlayMode = false;
-
         public ClientWrapper(TcpClient client)
         {
             TCPClient = client;

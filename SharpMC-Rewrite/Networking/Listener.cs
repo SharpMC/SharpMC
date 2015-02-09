@@ -1,6 +1,7 @@
 ﻿using System.Net.Sockets;
 using System.Threading;
 using System;
+using SharpMCRewrite.Networking.Packages;
 
 namespace SharpMCRewrite.Networking
 {
@@ -37,16 +38,20 @@ namespace SharpMCRewrite.Networking
                         Buf.Size = length;
                         int packid = Buf.ReadVarInt();
                         bool found = false;
-                        foreach (IPacket i in Globals.Packets)
-                        {
-                            if (i.PacketID == packid && i.IsPlayePacket == Client.PlayMode)
-                            {
-                                i.Read(Client, Buf, new object[0]);
-                                found = true;
-                                break;
-                            }
-                        }
-                        if (!found)
+	                    if (!new PackageFactory(Client, Buf).Handle(packid))
+	                    {
+		                    foreach (IPacket i in Globals.Packets)
+		                    {
+			                    if (i.PacketID == packid && i.IsPlayePacket == Client.PlayMode)
+			                    {
+				                    i.Read(Client, Buf, new object[0]);
+				                    found = true;
+				                    break;
+			                    }
+		                    }
+	                    }
+	                    else found = true;
+	                    if (!found)
                         {
                             ConsoleFunctions.WriteWarningLine ("Unknown packet received! \"0x" + packid.ToString("X2") + "\"");
                            // Client.Player.SendChat("We received an unknown packet from you! 0x" + packid.ToString("X2") + "");

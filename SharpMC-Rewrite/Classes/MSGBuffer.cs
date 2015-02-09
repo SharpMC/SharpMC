@@ -21,6 +21,11 @@ namespace SharpMCRewrite
             mStream = client.TCPClient.GetStream ();
         }
 
+	    public MSGBuffer(NetworkStream stream)
+	    {
+		    mStream = stream;
+	    }
+
         public MSGBuffer (byte[] Data)
         {
             BufferedData = Data;
@@ -357,6 +362,29 @@ namespace SharpMCRewrite
                 ConsoleFunctions.WriteErrorLine ("Failed to send a packet!\n" + ex.ToString());
             }
         }
+
+		public void FlushData(int packetId)
+		{
+			try
+			{
+				byte[] AllData = bffr.ToArray();
+				bffr.Clear();
+
+				WriteVarInt(packetId);
+				WriteVarInt(AllData.Length);
+				byte[] Buffer = bffr.ToArray();
+
+				// ConsoleFunctions.WriteDebugLine ("Specified Data length: " + AllData.Length);
+				//  ConsoleFunctions.WriteDebugLine ("Full packet length: " + (AllData.Length + Buffer.Length));
+				mStream.Write(Buffer, 0, Buffer.Length);
+				mStream.Write(AllData, 0, AllData.Length);
+				bffr.Clear();
+			}
+			catch (Exception ex)
+			{
+				ConsoleFunctions.WriteErrorLine("Failed to send a packet!\n" + ex.ToString());
+			}
+		}
 
         private byte[] HostToNetworkOrder(double d)
         {

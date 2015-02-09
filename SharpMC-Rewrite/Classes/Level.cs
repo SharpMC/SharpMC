@@ -53,8 +53,9 @@ namespace SharpMCRewrite
         {
             foreach(Player i in OnlinePlayers)
             {
-                new ChatMessage ().Write (i.Wrapper, new MSGBuffer (i.Wrapper), new object[] { Message });
-            }
+                //new ChatMessage ().Write (i.Wrapper, new MSGBuffer (i.Wrapper), new object[] { Message });
+				new Networking.Packages.ChatMessage(i.Wrapper){Message = @Message}.Write();
+			}
             ConsoleFunctions.WriteInfoLine ("Chat: " + Message);
         }
 
