@@ -2,6 +2,7 @@
 using SharpMCRewrite;
 using System.Collections.Generic;
 using System;
+using SharpMCRewrite.Blocks;
 
 namespace MiNET.Worlds
 {
@@ -14,6 +15,6 @@ namespace MiNET.Worlds
         IEnumerable<ChunkColumn> GenerateChunks (int _viewDistance, double playerX, double playerZ, Dictionary<Tuple<int,int>, ChunkColumn> chunksUsed);
         void SaveChunks(string Folder);
         ChunkColumn LoadChunk(int x, int y);
-        void SetBlock (Vector3 cords, ushort blockID);
+        void SetBlock (INTVector3 cords, Block block, Level level, bool broadcast);
     }
 }

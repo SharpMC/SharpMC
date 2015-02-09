@@ -1,4 +1,6 @@
-﻿using System.Diagnostics;
+﻿using System;
+using System.Diagnostics;
+using SharpMCRewrite.Blocks;
 
 namespace SharpMCRewrite
 {
@@ -53,43 +55,42 @@ namespace SharpMCRewrite
 
             }
 
-            short HeldItem = buffer.ReadShort (); // I guess?
-            int Type = HeldItem >> 5;
+            ushort HeldItem = buffer.ReadUShort(); // I guess?
+           // int Type = HeldItem >> 5;
+	        byte itemCount = (byte)buffer.ReadByte();
+			short itemDamage = buffer.ReadShort();
+			byte itemMeta = (byte)buffer.ReadByte();
 
-            switch (Type)
-            {
-                case 0:
-                    //BYTE
-                    break;
-                case 1:
-                    //Short
-                    break;
-                case 2:
-                    //Int
-                    break;
-                case 3:
-                    //Float
-                    break;
-                case 4:
-                    //string
-                    break;
-                case 5:
-                    //Slot
-                    break;
-                case 6:
-                    //Vector
-                    break;
-                case 7:
-                    //rotation
-                    break;
-            }
+	        ushort meta = 0;
+	        switch (@itemMeta)
+	        {
+				case 0:
+					//NO NBT Shizzle!
+					Console.WriteLine("No NBT");
+			        break;
+				case 1:
+					//Byte
+					Console.WriteLine("Byte");
+			        break;
+				case 2:
+					//short
+					Console.WriteLine("Short");
+			        break;
+				default:
+					Console.WriteLine("Default :(");
+			        break;
+	        }
 
             int CursorX = buffer.ReadByte ();
             int CursorY = buffer.ReadByte ();
             int CursorZ = buffer.ReadByte ();
 
-            Globals.Level.Generator.SetBlock (Position, (ushort)HeldItem);
-            Globals.Level.BroadcastPacket (new BlockChange (), new object[] { Position, (int)HeldItem, (int)0 });
+			INTVector3 intVector = new INTVector3((int) Position.X, (int) Position.Y, (int) Position.Z);
+	        Block b = BlockFactory.GetBlockById(HeldItem);
+	        b.Coordinates = intVector;
+	        b.Metadata = meta;
+			Globals.Level.SetBlock (b);
+           // Globals.Level.BroadcastPacket (new BlockChange (), new object[] { Position, (int)HeldItem, (int)0 });
         }
 
         public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)

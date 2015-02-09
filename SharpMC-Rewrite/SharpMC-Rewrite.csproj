@@ -1,4 +1,4 @@
-<?xml version="1.0" encoding="utf-8"?>
+﻿<?xml version="1.0" encoding="utf-8"?>
 <Project DefaultTargets="Build" ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
@@ -33,6 +33,10 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Blocks\BlockAir.cs" />
+    <Compile Include="Blocks\BlockClass.cs" />
+    <Compile Include="Blocks\BlockFactory.cs" />
+    <Compile Include="Enums\BlockFace.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Networking\Listener.cs" />
@@ -87,16 +91,7 @@
     <Compile Include="Networking\Packets\PlayerListItem.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
-  <ItemGroup>
-    <Folder Include="Interfaces\" />
-    <Folder Include="Networking\" />
-    <Folder Include="Networking\Packets\" />
-    <Folder Include="Classes\" />
-    <Folder Include="Enums\" />
-    <Folder Include="Worlds\" />
-    <Folder Include="Utils\" />
-    <Folder Include="ExtentionMethods\" />
-  </ItemGroup>
+  <ItemGroup />
   <ItemGroup>
     <None Include="Networking\Packets\template.txt" />
   </ItemGroup>

@@ -1,4 +1,6 @@
-﻿namespace SharpMCRewrite
+﻿using SharpMCRewrite.Blocks;
+
+namespace SharpMCRewrite
 {
     public class BlockChange : IPacket
     {
@@ -25,17 +27,17 @@
 
         /// <summary>
         /// Argument 0: Block Position (VECTOR3)
-        /// Argument 1: Block ID (INT)
-        /// Argument 2: Meta (INT)
+        /// Argument 1: Block
         /// </summary>
         /// <param name="state">State.</param>
         /// <param name="buffer">Buffer.</param>
         /// <param name="Arguments">Arguments.</param>
         public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
+	        Block b = (Block)Arguments[1];
             buffer.WriteVarInt (PacketID);
             buffer.WritePosition ((Vector3)Arguments [0]);
-            buffer.WriteVarInt ((int)Arguments [1] << 4 | (int)Arguments[2]);
+            buffer.WriteVarInt (b.Id << 4 | b.Metadata);
             buffer.FlushData ();
         }
     }

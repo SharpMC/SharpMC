@@ -3,7 +3,7 @@ using SharpMCRewrite.Worlds;
 
 namespace SharpMCRewrite
 {
-    public class FlatLandLevel : ILevel
+    public class FlatLandLevel : Level
     {
         public FlatLandLevel(string world)
         {

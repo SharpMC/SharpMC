@@ -7,6 +7,7 @@ using MiNET.Worlds;
 using System.IO;
 using System.Reflection;
 using Craft.Net.Anvil;
+using SharpMCRewrite.Blocks;
 
 namespace SharpMCRewrite.Worlds
 {
@@ -198,12 +199,17 @@ namespace SharpMCRewrite.Worlds
                 return CC;
         }
 
-        public void SetBlock(Vector3 cords, ushort blockID)
+        public void SetBlock(INTVector3 cords, Block block, Level level, bool broadcast)
         {
             ChunkColumn c;
-            if (_chunkCache.TryGetValue(new Tuple<int, int>((int)Math.Floor(cords.X / 16), (int)Math.Floor(cords.Z / 16)), out c))
+            if (_chunkCache.TryGetValue(new Tuple<int, int>(cords.X / 16, cords.Z / 16), out c))
             {
-                c.SetBlock (((int)Math.Floor(cords.X) & 0x0f), ((int)Math.Floor(cords.Y) & 0x7f), ((int)Math.Floor(cords.Z) & 0x0f), blockID);
+                c.SetBlock ((cords.X & 0x0f), (cords.Y & 0x7f), (cords.Z & 0x0f), block);
+	            if (broadcast)
+	            {
+					Globals.Level.BroadcastPacket(new BlockChange(), new object[] { new Vector3(cords.X, cords.Y, cords.Z), block });
+					Console.WriteLine("Send block change with block id: " + block.Id);
+				}
                 return;
             }
             throw new Exception ("No chunk found!");

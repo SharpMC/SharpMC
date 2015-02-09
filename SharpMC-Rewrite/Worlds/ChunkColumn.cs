@@ -3,6 +3,7 @@ using System.IO;
 using MiNET.Utils;
 using System.Net;
 using System;
+using SharpMCRewrite.Blocks;
 
 namespace SharpMCRewrite.Worlds
 {
@@ -29,14 +30,20 @@ namespace SharpMCRewrite.Worlds
 
         public ushort GetBlock(int x, int y, int z)
         {
-            return 0; //Will be doing this later xD
-           // return BitConverter.ToUInt16(new byte[2] {Blocks[(x*4096) + (z*256) + y], Blocks[(x*4096) + (z*256) + y +1]}, 0);
+			return Blocks[x + 16 * z + 16 * 16 * y];
         }
 
-        public void SetBlock(int x, int y, int z, ushort BlockID)
+		public byte GetMetadata(int x, int y, int z)
+		{
+			//return metadata[(x * 2048) + (z * 128) + y];
+			return 0; //We dont support METADATA for now :P
+		}
+
+        public void SetBlock(int x, int y, int z, Block block)
         {
-            int Index = x + 16*z + 16*16*y;
-            Blocks[Index] = Convert.ToUInt16((BlockID << 4) | 0);
+            int index = x + 16*z + 16*16*y;
+            Blocks[index] = Convert.ToUInt16((block.Id << 4) | block.Metadata);
+			ConsoleFunctions.WriteDebugLine("Changed a block in Chunk: " + X + "," + Z);
         }
 
         public void SetBlocklight(int x, int y, int z, byte data)

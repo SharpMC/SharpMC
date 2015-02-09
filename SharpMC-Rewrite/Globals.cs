@@ -36,7 +36,7 @@ namespace SharpMCRewrite
         public static int LastUniqueID = 0;
         public static bool UseCompression = false;
         public static TcpListener ServerListener = new TcpListener (IPAddress.Any, 25565);
-        public static ILevel Level;
+        public static Level Level;
         public static ConfigFileReader ConfigParser;
 
 

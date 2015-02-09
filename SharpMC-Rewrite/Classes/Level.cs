@@ -1,7 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using MiNET.Worlds;
 using System.Threading;
 using System.Timers;
+using SharpMCRewrite.Blocks;
+using SharpMCRewrite.Worlds;
 
 namespace SharpMCRewrite
 {
@@ -14,7 +17,7 @@ namespace SharpMCRewrite
         default_1_1
     }
 
-    public class ILevel
+    public class Level
     {
         public string LVLName { get; set; }
         public int Difficulty { get; set; }
@@ -28,7 +31,7 @@ namespace SharpMCRewrite
 
         public IWorldProvider Generator { get; set; }
 
-        public ILevel()
+        public Level()
         {
             Tick = 1200;
             Day = 0;
@@ -119,7 +122,25 @@ namespace SharpMCRewrite
             Generator.SaveChunks (LVLName);
         }
 
-        #region TickTimer
+		public Block GetBlock(INTVector3 blockCoordinates)
+		{
+			ChunkColumn chunk = Generator.GenerateChunkColumn(new Vector2(blockCoordinates.X / 16, blockCoordinates.Z / 16));
+			ushort bid = chunk.GetBlock(blockCoordinates.X & 0x0f, blockCoordinates.Y & 0x7f, blockCoordinates.Z & 0x0f);
+			byte metadata = chunk.GetMetadata(blockCoordinates.X & 0x0f, blockCoordinates.Y & 0x7f, blockCoordinates.Z & 0x0f);
+
+			Block block = BlockFactory.GetBlockById(bid);
+			block.Coordinates = blockCoordinates;
+			block.Metadata = metadata;
+
+			return block;
+		}
+
+	    public void SetBlock(Block block, bool broadcast = true)
+	    {
+		    Generator.SetBlock(block.Coordinates, block, this, broadcast);
+	    }
+
+	    #region TickTimer
         private Thread TimerThread;
         private Thread GameTickThread;
 

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Text;
 
 namespace SharpMCRewrite.Packets
 {
@@ -49,6 +50,11 @@ namespace SharpMCRewrite.Packets
         private void HandleLoginRequest (ClientWrapper state, MSGBuffer buffer)
         {
             string Username = buffer.ReadUsername ();
+	        if (Encoding.UTF8.GetBytes(Username)[0] == 0)
+	        {
+				new Disconnect().Write(state, buffer, new []{"Username invalid!"});
+		        return;
+	        }
             string UUID = getUUID (Username);
 
             new LoginSuccess().Write(state, buffer, new object[] {UUID, Username});
