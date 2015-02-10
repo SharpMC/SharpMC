@@ -50,7 +50,7 @@ namespace SharpMCRewrite.Blocks
 			return false;
 		}
 
-		protected INTVector3 GetNewCoordinatesFromFace(Vector3 target, BlockFace face)
+		public static INTVector3 GetNewCoordinatesFromFace(INTVector3 target, BlockFace face)
 		{
 			INTVector3 intVector = new INTVector3((int) target.X, (int) target.Y, (int) target.Z);
 			switch (face)

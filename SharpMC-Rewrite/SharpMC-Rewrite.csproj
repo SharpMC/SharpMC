@@ -39,6 +39,9 @@
     <Compile Include="Classes\Package.cs" />
     <Compile Include="Enums\BlockFace.cs" />
     <Compile Include="Networking\Packages\ChatMessage.cs" />
+    <Compile Include="Networking\Packages\Disconnect.cs" />
+    <Compile Include="Networking\Packages\Handshake.cs" />
+    <Compile Include="Networking\Packages\LoginSucces.cs" />
     <Compile Include="Networking\Packages\PackageFactory.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

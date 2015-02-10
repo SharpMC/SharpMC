@@ -89,8 +89,7 @@ namespace SharpMCRewrite
 	        Block b = BlockFactory.GetBlockById(HeldItem);
 	        b.Coordinates = intVector;
 	        b.Metadata = meta;
-			Globals.Level.SetBlock (b);
-           // Globals.Level.BroadcastPacket (new BlockChange (), new object[] { Position, (int)HeldItem, (int)0 });
+			Globals.Level.SetBlock(b);
         }
 
         public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)

@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Configuration;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using SharpMCRewrite.NET;
 
 namespace SharpMCRewrite.Networking.Packages
@@ -17,7 +12,17 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public PackageFactory(ClientWrapper client, MSGBuffer buffer)
 		{
+			#region Ping
+
+			PingPackages.Add(new Handshake(client, buffer));
+
+			#endregion
+
+			#region Play
+
 			PlayPackages.Add(new ChatMessage(client, buffer));
+
+			#endregion
 			_client = client;
 			_buffer = buffer;
 		}

@@ -79,6 +79,11 @@ namespace SharpMCRewrite
             Y = _Y;
             Z = _Z;
         }
+
+		public string GetString()
+		{
+			return X + ", " + Y + ", " + Z;
+		}
     }
 }
 
