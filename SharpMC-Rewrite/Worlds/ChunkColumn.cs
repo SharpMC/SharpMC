@@ -4,6 +4,7 @@ using MiNET.Utils;
 using System.Net;
 using System;
 using SharpMCRewrite.Blocks;
+using SharpMCRewrite.NET;
 
 namespace SharpMCRewrite.Worlds
 {
@@ -43,7 +44,6 @@ namespace SharpMCRewrite.Worlds
         {
             int index = x + 16*z + 16*16*y;
             Blocks[index] = Convert.ToUInt16((block.Id << 4) | block.Metadata);
-			ConsoleFunctions.WriteDebugLine("Changed a block in Chunk: " + X + "," + Z);
         }
 
         public void SetBlocklight(int x, int y, int z, byte data)

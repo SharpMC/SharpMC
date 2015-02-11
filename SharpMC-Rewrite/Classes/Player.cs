@@ -14,6 +14,7 @@ namespace SharpMCRewrite
         public int UniqueServerID { get; set; }
         public Gamemode Gamemode { get; set; }
         public bool IsSpawned { get; set; }
+		public bool Digging { get; set; }
 
         //Location stuff
         public byte Dimension { get; set; }
@@ -60,9 +61,9 @@ namespace SharpMCRewrite
             throw new ArgumentOutOfRangeException ("The specified player could not be found ;(");
         }
 
-        public void SendChat(string Message)
+        public void SendChat(string message)
         {
-            new ChatMessage ().Write (Wrapper, new MSGBuffer (Wrapper), new object[1] { Message });
+           new Networking.Packages.ChatMessage(Wrapper, new MSGBuffer(Wrapper)){Message = message}.Write();
         }
 
         public void SendChunksFromPosition()
@@ -77,6 +78,7 @@ namespace SharpMCRewrite
             
         public void SendChunksForKnownPosition(bool force = false)
         {
+	        int multiplier = 6; //Viewdistance multiplier
             int centerX = (int) Coordinates.X/16;
             int centerZ = (int) Coordinates.Z/16;
 
@@ -92,18 +94,18 @@ namespace SharpMCRewrite
                 BackgroundWorker worker = sender as BackgroundWorker;
                 int Counted = 0;
 
-                foreach (var chunk in Globals.Level.Generator.GenerateChunks(ViewDistance, Coordinates.X, Coordinates.Z, force ? new Dictionary<Tuple<int,int>, ChunkColumn>() : _chunksUsed))
+				foreach (var chunk in Globals.Level.Generator.GenerateChunks(ViewDistance * multiplier, Coordinates.X, Coordinates.Z, force ? new Dictionary<Tuple<int, int>, ChunkColumn>() : _chunksUsed, Wrapper))
                 { 
                     if (worker.CancellationPending)
                     {
                         args.Cancel = true;
                         break;
                     }
-                        
-                    new ChunkData().Write(Wrapper, new MSGBuffer(Wrapper), new object[]{ chunk.GetBytes() });
+					new Networking.Packages.ChunkData(Wrapper, new MSGBuffer(Wrapper)){Chunk = chunk}.Write();
+                    //new ChunkData().Write(Wrapper, new MSGBuffer(Wrapper), new object[]{ chunk.GetBytes() });
                     Thread.Yield();
 
-                    if (Counted >= ViewDistance && !IsSpawned)
+					if (Counted >= (ViewDistance * multiplier) && !IsSpawned)
                     {
 
                         new PlayerPositionAndLook().Write(Wrapper, new MSGBuffer(Wrapper), new object[0]);

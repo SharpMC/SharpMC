@@ -34,11 +34,19 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Blocks\BlockAir.cs" />
+    <Compile Include="Blocks\BlockBedrock.cs" />
     <Compile Include="Blocks\BlockClass.cs" />
     <Compile Include="Blocks\BlockFactory.cs" />
+    <Compile Include="Blocks\BlockFire.cs" />
+    <Compile Include="Blocks\BlockTNT.cs" />
     <Compile Include="Classes\Package.cs" />
+    <Compile Include="Classes\Records.cs" />
     <Compile Include="Enums\BlockFace.cs" />
+    <Compile Include="Explosion.cs" />
+    <Compile Include="Networking\Packages\Animation.cs" />
+    <Compile Include="Networking\Packages\BlockChange.cs" />
     <Compile Include="Networking\Packages\ChatMessage.cs" />
+    <Compile Include="Networking\Packages\ChunkData.cs" />
     <Compile Include="Networking\Packages\Disconnect.cs" />
     <Compile Include="Networking\Packages\Handshake.cs" />
     <Compile Include="Networking\Packages\LoginSucces.cs" />

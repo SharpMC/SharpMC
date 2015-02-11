@@ -84,6 +84,25 @@ namespace SharpMCRewrite
 		{
 			return X + ", " + Y + ", " + Z;
 		}
+
+		public void ConvertToNetwork()
+		{
+			X = IPAddress.HostToNetworkOrder(X);
+			Y = IPAddress.HostToNetworkOrder(Y);
+			Z = IPAddress.HostToNetworkOrder(Z);
+		}
+
+		public void ConvertToHost()
+		{
+			X = IPAddress.NetworkToHostOrder(X);
+			Y = IPAddress.NetworkToHostOrder(Y);
+			Z = IPAddress.NetworkToHostOrder(Z);
+		}
+
+		public static INTVector3 operator -(INTVector3 a, INTVector3 b)
+		{
+			return new INTVector3(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+		}
     }
 }
 

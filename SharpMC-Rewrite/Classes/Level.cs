@@ -1,9 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net;
 using MiNET.Worlds;
 using System.Threading;
 using System.Timers;
 using SharpMCRewrite.Blocks;
+using SharpMCRewrite.NET;
 using SharpMCRewrite.Worlds;
 
 namespace SharpMCRewrite
@@ -74,10 +76,14 @@ namespace SharpMCRewrite
             }
         }
 
-        public void BroadcastPacket(IPacket packet, object[] Arguments)
+        public void BroadcastPacket(IPacket packet, object[] Arguments, bool self = true, Player source = null)
         {
             foreach (Player i in OnlinePlayers)
             {
+	            if (!self && i == source)
+	            {
+		           continue;
+	            }
                 packet.Write (i.Wrapper, new MSGBuffer (i.Wrapper), Arguments);
             }
         }
@@ -125,10 +131,16 @@ namespace SharpMCRewrite
 
 		public Block GetBlock(INTVector3 blockCoordinates)
 		{
-			ChunkColumn chunk = Generator.GenerateChunkColumn(new Vector2(blockCoordinates.X / 16, blockCoordinates.Z / 16));
+			//ChunkColumn chunk = Generator.GenerateChunkColumn(new Vector2(blockCoordinates.X / 16, blockCoordinates.Z / 16));
+			
+			ChunkColumn chunk = Generator.GetChunk(blockCoordinates.X / 16, blockCoordinates.Z / 16);	
+			
 			ushort bid = chunk.GetBlock(blockCoordinates.X & 0x0f, blockCoordinates.Y & 0x7f, blockCoordinates.Z & 0x0f);
+			
 			byte metadata = chunk.GetMetadata(blockCoordinates.X & 0x0f, blockCoordinates.Y & 0x7f, blockCoordinates.Z & 0x0f);
-
+			
+			bid = (ushort) (bid >> 4);
+			
 			Block block = BlockFactory.GetBlockById(bid);
 			block.Coordinates = blockCoordinates;
 			block.Metadata = metadata;

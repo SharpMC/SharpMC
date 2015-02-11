@@ -24,14 +24,23 @@ namespace SharpMCRewrite
 
         public void Read(ClientWrapper state, MSGBuffer buffer, object[] Arguments)
         {
-            ConsoleFunctions.WriteDebugLine ("Received 'Player Digging'");
-            int Status = buffer.ReadByte ();
-            Vector3 Position = buffer.ReadPosition ();
-            int Face = buffer.ReadByte ();
-			INTVector3 intVector = new INTVector3((int) Position.X, (int) Position.Y, (int) Position.Z);
+            int status = buffer.ReadByte ();
 
-            Globals.Level.SetBlock (new BlockAir() {Coordinates = intVector});
-			Console.WriteLine("Block pos: " + intVector.GetString());
+	        if (status == 2 || state.Player.Gamemode == Gamemode.Creative)
+	        {
+		        Vector3 Position = buffer.ReadPosition();
+		        int Face = buffer.ReadByte();
+		        INTVector3 intVector = new INTVector3((int) Position.X, (int) Position.Y, (int) Position.Z);
+
+		        Block block = Globals.Level.GetBlock(intVector);
+		        block.BreakBlock(Globals.Level);
+		        //Globals.Level.SetBlock(new BlockAir() {Coordinates = intVector});
+		        state.Player.Digging = false;
+	        }
+			else if (status == 0)
+	        {
+				state.Player.Digging = true;
+	        }
         }
 
         public void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments)

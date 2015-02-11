@@ -3,13 +3,12 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SharpMCRewrite.Enums;
 
 namespace SharpMCRewrite.Blocks
 {
-	class BlockAir : Block
+	class BlockFire : Block
 	{
-		internal BlockAir() : base(0)
+		internal BlockFire() : base(51)
 		{
 			IsReplacible = true;
 			IsSolid = false;

@@ -18,7 +18,7 @@ namespace SharpMCRewrite
         public MSGBuffer (ClientWrapper client)
         {
             _Client = client;
-            mStream = client.TCPClient.GetStream ();
+			if (client.TCPClient.Connected) mStream = client.TCPClient.GetStream ();
         }
 
 	    public MSGBuffer(NetworkStream stream)
@@ -255,7 +255,14 @@ namespace SharpMCRewrite
             Position.ConvertToNetwork ();
             long ToSend = (((((int)Position.X) & 0x3FFFFFF) << 38) | ((((int)Position.Y) & 0xFFF) << 26) | (((int)Position.Z) & 0x3FFFFFF));
             WriteLong (ToSend);
-        }            
+        }
+
+		public void WritePosition(INTVector3 Position)
+		{
+			Position.ConvertToNetwork();
+			long ToSend = (((((int)Position.X) & 0x3FFFFFF) << 38) | ((((int)Position.Y) & 0xFFF) << 26) | (((int)Position.Z) & 0x3FFFFFF));
+			WriteLong(ToSend);
+		}
 
         public void WriteVarInt(int Integer)
         {
@@ -341,7 +348,7 @@ namespace SharpMCRewrite
         /// <summary>
         /// Flush all data to the TCPClient NetworkStream.
         /// </summary>
-        public void FlushData()
+        public void FlushData(bool quee = false)
         {
             try
             {
@@ -353,8 +360,18 @@ namespace SharpMCRewrite
 
                // ConsoleFunctions.WriteDebugLine ("Specified Data length: " + AllData.Length);
               //  ConsoleFunctions.WriteDebugLine ("Full packet length: " + (AllData.Length + Buffer.Length));
-                mStream.Write (Buffer, 0, Buffer.Length);
-                mStream.Write (AllData, 0, AllData.Length);
+//                mStream.Write (Buffer, 0, Buffer.Length);
+  //              mStream.Write (AllData, 0, AllData.Length);
+	            List<byte> data = new List<byte>();
+	            foreach (byte i in Buffer)
+	            {
+		            data.Add(i);
+	            }
+				foreach (byte i in AllData)
+				{
+					data.Add(i);
+				}
+				_Client.AddToQuee(data.ToArray(), quee);
                 bffr.Clear ();
             }
             catch(Exception ex)

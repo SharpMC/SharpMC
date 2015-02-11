@@ -5,9 +5,11 @@ using MiNET.Utils;
 using System.Diagnostics;
 using MiNET.Worlds;
 using System.IO;
+using System.Net.Sockets;
 using System.Reflection;
 using Craft.Net.Anvil;
 using SharpMCRewrite.Blocks;
+using SharpMCRewrite.NET;
 
 namespace SharpMCRewrite.Worlds
 {
@@ -27,7 +29,19 @@ namespace SharpMCRewrite.Worlds
         {
         }
 
-        public IEnumerable<ChunkColumn> GenerateChunks(int _viewDistance, double playerX, double playerZ, Dictionary<Tuple<int,int>, ChunkColumn> chunksUsed)
+	    public ChunkColumn GetChunk(int x, int z)
+	    {
+		    foreach (var ch in _chunkCache)
+		    {
+			    if (ch.Key.Item1 == x && ch.Key.Item2 == z)
+			    {
+				    return ch.Value;
+			    }
+		    }
+		    throw new Exception("We couldn't find the chunk.");
+	    }
+
+	    public IEnumerable<ChunkColumn> GenerateChunks(int _viewDistance, double playerX, double playerZ, Dictionary<Tuple<int,int>, ChunkColumn> chunksUsed, ClientWrapper wrapper)
         {
             lock (chunksUsed)
             {
@@ -66,9 +80,14 @@ namespace SharpMCRewrite.Worlds
 
                 foreach (var chunkKey in chunksUsed.Keys.ToArray())
                 {
-                    if (!newOrders.ContainsKey(chunkKey))
-                    {
-                        chunksUsed.Remove(chunkKey);
+	                if (!newOrders.ContainsKey(chunkKey))
+	                {
+		               // new Networking.Packages.ChunkData(wrapper, new MSGBuffer(wrapper))
+		               // {
+			           //     Chunk = new ChunkColumn() {X = chunkKey.Item1, Z = chunkKey.Item2}
+		               // }.Write(); //Unload the chunk client on the client side.
+
+						chunksUsed.Remove(chunkKey);
                     }
                 }
 
@@ -115,18 +134,23 @@ namespace SharpMCRewrite.Worlds
 
             if (File.Exists ((Folder + "/" + chunkCoordinates.X + "." + chunkCoordinates.Z + ".cfile")))
             {
-                ChunkColumn cd = LoadChunk (chunkCoordinates.X, chunkCoordinates.Z);
+	            ChunkColumn cd = LoadChunk(chunkCoordinates.X, chunkCoordinates.Z);
+				if (!_chunkCache.ContainsKey(new Tuple<int, int>(cd.X, cd.Z)))
                 _chunkCache.Add (new Tuple<int, int>(cd.X, cd.Z), cd);
                 return cd;
             } 
 
             Debug.WriteLine ("ChunkFile not found, generating...");
-            var generator = new FlatLandGenerator(Folder);
 
-            var chunk = new ChunkColumn();
-            chunk.X = chunkCoordinates.X;
-            chunk.Z = chunkCoordinates.Z;
-            generator.PopulateChunk(chunk);
+	        var chunk = new ChunkColumn {X = chunkCoordinates.X, Z = chunkCoordinates.Z};
+	        int h = PopulateChunk(chunk);
+
+			chunk.SetBlock(0, h + 1, 0, new Block(7));
+			chunk.SetBlock(1, h + 1, 0, new Block(41));
+			chunk.SetBlock(2, h + 1, 0, new Block(41));
+			chunk.SetBlock(3, h + 1, 0, new Block(41));
+			chunk.SetBlock(3, h + 1, 0, new Block(41));
+
             _chunkCache.Add(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z), chunk);
 
             return chunk;
@@ -137,9 +161,8 @@ namespace SharpMCRewrite.Worlds
             return new Vector3(1, 1, 1);
         }
 
-        public void PopulateChunk(ChunkColumn chunk)
+        public int PopulateChunk(ChunkColumn chunk)
         {
-            var random = new CryptoRandom();
             var blocks = new ushort[16 * 16 * 256];
             int Last = 0;
             for (int x = 0; x < 256; x ++)
@@ -161,6 +184,7 @@ namespace SharpMCRewrite.Worlds
             }
 
             chunk.Blocks = blocks;
+	        return 4;
         }
 
         public void SaveChunks (string folder)
@@ -202,17 +226,19 @@ namespace SharpMCRewrite.Worlds
         public void SetBlock(INTVector3 cords, Block block, Level level, bool broadcast)
         {
             ChunkColumn c;
-            if (_chunkCache.TryGetValue(new Tuple<int, int>(cords.X / 16, cords.Z / 16), out c))
-            {
-                c.SetBlock ((cords.X & 0x0f), (cords.Y & 0x7f), (cords.Z & 0x0f), block);
-	            if (broadcast)
-	            {
-					Globals.Level.BroadcastPacket(new BlockChange(), new object[] { new Vector3(cords.X, cords.Y, cords.Z), block });
-					Console.WriteLine("Send block change with block id: " + block.Id);
-				}
-                return;
-            }
-            throw new Exception ("No chunk found!");
+	        if (!_chunkCache.TryGetValue(new Tuple<int, int>(cords.X/16, cords.Z/16), out c)) throw new Exception("No chunk found!");
+
+	        c.SetBlock ((cords.X & 0x0f), (cords.Y & 0x7f), (cords.Z & 0x0f), block);
+	        if (!broadcast) return;
+
+	        foreach (var player in level.OnlinePlayers)
+	        {
+		        new Networking.Packages.BlockChange(player.Wrapper, new MSGBuffer(player.Wrapper))
+		        {
+			        Block = block, 
+			        Location = cords					
+		        }.Write();
+	        }
         }
     }
 }

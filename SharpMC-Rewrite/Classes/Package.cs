@@ -15,6 +15,7 @@ namespace SharpMCRewrite.NET
 
 		public Package(ClientWrapper client)
 		{
+			if (!client.TCPClient.Connected) return;
 			Client = client;
 			_stream = client.TCPClient.GetStream();
 			Buffer = new MSGBuffer(client);
@@ -22,6 +23,7 @@ namespace SharpMCRewrite.NET
 
 		public Package(ClientWrapper client, MSGBuffer buffer)
 		{
+			if (!client.TCPClient.Connected) return;
 			Client = client;
 			_stream = client.TCPClient.GetStream();
 			Buffer = buffer;
@@ -35,6 +37,21 @@ namespace SharpMCRewrite.NET
 		public virtual void Write()
 		{
 			
+		}
+
+		public void Broadcast(bool self = true, Player source = null)
+		{
+			foreach (Player i in Globals.Level.OnlinePlayers)
+			{
+				if (!self && i == source)
+				{
+					continue;
+				}
+				Client = i.Wrapper;
+				Buffer = new MSGBuffer(i.Wrapper);
+				_stream = i.Wrapper.TCPClient.GetStream();
+				Write();
+			}
 		}
 	}
 

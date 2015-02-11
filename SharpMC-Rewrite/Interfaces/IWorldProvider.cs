@@ -12,9 +12,10 @@ namespace MiNET.Worlds
 		void Initialize();
         ChunkColumn GenerateChunkColumn(Vector2 chunkCoordinates);
         Vector3 GetSpawnPoint();
-        IEnumerable<ChunkColumn> GenerateChunks (int _viewDistance, double playerX, double playerZ, Dictionary<Tuple<int,int>, ChunkColumn> chunksUsed);
+        IEnumerable<ChunkColumn> GenerateChunks (int _viewDistance, double playerX, double playerZ, Dictionary<Tuple<int,int>, ChunkColumn> chunksUsed, ClientWrapper wrapper);
         void SaveChunks(string Folder);
         ChunkColumn LoadChunk(int x, int y);
         void SetBlock (INTVector3 cords, Block block, Level level, bool broadcast);
-    }
+		ChunkColumn GetChunk(int x, int z);
+	}
 }

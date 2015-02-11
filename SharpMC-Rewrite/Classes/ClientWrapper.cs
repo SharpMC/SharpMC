@@ -1,5 +1,9 @@
-﻿using System.Net.Sockets;
+﻿using System.Collections.Generic;
+using System.Net.Sockets;
+using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
+using Timer = System.Timers.Timer;
 
 namespace SharpMCRewrite
 {
@@ -8,12 +12,43 @@ namespace SharpMCRewrite
         public TcpClient TCPClient;
         public Player Player;
         public bool PlayMode = false;
+		private Queue<byte[]> Commands = new Queue<byte[]>();
+		private AutoResetEvent Resume = new AutoResetEvent(false);
+
         public ClientWrapper(TcpClient client)
         {
             TCPClient = client;
+			new Thread(() => ThreadRun()).Start();
         }
 
-        public void SendData(byte[] Data, int Length)
+		public void AddToQuee(byte[] data, bool quee = false)
+		{
+			if (quee)
+			{
+				lock (Commands)
+				{
+					Commands.Enqueue(data);
+				}
+				Resume.Set();
+			}
+			else
+			{
+				SendData(data);
+			}
+		}
+
+		private void ThreadRun()
+		{
+			while (true)
+			{
+				Resume.WaitOne();
+				byte[] command;
+				lock (Commands) { command = Commands.Dequeue(); }
+				SendData(command);
+			}
+		}
+
+	    public void SendData(byte[] Data, int Length)
         {
             try
             {

@@ -54,7 +54,7 @@ namespace SharpMCRewrite.Networking.Packages
 
 			new LoginSucces(Client) {Username = username, UUID = uuid}.Write();
 
-			if (Encoding.UTF8.GetBytes(username)[0] == 0)
+			if (Encoding.UTF8.GetBytes(username).Length == 0)
 			{
 				new Disconnect(Client){Reason = "Something went wrong while decoding your username!"}.Write();
 				return;

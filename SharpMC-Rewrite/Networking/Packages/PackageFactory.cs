@@ -21,6 +21,7 @@ namespace SharpMCRewrite.Networking.Packages
 			#region Play
 
 			PlayPackages.Add(new ChatMessage(client, buffer));
+			PlayPackages.Add(new Animation(client, buffer));
 
 			#endregion
 			_client = client;

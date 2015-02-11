@@ -35,7 +35,7 @@ namespace SharpMCRewrite.Blocks
 
 		public virtual void BreakBlock(Level world)
 		{
-			world.SetBlock(new BlockAir() { Coordinates = Coordinates });
+			world.SetBlock(new Block(0) { Coordinates = Coordinates });
 		}
 
 		public virtual bool PlaceBlock(Level world, Player player, INTVector3 blockCoordinates, BlockFace face)
@@ -77,6 +77,11 @@ namespace SharpMCRewrite.Blocks
 					break;
 			}
 			return intVector;
+		}
+
+		public float GetHardness()
+		{
+			return Durability / 5.0F;
 		}
 	}
 }
