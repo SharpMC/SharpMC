@@ -23,7 +23,8 @@ namespace SharpMCRewrite
 
 		public void AddToQuee(byte[] data, bool quee = false)
 		{
-			if (quee)
+			//ConsoleFunctions.WriteDebugLine("Data length: " + data.Length);
+			if (quee || data.Length >= 2048)
 			{
 				lock (Commands)
 				{
@@ -76,12 +77,12 @@ namespace SharpMCRewrite
             }
         }
 
-        public void SendData(byte[] Data)
+        public void SendData(byte[] data)
         {
             try
             {
                 NetworkStream a = TCPClient.GetStream ();
-                a.Write (Data, 0, Data.Length);
+                a.Write (data, 0, data.Length);
                 a.Flush ();
             }
             catch

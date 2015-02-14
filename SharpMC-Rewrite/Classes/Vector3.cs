@@ -67,13 +67,13 @@ namespace SharpMCRewrite
 
     }
 
-    public class INTVector3
+    public class IntVector3
     {
         public int X { get; set; }
         public int Y { get; set; }
         public int Z { get; set; }
 
-        public INTVector3 (int _X, int _Y, int _Z)
+        public IntVector3 (int _X, int _Y, int _Z)
         {
             X = _X;
             Y = _Y;
@@ -99,9 +99,9 @@ namespace SharpMCRewrite
 			Z = IPAddress.NetworkToHostOrder(Z);
 		}
 
-		public static INTVector3 operator -(INTVector3 a, INTVector3 b)
+		public static IntVector3 operator -(IntVector3 a, IntVector3 b)
 		{
-			return new INTVector3(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+			return new IntVector3(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
 		}
     }
 }

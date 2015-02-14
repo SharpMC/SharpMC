@@ -31,7 +31,10 @@ namespace SharpMCRewrite.Worlds
 
         public ushort GetBlock(int x, int y, int z)
         {
-			return Blocks[x + 16 * z + 16 * 16 * y];
+	        int index = x + 16*z + 16*16*y;
+	        if (index >= 0 && index < Blocks.Length)
+		        return Blocks[index];
+	        else return 900;
         }
 
 		public byte GetMetadata(int x, int y, int z)
@@ -43,6 +46,7 @@ namespace SharpMCRewrite.Worlds
         public void SetBlock(int x, int y, int z, Block block)
         {
             int index = x + 16*z + 16*16*y;
+			if (index >= 0 && index < Blocks.Length)
             Blocks[index] = Convert.ToUInt16((block.Id << 4) | block.Metadata);
         }
 

@@ -16,7 +16,7 @@ namespace SharpMCRewrite.Worlds
     public class FlatLandGenerator : IWorldProvider
     {
         public Dictionary<Tuple<int,int>, ChunkColumn> _chunkCache = new Dictionary<Tuple<int,int>, ChunkColumn>();
-        public bool IsCaching { get; private set; }
+        public override bool IsCaching { get; set; }
         private string Folder = "world";
 
         public FlatLandGenerator(string folder)
@@ -25,11 +25,11 @@ namespace SharpMCRewrite.Worlds
             IsCaching = true;
         }
 
-        public void Initialize()
+		public override void Initialize()
         {
         }
 
-	    public ChunkColumn GetChunk(int x, int z)
+		public override ChunkColumn GetChunk(int x, int z)
 	    {
 		    foreach (var ch in _chunkCache)
 		    {
@@ -41,7 +41,7 @@ namespace SharpMCRewrite.Worlds
 		    throw new Exception("We couldn't find the chunk.");
 	    }
 
-	    public IEnumerable<ChunkColumn> GenerateChunks(int _viewDistance, double playerX, double playerZ, Dictionary<Tuple<int,int>, ChunkColumn> chunksUsed, ClientWrapper wrapper)
+		public override IEnumerable<ChunkColumn> GenerateChunks(int _viewDistance, double playerX, double playerZ, Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed, ClientWrapper wrapper)
         {
             lock (chunksUsed)
             {
@@ -120,7 +120,7 @@ namespace SharpMCRewrite.Worlds
             return string.Format("{0}:{1}", chunkX, chunkZ);
         }
 
-        public ChunkColumn GenerateChunkColumn(Vector2 chunkCoordinates)
+        public override ChunkColumn GenerateChunkColumn(Vector2 chunkCoordinates)
         {
             if (_chunkCache.ContainsKey (new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z)))
             {
@@ -156,7 +156,7 @@ namespace SharpMCRewrite.Worlds
             return chunk;
         }
 
-        public Vector3 GetSpawnPoint()
+		public override Vector3 GetSpawnPoint()
         {
             return new Vector3(1, 1, 1);
         }
@@ -187,7 +187,7 @@ namespace SharpMCRewrite.Worlds
 	        return 4;
         }
 
-        public void SaveChunks (string folder)
+		public override void SaveChunks(string folder)
         {
             foreach (var i in _chunkCache)
             {
@@ -195,7 +195,7 @@ namespace SharpMCRewrite.Worlds
             }
         }
 
-        public ChunkColumn LoadChunk (int x, int z)
+		public override ChunkColumn LoadChunk(int x, int z)
         {
                 byte[] u = Globals.Decompress(File.ReadAllBytes (Folder + "/" + x + "." + z + ".cfile"));
                 MSGBuffer reader = new MSGBuffer (u);
@@ -223,20 +223,20 @@ namespace SharpMCRewrite.Worlds
                 return CC;
         }
 
-        public void SetBlock(INTVector3 cords, Block block, Level level, bool broadcast)
+		public override void SetBlock(Block block, Level level, bool broadcast)
         {
             ChunkColumn c;
-	        if (!_chunkCache.TryGetValue(new Tuple<int, int>(cords.X/16, cords.Z/16), out c)) throw new Exception("No chunk found!");
+			if (!_chunkCache.TryGetValue(new Tuple<int, int>(block.Coordinates.X / 16, block.Coordinates.Z / 16), out c)) throw new Exception("No chunk found!");
 
-	        c.SetBlock ((cords.X & 0x0f), (cords.Y & 0x7f), (cords.Z & 0x0f), block);
-	        if (!broadcast) return;
+			c.SetBlock((block.Coordinates.X & 0x0f), (block.Coordinates.Y & 0x7f), (block.Coordinates.Z & 0x0f), block);
+			if (!broadcast) return;
 
 	        foreach (var player in level.OnlinePlayers)
 	        {
 		        new Networking.Packages.BlockChange(player.Wrapper, new MSGBuffer(player.Wrapper))
 		        {
-			        Block = block, 
-			        Location = cords					
+			        Block = block,
+					Location = block.Coordinates				
 		        }.Write();
 	        }
         }

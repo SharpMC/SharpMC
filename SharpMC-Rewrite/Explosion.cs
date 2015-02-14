@@ -11,10 +11,10 @@ namespace SharpMCRewrite
 	public class Explosion
 	{
 		private const int Ray = 16;
-		private readonly IDictionary<INTVector3, Block> _afectedBlocks = new Dictionary<INTVector3, Block>();
+		private readonly IDictionary<IntVector3, Block> _afectedBlocks = new Dictionary<IntVector3, Block>();
 		private readonly float _size;
 		private readonly Level _world;
-		private INTVector3 _centerCoordinates;
+		private IntVector3 _centerCoordinates;
 		private bool CoordsSet = false;
 		private bool Fire = false;
 
@@ -25,7 +25,7 @@ namespace SharpMCRewrite
 		/// <param name="centerCoordinates"></param>
 		/// <param name="size"></param>
 		/// <param name="fire"></param>
-		public Explosion(Level world, INTVector3 centerCoordinates, float size, bool fire = false)
+		public Explosion(Level world, IntVector3 centerCoordinates, float size, bool fire = false)
 		{
 			_size = size;
 			_centerCoordinates = centerCoordinates;
@@ -86,7 +86,7 @@ namespace SharpMCRewrite
 								var bx = (int)Math.Floor(cX);
 								var by = (int)Math.Floor(cY);
 								var bz = (int)Math.Floor(cZ);
-								Block block = _world.GetBlock(new INTVector3(bx,by,bz));
+								Block block = _world.GetBlock(new IntVector3(bx,by,bz));
 								
 								if (block.Id != 0)
 								{
@@ -158,12 +158,12 @@ namespace SharpMCRewrite
 			if (Fire)
 			{
 				Random random = new Random();
-				foreach (INTVector3 coord in _afectedBlocks.Keys)
+				foreach (IntVector3 coord in _afectedBlocks.Keys)
 				{
 					var block = _world.GetBlock(coord);
 					if (block is BlockAir)
 					{
-						var blockDown = _world.GetBlock(new INTVector3(coord.X, coord.Y--, coord.Z));
+						var blockDown = _world.GetBlock(new IntVector3(coord.X, coord.Y--, coord.Z));
 						if (!(blockDown is BlockAir) && random.Next(3) == 0)
 						{
 							_world.SetBlock(new BlockFire { Coordinates = block.Coordinates });
@@ -175,7 +175,7 @@ namespace SharpMCRewrite
 			return true;
 		}
 
-		private void SpawnTNT(INTVector3 blockCoordinates, Level world)
+		private void SpawnTNT(IntVector3 blockCoordinates, Level world)
 		{
 			var rand = new Random();
 			/*new PrimedTnt(world)

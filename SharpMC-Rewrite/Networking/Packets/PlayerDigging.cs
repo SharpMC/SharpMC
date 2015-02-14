@@ -30,7 +30,7 @@ namespace SharpMCRewrite
 	        {
 		        Vector3 Position = buffer.ReadPosition();
 		        int Face = buffer.ReadByte();
-		        INTVector3 intVector = new INTVector3((int) Position.X, (int) Position.Y, (int) Position.Z);
+		        IntVector3 intVector = new IntVector3((int) Position.X, (int) Position.Y, (int) Position.Z);
 
 		        Block block = Globals.Level.GetBlock(intVector);
 		        block.BreakBlock(Globals.Level);

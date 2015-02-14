@@ -10,7 +10,7 @@ namespace SharpMCRewrite.Networking.Packages
 {
 	class BlockChange : Package<BlockChange>
 	{
-		public INTVector3 Location;
+		public IntVector3 Location;
 		public Block Block;
 		public BlockChange(ClientWrapper client) : base(client)
 		{

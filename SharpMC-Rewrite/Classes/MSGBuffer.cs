@@ -166,6 +166,15 @@ namespace SharpMCRewrite
             return new Vector3 (x, y, z);
         }
 
+		public IntVector3 ReadIntPosition()
+		{
+			long val = ReadLong();
+			int x = (int)Math.Floor((decimal)(val >> 38));
+			int y = (int)Math.Floor((decimal)((val >> 26) & 0xFFF));
+			int z = (int)Math.Floor((decimal)(val << 38 >> 38));
+			return new IntVector3(x, y, z);
+		}
+
         /// <summary>
         /// Reads the username. (We cannot just use ReadString() because of some weird bug)...
         /// Idk what happend, but it seems to send an extra byte for the username there...
@@ -257,11 +266,11 @@ namespace SharpMCRewrite
             WriteLong (ToSend);
         }
 
-		public void WritePosition(INTVector3 Position)
+		public void WritePosition(IntVector3 Position)
 		{
 			Position.ConvertToNetwork();
-			long ToSend = (((((int)Position.X) & 0x3FFFFFF) << 38) | ((((int)Position.Y) & 0xFFF) << 26) | (((int)Position.Z) & 0x3FFFFFF));
-			WriteLong(ToSend);
+			long toSend = ((((Position.X) & 0x3FFFFFF) << 38) | (((Position.Y) & 0xFFF) << 26) | ((Position.Z) & 0x3FFFFFF));
+			WriteLong(toSend);
 		}
 
         public void WriteVarInt(int Integer)

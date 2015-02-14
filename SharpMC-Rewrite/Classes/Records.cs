@@ -6,13 +6,13 @@ using System.Threading.Tasks;
 
 namespace SharpMCRewrite.Classes
 {
-	public class Records : List<INTVector3>
+	public class Records : List<IntVector3>
 	{
 		public Records()
 		{
 		}
 
-		public Records(IEnumerable<INTVector3> coordinates) : base(coordinates)
+		public Records(IEnumerable<IntVector3> coordinates) : base(coordinates)
 		{
 		}
 	}

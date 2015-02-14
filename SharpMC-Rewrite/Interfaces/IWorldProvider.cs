@@ -6,16 +6,49 @@ using SharpMCRewrite.Blocks;
 
 namespace MiNET.Worlds
 {
-	public interface IWorldProvider
+	public class IWorldProvider
 	{
-		bool IsCaching { get; }
-		void Initialize();
-        ChunkColumn GenerateChunkColumn(Vector2 chunkCoordinates);
-        Vector3 GetSpawnPoint();
-        IEnumerable<ChunkColumn> GenerateChunks (int _viewDistance, double playerX, double playerZ, Dictionary<Tuple<int,int>, ChunkColumn> chunksUsed, ClientWrapper wrapper);
-        void SaveChunks(string Folder);
-        ChunkColumn LoadChunk(int x, int y);
-        void SetBlock (INTVector3 cords, Block block, Level level, bool broadcast);
-		ChunkColumn GetChunk(int x, int z);
+		public virtual bool IsCaching { get; set; }
+
+		public virtual void Initialize()
+		{
+			
+		}
+
+		public virtual ChunkColumn GenerateChunkColumn(Vector2 chunkCoordinates)
+		{
+			throw new NotImplementedException();
+		}
+
+		public virtual Vector3 GetSpawnPoint()
+		{
+			throw new NotImplementedException();	
+		}
+
+		public virtual IEnumerable<ChunkColumn> GenerateChunks(int _viewDistance, double playerX, double playerZ,
+			Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed, ClientWrapper wrapper)
+		{
+			throw new NotImplementedException();
+		}
+
+		public virtual void SaveChunks(string Folder)
+		{
+			throw new NotImplementedException();
+		}
+
+		public virtual ChunkColumn LoadChunk(int x, int y)
+		{
+			throw new NotImplementedException();
+		}
+
+		public virtual void SetBlock(Block block, Level level, bool broadcast)
+		{
+			throw new NotImplementedException();
+		}
+
+		public virtual ChunkColumn GetChunk(int x, int z)
+		{
+			throw new NotImplementedException();
+		}
 	}
 }

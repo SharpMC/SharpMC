@@ -66,6 +66,8 @@ namespace SharpMCRewrite.Networking.Packages
 
 			if (!Globals.UseCompression)
 				new SetCompression().Write(Client, Buffer, new object[] { -1 }); //Turn off compression.
+			else
+				new SetCompression().Write(Client, Buffer, new object[] {1024});
 
 			new JoinGame().Write(Client, Buffer, new object[] { Client.Player });
 			new SpawnPosition().Write(Client, Buffer, new object[0]);

@@ -67,7 +67,7 @@ namespace SharpMCRewrite.Networking
                 {
                     //Exception, disconnect!
                     ConsoleFunctions.WriteDebugLine ("Error: \n" + ex);
-                    new Disconnect ().Write (Client, new MSGBuffer (Client), new object[] { "§4SharpMC\n§fServer threw an exception!\n\nFor the nerdy people: \n" + ex.Message });
+					new Disconnect(Client) { Reason = "§4SharpMC\n§fServer threw an exception!\n\nFor the nerdy people: \n" + ex.Message }.Write();
                     break;
                 }
             }

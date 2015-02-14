@@ -1,8 +1,9 @@
 ﻿using System;
 using System.Threading;
 using System.Collections.Generic;
-using SharpMCRewrite.Packets;
 using System.IO;
+using SharpMCRewrite.Networking.Packages;
+using SharpMCRewrite.Worlds.Experimental;
 
 namespace SharpMCRewrite
 {
@@ -19,6 +20,9 @@ namespace SharpMCRewrite
                 case "FlatLand":
                     Globals.Level = new FlatLandLevel(Globals.ConfigParser.ReadString ("WorldName"));
                     break;
+				case "Experimental":
+					Globals.Level = new ExperimentalLevel(Globals.ConfigParser.ReadString("WorldName"));
+		            break;
                 default:
                     Globals.Level = new FlatLandLevel(Globals.ConfigParser.ReadString ("WorldName"));
                     break;
@@ -35,8 +39,9 @@ namespace SharpMCRewrite
             Console.CancelKeyPress += delegate
             {
                 ConsoleFunctions.WriteInfoLine("Shutting down...");
-                Globals.Level.BroadcastPacket(new Disconnect(), new object[] { "Server shutting down!" });
-                ConsoleFunctions.WriteInfoLine("Saving chunks...");
+                //Globals.Level.BroadcastPacket(new Disconnect(), new object[] { "Server shutting down!" });
+                Disconnect.Broadcast("§fServer shutting down...");
+				ConsoleFunctions.WriteInfoLine("Saving chunks...");
                 Globals.Level.SaveChunks();
             };
         }
@@ -46,16 +51,13 @@ namespace SharpMCRewrite
             ConsoleFunctions.WriteInfoLine ("Loading packet handlers..");
             var temp = new List<IPacket> ();
             temp.Add (new Ping());
-            temp.Add (new Handshake());
             temp.Add (new KeepAlive());
             temp.Add (new PlayerPosition ());
             temp.Add (new PlayerPositionAndLook ());
             temp.Add (new PlayerLook ());
             temp.Add (new ClientSettings ());
             temp.Add (new OnGround ());
-            temp.Add (new ChatMessage ());
             temp.Add (new PlayerAnimation ());
-            temp.Add (new PlayerBlockPlacement ());
             temp.Add (new PlayerDigging ());
             Globals.Packets = temp.ToArray ();
             temp.Clear ();

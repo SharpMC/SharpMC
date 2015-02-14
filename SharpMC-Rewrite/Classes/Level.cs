@@ -129,7 +129,7 @@ namespace SharpMCRewrite
             Generator.SaveChunks (LVLName);
         }
 
-		public Block GetBlock(INTVector3 blockCoordinates)
+		public Block GetBlock(IntVector3 blockCoordinates)
 		{
 			//ChunkColumn chunk = Generator.GenerateChunkColumn(new Vector2(blockCoordinates.X / 16, blockCoordinates.Z / 16));
 			
@@ -150,7 +150,7 @@ namespace SharpMCRewrite
 
 	    public void SetBlock(Block block, bool broadcast = true)
 	    {
-		    Generator.SetBlock(block.Coordinates, block, this, broadcast);
+		    Generator.SetBlock(block, this, broadcast);
 	    }
 
 	    #region TickTimer

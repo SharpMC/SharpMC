@@ -9,7 +9,7 @@ namespace SharpMCRewrite.Blocks
 {
 	public class Block
 	{
-		public INTVector3 Coordinates { get; set; }
+		public IntVector3 Coordinates { get; set; }
 		public ushort Id { get; set; }
 		public bool IsReplacible { get; set; }
 		public ushort Metadata { get; set; }
@@ -28,7 +28,7 @@ namespace SharpMCRewrite.Blocks
 			return CanPlace(world, Coordinates);
 		}
 
-		protected virtual bool CanPlace(Level world, INTVector3 blockCoordinates)
+		protected virtual bool CanPlace(Level world, IntVector3 blockCoordinates)
 		{
 			return world.GetBlock(blockCoordinates).IsReplacible;
 		}
@@ -38,21 +38,21 @@ namespace SharpMCRewrite.Blocks
 			world.SetBlock(new Block(0) { Coordinates = Coordinates });
 		}
 
-		public virtual bool PlaceBlock(Level world, Player player, INTVector3 blockCoordinates, BlockFace face)
+		public virtual bool PlaceBlock(Level world, Player player, IntVector3 blockCoordinates, BlockFace face)
 		{
 			// No default placement. Return unhandled.
 			return false;
 		}
 
-		public virtual bool Interact(Level world, Player player, INTVector3 blockCoordinates, BlockFace face)
+		public virtual bool Interact(Level world, Player player, IntVector3 blockCoordinates, BlockFace face)
 		{
 			// No default interaction. Return unhandled.
 			return false;
 		}
 
-		public static INTVector3 GetNewCoordinatesFromFace(INTVector3 target, BlockFace face)
+		public static IntVector3 GetNewCoordinatesFromFace(IntVector3 target, BlockFace face)
 		{
-			INTVector3 intVector = new INTVector3((int) target.X, (int) target.Y, (int) target.Z);
+			IntVector3 intVector = new IntVector3((int) target.X, (int) target.Y, (int) target.Z);
 			switch (face)
 			{
 				case BlockFace.NegativeY:
