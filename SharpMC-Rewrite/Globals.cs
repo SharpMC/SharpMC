@@ -14,10 +14,13 @@ namespace SharpMCRewrite
 
         public static string[] ServerMOTD = new string[] 
         {
-            "§6§lSharpMC\n-§eComplete rewrite!",
+            "§6§lSharpMC\n-§eNow with World Generation!",
             "§6§lSharpMC\n-§eThis server is written by Wuppie/Kennyvv!",
             "§6§lSharpMC\n-§eC# Powered!",
-            "§6§lSharpMC\n-§eNow supports Minecraft 1.8 (Partially)"
+            "§6§lSharpMC\n-§eNow supports Minecraft 1.8 (Partially)",
+			"§6§lSharpMC\n-§eEven more awesomeness!",
+			"§6§lSharpMC\n-§eKennyvv's username is PocketEdition"
+
         };
 
         public static string RandomMOTD
@@ -34,11 +37,11 @@ namespace SharpMCRewrite
         public static string ProtocolName = "SharpMC 1.8";
         public static int ProtocolVersion = 47;
         public static int LastUniqueID = 0;
-        public static bool UseCompression = false;
+        public static bool UseCompression = false; //Please note, this is not working yet!
         public static TcpListener ServerListener = new TcpListener (IPAddress.Any, 25565);
         public static Level Level;
-        public static ConfigFileReader ConfigParser;
-
+	    public static string Seed = "default";
+	    public static NoiseGenerator NoiseGenerator = NoiseGenerator.Simplex;
 
         #region Global Functions
 
@@ -75,5 +78,12 @@ namespace SharpMCRewrite
 
         #endregion
     }
+
+	public enum NoiseGenerator
+	{
+		Simplex,
+		OpenSimplex,
+		Perlin
+	}
 }
 

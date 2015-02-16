@@ -30,9 +30,13 @@ namespace SharpMCRewrite
         public bool ChatColours { get; set; }
         public byte SkinParts { get; set; }
 
+		//Map stuff
         Vector2 CurrentChunkPosition = new Vector2 (0, 0);
         public bool ForceChunkReload { get; set; }
         private Dictionary<Tuple<int,int>, ChunkColumn> _chunksUsed;
+
+		//Inventory stuff
+	    public byte CurrentSlot = 0;
 
         public Player()
         {
@@ -78,7 +82,7 @@ namespace SharpMCRewrite
             
         public void SendChunksForKnownPosition(bool force = false)
         {
-	        int multiplier = 6; //Viewdistance multiplier
+	        int multiplier = 12; //Viewdistance multiplier
             int centerX = (int) Coordinates.X/16;
             int centerZ = (int) Coordinates.Z/16;
 

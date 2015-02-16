@@ -5,29 +5,30 @@ using System.Linq;
 using MiNET.Worlds;
 using SharpMCRewrite.Blocks;
 using System.IO;
+using SharpMCRewrite.Worlds.Experimental;
 
-namespace SharpMCRewrite.Worlds.Experimental
+namespace SharpMCRewrite.Worlds.Nether
 {
-	class ExperimentalGenerator : IWorldProvider
+	class NetherGenerator : IWorldProvider
 	{
 		float stoneBaseHeight = 0;
-		float stoneBaseNoise = 0.05f;
+		float stoneBaseNoise = 0.08f;
 		float stoneBaseNoiseHeight = 4;
 
 		float stoneMountainHeight = 48;
 		float stoneMountainFrequency = 0.008f;
 		float stoneMinHeight = 0;
 
-		float dirtBaseHeight = 1;
-		float dirtNoise = 0.004f;
-		float dirtNoiseHeight = 3;
+		float topBaseHeight = 1;
+		float topNoise = 1.23f;
+		float topNoiseHeight = 16;
 
 		private string _folder = "";
 		public Dictionary<Tuple<int, int>, ChunkColumn> ChunkCache = new Dictionary<Tuple<int, int>, ChunkColumn>();
 		public override bool IsCaching { get; set; }
 		private static int _seedoffset = new Random(Globals.Seed.GetHashCode()).Next(1, Int16.MaxValue);
 
-		public ExperimentalGenerator(string folder)
+		public NetherGenerator(string folder)
         {
             _folder = folder;
             IsCaching = true;
@@ -182,8 +183,8 @@ namespace SharpMCRewrite.Worlds.Experimental
 			}
 		}
 
-		private int waterLevel = 25;
-		List<Vector2> TreesDone = new List<Vector2>(); 
+		private int waterLevel = 35;
+
 		private void PopulateChunk(ChunkColumn chunk)
 		{
 			int trees = new Random().Next(0, 10);
@@ -209,143 +210,52 @@ namespace SharpMCRewrite.Worlds.Experimental
 
 					stoneHeight += GetNoise(chunk.X * 16 + x, chunk.Z * 16 + z, stoneBaseNoise, (int)Math.Floor(stoneBaseNoiseHeight));
 
-					int dirtHeight = stoneHeight + (int) Math.Floor(dirtBaseHeight);
-					dirtHeight += GetNoise(chunk.X * 16 + x, chunk.Z * 16 + z, dirtNoise, (int)Math.Floor(dirtNoiseHeight));
+
+					int topHeight = (int)Math.Floor(topBaseHeight);
+					topHeight += GetNoise(chunk.X * 16 + x, chunk.Z * 16 + z, topNoise, (int)Math.Floor(topNoiseHeight));
+
+					if (topHeight < topBaseHeight)
+						topHeight = (int)Math.Floor(topBaseHeight);
+
+					topHeight += GetNoise(chunk.X * 16 + x, chunk.Z * 16 + z, topNoise, (int)Math.Floor(topBaseHeight));
 
 					for (int y = 0; y < 256; y++)
 					{
-							if (y <= stoneHeight)
+							if (y == 0 || y == 80)
 							{
-								chunk.SetBlock(x , y, z, BlockFactory.GetBlockById(1));
-
-								//Diamond ore
-								if (GetRandomNumber(0, 2500) < 5)
-								{
-									chunk.SetBlock(x,y,z, BlockFactory.GetBlockById(56));
-								}
-
-								//Coal Ore
+								chunk.SetBlock(x,y,z, new BlockBedrock());
+							}
+							else if (y <= topHeight)
+							{
+								chunk.SetBlock(x, 80 - y, z, BlockFactory.GetBlockById(87));
+								//Glowstone
 								if (GetRandomNumber(0, 1500) < 50)
 								{
-									chunk.SetBlock(x, y, z, BlockFactory.GetBlockById(16));
-								}
-
-								//Iron Ore
-								if (GetRandomNumber(0, 2500) < 30)
-								{
-									chunk.SetBlock(x, y, z, BlockFactory.GetBlockById(15));
-								}
-
-								//Gold Ore
-								if (GetRandomNumber(0, 2500) < 20)
-								{
-									chunk.SetBlock(x, y, z, BlockFactory.GetBlockById(14));
+									chunk.SetBlock(x, 80 -y, z, BlockFactory.GetBlockById(89));
 								}
 							}
-							
-							if (y < waterLevel) //Water :)
+							else if (y <= stoneHeight)
 							{
-								if (chunk.GetBlock(x, y, z) >> 4 == 2 || chunk.GetBlock(x, y, z) >> 4 == 3) //Grass or Dirt?
+								chunk.SetBlock(x , y, z, BlockFactory.GetBlockById(87));
+								//Quartz Ore
+								if (GetRandomNumber(0, 1500) < 50)
 								{
-									if (GetRandomNumber(1, 40) == 5 && y < waterLevel - 4)
-										chunk.SetBlock(x, y, z, BlockFactory.GetBlockById(82)); //Clay
-									else
-										chunk.SetBlock(x, y, z, BlockFactory.GetBlockById(12)); //Sand
+									chunk.SetBlock(x, y, z, BlockFactory.GetBlockById(153));
 								}
-								if(y < waterLevel - 3)
-								chunk.SetBlock(x, y + 1, z, BlockFactory.GetBlockById(8)); //Water
-							}
 
-							if (y <= dirtHeight && y >= stoneHeight)
-							{
-								chunk.SetBlock(x, y, z, BlockFactory.GetBlockById(3)); //Dirt
-								chunk.SetBlock(x, y + 1, z, BlockFactory.GetBlockById(2)); //Grass Block
-								if (y > waterLevel)
+								if (GetRandomNumber(0, 1200) < 50)
 								{
-									//Grass
-									if (GetRandomNumber(0, 5) == 2)
-									{
-										chunk.SetBlock(x, y + 2, z, new Block(31) {Metadata = 1});
-									}
-
-									//flower
-									if (GetRandomNumber(0, 65) == 8)
-									{
-										int meta = GetRandomNumber(0, 8);
-										chunk.SetBlock(x, y + 2, z, new Block(38) {Metadata = (ushort) meta});
-									}
-
-									for (int pos = 0; pos < trees; pos++)
-									{
-										if (treeBasePositions[pos, 0] < 14 && treeBasePositions[pos, 0] > 4 && treeBasePositions[pos, 1] < 14 &&
-										    treeBasePositions[pos, 1] > 4)
-										{
-											if (y < waterLevel + 2)
-												break;
-											if (chunk.GetBlock(treeBasePositions[pos, 0], y + 1, treeBasePositions[pos, 1]) >> 4 == 2)
-											{
-												if (y == dirtHeight)
-													GenerateTree(chunk, treeBasePositions[pos, 0], y, treeBasePositions[pos, 1]);
-											}
-										}
-									}
+									chunk.SetBlock(x, y + 1, z, BlockFactory.GetBlockById(51));
 								}
 							}
-
-							if (y == 0)
+							else if (y < waterLevel)
 							{
-								chunk.SetBlock(x, y, z, new BlockBedrock());
+								if (chunk.GetBlock(x,y,z) == 0 || chunk.GetBlock(x,y,z) == 51)
+									chunk.SetBlock(x, y, z, BlockFactory.GetBlockById(10));
 							}
 					}
 				}
 			}
-
-			WormMe(chunk);
-		}
-
-		private void GenerateTree(ChunkColumn chunk, int x, int treebase, int z)
-		{
-			/*int random = new Random().Next(3, 4);
-
-			int leafwidth = 4;
-			for (int layer = 0; layer <= treebase + 5; layer++)
-			{
-				for (int w = 0; w <= leafwidth; w++)
-				{
-					for (int l = 0; l <= leafwidth; l++)
-					{
-						chunk.SetBlock(x - (leafwidth / 2) + w, treebase + layer + random, z - (leafwidth / 2) + l, BlockFactory.GetBlockById(18));
-					}
-				}
-				leafwidth -= 1;
-			}
-			for (int t = 0; t <= (random + 2); t++)
-			{
-				chunk.SetBlock(x, treebase + t, z, BlockFactory.GetBlockById(17));
-			}*/
-
-			chunk.SetBlock(x, treebase + 6, z, BlockFactory.GetBlockById(18)); //Top leave
-
-			chunk.SetBlock(x, treebase + 5, z + 1, BlockFactory.GetBlockById(18));
-			chunk.SetBlock(x, treebase + 5, z - 1, BlockFactory.GetBlockById(18));
-			chunk.SetBlock(x + 1, treebase + 5, z, BlockFactory.GetBlockById(18));
-			chunk.SetBlock(x - 1, treebase + 5, z, BlockFactory.GetBlockById(18));
-
-			chunk.SetBlock(x, treebase + 4, z + 1, BlockFactory.GetBlockById(18));
-			chunk.SetBlock(x, treebase + 4, z - 1, BlockFactory.GetBlockById(18));
-			chunk.SetBlock(x + 1, treebase + 4, z, BlockFactory.GetBlockById(18));
-			chunk.SetBlock(x - 1, treebase + 4, z, BlockFactory.GetBlockById(18));
-
-			chunk.SetBlock(x + 1, treebase + 4, z + 1, BlockFactory.GetBlockById(18));
-			chunk.SetBlock(x - 1, treebase + 4, z - 1, BlockFactory.GetBlockById(18));
-			chunk.SetBlock(x + 1, treebase + 4, z - 1, BlockFactory.GetBlockById(18));
-			chunk.SetBlock(x - 1, treebase + 4, z + 1, BlockFactory.GetBlockById(18));
-
-			chunk.SetBlock(x, treebase + 4, z, BlockFactory.GetBlockById(17));
-			chunk.SetBlock(x, treebase + 3, z, BlockFactory.GetBlockById(17));
-			chunk.SetBlock(x, treebase + 2, z, BlockFactory.GetBlockById(17));
-			chunk.SetBlock(x, treebase + 1, z, BlockFactory.GetBlockById(17));
-			chunk.SetBlock(x, treebase, z, BlockFactory.GetBlockById(17));
 		}
 
 		public override void SetBlock(Block block, Level level, bool broadcast)
@@ -368,7 +278,7 @@ namespace SharpMCRewrite.Worlds.Experimental
 
 		public override Vector3 GetSpawnPoint()
 		{
-			return new Vector3(1,40,1);
+			return new Vector3(1,1,1);
 		}
 
 		private static readonly OpenSimplexNoise OpenNoise = new OpenSimplexNoise(Globals.Seed.GetHashCode());
@@ -388,12 +298,6 @@ namespace SharpMCRewrite.Worlds.Experimental
 				default:
 					return (int)Math.Floor((SimplexNoise.Noise.Generate(_seedoffset + x * scale, 0, _seedoffset + z * scale) + 1f) * (max / 2f));
 			}
-		}
-
-		public void WormMe(ChunkColumn chunk)
-		{
-				//Generate Caves
-				//TODO!!!
 		}
 	}
 }

@@ -2,8 +2,10 @@
 using System.Threading;
 using System.Collections.Generic;
 using System.IO;
+using MiNET.Utils;
 using SharpMCRewrite.Networking.Packages;
 using SharpMCRewrite.Worlds.Experimental;
+using SharpMCRewrite.Worlds.Nether;
 
 namespace SharpMCRewrite
 {
@@ -11,22 +13,37 @@ namespace SharpMCRewrite
     {
         public static void Main (string[] args)
         {
-            Globals.ConfigParser = new ConfigFileReader ("server.properties");
+	        ConfigParser.ConfigFile = "server.properties";
+			ConfigParser.InitialValue = new []{
+		        "#DO NOT REMOVE THIS LINE - SharpMC Config",
+				"MaxPlayers=10",
+				"LevelType=Experimental",
+				"WorldName=world",
+				"Seed=SharpieCraft"
+	        };
+	        ConfigParser.Check();
+
             ConsoleFunctions.WriteInfoLine ("Loading config file...");
-            Globals.MaxPlayers = Globals.ConfigParser.ReadInt ("MaxPlayers");
-            string Lvltype = Globals.ConfigParser.ReadString ("Leveltype");
+            Globals.MaxPlayers = ConfigParser.GetProperty("MaxPlayers", 10);
+            string Lvltype = ConfigParser.GetProperty("LevelType", "Experimental");
             switch (Lvltype)
             {
                 case "FlatLand":
-                    Globals.Level = new FlatLandLevel(Globals.ConfigParser.ReadString ("WorldName"));
+                    Globals.Level = new FlatLandLevel(ConfigParser.GetProperty("WorldName", "world"));
                     break;
 				case "Experimental":
-					Globals.Level = new ExperimentalLevel(Globals.ConfigParser.ReadString("WorldName"));
+					Globals.Level = new ExperimentalLevel(ConfigParser.GetProperty("WorldName","world"));
+		            break;
+				case "Hell":
+				case "Nether":
+					Globals.Level = new NetherLevel(ConfigParser.GetProperty("WorldName","world"));
 		            break;
                 default:
-                    Globals.Level = new FlatLandLevel(Globals.ConfigParser.ReadString ("WorldName"));
+					Globals.Level = new ExperimentalLevel(ConfigParser.GetProperty("WorldName", "world"));
                     break;
             }
+	        Globals.Seed = ConfigParser.GetProperty("Seed", "SharpieCraft");
+			
             ConsoleFunctions.WriteInfoLine ("Checking files...");
 
             if (!Directory.Exists (Globals.Level.LVLName))

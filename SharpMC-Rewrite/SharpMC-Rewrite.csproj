@@ -33,21 +33,6 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="AccidentalNoise\AutoCorrect.cs" />
-    <Compile Include="AccidentalNoise\BasisFunction.cs" />
-    <Compile Include="AccidentalNoise\Bias.cs" />
-    <Compile Include="AccidentalNoise\Cache.cs" />
-    <Compile Include="AccidentalNoise\Combiner.cs" />
-    <Compile Include="AccidentalNoise\Fractal.cs" />
-    <Compile Include="AccidentalNoise\Gradient.cs" />
-    <Compile Include="AccidentalNoise\IModuleBase.cs" />
-    <Compile Include="AccidentalNoise\NoiseGen.cs" />
-    <Compile Include="AccidentalNoise\Random_Gen.cs" />
-    <Compile Include="AccidentalNoise\RGBACompositeChannels.cs" />
-    <Compile Include="AccidentalNoise\ScaleDomain.cs" />
-    <Compile Include="AccidentalNoise\ScaleOffset.cs" />
-    <Compile Include="AccidentalNoise\Select.cs" />
-    <Compile Include="AccidentalNoise\TranslatedDomain.cs" />
     <Compile Include="Blocks\BlockAir.cs" />
     <Compile Include="Blocks\BlockBedrock.cs" />
     <Compile Include="Blocks\BlockClass.cs" />
@@ -64,6 +49,7 @@
     <Compile Include="Networking\Packages\ChunkData.cs" />
     <Compile Include="Networking\Packages\Disconnect.cs" />
     <Compile Include="Networking\Packages\Handshake.cs" />
+    <Compile Include="Networking\Packages\HeldItemChange.cs" />
     <Compile Include="Networking\Packages\LoginSucces.cs" />
     <Compile Include="Networking\Packages\PackageFactory.cs" />
     <Compile Include="Networking\Packages\PlayerBlockPlacement.cs" />
@@ -83,9 +69,14 @@
     <Compile Include="Enums\Gamemode.cs" />
     <Compile Include="Classes\Vector3.cs" />
     <Compile Include="Classes\Vector2.cs" />
+    <Compile Include="Utils\ConfigParser.cs" />
     <Compile Include="Utils\CryptoRandom.cs" />
+    <Compile Include="Worlds\Experimental\Worm.cs" />
+    <Compile Include="Worlds\Nether\NetherGenerator.cs" />
+    <Compile Include="Worlds\Nether\NetherLevel.cs" />
     <Compile Include="Worlds\Experimental\ExperimentalGenerator.cs" />
     <Compile Include="Worlds\Experimental\ExperimentalLevel.cs" />
+    <Compile Include="Worlds\Experimental\OpenSimplex.cs" />
     <Compile Include="Worlds\Experimental\Perlin.cs" />
     <Compile Include="Worlds\Experimental\Simplex.cs" />
     <Compile Include="Worlds\Flatland\FlatLandGenerator.cs" />
@@ -110,7 +101,6 @@
     <Compile Include="Networking\Packets\SpawnPlayer.cs" />
     <Compile Include="Worlds\Flatland\FlatLandLevel.cs" />
     <Compile Include="Classes\Level.cs" />
-    <Compile Include="Utils\ConfigFileReader.cs" />
     <Compile Include="Interfaces\IWorldProvider.cs" />
     <Compile Include="ExtentionMethods\StringExtentions.cs" />
     <Compile Include="Networking\Packets\SetSlot.cs" />

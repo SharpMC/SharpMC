@@ -23,6 +23,7 @@ namespace SharpMCRewrite.Networking.Packages
 			PlayPackages.Add(new ChatMessage(client, buffer));
 			PlayPackages.Add(new Animation(client, buffer));
 			PlayPackages.Add(new PlayerBlockPlacement(client, buffer));
+			PlayPackages.Add(new HeldItemChange(client, buffer));
 
 			#endregion
 			_client = client;
