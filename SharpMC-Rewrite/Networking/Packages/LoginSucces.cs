@@ -1,13 +1,8 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SharpMCRewrite.NET;
+﻿using SharpMCRewrite.NET;
 
 namespace SharpMCRewrite.Networking.Packages
 {
-	class LoginSucces : Package<LoginSucces>
+	internal class LoginSucces : Package<LoginSucces>
 	{
 		public string Username;
 		public string UUID;

@@ -1,17 +1,13 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SharpMCRewrite.Blocks;
+﻿using SharpMCRewrite.Blocks;
 using SharpMCRewrite.NET;
 
 namespace SharpMCRewrite.Networking.Packages
 {
-	class BlockChange : Package<BlockChange>
+	internal class BlockChange : Package<BlockChange>
 	{
-		public IntVector3 Location;
 		public Block Block;
+		public IntVector3 Location;
+
 		public BlockChange(ClientWrapper client) : base(client)
 		{
 			SendId = 0x23;

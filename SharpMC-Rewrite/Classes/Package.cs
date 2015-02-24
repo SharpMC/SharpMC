@@ -1,17 +1,16 @@
-﻿using System;
-using System.Diagnostics;
+﻿using System.Diagnostics;
 using System.Net.Sockets;
 
 namespace SharpMCRewrite.NET
 {
-	public abstract partial class Package
+	public abstract class Package
 	{
-		public int SendId;
-		public int ReadId;
 		private NetworkStream _stream;
-		public ClientWrapper Client;
-		public MSGBuffer Buffer;
 		private Stopwatch _timer = new Stopwatch();
+		public MSGBuffer Buffer;
+		public ClientWrapper Client;
+		public int ReadId;
+		public int SendId;
 
 		public Package(ClientWrapper client)
 		{
@@ -31,17 +30,15 @@ namespace SharpMCRewrite.NET
 
 		public virtual void Read()
 		{
-			
 		}
 
 		public virtual void Write()
 		{
-			
 		}
 
 		public void Broadcast(bool self = true, Player source = null)
 		{
-			foreach (Player i in Globals.Level.OnlinePlayers)
+			foreach (var i in Globals.Level.OnlinePlayers)
 			{
 				if (!self && i == source)
 				{
@@ -55,7 +52,7 @@ namespace SharpMCRewrite.NET
 		}
 	}
 
-	public abstract partial class Package<T> : Package where T : Package<T>
+	public abstract class Package<T> : Package where T : Package<T>
 	{
 		protected Package(ClientWrapper client) : base(client)
 		{

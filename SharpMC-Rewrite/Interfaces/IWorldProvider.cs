@@ -1,8 +1,8 @@
-﻿using SharpMCRewrite.Worlds;
-using SharpMCRewrite;
+﻿using System;
 using System.Collections.Generic;
-using System;
+using SharpMCRewrite;
 using SharpMCRewrite.Blocks;
+using SharpMCRewrite.Worlds;
 
 namespace MiNET.Worlds
 {
@@ -12,7 +12,6 @@ namespace MiNET.Worlds
 
 		public virtual void Initialize()
 		{
-			
 		}
 
 		public virtual ChunkColumn GenerateChunkColumn(Vector2 chunkCoordinates)
@@ -22,11 +21,11 @@ namespace MiNET.Worlds
 
 		public virtual Vector3 GetSpawnPoint()
 		{
-			throw new NotImplementedException();	
+			throw new NotImplementedException();
 		}
 
 		public virtual IEnumerable<ChunkColumn> GenerateChunks(int _viewDistance, double playerX, double playerZ,
-			Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed, ClientWrapper wrapper)
+			Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed)
 		{
 			throw new NotImplementedException();
 		}

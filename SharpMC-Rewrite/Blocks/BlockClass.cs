@@ -1,27 +1,22 @@
 ﻿using SharpMCRewrite.Enums;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SharpMCRewrite.Blocks
 {
 	public class Block
 	{
-		public IntVector3 Coordinates { get; set; }
-		public ushort Id { get; set; }
-		public bool IsReplacible { get; set; }
-		public ushort Metadata { get; set; }
-		public bool IsSolid { get; set; }
-		public float Durability { get; set; }
-
 		internal Block(ushort id)
 		{
 			Id = id;
 			IsSolid = true;
 			Durability = 0.5f;
 		}
+
+		public IntVector3 Coordinates { get; set; }
+		public ushort Id { get; set; }
+		public bool IsReplacible { get; set; }
+		public ushort Metadata { get; set; }
+		public bool IsSolid { get; set; }
+		public float Durability { get; set; }
 
 		public bool CanPlace(Level world)
 		{
@@ -35,7 +30,7 @@ namespace SharpMCRewrite.Blocks
 
 		public virtual void BreakBlock(Level world)
 		{
-			world.SetBlock(new Block(0) { Coordinates = Coordinates });
+			world.SetBlock(new Block(0) {Coordinates = Coordinates});
 		}
 
 		public virtual bool PlaceBlock(Level world, Player player, IntVector3 blockCoordinates, BlockFace face)
@@ -52,7 +47,7 @@ namespace SharpMCRewrite.Blocks
 
 		public static IntVector3 GetNewCoordinatesFromFace(IntVector3 target, BlockFace face)
 		{
-			IntVector3 intVector = new IntVector3((int) target.X, (int) target.Y, (int) target.Z);
+			var intVector = new IntVector3(target.X, target.Y, target.Z);
 			switch (face)
 			{
 				case BlockFace.NegativeY:
@@ -81,7 +76,7 @@ namespace SharpMCRewrite.Blocks
 
 		public float GetHardness()
 		{
-			return Durability / 5.0F;
+			return Durability/5.0F;
 		}
 	}
 }

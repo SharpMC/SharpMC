@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
 using System.Threading.Tasks;
 using SharpMCRewrite.Blocks;
 using SharpMCRewrite.Classes;
@@ -12,11 +10,11 @@ namespace SharpMCRewrite
 	{
 		private const int Ray = 16;
 		private readonly IDictionary<IntVector3, Block> _afectedBlocks = new Dictionary<IntVector3, Block>();
+		private readonly IntVector3 _centerCoordinates;
 		private readonly float _size;
 		private readonly Level _world;
-		private IntVector3 _centerCoordinates;
-		private bool CoordsSet = false;
-		private bool Fire = false;
+		private readonly bool CoordsSet;
+		private readonly bool Fire;
 
 		/// <summary>
 		///     Use this for Explosion an explosion only!
@@ -30,7 +28,7 @@ namespace SharpMCRewrite
 			_size = size;
 			_centerCoordinates = centerCoordinates;
 			_centerCoordinates.ConvertToHost();
-			
+
 			_world = world;
 			CoordsSet = true;
 			Fire = fire;
@@ -59,49 +57,50 @@ namespace SharpMCRewrite
 			if (!CoordsSet) throw new Exception("Please intiate using Explosion(Level, coordinates, size)");
 			if (_size < 0.1) return false;
 
-			for (int i = 0; i < Ray; i++)
+			for (var i = 0; i < Ray; i++)
 			{
-				for (int j = 0; j < Ray; j++)
+				for (var j = 0; j < Ray; j++)
 				{
-					for (int k = 0; k < Ray; k++)
+					for (var k = 0; k < Ray; k++)
 					{
 						if (i == 0 || i == Ray - 1 || j == 0 || j == Ray - 1 || k == 0 || k == Ray - 1)
 						{
-							double x = i / (Ray - 1.0F) * 2.0F - 1.0F;
-							double y = j / (Ray - 1.0F) * 2.0F - 1.0F;
-							double z = k / (Ray - 1.0F) * 2.0F - 1.0F;
-							double d6 = Math.Sqrt(x * x + y * y + z * z);
+							double x = i/(Ray - 1.0F)*2.0F - 1.0F;
+							double y = j/(Ray - 1.0F)*2.0F - 1.0F;
+							double z = k/(Ray - 1.0F)*2.0F - 1.0F;
+							var d6 = Math.Sqrt(x*x + y*y + z*z);
 
 							x /= d6;
 							y /= d6;
 							z /= d6;
-							var blastForce1 = (float)(_size * (0.7F + new Random().NextDouble() * 0.6F));
+							var blastForce1 = (float) (_size*(0.7F + new Random().NextDouble()*0.6F));
 
 							double cX = _centerCoordinates.X;
 							double cY = _centerCoordinates.Y;
 							double cZ = _centerCoordinates.Z;
 
-							for (float blastForce2 = 0.3F; blastForce1 > 0.0F; blastForce1 -= blastForce2 * 0.75F)
+							for (var blastForce2 = 0.3F; blastForce1 > 0.0F; blastForce1 -= blastForce2*0.75F)
 							{
-								var bx = (int)Math.Floor(cX);
-								var by = (int)Math.Floor(cY);
-								var bz = (int)Math.Floor(cZ);
-								Block block = _world.GetBlock(new IntVector3(bx,by,bz));
-								
+								var bx = (int) Math.Floor(cX);
+								var by = (int) Math.Floor(cY);
+								var bz = (int) Math.Floor(cZ);
+								var block = _world.GetBlock(new IntVector3(bx, by, bz));
+
 								if (block.Id != 0)
 								{
-									float blastForce3 = block.GetHardness();
-									blastForce1 -= (blastForce3 + 0.3F) * blastForce2;
+									var blastForce3 = block.GetHardness();
+									blastForce1 -= (blastForce3 + 0.3F)*blastForce2;
 								}
 
 								if (blastForce1 > 0.0F)
 								{
-									if (!_afectedBlocks.ContainsKey(block.Coordinates) && block.Id != 0) _afectedBlocks.Add(block.Coordinates, block);
+									if (!_afectedBlocks.ContainsKey(block.Coordinates) && block.Id != 0)
+										_afectedBlocks.Add(block.Coordinates, block);
 								}
 
-								cX += x * blastForce2;
-								cY += y * blastForce2;
-								cZ += z * blastForce2;
+								cX += x*blastForce2;
+								cY += y*blastForce2;
+								cZ += z*blastForce2;
 							}
 						}
 					}
@@ -126,7 +125,7 @@ namespace SharpMCRewrite
 			//var explosionBB = new BoundingBox(new Vector3(minX, minY, minZ), new Vector3(maxX, maxY, maxZ));
 
 			var records = new Records();
-			foreach (Block block in _afectedBlocks.Values)
+			foreach (var block in _afectedBlocks.Values)
 			{
 				records.Add(block.Coordinates - _centerCoordinates);
 			}
@@ -142,10 +141,10 @@ namespace SharpMCRewrite
 				_world.RelayBroadcast(mcpeExplode);*/
 			}).Start();
 
-			foreach (Block block in _afectedBlocks.Values)
+			foreach (var block in _afectedBlocks.Values)
 			{
 				//block.BreakBlock(Globals.Level);
-				new Task(() => _world.SetBlock(new BlockAir() {Coordinates = block.Coordinates})).Start();
+				new Task(() => _world.SetBlock(new BlockAir {Coordinates = block.Coordinates})).Start();
 				//new Task(() => block1.BreakBlock(_world)).Start();
 				//if (block.Id != 0) new Task(() => Networking.Packages.ChunkData.Broadcast(_world.Generator.GetChunk(_centerCoordinates.X / 16, _centerCoordinates.Z / 16))).Start();
 				if (block is BlockTNT)
@@ -157,8 +156,8 @@ namespace SharpMCRewrite
 			// Set stuff on fire
 			if (Fire)
 			{
-				Random random = new Random();
-				foreach (IntVector3 coord in _afectedBlocks.Keys)
+				var random = new Random();
+				foreach (var coord in _afectedBlocks.Keys)
 				{
 					var block = _world.GetBlock(coord);
 					if (block is BlockAir)
@@ -166,7 +165,7 @@ namespace SharpMCRewrite
 						var blockDown = _world.GetBlock(new IntVector3(coord.X, coord.Y--, coord.Z));
 						if (!(blockDown is BlockAir) && random.Next(3) == 0)
 						{
-							_world.SetBlock(new BlockFire { Coordinates = block.Coordinates });
+							_world.SetBlock(new BlockFire {Coordinates = block.Coordinates});
 						}
 					}
 				}

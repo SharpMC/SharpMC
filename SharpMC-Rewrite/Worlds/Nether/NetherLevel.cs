@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SharpMCRewrite.Worlds.Nether
+﻿namespace SharpMCRewrite.Worlds.Nether
 {
-	class NetherLevel : Level
+	internal class NetherLevel : Level
 	{
 		public NetherLevel(string worldname)
 		{

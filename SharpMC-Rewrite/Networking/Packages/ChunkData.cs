@@ -1,16 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SharpMCRewrite.NET;
+﻿using SharpMCRewrite.NET;
 using SharpMCRewrite.Worlds;
 
 namespace SharpMCRewrite.Networking.Packages
 {
-	class ChunkData : Package<ChunkData>
+	internal class ChunkData : Package<ChunkData>
 	{
 		public ChunkColumn Chunk;
+
 		public ChunkData(ClientWrapper client) : base(client)
 		{
 			SendId = 0x21;
@@ -28,10 +24,9 @@ namespace SharpMCRewrite.Networking.Packages
 			Buffer.FlushData(true);
 		}
 
-
 		public static void Broadcast(ChunkColumn chunk, bool self = true, Player source = null)
 		{
-			foreach (Player i in Globals.Level.OnlinePlayers)
+			foreach (var i in Globals.Level.OnlinePlayers)
 			{
 				if (!self && i == source)
 				{

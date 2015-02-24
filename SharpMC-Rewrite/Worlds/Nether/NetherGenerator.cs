@@ -1,38 +1,43 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using MiNET.Worlds;
 using SharpMCRewrite.Blocks;
-using System.IO;
+using SharpMCRewrite.Networking.Packages;
 using SharpMCRewrite.Worlds.Experimental;
+using SimplexNoise;
 
 namespace SharpMCRewrite.Worlds.Nether
 {
-	class NetherGenerator : IWorldProvider
+	internal class NetherGenerator : IWorldProvider
 	{
-		float stoneBaseHeight = 0;
-		float stoneBaseNoise = 0.08f;
-		float stoneBaseNoiseHeight = 4;
-
-		float stoneMountainHeight = 48;
-		float stoneMountainFrequency = 0.008f;
-		float stoneMinHeight = 0;
-
-		float topBaseHeight = 1;
-		float topNoise = 1.23f;
-		float topNoiseHeight = 16;
-
-		private string _folder = "";
+		private static readonly int _seedoffset = new Random(Globals.Seed.GetHashCode()).Next(1, Int16.MaxValue);
+		private static readonly Random getrandom = new Random();
+		private static readonly object syncLock = new object();
+		private static readonly OpenSimplexNoise OpenNoise = new OpenSimplexNoise(Globals.Seed.GetHashCode());
+		private static readonly PerlinNoise PerlinNoise = new PerlinNoise(Globals.Seed.GetHashCode());
+		private readonly string _folder = "";
+		private readonly float stoneBaseHeight = 0;
+		private readonly float stoneBaseNoise = 0.08f;
+		private readonly float stoneBaseNoiseHeight = 4;
+		private readonly float stoneMinHeight = 0;
+		private readonly float stoneMountainFrequency = 0.008f;
+		private readonly float stoneMountainHeight = 48;
+		private readonly float topBaseHeight = 1;
+		private readonly float topNoise = 1.23f;
+		private readonly float topNoiseHeight = 16;
+		private readonly int waterLevel = 35;
 		public Dictionary<Tuple<int, int>, ChunkColumn> ChunkCache = new Dictionary<Tuple<int, int>, ChunkColumn>();
-		public override bool IsCaching { get; set; }
-		private static int _seedoffset = new Random(Globals.Seed.GetHashCode()).Next(1, Int16.MaxValue);
 
 		public NetherGenerator(string folder)
-        {
-            _folder = folder;
-            IsCaching = true;
-        }
+		{
+			_folder = folder;
+			IsCaching = true;
+		}
+
+		public override bool IsCaching { get; set; }
 
 		public override ChunkColumn GetChunk(int x, int z)
 		{
@@ -48,22 +53,22 @@ namespace SharpMCRewrite.Worlds.Nether
 
 		public override ChunkColumn LoadChunk(int x, int z)
 		{
-			byte[] u = Globals.Decompress(File.ReadAllBytes(_folder + "/" + x + "." + z + ".cfile"));
-			MSGBuffer reader = new MSGBuffer(u);
+			var u = Globals.Decompress(File.ReadAllBytes(_folder + "/" + x + "." + z + ".cfile"));
+			var reader = new MSGBuffer(u);
 
-			int BlockLength = reader.ReadInt();
-			ushort[] Block = reader.ReadUShortLocal(BlockLength);
+			var BlockLength = reader.ReadInt();
+			var Block = reader.ReadUShortLocal(BlockLength);
 
-			int SkyLength = reader.ReadInt();
-			byte[] Skylight = reader.Read(SkyLength);
+			var SkyLength = reader.ReadInt();
+			var Skylight = reader.Read(SkyLength);
 
-			int LightLength = reader.ReadInt();
-			byte[] Blocklight = reader.Read(LightLength);
+			var LightLength = reader.ReadInt();
+			var Blocklight = reader.Read(LightLength);
 
-			int BiomeIDLength = reader.ReadInt();
-			byte[] BiomeID = reader.Read(BiomeIDLength);
+			var BiomeIDLength = reader.ReadInt();
+			var BiomeID = reader.Read(BiomeIDLength);
 
-			ChunkColumn CC = new ChunkColumn();
+			var CC = new ChunkColumn();
 			CC.Blocks = Block;
 			CC.Blocklight.Data = Blocklight;
 			CC.Skylight.Data = Skylight;
@@ -96,7 +101,7 @@ namespace SharpMCRewrite.Worlds.Nether
 
 			if (File.Exists((_folder + "/" + chunkCoordinates.X + "." + chunkCoordinates.Z + ".cfile")))
 			{
-				ChunkColumn cd = LoadChunk(chunkCoordinates.X, chunkCoordinates.Z);
+				var cd = LoadChunk(chunkCoordinates.X, chunkCoordinates.Z);
 				if (!ChunkCache.ContainsKey(new Tuple<int, int>(cd.X, cd.Z)))
 					ChunkCache.Add(new Tuple<int, int>(cd.X, cd.Z), cd);
 				return cd;
@@ -104,7 +109,7 @@ namespace SharpMCRewrite.Worlds.Nether
 
 			Debug.WriteLine("ChunkFile not found, generating...");
 
-			var chunk = new ChunkColumn { X = chunkCoordinates.X, Z = chunkCoordinates.Z };
+			var chunk = new ChunkColumn {X = chunkCoordinates.X, Z = chunkCoordinates.Z};
 			PopulateChunk(chunk);
 
 			ChunkCache.Add(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z), chunk);
@@ -112,29 +117,30 @@ namespace SharpMCRewrite.Worlds.Nether
 			return chunk;
 		}
 
-		public override IEnumerable<ChunkColumn> GenerateChunks(int _viewDistance, double playerX, double playerZ, Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed, ClientWrapper wrapper)
+		public override IEnumerable<ChunkColumn> GenerateChunks(int _viewDistance, double playerX, double playerZ,
+			Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed)
 		{
 			lock (chunksUsed)
 			{
-				Dictionary<Tuple<int, int>, double> newOrders = new Dictionary<Tuple<int, int>, double>();
-				double radiusSquared = _viewDistance / Math.PI;
-				double radius = Math.Ceiling(Math.Sqrt(radiusSquared));
-				double centerX = Math.Floor((playerX) / 16);
-				double centerZ = Math.Floor((playerZ) / 16);
+				var newOrders = new Dictionary<Tuple<int, int>, double>();
+				var radiusSquared = _viewDistance/Math.PI;
+				var radius = Math.Ceiling(Math.Sqrt(radiusSquared));
+				var centerX = Math.Floor((playerX)/16);
+				var centerZ = Math.Floor((playerZ)/16);
 
-				for (double x = -radius; x <= radius; ++x)
+				for (var x = -radius; x <= radius; ++x)
 				{
-					for (double z = -radius; z <= radius; ++z)
+					for (var z = -radius; z <= radius; ++z)
 					{
-						var distance = (x * x) + (z * z);
+						var distance = (x*x) + (z*z);
 						if (distance > radiusSquared)
 						{
 							continue;
 						}
-						int chunkX = (int)Math.Floor(x + centerX);
-						int chunkZ = (int)Math.Floor(z + centerZ);
+						var chunkX = (int) Math.Floor(x + centerX);
+						var chunkZ = (int) Math.Floor(z + centerZ);
 
-						Tuple<int, int> index = new Tuple<int, int>((int)chunkX, (int)chunkZ);
+						var index = new Tuple<int, int>(chunkX, chunkZ);
 						newOrders[index] = distance;
 					}
 				}
@@ -162,10 +168,10 @@ namespace SharpMCRewrite.Worlds.Nether
 				{
 					if (chunksUsed.ContainsKey(pair.Key)) continue;
 
-					int x = pair.Key.Item1;
-					int z = pair.Key.Item2;
+					var x = pair.Key.Item1;
+					var z = pair.Key.Item2;
 
-					ChunkColumn chunk = GenerateChunkColumn(new Vector2(x, z));
+					var chunk = GenerateChunkColumn(new Vector2(x, z));
 					chunksUsed.Add(pair.Key, chunk);
 
 					yield return chunk;
@@ -173,86 +179,84 @@ namespace SharpMCRewrite.Worlds.Nether
 			}
 		}
 
-		private static readonly Random getrandom = new Random();
-		private static readonly object syncLock = new object();
 		public static int GetRandomNumber(int min, int max)
 		{
 			lock (syncLock)
-			{ // synchronize
+			{
+				// synchronize
 				return getrandom.Next(min, max);
 			}
 		}
 
-		private int waterLevel = 35;
-
 		private void PopulateChunk(ChunkColumn chunk)
 		{
-			int trees = new Random().Next(0, 10);
-			int[,] treeBasePositions = new int[trees, 2];
+			var trees = new Random().Next(0, 10);
+			var treeBasePositions = new int[trees, 2];
 
-			for (int t = 0; t < trees; t++)
+			for (var t = 0; t < trees; t++)
 			{
-				int x = new Random().Next(1, 16);
-				int z = new Random().Next(1, 16);
+				var x = new Random().Next(1, 16);
+				var z = new Random().Next(1, 16);
 				treeBasePositions[t, 0] = x;
 				treeBasePositions[t, 1] = z;
 			}
 
-			for (int x = 0; x < 16; x++)
+			for (var x = 0; x < 16; x++)
 			{
-				for (int z = 0; z < 16; z++)
+				for (var z = 0; z < 16; z++)
 				{
-					int stoneHeight = (int) Math.Floor(stoneBaseHeight);
-					stoneHeight += GetNoise(chunk.X * 16 + x, chunk.Z * 16 + z, stoneMountainFrequency, (int)Math.Floor(stoneMountainHeight));
+					var stoneHeight = (int) Math.Floor(stoneBaseHeight);
+					stoneHeight += GetNoise(chunk.X*16 + x, chunk.Z*16 + z, stoneMountainFrequency,
+						(int) Math.Floor(stoneMountainHeight));
 
 					if (stoneHeight < stoneMinHeight)
 						stoneHeight = (int) Math.Floor(stoneMinHeight);
 
-					stoneHeight += GetNoise(chunk.X * 16 + x, chunk.Z * 16 + z, stoneBaseNoise, (int)Math.Floor(stoneBaseNoiseHeight));
+					stoneHeight += GetNoise(chunk.X*16 + x, chunk.Z*16 + z, stoneBaseNoise, (int) Math.Floor(stoneBaseNoiseHeight));
 
 
-					int topHeight = (int)Math.Floor(topBaseHeight);
-					topHeight += GetNoise(chunk.X * 16 + x, chunk.Z * 16 + z, topNoise, (int)Math.Floor(topNoiseHeight));
+					var topHeight = (int) Math.Floor(topBaseHeight);
+					topHeight += GetNoise(chunk.X*16 + x, chunk.Z*16 + z, topNoise, (int) Math.Floor(topNoiseHeight));
 
 					if (topHeight < topBaseHeight)
-						topHeight = (int)Math.Floor(topBaseHeight);
+						topHeight = (int) Math.Floor(topBaseHeight);
 
-					topHeight += GetNoise(chunk.X * 16 + x, chunk.Z * 16 + z, topNoise, (int)Math.Floor(topBaseHeight));
+					topHeight += GetNoise(chunk.X*16 + x, chunk.Z*16 + z, topNoise, (int) Math.Floor(topBaseHeight));
 
-					for (int y = 0; y < 256; y++)
+					for (var y = 0; y < 256; y++)
 					{
-							if (y == 0 || y == 80)
+						if (y == 0 || y == 80)
+						{
+							chunk.SetBlock(x, y, z, new BlockBedrock());
+						}
+						else if (y <= topHeight)
+						{
+							chunk.SetBlock(x, 80 - y, z, BlockFactory.GetBlockById(87));
+							//Glowstone
+							if (GetRandomNumber(0, 1500) < 50)
 							{
-								chunk.SetBlock(x,y,z, new BlockBedrock());
+								chunk.SetBlock(x, 80 - y, z, BlockFactory.GetBlockById(89));
 							}
-							else if (y <= topHeight)
+						}
+						else if (y <= stoneHeight)
+						{
+							chunk.SetBlock(x, y, z, BlockFactory.GetBlockById(87));
+							//Quartz Ore
+							if (GetRandomNumber(0, 1500) < 50)
 							{
-								chunk.SetBlock(x, 80 - y, z, BlockFactory.GetBlockById(87));
-								//Glowstone
-								if (GetRandomNumber(0, 1500) < 50)
-								{
-									chunk.SetBlock(x, 80 -y, z, BlockFactory.GetBlockById(89));
-								}
+								chunk.SetBlock(x, y, z, BlockFactory.GetBlockById(153));
 							}
-							else if (y <= stoneHeight)
-							{
-								chunk.SetBlock(x , y, z, BlockFactory.GetBlockById(87));
-								//Quartz Ore
-								if (GetRandomNumber(0, 1500) < 50)
-								{
-									chunk.SetBlock(x, y, z, BlockFactory.GetBlockById(153));
-								}
 
-								if (GetRandomNumber(0, 1200) < 50)
-								{
-									chunk.SetBlock(x, y + 1, z, BlockFactory.GetBlockById(51));
-								}
-							}
-							else if (y < waterLevel)
+							if (GetRandomNumber(0, 1200) < 50)
 							{
-								if (chunk.GetBlock(x,y,z) == 0 || chunk.GetBlock(x,y,z) == 51)
-									chunk.SetBlock(x, y, z, BlockFactory.GetBlockById(10));
+								chunk.SetBlock(x, y + 1, z, BlockFactory.GetBlockById(51));
 							}
+						}
+						if (y <= waterLevel)
+						{
+							if (chunk.GetBlock(x, y, z) == 0 || chunk.GetBlock(x, y, z) == 51)
+								chunk.SetBlock(x, y, z, BlockFactory.GetBlockById(10));
+						}
 					}
 				}
 			}
@@ -261,14 +265,15 @@ namespace SharpMCRewrite.Worlds.Nether
 		public override void SetBlock(Block block, Level level, bool broadcast)
 		{
 			ChunkColumn c;
-			if (!ChunkCache.TryGetValue(new Tuple<int, int>(block.Coordinates.X / 16, block.Coordinates.Z / 16), out c)) throw new Exception("No chunk found!");
+			if (!ChunkCache.TryGetValue(new Tuple<int, int>(block.Coordinates.X/16, block.Coordinates.Z/16), out c))
+				throw new Exception("No chunk found!");
 
 			c.SetBlock((block.Coordinates.X & 0x0f), (block.Coordinates.Y & 0x7f), (block.Coordinates.Z & 0x0f), block);
 			if (!broadcast) return;
 
 			foreach (var player in level.OnlinePlayers)
 			{
-				new Networking.Packages.BlockChange(player.Wrapper, new MSGBuffer(player.Wrapper))
+				new BlockChange(player.Wrapper, new MSGBuffer(player.Wrapper))
 				{
 					Block = block,
 					Location = block.Coordinates
@@ -278,25 +283,21 @@ namespace SharpMCRewrite.Worlds.Nether
 
 		public override Vector3 GetSpawnPoint()
 		{
-			return new Vector3(1,1,1);
+			return new Vector3(1, 1, 1);
 		}
-
-		private static readonly OpenSimplexNoise OpenNoise = new OpenSimplexNoise(Globals.Seed.GetHashCode());
-		private static readonly PerlinNoise PerlinNoise = new PerlinNoise(Globals.Seed.GetHashCode());
 
 		public static int GetNoise(int x, int z, float scale, int max)
 		{
-
 			switch (Globals.NoiseGenerator)
 			{
 				case NoiseGenerator.Perlin:
-					return (int)Math.Floor((PerlinNoise.Noise(x * scale, 0, z * scale) + 1f) * (max / 2f));
+					return (int) Math.Floor((PerlinNoise.Noise(x*scale, 0, z*scale) + 1f)*(max/2f));
 				case NoiseGenerator.Simplex:
-					return (int)Math.Floor((SimplexNoise.Noise.Generate(_seedoffset + x * scale, 0, _seedoffset + z * scale) + 1f) * (max / 2f));
+					return (int) Math.Floor((Noise.Generate(_seedoffset + x*scale, 0, _seedoffset + z*scale) + 1f)*(max/2f));
 				case NoiseGenerator.OpenSimplex:
-					return (int)Math.Floor((OpenNoise.Evaluate(x * scale, z * scale) + 1f) * (max / 2f));
+					return (int) Math.Floor((OpenNoise.Evaluate(x*scale, z*scale) + 1f)*(max/2f));
 				default:
-					return (int)Math.Floor((SimplexNoise.Noise.Generate(_seedoffset + x * scale, 0, _seedoffset + z * scale) + 1f) * (max / 2f));
+					return (int) Math.Floor((Noise.Generate(_seedoffset + x*scale, 0, _seedoffset + z*scale) + 1f)*(max/2f));
 			}
 		}
 	}

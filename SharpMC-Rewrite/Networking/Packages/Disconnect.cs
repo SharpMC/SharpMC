@@ -1,16 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using Microsoft.Win32;
-using SharpMCRewrite.NET;
+﻿using SharpMCRewrite.NET;
 
 namespace SharpMCRewrite.Networking.Packages
 {
-	class Disconnect : Package<Disconnect>
+	internal class Disconnect : Package<Disconnect>
 	{
 		public string Reason = "";
+
 		public Disconnect(ClientWrapper client) : base(client)
 		{
 			SendId = 0x40;
@@ -30,7 +25,7 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public static void Broadcast(string reason, bool self = true, Player source = null)
 		{
-			foreach (Player i in Globals.Level.OnlinePlayers)
+			foreach (var i in Globals.Level.OnlinePlayers)
 			{
 				if (!self && i == source)
 				{
@@ -40,7 +35,7 @@ namespace SharpMCRewrite.Networking.Packages
 				//Buffer = new MSGBuffer(i.Wrapper);
 				//_stream = i.Wrapper.TCPClient.GetStream();
 				//Write();
-				new Disconnect(i.Wrapper, new MSGBuffer(i.Wrapper)) { Reason = reason }.Write();
+				new Disconnect(i.Wrapper, new MSGBuffer(i.Wrapper)) {Reason = reason}.Write();
 			}
 		}
 	}

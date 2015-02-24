@@ -1,11 +1,12 @@
-﻿using System.Security.Cryptography.X509Certificates;
-using SharpMCRewrite.NET;
+﻿using SharpMCRewrite.NET;
 
 namespace SharpMCRewrite.Networking.Packages
 {
-	class Animation : Package<Animation>
+	internal class Animation : Package<Animation>
 	{
 		public byte AnimationId;
+		public Player TargetPlayer;
+
 		public Animation(ClientWrapper client) : base(client)
 		{
 			SendId = 0x0B;
@@ -20,13 +21,13 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Read()
 		{
-			new Animation(Client, new MSGBuffer(Client)) { AnimationId = 0 }.Broadcast(false, Client.Player);
+			new Animation(Client) {AnimationId = 0, TargetPlayer = Client.Player}.Broadcast(false, Client.Player);
 		}
 
 		public override void Write()
 		{
 			Buffer.WriteVarInt(SendId);
-			Buffer.WriteVarInt(Client.Player.UniqueServerID);
+			Buffer.WriteVarInt(TargetPlayer.UniqueServerID);
 			Buffer.WriteByte(AnimationId);
 			Buffer.FlushData();
 		}

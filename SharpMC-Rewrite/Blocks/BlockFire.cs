@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SharpMCRewrite.Blocks
+﻿namespace SharpMCRewrite.Blocks
 {
-	class BlockFire : Block
+	internal class BlockFire : Block
 	{
 		internal BlockFire() : base(51)
 		{

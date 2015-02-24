@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using MiNET.Worlds;
 using SharpMCRewrite;
 
 namespace MiNET.Utils
@@ -11,10 +10,6 @@ namespace MiNET.Utils
 		private static string FileContents = string.Empty;
 		public static string[] InitialValue;
 
-		public ConfigParser()
-		{
-		}
-
 		public static bool Check()
 		{
 			if (!File.Exists(ConfigFile))
@@ -22,19 +17,13 @@ namespace MiNET.Utils
 				File.WriteAllLines(ConfigFile, InitialValue);
 				return Check();
 			}
-			else
+			FileContents = File.ReadAllText(ConfigFile);
+			if (!FileContents.Contains("#DO NOT REMOVE THIS LINE - SharpMC Config"))
 			{
-				FileContents = File.ReadAllText(ConfigFile);
-				if (!FileContents.Contains("#DO NOT REMOVE THIS LINE - SharpMC Config"))
-				{
-					File.Delete(ConfigFile);
-					return Check();
-				}
-				else
-				{
-					return true;
-				}
+				File.Delete(ConfigFile);
+				return Check();
 			}
+			return true;
 		}
 
 		public static Gamemode GetProperty(string Property, Gamemode DefaultValue)
@@ -52,9 +41,9 @@ namespace MiNET.Utils
 			return ReadInt(Property, DefaultValue);
 		}
 
-	//	public static Difficulty GetProperty(string Property, Difficulty DefaultValue)
-	//	{
-	//		return ReadDifficulty(Property, DefaultValue);
+		//	public static Difficulty GetProperty(string Property, Difficulty DefaultValue)
+		//	{
+		//		return ReadDifficulty(Property, DefaultValue);
 //}
 
 		public static string GetProperty(string Property, string DefaultValue)
@@ -71,11 +60,11 @@ namespace MiNET.Utils
 
 		private static string ReadString(string Rule)
 		{
-			foreach (string Line in FileContents.Split(new string[] {"\r\n", "\n", Environment.NewLine}, StringSplitOptions.None))
+			foreach (var Line in FileContents.Split(new[] {"\r\n", "\n", Environment.NewLine}, StringSplitOptions.None))
 			{
 				if (Line.ToLower().StartsWith(Rule.ToLower() + "="))
 				{
-					string Value = Line.Split('=')[1];
+					var Value = Line.Split('=')[1];
 					return Value.ToLower();
 				}
 			}
@@ -98,7 +87,7 @@ namespace MiNET.Utils
 		{
 			try
 			{
-				string D = ReadString(Rule);
+				var D = ReadString(Rule);
 				return Convert.ToBoolean(D);
 			}
 			catch
@@ -111,7 +100,7 @@ namespace MiNET.Utils
 		{
 			try
 			{
-				string gm = ReadString(Rule);
+				var gm = ReadString(Rule);
 				switch (gm)
 				{
 					case "1":
@@ -132,30 +121,5 @@ namespace MiNET.Utils
 				return Default;
 			}
 		}
-
-		/*private static Difficulty ReadDifficulty(string Rule, Difficulty Default)
-		{
-			try
-			{
-				string df = ReadString(Rule).ToLower();
-				switch (df)
-				{
-					case "easy":
-						return Difficulty.Easy;
-					case "normal":
-						return Difficulty.Normal;
-					case "hard":
-						return Difficulty.Hard;
-					case "peaceful":
-						return Difficulty.Peaceful;
-					default:
-						return Default;
-				}
-			}
-			catch
-			{
-				return Default;
-			}
-		}*/
 	}
 }

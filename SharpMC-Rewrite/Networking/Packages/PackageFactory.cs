@@ -5,10 +5,10 @@ namespace SharpMCRewrite.Networking.Packages
 {
 	public class PackageFactory
 	{
-		private ClientWrapper _client;
+		private readonly ClientWrapper _client;
 		private MSGBuffer _buffer;
-		public List<Package> PlayPackages = new List<Package>();
 		public List<Package> PingPackages = new List<Package>();
+		public List<Package> PlayPackages = new List<Package>();
 
 		public PackageFactory(ClientWrapper client, MSGBuffer buffer)
 		{
@@ -24,8 +24,16 @@ namespace SharpMCRewrite.Networking.Packages
 			PlayPackages.Add(new Animation(client, buffer));
 			PlayPackages.Add(new PlayerBlockPlacement(client, buffer));
 			PlayPackages.Add(new HeldItemChange(client, buffer));
+			PlayPackages.Add(new EntityAction(client, buffer));
+			PlayPackages.Add(new PlayerAbilities(client, buffer));
+			PlayPackages.Add(new PluginMessage(client, buffer));
+			PlayPackages.Add(new KeepAlive(client, buffer));
+			PlayPackages.Add(new PlayerPositionAndLook(client, buffer));
+			PlayPackages.Add(new PlayerPosition(client, buffer));
+			PlayPackages.Add(new PlayerLook(client, buffer));
 
 			#endregion
+
 			_client = client;
 			_buffer = buffer;
 		}

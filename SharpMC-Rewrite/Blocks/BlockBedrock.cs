@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SharpMCRewrite.Blocks
+﻿namespace SharpMCRewrite.Blocks
 {
-	class BlockBedrock : Block
+	internal class BlockBedrock : Block
 	{
 		public BlockBedrock() : base(7)
 		{

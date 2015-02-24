@@ -1,14 +1,10 @@
-﻿using SharpMCRewrite.NET;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System;
 using SharpMCRewrite.Blocks;
+using SharpMCRewrite.NET;
 
 namespace SharpMCRewrite.Networking.Packages
 {
-	class PlayerBlockPlacement : Package<PlayerBlockPlacement>
+	internal class PlayerBlockPlacement : Package<PlayerBlockPlacement>
 	{
 		public PlayerBlockPlacement(ClientWrapper client) : base(client)
 		{
@@ -24,7 +20,7 @@ namespace SharpMCRewrite.Networking.Packages
 		{
 			var position = Buffer.ReadIntPosition();
 			Client.Player.SendChat("Position: " + position.GetString());
-			
+
 			if (position.Y > 256) return;
 
 			var face = Buffer.ReadByte();
@@ -62,10 +58,10 @@ namespace SharpMCRewrite.Networking.Packages
 			var CursorY = Buffer.ReadByte(); //Unused
 			var CursorZ = Buffer.ReadByte(); //Unused
 
-			Block b = BlockFactory.GetBlockById(heldItem);
+			var b = BlockFactory.GetBlockById(heldItem);
 			b.Coordinates = position;
 			b.Metadata = itemMeta;
-			Globals.Level.SetBlock(b);
+			Globals.Level.SetBlock(b, true);
 		}
 	}
 }

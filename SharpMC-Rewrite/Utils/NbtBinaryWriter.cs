@@ -1,8 +1,8 @@
 using System;
 using System.IO;
+using System.Net;
 using System.Text;
 using fNbt;
-using System.Net;
 
 namespace MiNET.Utils
 {
@@ -14,41 +14,38 @@ namespace MiNET.Utils
 	{
 		private readonly bool bigEndian;
 
-
 		public NbtBinaryWriter(Stream input, bool bigEndian)
 			: base(input)
 		{
 			this.bigEndian = bigEndian;
 		}
 
-
 		public void Write(NbtTagType value)
 		{
 			Write((byte) value);
 		}
 
-        public void WriteVarInt(int Integer)
-        {
-            while ((Integer & -128) != 0)
-            {
-                Write((byte)(Integer & 127 | 128));
-                Integer = (int)(((uint)Integer) >> 7);
-            }
-            Write((byte)Integer);
-        }
+		public void WriteVarInt(int Integer)
+		{
+			while ((Integer & -128) != 0)
+			{
+				Write((byte) (Integer & 127 | 128));
+				Integer = (int) (((uint) Integer) >> 7);
+			}
+			Write((byte) Integer);
+		}
 
 		public override void Write(short value)
 		{
 			if (BitConverter.IsLittleEndian == bigEndian)
 			{
-                base.Write(IPAddress.HostToNetworkOrder(value));
+				base.Write(IPAddress.HostToNetworkOrder(value));
 			}
 			else
 			{
 				base.Write(value);
 			}
 		}
-
 
 		/*public override void Write(int value)
 		{
@@ -75,12 +72,11 @@ namespace MiNET.Utils
 			}
 		}
 
-
 		public override void Write(float value)
 		{
 			if (BitConverter.IsLittleEndian == bigEndian)
 			{
-				byte[] floatBytes = BitConverter.GetBytes(value);
+				var floatBytes = BitConverter.GetBytes(value);
 				Array.Reverse(floatBytes);
 				Write(floatBytes);
 			}
@@ -90,12 +86,11 @@ namespace MiNET.Utils
 			}
 		}
 
-
 		public override void Write(double value)
 		{
 			if (BitConverter.IsLittleEndian == bigEndian)
 			{
-				byte[] doubleBytes = BitConverter.GetBytes(value);
+				var doubleBytes = BitConverter.GetBytes(value);
 				Array.Reverse(doubleBytes);
 				Write(doubleBytes);
 			}
@@ -104,7 +99,6 @@ namespace MiNET.Utils
 				base.Write(value);
 			}
 		}
-
 
 		public override void Write(string value)
 		{
@@ -115,28 +109,25 @@ namespace MiNET.Utils
 			Write(bytes);
 		}
 
-
 		public static short Swap(short v)
 		{
 			return (short) ((v >> 8) & 0x00FF |
-							(v << 8) & 0xFF00);
+			                (v << 8) & 0xFF00);
 		}
-
 
 		public static int Swap(int v)
 		{
-			uint v2 = (uint) v;
+			var v2 = (uint) v;
 			return (int) ((v2 >> 24) & 0x000000FF |
-						(v2 >> 8) & 0x0000FF00 |
-						(v2 << 8) & 0x00FF0000 |
-						(v2 << 24) & 0xFF000000);
+			              (v2 >> 8) & 0x0000FF00 |
+			              (v2 << 8) & 0x00FF0000 |
+			              (v2 << 24) & 0xFF000000);
 		}
-
 
 		public static long Swap(long v)
 		{
 			return (Swap((int) v) & uint.MaxValue) << 32 |
-					Swap((int) (v >> 32)) & uint.MaxValue;
+			       Swap((int) (v >> 32)) & uint.MaxValue;
 		}
 	}
 }

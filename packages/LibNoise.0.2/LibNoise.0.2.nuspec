@@ -1,0 +1,17 @@
+<?xml version="1.0"?>
+<package xmlns="http://schemas.microsoft.com/packaging/2010/07/nuspec.xsd">
+  <metadata>
+    <id>LibNoise</id>
+    <version>0.2</version>
+    <authors>LibNoise Project Contributors</authors>
+    <owners>LibNoise Project Contributors</owners>
+    <licenseUrl>https://raw.github.com/Taggersoft/LibNoise/master/LICENSE.txt</licenseUrl>
+    <projectUrl>https://github.com/Taggersoft/LibNoise</projectUrl>
+    <iconUrl>https://github.com/Taggersoft/LibNoise/raw/master/logos/LibNoise32.png</iconUrl>
+    <requireLicenseAcceptance>true</requireLicenseAcceptance>
+    <description>LibNoise is used to generate coherent noise, a type of smoothly-changing noise. LibNoise can generate Perlin noise, ridged multifractal noise, and other types of coherent-noise. Coherent noise is often used by graphics programmers to generate natural-looking textures, planetary terrain, and other things. In LibNoise, coherent-noise generators are encapsulated in classes called noise modules. There are many different types of noise modules. Some noise modules can combine or modify the outputs of other noise modules in various ways; you can join these modules together to generate very complex coherent noise.</description>
+    <summary>A portable, open-source, coherent noise-generating .NET library.</summary>
+    <language>en-US</language>
+    <tags>LibNoise noise unity3d xna</tags>
+  </metadata>
+</package>

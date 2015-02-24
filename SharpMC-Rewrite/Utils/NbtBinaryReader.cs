@@ -12,13 +12,13 @@ namespace MiNET.Utils
 	/// </summary>
 	public class NbtBinaryReader : BinaryReader
 	{
+		private const int SeekBufferSize = 64*1024;
+		private readonly bool bigEndian;
+
 		private readonly byte[] floatBuffer = new byte[sizeof (float)],
 			doubleBuffer = new byte[sizeof (double)];
 
 		private byte[] seekBuffer;
-		private const int SeekBufferSize = 64*1024;
-		private readonly bool bigEndian;
-
 
 		public NbtBinaryReader(Stream input, bool bigEndian)
 			: base(input)
@@ -26,6 +26,7 @@ namespace MiNET.Utils
 			this.bigEndian = bigEndian;
 		}
 
+		public TagSelector Selector { get; set; }
 
 		public NbtTagType ReadTagType()
 		{
@@ -37,24 +38,20 @@ namespace MiNET.Utils
 			return type;
 		}
 
-
 		public override short ReadInt16()
 		{
-			return BitConverter.IsLittleEndian == bigEndian ? NbtBinaryWriter.Swap (base.ReadInt16 ()) : base.ReadInt16 ();
+			return BitConverter.IsLittleEndian == bigEndian ? NbtBinaryWriter.Swap(base.ReadInt16()) : base.ReadInt16();
 		}
-
 
 		public override int ReadInt32()
 		{
-			return BitConverter.IsLittleEndian == bigEndian ? NbtBinaryWriter.Swap (base.ReadInt32 ()) : base.ReadInt32 ();
+			return BitConverter.IsLittleEndian == bigEndian ? NbtBinaryWriter.Swap(base.ReadInt32()) : base.ReadInt32();
 		}
-
 
 		public override long ReadInt64()
 		{
-			return BitConverter.IsLittleEndian == bigEndian ? NbtBinaryWriter.Swap (base.ReadInt64 ()) : base.ReadInt64 ();
+			return BitConverter.IsLittleEndian == bigEndian ? NbtBinaryWriter.Swap(base.ReadInt64()) : base.ReadInt64();
 		}
-
 
 		public override float ReadSingle()
 		{
@@ -67,7 +64,6 @@ namespace MiNET.Utils
 			return base.ReadSingle();
 		}
 
-
 		public override double ReadDouble()
 		{
 			if (BitConverter.IsLittleEndian == bigEndian)
@@ -79,18 +75,16 @@ namespace MiNET.Utils
 			return base.ReadDouble();
 		}
 
-
 		public override string ReadString()
 		{
-			short length = ReadInt16();
+			var length = ReadInt16();
 			if (length < 0)
 			{
 				throw new NbtFormatException("Negative string length given!");
 			}
-			byte[] stringData = ReadBytes(length);
+			var stringData = ReadBytes(length);
 			return Encoding.UTF8.GetString(stringData);
 		}
-
 
 		public void Skip(int bytesToSkip)
 		{
@@ -98,7 +92,7 @@ namespace MiNET.Utils
 			{
 				throw new ArgumentOutOfRangeException("bytesToSkip");
 			}
-			else if (BaseStream.CanSeek)
+			if (BaseStream.CanSeek)
 			{
 				BaseStream.Position += bytesToSkip;
 			}
@@ -106,10 +100,10 @@ namespace MiNET.Utils
 			{
 				if (seekBuffer == null)
 					seekBuffer = new byte[SeekBufferSize];
-				int bytesDone = 0;
+				var bytesDone = 0;
 				while (bytesDone < bytesToSkip)
 				{
-					int readThisTime = BaseStream.Read(seekBuffer, bytesDone, bytesToSkip - bytesDone);
+					var readThisTime = BaseStream.Read(seekBuffer, bytesDone, bytesToSkip - bytesDone);
 					if (readThisTime == 0)
 					{
 						throw new EndOfStreamException();
@@ -119,19 +113,15 @@ namespace MiNET.Utils
 			}
 		}
 
-
 		public void SkipString()
 		{
-			short length = ReadInt16();
+			var length = ReadInt16();
 			if (length < 0)
 			{
 				throw new NbtFormatException("Negative string length given!");
 			}
 			Skip(length);
 		}
-
-
-		public TagSelector Selector { get; set; }
 	}
 
 	/// <summary>
@@ -140,10 +130,14 @@ namespace MiNET.Utils
 	/// </summary>
 	internal sealed class ZLibStream : DeflateStream
 	{
-		private int adler32A = 1, adler32B;
-		private MemoryStream _buffer = new MemoryStream();
-
 		private const int ChecksumModulus = 65521;
+		private readonly MemoryStream _buffer = new MemoryStream();
+		private int adler32A = 1, adler32B;
+
+		public ZLibStream(Stream stream, CompressionLevel level, bool leaveOpen)
+			: base(stream, level, leaveOpen)
+		{
+		}
 
 		public int Checksum
 		{
@@ -154,7 +148,6 @@ namespace MiNET.Utils
 			}
 		}
 
-
 		private void UpdateChecksum(byte[] data, int offset, long length)
 		{
 			for (long counter = 0; counter < length; ++counter)
@@ -163,13 +156,6 @@ namespace MiNET.Utils
 				adler32B = (adler32B + adler32A)%ChecksumModulus;
 			}
 		}
-
-
-		public ZLibStream(Stream stream, CompressionLevel level, bool leaveOpen)
-			: base(stream, level, leaveOpen)
-		{
-		}
-
 
 		public override void Write(byte[] array, int offset, int count)
 		{

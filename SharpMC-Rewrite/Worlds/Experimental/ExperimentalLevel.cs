@@ -1,12 +1,6 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-
-namespace SharpMCRewrite.Worlds.Experimental
+﻿namespace SharpMCRewrite.Worlds.Experimental
 {
-	class ExperimentalLevel : Level
+	internal class ExperimentalLevel : Level
 	{
 		public ExperimentalLevel(string worldname)
 		{

@@ -2,7 +2,7 @@
 
 namespace SharpMCRewrite.Networking.Packages
 {
-	class HeldItemChange : Package<HeldItemChange>
+	internal class HeldItemChange : Package<HeldItemChange>
 	{
 		public HeldItemChange(ClientWrapper client) : base(client)
 		{
@@ -18,7 +18,7 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Read()
 		{
-			byte slot = (byte)Buffer.ReadByte();
+			var slot = (byte) Buffer.ReadByte();
 			Client.Player.CurrentSlot = slot;
 		}
 

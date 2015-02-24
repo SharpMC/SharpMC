@@ -1,15 +1,11 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
-using SharpMCRewrite.NET;
+﻿using SharpMCRewrite.NET;
 
 namespace SharpMCRewrite.Networking.Packages
 {
 	public class ChatMessage : Package<ChatMessage>
 	{
 		public string Message;
+
 		public ChatMessage(ClientWrapper client) : base(client)
 		{
 			ReadId = 0x01;
@@ -25,14 +21,15 @@ namespace SharpMCRewrite.Networking.Packages
 		public override void Read()
 		{
 			Message = Buffer.ReadString();
-			Globals.Level.BroadcastChat("<" + Client.Player.Username + "> " + Message.RemoveLineBreaks().Replace("\\", "\\\\").Replace("\"", "\'\'"));
+			Globals.Level.BroadcastChat("<" + Client.Player.Username + "> " +
+			                            Message.RemoveLineBreaks().Replace("\\", "\\\\").Replace("\"", "\'\'"));
 		}
 
 		public override void Write()
 		{
 			Buffer.WriteVarInt(SendId);
 			Buffer.WriteString("{ \"text\": \"" + Message + "\" }");
-			Buffer.WriteByte((byte)0);
+			Buffer.WriteByte(0);
 			Buffer.FlushData();
 		}
 	}

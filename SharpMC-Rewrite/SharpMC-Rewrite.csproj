@@ -30,6 +30,9 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="LibNoise">
+      <HintPath>..\packages\LibNoise.0.2\lib\NET45\LibNoise.dll</HintPath>
+    </Reference>
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
@@ -39,6 +42,7 @@
     <Compile Include="Blocks\BlockFactory.cs" />
     <Compile Include="Blocks\BlockFire.cs" />
     <Compile Include="Blocks\BlockTNT.cs" />
+    <Compile Include="Classes\HealthManager.cs" />
     <Compile Include="Classes\Package.cs" />
     <Compile Include="Classes\Records.cs" />
     <Compile Include="Enums\BlockFace.cs" />
@@ -48,22 +52,35 @@
     <Compile Include="Networking\Packages\ChatMessage.cs" />
     <Compile Include="Networking\Packages\ChunkData.cs" />
     <Compile Include="Networking\Packages\Disconnect.cs" />
+    <Compile Include="Networking\Packages\EntityLook.cs" />
+    <Compile Include="Networking\Packages\EntityRelativeMove.cs" />
+    <Compile Include="Networking\Packages\EntityTeleport.cs" />
     <Compile Include="Networking\Packages\Handshake.cs" />
     <Compile Include="Networking\Packages\HeldItemChange.cs" />
+    <Compile Include="Networking\Packages\KeepAlive.cs" />
     <Compile Include="Networking\Packages\LoginSucces.cs" />
+    <Compile Include="Networking\Packages\OpenWindow.cs" />
     <Compile Include="Networking\Packages\PackageFactory.cs" />
+    <Compile Include="Networking\Packages\PlayerAbilities.cs" />
     <Compile Include="Networking\Packages\PlayerBlockPlacement.cs" />
+    <Compile Include="Networking\Packages\PlayerListItem.cs" />
+    <Compile Include="Networking\Packages\PlayerLook.cs" />
+    <Compile Include="Networking\Packages\PlayerPosition.cs" />
+    <Compile Include="Networking\Packages\PlayerPositionAndLook.cs" />
+    <Compile Include="Networking\Packages\PluginMessage.cs" />
+    <Compile Include="Networking\Packages\SetSlot.cs" />
+    <Compile Include="Networking\Packages\SpawnPlayer.cs" />
+    <Compile Include="Networking\Packages\UpdateHealth.cs" />
+    <Compile Include="PlayerInventoryManager.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Networking\Listener.cs" />
     <Compile Include="ConsoleFunctions.cs" />
     <Compile Include="Interfaces\IPacket.cs" />
     <Compile Include="Globals.cs" />
-    <Compile Include="Networking\ByteBuffer.cs" />
     <Compile Include="Networking\Packets\Ping.cs" />
     <Compile Include="Classes\ClientWrapper.cs" />
     <Compile Include="Classes\Player.cs" />
-    <Compile Include="Networking\BufferReader.cs" />
     <Compile Include="Classes\MSGBuffer.cs" />
     <Compile Include="Networking\Packets\JoinGame.cs" />
     <Compile Include="Enums\Gamemode.cs" />
@@ -71,6 +88,12 @@
     <Compile Include="Classes\Vector2.cs" />
     <Compile Include="Utils\ConfigParser.cs" />
     <Compile Include="Utils\CryptoRandom.cs" />
+    <Compile Include="Worlds\ExperimentalV2\CaveGenerator.cs" />
+    <Compile Include="Worlds\ExperimentalV2\ExperimentalV2Generator.cs" />
+    <Compile Include="Worlds\ExperimentalV2\ExperimentalV2Level.cs" />
+    <Compile Include="Worlds\ExperimentalV2\Structures\Monument.cs" />
+    <Compile Include="Worlds\ExperimentalV2\Structures\IStructure.cs" />
+    <Compile Include="Worlds\ExperimentalV2\Structures\OakTree.cs" />
     <Compile Include="Worlds\Experimental\Worm.cs" />
     <Compile Include="Worlds\Nether\NetherGenerator.cs" />
     <Compile Include="Worlds\Nether\NetherLevel.cs" />
@@ -87,30 +110,23 @@
     <Compile Include="Utils\NbtFormatException.cs" />
     <Compile Include="Networking\Packets\MapChunkBulk.cs" />
     <Compile Include="Networking\Packets\SetCompression.cs" />
-    <Compile Include="Networking\Packets\PlayerPositionAndLook.cs" />
     <Compile Include="Networking\Packets\SpawnPosition.cs" />
-    <Compile Include="Networking\Packets\KeepAlive.cs" />
-    <Compile Include="Networking\Packets\PlayerPosition.cs" />
-    <Compile Include="Networking\Packets\PlayerLook.cs" />
     <Compile Include="Networking\Packets\ClientSettings.cs" />
     <Compile Include="Networking\Packets\TimeUpdate.cs" />
     <Compile Include="Networking\Packets\OnGround.cs" />
     <Compile Include="Networking\Packets\PlayerDigging.cs" />
     <Compile Include="Networking\Packets\PlayerAnimation.cs" />
-    <Compile Include="Networking\Packets\EntityRelativeMove.cs" />
-    <Compile Include="Networking\Packets\SpawnPlayer.cs" />
     <Compile Include="Worlds\Flatland\FlatLandLevel.cs" />
     <Compile Include="Classes\Level.cs" />
     <Compile Include="Interfaces\IWorldProvider.cs" />
     <Compile Include="ExtentionMethods\StringExtentions.cs" />
-    <Compile Include="Networking\Packets\SetSlot.cs" />
-    <Compile Include="Networking\Packets\EntityTeleport.cs" />
-    <Compile Include="Networking\Packets\PlayerListItem.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup />
   <ItemGroup>
+    <Compile Include="Networking\Packages\EntityAction.cs" />
     <None Include="Networking\Packets\template.txt" />
+    <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\Externals\fNbt\fNbt.csproj">

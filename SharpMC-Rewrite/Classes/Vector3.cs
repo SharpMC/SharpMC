@@ -3,82 +3,86 @@ using System.Net;
 
 namespace SharpMCRewrite
 {
-    public class Vector3
-    {
-        public double X { get; set; }
-        public double Y { get; set; }
-        public double Z { get; set; }
+	public class Vector3
+	{
+		public Vector3(double _X, double _Y, double _Z)
+		{
+			X = _X;
+			Y = _Y;
+			Z = _Z;
+		}
 
-        public Vector3 (double _X, double _Y, double _Z)
-        {
-            X = _X;
-            Y = _Y;
-            Z = _Z;
-        }
+		public double X { get; set; }
+		public double Y { get; set; }
+		public double Z { get; set; }
 
-        public string GetString()
-        {
-            return X + ", " + Y + ", " + Z;
-        }
+		public string GetString()
+		{
+			return X + ", " + Y + ", " + Z;
+		}
 
-        public void ConvertToNetwork()
-        {
-            X = HostToNetworkOrder (X);
-            Y = HostToNetworkOrder (Y);
-            Z = HostToNetworkOrder (Z);
-        }
+		public void ConvertToNetwork()
+		{
+			X = HostToNetworkOrder(X);
+			Y = HostToNetworkOrder(Y);
+			Z = HostToNetworkOrder(Z);
+		}
 
-        public void ConvertToHost()
-        {
-            X = NetworkToHostOrder (X);
-            Y = NetworkToHostOrder (Y);
-            Z = NetworkToHostOrder (Z);
-        }
+		public void ConvertToHost()
+		{
+			X = NetworkToHostOrder(X);
+			Y = NetworkToHostOrder(Y);
+			Z = NetworkToHostOrder(Z);
+		}
 
-        private double HostToNetworkOrder(double d)
-        {
-            byte[] data = BitConverter.GetBytes(d);
-            if (BitConverter.IsLittleEndian)
-            {
-                Array.Reverse(data);
-            }
-            return BitConverter.ToDouble(data, 0);
-        }
+		private double HostToNetworkOrder(double d)
+		{
+			var data = BitConverter.GetBytes(d);
+			if (BitConverter.IsLittleEndian)
+			{
+				Array.Reverse(data);
+			}
+			return BitConverter.ToDouble(data, 0);
+		}
 
-        private double NetworkToHostOrder(double d)
-        {
-            byte[] data = BitConverter.GetBytes(d);
-            if (!BitConverter.IsLittleEndian)
-                Array.Reverse(data);
-            return BitConverter.ToDouble(data, 0);
-        }
-            
-        public double DistanceBetween(Vector3 other)
-        {
-            return Math.Sqrt(Square(other.X - X) +
-                Square(other.Y - Y) +
-                Square(other.Z - Z));
-        }
+		private double NetworkToHostOrder(double d)
+		{
+			var data = BitConverter.GetBytes(d);
+			if (!BitConverter.IsLittleEndian)
+				Array.Reverse(data);
+			return BitConverter.ToDouble(data, 0);
+		}
 
-        private double Square(double num)
-        {
-            return num * num;
-        }
+		public double DistanceBetween(Vector3 other)
+		{
+			return Math.Sqrt(Square(other.X - X) +
+			                 Square(other.Y - Y) +
+			                 Square(other.Z - Z));
+		}
 
-    }
+		private double Square(double num)
+		{
+			return num*num;
+		}
 
-    public class IntVector3
-    {
-        public int X { get; set; }
-        public int Y { get; set; }
-        public int Z { get; set; }
+		public static Vector3 operator -(Vector3 a, Vector3 b)
+		{
+			return new Vector3(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
+		}
+	}
 
-        public IntVector3 (int _X, int _Y, int _Z)
-        {
-            X = _X;
-            Y = _Y;
-            Z = _Z;
-        }
+	public class IntVector3
+	{
+		public IntVector3(int _X, int _Y, int _Z)
+		{
+			X = _X;
+			Y = _Y;
+			Z = _Z;
+		}
+
+		public int X { get; set; }
+		public int Y { get; set; }
+		public int Z { get; set; }
 
 		public string GetString()
 		{
@@ -103,6 +107,5 @@ namespace SharpMCRewrite
 		{
 			return new IntVector3(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
 		}
-    }
+	}
 }
-
