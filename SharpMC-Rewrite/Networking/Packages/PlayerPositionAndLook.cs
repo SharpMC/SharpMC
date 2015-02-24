@@ -20,7 +20,7 @@ namespace SharpMCRewrite.Networking.Packages
 		{
 			Buffer.WriteVarInt(SendId);
 			Buffer.WriteDouble(Globals.Level.Generator.GetSpawnPoint().X);
-			Buffer.WriteDouble(Globals.Level.Generator.GetSpawnPoint().Y - 1.62);
+			Buffer.WriteDouble(Globals.Level.Generator.GetSpawnPoint().Y);
 			Buffer.WriteDouble(Globals.Level.Generator.GetSpawnPoint().Z);
 			Buffer.WriteFloat(0f);
 			Buffer.WriteFloat(0f);

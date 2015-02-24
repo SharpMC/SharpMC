@@ -118,7 +118,7 @@ namespace SharpMCRewrite.Worlds.Experimental
 		}
 
 		public override IEnumerable<ChunkColumn> GenerateChunks(int _viewDistance, double playerX, double playerZ,
-			Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed)
+			Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed, bool output = false)
 		{
 			lock (chunksUsed)
 			{

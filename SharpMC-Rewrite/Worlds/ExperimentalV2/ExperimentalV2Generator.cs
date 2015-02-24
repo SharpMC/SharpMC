@@ -185,7 +185,7 @@ namespace SharpMCRewrite.Worlds.ExperimentalV2
 		}
 
 		public override IEnumerable<ChunkColumn> GenerateChunks(int _viewDistance, double playerX, double playerZ,
-			Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed)
+			Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed, bool output = false)
 		{
 			lock (chunksUsed)
 			{
@@ -239,6 +239,7 @@ namespace SharpMCRewrite.Worlds.ExperimentalV2
 					var z = pair.Key.Item2;
 
 					var chunk = GenerateChunkColumn(new Vector2(x, z));
+					
 					chunksUsed.Add(pair.Key, chunk);
 
 					yield return chunk;
@@ -364,7 +365,15 @@ namespace SharpMCRewrite.Worlds.ExperimentalV2
 							//Grass
 							if (GetRandomNumber(0, 5) == 2)
 							{
-								chunk.SetBlock(x, y + 1, z, new Block(31) {Metadata = 1});
+								if (GetRandomNumber(0, 50) == 10)
+								{
+									chunk.SetBlock(x, y + 1, z, new Block(175) {Metadata = 2});
+									chunk.SetBlock(x, y + 2, z, new Block(175) {Metadata = 2});
+								}
+								else
+								{
+									chunk.SetBlock(x, y + 1, z, new Block(31) { Metadata = 1 });
+								}
 							}
 
 							//Flowers

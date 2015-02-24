@@ -9,6 +9,11 @@ namespace SharpMCRewrite.Worlds.ExperimentalV2.Structures
 			get { return "OakTree"; }
 		}
 
+		public override int Height
+		{
+			get { return 10; }
+		}
+
 		public override Block[] Blocks
 		{
 			get

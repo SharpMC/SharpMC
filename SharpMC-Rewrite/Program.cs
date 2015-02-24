@@ -5,6 +5,7 @@ using System.Threading;
 using MiNET.Utils;
 using SharpMCRewrite.Networking;
 using SharpMCRewrite.Networking.Packages;
+using SharpMCRewrite.Worlds;
 using SharpMCRewrite.Worlds.Experimental;
 using SharpMCRewrite.Worlds.ExperimentalV2;
 using SharpMCRewrite.Worlds.Nether;
@@ -47,12 +48,14 @@ namespace SharpMCRewrite
 			}
 			Globals.Seed = ConfigParser.GetProperty("Seed", "SharpieCraft");
 
+			ConsoleFunctions.WriteInfoLine("Generating chunks...");
+			Globals.Level.Generator.GenerateChunks(8 * 12, 0, 0, new Dictionary<Tuple<int, int>, ChunkColumn>());
+
 			ConsoleFunctions.WriteInfoLine("Checking files...");
 
 			if (!Directory.Exists(Globals.Level.LVLName))
 				Directory.CreateDirectory(Globals.Level.LVLName);
 
-			LoadPacketHandlers();
 			var ClientListener = new Thread(() => new BasicListener().ListenForClients());
 			ClientListener.Start();
 
@@ -64,20 +67,6 @@ namespace SharpMCRewrite
 				ConsoleFunctions.WriteInfoLine("Saving chunks...");
 				Globals.Level.SaveChunks();
 			};
-		}
-
-		private static void LoadPacketHandlers()
-		{
-			ConsoleFunctions.WriteInfoLine("Loading packet handlers..");
-			var temp = new List<IPacket>();
-			temp.Add(new Ping());
-			temp.Add(new ClientSettings());
-			temp.Add(new OnGround());
-			temp.Add(new PlayerAnimation());
-			temp.Add(new PlayerDigging());
-			Globals.Packets = temp.ToArray();
-			temp.Clear();
-			ConsoleFunctions.WriteInfoLine("Done loading packet handlers...");
 		}
 	}
 }

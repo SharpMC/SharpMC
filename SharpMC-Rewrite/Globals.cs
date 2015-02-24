@@ -9,7 +9,6 @@ namespace SharpMCRewrite
 {
 	public class Globals
 	{
-		public static IPacket[] Packets;
 		public static string ProtocolName = "SharpMC 1.8";
 		public static int ProtocolVersion = 47;
 		public static int LastUniqueID = 0;

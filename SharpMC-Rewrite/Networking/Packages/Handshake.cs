@@ -71,13 +71,10 @@ namespace SharpMCRewrite.Networking.Packages
 			};
 			Client.PlayMode = true;
 
-			if (!Globals.UseCompression)
-				new SetCompression().Write(Client, Buffer, new object[] {-1}); //Turn off compression.
-			else
-				new SetCompression().Write(Client, Buffer, new object[] {1024});
+			new SetCompression(Client).Write();
 
-			new JoinGame().Write(Client, Buffer, new object[] {Client.Player});
-			new SpawnPosition().Write(Client, Buffer, new object[0]);
+			new JoinGame(Client){Player = Client.Player}.Write();
+			new SpawnPosition(Client).Write();
 			Client.StartKeepAliveTimer();
 			Client.Player.SendChunksFromPosition();
 		}

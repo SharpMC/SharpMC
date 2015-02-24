@@ -15,6 +15,7 @@ namespace SharpMCRewrite.Networking.Packages
 			#region Ping
 
 			PingPackages.Add(new Handshake(client, buffer));
+			PingPackages.Add(new Ping(client, buffer));
 
 			#endregion
 
@@ -31,6 +32,9 @@ namespace SharpMCRewrite.Networking.Packages
 			PlayPackages.Add(new PlayerPositionAndLook(client, buffer));
 			PlayPackages.Add(new PlayerPosition(client, buffer));
 			PlayPackages.Add(new PlayerLook(client, buffer));
+			PlayPackages.Add(new OnGround(client, buffer));
+			PlayPackages.Add(new ClientSettings(client, buffer));
+			PlayPackages.Add(new PlayerDigging(client, buffer));
 
 			#endregion
 

@@ -38,24 +38,10 @@ namespace SharpMCRewrite.Networking
 						var length = Buf.ReadVarInt();
 						Buf.Size = length;
 						var packid = Buf.ReadVarInt();
-						var found = false;
+
 						if (!new PackageFactory(Client, Buf).Handle(packid))
 						{
-							foreach (var i in Globals.Packets)
-							{
-								if (i.PacketID == packid && i.IsPlayePacket == Client.PlayMode)
-								{
-									i.Read(Client, Buf, new object[0]);
-									found = true;
-									break;
-								}
-							}
-						}
-						else found = true;
-						if (!found)
-						{
 							ConsoleFunctions.WriteWarningLine("Unknown packet received! \"0x" + packid.ToString("X2") + "\"");
-							// Client.Player.SendChat("We received an unknown packet from you! 0x" + packid.ToString("X2") + "");
 						}
 					}
 					else

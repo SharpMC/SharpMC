@@ -120,7 +120,7 @@ namespace SharpMCRewrite
 		{
 			//ChunkColumn chunk = Generator.GenerateChunkColumn(new Vector2(blockCoordinates.X / 16, blockCoordinates.Z / 16));
 
-			var chunk = Generator.GetChunk(blockCoordinates.X/16, blockCoordinates.Z/16);
+			var chunk = Generator.GetChunk(blockCoordinates.X >> 4, blockCoordinates.Z >> 4);
 
 			var bid = chunk.GetBlock(blockCoordinates.X & 0x0f, blockCoordinates.Y & 0x7f, blockCoordinates.Z & 0x0f);
 
@@ -196,7 +196,7 @@ namespace SharpMCRewrite
 
 			foreach (var i in OnlinePlayers)
 			{
-				new TimeUpdate().Write(i.Wrapper, new MSGBuffer(i.Wrapper), new object[0]);
+				new TimeUpdate(i.Wrapper) {Time = Tick, Day = Day} .Write();
 			}
 		}
 
