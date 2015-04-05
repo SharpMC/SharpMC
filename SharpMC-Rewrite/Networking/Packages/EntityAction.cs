@@ -1,4 +1,4 @@
-﻿using SharpMCRewrite.NET;
+﻿using SharpMCRewrite.Classes;
 
 namespace SharpMCRewrite.Networking.Packages
 {
@@ -20,7 +20,7 @@ namespace SharpMCRewrite.Networking.Packages
 			var ActionID = Buffer.ReadVarInt();
 			var JumpBoost = Buffer.ReadVarInt();
 
-			Client.Player.LastEntityAction = (SharpMCRewrite.EntityAction) ActionID;
+			Client.Player.LastEntityAction = (Classes.EntityAction) ActionID;
 		}
 	}
 }

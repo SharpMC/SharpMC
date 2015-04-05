@@ -1,4 +1,4 @@
-﻿using SharpMCRewrite.NET;
+﻿using SharpMCRewrite.Classes;
 
 namespace SharpMCRewrite.Networking.Packages
 {
@@ -42,7 +42,7 @@ namespace SharpMCRewrite.Networking.Packages
 					{
 						Coordinates = player.Coordinates,
 						OnGround = player.OnGround,
-						UniqueServerID = player.UniqueServerID,
+						UniqueServerID = player.UniqueServerId,
 						Pitch = (byte) player.Pitch,
 						Yaw = (byte) player.Yaw
 					}.Write();

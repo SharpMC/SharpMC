@@ -4,7 +4,7 @@ using System.Net;
 using System.Text;
 using fNbt;
 
-namespace MiNET.Utils
+namespace SharpMCRewrite.Utils
 {
 	/// <summary>
 	///     BinaryWriter wrapper that takes care of writing primitives to an NBT stream,

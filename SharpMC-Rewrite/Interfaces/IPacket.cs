@@ -1,4 +1,6 @@
-﻿namespace SharpMCRewrite
+﻿using SharpMCRewrite.Classes;
+
+namespace SharpMCRewrite.Interfaces
 {
 	public interface IPacket
 	{

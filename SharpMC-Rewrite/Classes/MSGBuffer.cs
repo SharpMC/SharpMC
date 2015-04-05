@@ -5,18 +5,18 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace SharpMCRewrite
+namespace SharpMCRewrite.Classes
 {
 	public class MSGBuffer
 	{
-		private readonly ClientWrapper _Client;
-		public byte[] BufferedData = new byte[4096*2];
-		private int LastByte;
+		private ClientWrapper _client;
 		public int Size = 0;
+		private int LastByte = 0;
+		public byte[] BufferedData = new byte[4096];
 
 		public MSGBuffer(ClientWrapper client)
 		{
-			_Client = client;
+			_client = client;
 			if (client.TCPClient.Connected) mStream = client.TCPClient.GetStream();
 		}
 
@@ -25,23 +25,22 @@ namespace SharpMCRewrite
 			mStream = stream;
 		}
 
-		public MSGBuffer(byte[] Data)
+		public MSGBuffer(byte[] data)
 		{
-			BufferedData = Data;
+			BufferedData = data;
 		}
 
 		#region Reader
-
 		public int ReadByte()
 		{
-			var returnData = BufferedData[LastByte];
+			byte returnData = BufferedData[LastByte];
 			LastByte++;
 			return returnData;
 		}
 
 		public byte[] Read(int Length)
 		{
-			var Buffered = new byte[Length];
+			byte[] Buffered = new byte[Length];
 			Array.Copy(BufferedData, LastByte, Buffered, 0, Length);
 			LastByte += Length;
 			return Buffered;
@@ -50,84 +49,85 @@ namespace SharpMCRewrite
 
 		public int ReadInt()
 		{
-			var Dat = Read(4);
-			var Value = BitConverter.ToInt32(Dat, 0);
+			byte[] Dat = Read(4);
+			int Value = BitConverter.ToInt32(Dat, 0);
 			return IPAddress.NetworkToHostOrder(Value);
 		}
 
 		public float ReadFloat()
 		{
-			var Almost = Read(4);
-			var f = BitConverter.ToSingle(Almost, 0);
+			byte[] Almost = Read(4);
+			float f = BitConverter.ToSingle(Almost, 0);
 			return NetworkToHostOrder(f);
 		}
 
 		public bool ReadBool()
 		{
-			var Answer = ReadByte();
+			int Answer = ReadByte();
 			if (Answer == 1)
 				return true;
-			return false;
+			else
+				return false;
 		}
 
 		public double ReadDouble()
 		{
-			var AlmostValue = Read(8);
+			byte[] AlmostValue = Read(8);
 			return NetworkToHostOrder(AlmostValue);
 		}
 
 		public int ReadVarInt()
 		{
-			var value = 0;
-			var size = 0;
+			int value = 0;
+			int size = 0;
 			int b;
 			while (((b = ReadByte()) & 0x80) == 0x80)
 			{
-				value |= (b & 0x7F) << (size++*7);
+				value |= (b & 0x7F) << (size++ * 7);
 				if (size > 5)
 				{
 					throw new IOException("VarInt too long. Hehe that's punny.");
 				}
 			}
-			return value | ((b & 0x7F) << (size*7));
+			return value | ((b & 0x7F) << (size * 7));
 		}
 
 		public long ReadVarLong()
 		{
-			var value = 0;
-			var size = 0;
+			int value = 0;
+			int size = 0;
 			int b;
 			while (((b = ReadByte()) & 0x80) == 0x80)
 			{
-				value |= (b & 0x7F) << (size++*7);
+				value |= (b & 0x7F) << (size++ * 7);
 				if (size > 10)
 				{
 					throw new IOException("VarLong too long. That's what she said.");
 				}
 			}
-			return value | ((b & 0x7F) << (size*7));
+			return value | ((b & 0x7F) << (size * 7));
 		}
 
 		public short ReadShort()
 		{
-			var Da = Read(2);
-			var D = BitConverter.ToInt16(Da, 0);
+			byte[] Da = Read(2);
+			short D = BitConverter.ToInt16(Da, 0);
 			return IPAddress.NetworkToHostOrder(D);
 		}
 
 		public ushort ReadUShort()
 		{
-			var Da = Read(2);
+			byte[] Da = Read(2);
 			return NetworkToHostOrder(BitConverter.ToUInt16(Da, 0));
 		}
 
 		public ushort[] ReadUShort(int count)
 		{
-			var us = new ushort[count];
-			for (var i = 0; i < us.Length; i++)
+			ushort[] us = new ushort[count];
+			for (int i = 0; i < us.Length; i++)
 			{
-				var Da = Read(2);
-				var D = BitConverter.ToUInt16(Da, 0);
+				byte[] Da = Read(2);
+				ushort D = BitConverter.ToUInt16(Da, 0);
 				us[i] = D;
 			}
 			return NetworkToHostOrder(us);
@@ -136,11 +136,11 @@ namespace SharpMCRewrite
 
 		public ushort[] ReadUShortLocal(int count)
 		{
-			var us = new ushort[count];
-			for (var i = 0; i < us.Length; i++)
+			ushort[] us = new ushort[count];
+			for (int i = 0; i < us.Length; i++)
 			{
-				var Da = Read(2);
-				var D = BitConverter.ToUInt16(Da, 0);
+				byte[] Da = Read(2);
+				ushort D = BitConverter.ToUInt16(Da, 0);
 				us[i] = D;
 			}
 			return us;
@@ -149,55 +149,24 @@ namespace SharpMCRewrite
 
 		public string ReadString()
 		{
-			var Length = ReadVarInt();
-			var StringValue = Read(Length);
+			int Length = ReadVarInt();
+			byte[] StringValue = Read(Length);
 			return Encoding.UTF8.GetString(StringValue);
 		}
 
 		public long ReadLong()
 		{
-			var l = Read(8);
+			byte[] l = Read(8);
 			return IPAddress.NetworkToHostOrder(BitConverter.ToInt64(l, 0));
 		}
 
 		public Vector3 ReadPosition()
 		{
-			var val = ReadLong();
-			var x = Convert.ToDouble(val >> 38);
-			var y = Convert.ToDouble((val >> 26) & 0xFFF);
-			var z = Convert.ToDouble(val << 38 >> 38);
+			long val = ReadLong();
+			double x = Convert.ToDouble(val >> 38);
+			double y = Convert.ToDouble((val >> 26) & 0xFFF);
+			double z = Convert.ToDouble(val << 38 >> 38);
 			return new Vector3(x, y, z);
-		}
-
-		public IntVector3 ReadIntPosition()
-		{
-			var val = ReadLong();
-			var x = (int) Math.Floor((decimal) (val >> 38));
-			var y = (int) Math.Floor((decimal) ((val >> 26) & 0xFFF));
-			var z = (int) Math.Floor((decimal) (val << 38 >> 38));
-			return new IntVector3(x, y, z);
-		}
-
-		/// <summary>
-		///     Reads the username. (We cannot just use ReadString() because of some weird bug)...
-		///     Idk what happend, but it seems to send an extra byte for the username there...
-		/// </summary>
-		/// <returns>The username.</returns>
-		public string ReadUsername()
-		{
-			var NoEdit = Encoding.UTF8.GetBytes(ReadString());
-			var t = new List<byte>();
-
-			var D = 0;
-			foreach (var i in NoEdit)
-			{
-				if (D > 1)
-				{
-					t.Add(i);
-				}
-				D++;
-			}
-			return Encoding.UTF8.GetString(t.ToArray());
 		}
 
 		private double NetworkToHostOrder(byte[] data)
@@ -211,7 +180,7 @@ namespace SharpMCRewrite
 
 		private float NetworkToHostOrder(float network)
 		{
-			var bytes = BitConverter.GetBytes(network);
+			byte[] bytes = BitConverter.GetBytes(network);
 
 			if (BitConverter.IsLittleEndian)
 				Array.Reverse(bytes);
@@ -228,27 +197,27 @@ namespace SharpMCRewrite
 
 		private ushort NetworkToHostOrder(ushort network)
 		{
-			var net = BitConverter.GetBytes(network);
+			byte[] net = BitConverter.GetBytes(network);
 			if (BitConverter.IsLittleEndian)
 				Array.Reverse(net);
 			return BitConverter.ToUInt16(net, 0);
 		}
-
 		#endregion
 
 		#region Writer
-
 		public byte[] ExportWriter
 		{
-			get { return bffr.ToArray(); }
+			get
+			{
+				return bffr.ToArray();
+			}
 		}
-
-		private readonly List<byte> bffr = new List<byte>();
-		private readonly NetworkStream mStream;
+		private List<byte> bffr = new List<byte>();
+		private NetworkStream mStream;
 
 		public void Write(byte[] Data, int Offset, int Length)
 		{
-			for (var i = 0; i < Length; i++)
+			for (int i = 0; i < Length; i++)
 			{
 				bffr.Add(Data[i + Offset]);
 			}
@@ -256,24 +225,18 @@ namespace SharpMCRewrite
 
 		public void Write(byte[] Data)
 		{
-			foreach (var i in Data)
+			foreach (byte i in Data)
 			{
 				bffr.Add(i);
 			}
 		}
 
-		public void WritePosition(Vector3 Position)
+		public void WritePosition(Vector3 position)
 		{
-			Position.ConvertToNetwork();
-			long ToSend = (((((int) Position.X) & 0x3FFFFFF) << 38) | ((((int) Position.Y) & 0xFFF) << 26) |
-			               (((int) Position.Z) & 0x3FFFFFF));
-			WriteLong(ToSend);
-		}
-
-		public void WritePosition(IntVector3 Position)
-		{
-			Position.ConvertToNetwork();
-			long toSend = ((((Position.X) & 0x3FFFFFF) << 38) | (((Position.Y) & 0xFFF) << 26) | ((Position.Z) & 0x3FFFFFF));
+			long x = Convert.ToInt64(position.X);
+			long y = Convert.ToInt64(position.Y);
+			long z = Convert.ToInt64(position.Z);
+			var toSend = ((x & 0x3FFFFFF) << 38) | ((y & 0xFFF) << 26) | (z & 0x3FFFFFF);
 			WriteLong(toSend);
 		}
 
@@ -281,45 +244,45 @@ namespace SharpMCRewrite
 		{
 			while ((Integer & -128) != 0)
 			{
-				bffr.Add((byte) (Integer & 127 | 128));
-				Integer = (int) (((uint) Integer) >> 7);
+				bffr.Add((byte)(Integer & 127 | 128));
+				Integer = (int)(((uint)Integer) >> 7);
 			}
-			bffr.Add((byte) Integer);
+			bffr.Add((byte)Integer);
 		}
 
 		public void WriteVarLong(long i)
 		{
-			var Fuck = i;
+			long Fuck = i;
 			while ((Fuck & ~0x7F) != 0)
 			{
-				bffr.Add((byte) ((Fuck & 0x7F) | 0x80));
+				bffr.Add((byte)((Fuck & 0x7F) | 0x80));
 				Fuck >>= 7;
 			}
-			bffr.Add((byte) Fuck);
+			bffr.Add((byte)Fuck);
 		}
 
 		public void WriteInt(int Data)
 		{
-			var Buffer = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(Data));
+			byte[] Buffer = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(Data));
 			Write(Buffer);
 		}
 
 		public void WriteString(string Data)
 		{
-			var StringData = Encoding.UTF8.GetBytes(Data);
+			byte[] StringData = Encoding.UTF8.GetBytes(Data);
 			WriteVarInt(StringData.Length);
 			Write(StringData);
 		}
 
 		public void WriteShort(short Data)
 		{
-			var ShortData = BitConverter.GetBytes(Data);
+			byte[] ShortData = BitConverter.GetBytes(Data);
 			Write(ShortData);
 		}
 
 		public void WriteUShort(ushort Data)
 		{
-			var UShortData = BitConverter.GetBytes(Data);
+			byte[] UShortData = BitConverter.GetBytes(Data);
 			Write(UShortData);
 		}
 
@@ -350,9 +313,9 @@ namespace SharpMCRewrite
 
 		public void WriteUUID(Guid uuid)
 		{
-			var guid = uuid.ToByteArray();
-			var Long1 = new byte[8];
-			var Long2 = new byte[8];
+			byte[] guid = uuid.ToByteArray();
+			byte[] Long1 = new byte[8];
+			byte[] Long2 = new byte[8];
 			Array.Copy(guid, 0, Long1, 0, 8);
 			Array.Copy(guid, 8, Long2, 0, 8);
 			Write(Long1);
@@ -360,37 +323,37 @@ namespace SharpMCRewrite
 		}
 
 		/// <summary>
-		///     Flush all data to the TCPClient NetworkStream.
+		/// Flush all data to the TCPClient NetworkStream.
 		/// </summary>
 		public void FlushData(bool quee = false)
 		{
 			try
 			{
-				var AllData = bffr.ToArray();
+				byte[] AllData = bffr.ToArray();
 				bffr.Clear();
 
 				WriteVarInt(AllData.Length);
-				var Buffer = bffr.ToArray();
+				byte[] Buffer = bffr.ToArray();
 
 				// ConsoleFunctions.WriteDebugLine ("Specified Data length: " + AllData.Length);
 				//  ConsoleFunctions.WriteDebugLine ("Full packet length: " + (AllData.Length + Buffer.Length));
-//                mStream.Write (Buffer, 0, Buffer.Length);
+				//                mStream.Write (Buffer, 0, Buffer.Length);
 				//              mStream.Write (AllData, 0, AllData.Length);
-				var data = new List<byte>();
-				foreach (var i in Buffer)
+				List<byte> data = new List<byte>();
+				foreach (byte i in Buffer)
 				{
 					data.Add(i);
 				}
-				foreach (var i in AllData)
+				foreach (byte i in AllData)
 				{
 					data.Add(i);
 				}
-				_Client.AddToQuee(data.ToArray(), quee);
+				_client.AddToQuee(data.ToArray(), quee);
 				bffr.Clear();
 			}
 			catch (Exception ex)
 			{
-				ConsoleFunctions.WriteErrorLine("Failed to send a packet!\n" + ex);
+				ConsoleFunctions.WriteErrorLine("Failed to send a packet!\n" + ex.ToString());
 			}
 		}
 
@@ -398,12 +361,12 @@ namespace SharpMCRewrite
 		{
 			try
 			{
-				var AllData = bffr.ToArray();
+				byte[] AllData = bffr.ToArray();
 				bffr.Clear();
 
 				WriteVarInt(packetId);
 				WriteVarInt(AllData.Length);
-				var Buffer = bffr.ToArray();
+				byte[] Buffer = bffr.ToArray();
 
 				// ConsoleFunctions.WriteDebugLine ("Specified Data length: " + AllData.Length);
 				//  ConsoleFunctions.WriteDebugLine ("Full packet length: " + (AllData.Length + Buffer.Length));
@@ -413,13 +376,13 @@ namespace SharpMCRewrite
 			}
 			catch (Exception ex)
 			{
-				ConsoleFunctions.WriteErrorLine("Failed to send a packet!\n" + ex);
+				ConsoleFunctions.WriteErrorLine("Failed to send a packet!\n" + ex.ToString());
 			}
 		}
 
 		private byte[] HostToNetworkOrder(double d)
 		{
-			var data = BitConverter.GetBytes(d);
+			byte[] data = BitConverter.GetBytes(d);
 			if (BitConverter.IsLittleEndian)
 			{
 				Array.Reverse(data);
@@ -429,7 +392,7 @@ namespace SharpMCRewrite
 
 		private byte[] HostToNetworkOrder(float host)
 		{
-			var bytes = BitConverter.GetBytes(host);
+			byte[] bytes = BitConverter.GetBytes(host);
 
 			if (BitConverter.IsLittleEndian)
 				Array.Reverse(bytes);

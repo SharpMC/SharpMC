@@ -1,4 +1,4 @@
-﻿using SharpMCRewrite.NET;
+﻿using SharpMCRewrite.Classes;
 
 namespace SharpMCRewrite.Networking.Packages
 {
@@ -18,7 +18,7 @@ namespace SharpMCRewrite.Networking.Packages
 		public override void Write()
 		{
 			Buffer.WriteVarInt(SendId);
-			Buffer.WriteInt(Player.UniqueServerID);
+			Buffer.WriteInt(Player.UniqueServerId);
 			Buffer.WriteByte((byte)Player.Gamemode);
 			Buffer.WriteByte((byte)Player.Dimension);
 			Buffer.WriteByte((byte)Globals.Level.Difficulty);

@@ -1,12 +1,13 @@
 ﻿using System.Collections.Generic;
 using System.Threading;
 using System.Timers;
-using MiNET.Worlds;
 using SharpMCRewrite.Blocks;
+using SharpMCRewrite.Enums;
+using SharpMCRewrite.Interfaces;
 using SharpMCRewrite.Networking.Packages;
 using Timer = System.Timers.Timer;
 
-namespace SharpMCRewrite
+namespace SharpMCRewrite.Classes
 {
 	public enum LVLType
 	{
@@ -57,14 +58,6 @@ namespace SharpMCRewrite
 			ConsoleFunctions.WriteInfoLine("Chat: " + Message);
 		}
 
-		private void Broadcaster(byte[] Data)
-		{
-			foreach (var i in OnlinePlayers)
-			{
-				i.Wrapper.SendData(Data);
-			}
-		}
-
 		public void BroadcastNewPlayer(ClientWrapper newPlayer)
 		{
 			foreach (var i in OnlinePlayers)
@@ -88,7 +81,7 @@ namespace SharpMCRewrite
 						Action = 0,
 						Gamemode = i.Gamemode,
 						Username = i.Username,
-						UUID = i.UUID
+						UUID = i.Uuid
 					}.Write();
 				}
 			}
@@ -102,7 +95,7 @@ namespace SharpMCRewrite
 				Action = 0,
 				Gamemode = caller.Player.Gamemode,
 				Username = caller.Player.Username,
-				UUID = caller.Player.UUID
+				UUID = caller.Player.Uuid
 			}.Broadcast(false, caller.Player);
 		}
 
@@ -111,20 +104,20 @@ namespace SharpMCRewrite
 			Generator.SaveChunks(LVLName);
 		}
 
-		public Block GetBlock(Vector3 blockCoordinates)
+		/*public Block GetBlock(Vector3 blockCoordinates)
 		{
-			return GetBlock(new IntVector3((int) blockCoordinates.X, (int) blockCoordinates.Y, (int) blockCoordinates.Z));
-		}
+			return GetBlock(new Vector3( blockCoordinates.X, blockCoordinates.Y, blockCoordinates.Z));
+		}*/
 
-		public Block GetBlock(IntVector3 blockCoordinates)
+		public Block GetBlock(Vector3 blockCoordinates)
 		{
 			//ChunkColumn chunk = Generator.GenerateChunkColumn(new Vector2(blockCoordinates.X / 16, blockCoordinates.Z / 16));
 
-			var chunk = Generator.GetChunk(blockCoordinates.X >> 4, blockCoordinates.Z >> 4);
+			var chunk = Generator.GetChunk((int)blockCoordinates.X >> 4, (int)blockCoordinates.Z >> 4);
 
-			var bid = chunk.GetBlock(blockCoordinates.X & 0x0f, blockCoordinates.Y & 0x7f, blockCoordinates.Z & 0x0f);
+			var bid = chunk.GetBlock((int)blockCoordinates.X & 0x0f, (int)blockCoordinates.Y & 0x7f, (int)blockCoordinates.Z & 0x0f);
 
-			var metadata = chunk.GetMetadata(blockCoordinates.X & 0x0f, blockCoordinates.Y & 0x7f, blockCoordinates.Z & 0x0f);
+			var metadata = chunk.GetMetadata((int)blockCoordinates.X & 0x0f, (int)blockCoordinates.Y & 0x7f, (int)blockCoordinates.Z & 0x0f);
 
 			bid = (ushort) (bid >> 4);
 

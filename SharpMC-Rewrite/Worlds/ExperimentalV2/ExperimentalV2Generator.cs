@@ -5,8 +5,9 @@ using System.IO;
 using System.Linq;
 using LibNoise;
 using LibNoise.Primitive;
-using MiNET.Worlds;
 using SharpMCRewrite.Blocks;
+using SharpMCRewrite.Classes;
+using SharpMCRewrite.Interfaces;
 using SharpMCRewrite.Networking.Packages;
 using SharpMCRewrite.Worlds.ExperimentalV2.Structures;
 
@@ -15,13 +16,13 @@ namespace SharpMCRewrite.Worlds.ExperimentalV2
 	internal class SimplexOctaveGenerator
 	{
 		private readonly SimplexPerlin[] _generators;
-		private readonly int _octaves;
-		private readonly long _seed;
+		public int Octaves { get; private set; }
+		public long Seed { get; private set; }
 
 		public SimplexOctaveGenerator(int seed, int octaves)
 		{
-			_seed = seed;
-			_octaves = octaves;
+			Seed = seed;
+			Octaves = octaves;
 
 			_generators = new SimplexPerlin[octaves];
 			for (var i = 0; i < _generators.Length; i++)
@@ -90,12 +91,12 @@ namespace SharpMCRewrite.Worlds.ExperimentalV2
 	internal class ExperimentalV2Generator : IWorldProvider
 	{
 		private const int WaterLevel = 50;
-		private const string _Seed = "Test";
+		private const string Seed = "Testert";
 		private static int _seedoffset = new Random(Globals.Seed.GetHashCode()).Next(1, Int16.MaxValue);
-		private static readonly Random getrandom = new Random();
-		private static readonly object syncLock = new object();
-		private readonly string _folder = "";
-		private readonly CaveGenerator cavegen = new CaveGenerator(_Seed.GetHashCode());
+		private static readonly Random Getrandom = new Random();
+		private static readonly object SyncLock = new object();
+		private readonly string _folder;
+		private readonly CaveGenerator _cavegen = new CaveGenerator(Seed.GetHashCode());
 		public Dictionary<Tuple<int, int>, ChunkColumn> ChunkCache = new Dictionary<Tuple<int, int>, ChunkColumn>();
 
 		public ExperimentalV2Generator(string folder)
@@ -104,7 +105,13 @@ namespace SharpMCRewrite.Worlds.ExperimentalV2
 			IsCaching = true;
 		}
 
-		public override bool IsCaching { get; set; }
+		public override sealed bool IsCaching { get; set; }
+
+		public static int Seedoffset
+		{
+			get { return _seedoffset; }
+			set { _seedoffset = value; }
+		}
 
 		public override ChunkColumn GetChunk(int x, int z)
 		{
@@ -123,30 +130,32 @@ namespace SharpMCRewrite.Worlds.ExperimentalV2
 			var u = Globals.Decompress(File.ReadAllBytes(_folder + "/" + x + "." + z + ".cfile"));
 			var reader = new MSGBuffer(u);
 
-			var BlockLength = reader.ReadInt();
-			var Block = reader.ReadUShortLocal(BlockLength);
+			var blockLength = reader.ReadInt();
+			var block = reader.ReadUShortLocal(blockLength);
 
-			var SkyLength = reader.ReadInt();
-			var Skylight = reader.Read(SkyLength);
+			var skyLength = reader.ReadInt();
+			var skylight = reader.Read(skyLength);
 
-			var LightLength = reader.ReadInt();
-			var Blocklight = reader.Read(LightLength);
+			var lightLength = reader.ReadInt();
+			var blocklight = reader.Read(lightLength);
 
-			var BiomeIDLength = reader.ReadInt();
-			var BiomeID = reader.Read(BiomeIDLength);
+			var biomeIdLength = reader.ReadInt();
+			var biomeId = reader.Read(biomeIdLength);
 
-			var CC = new ChunkColumn();
-			CC.Blocks = Block;
-			CC.Blocklight.Data = Blocklight;
-			CC.Skylight.Data = Skylight;
-			CC.BiomeId = BiomeID;
-			CC.X = x;
-			CC.Z = z;
+			var cc = new ChunkColumn
+			{
+				Blocks = block,
+				Blocklight = {Data = blocklight},
+				Skylight = {Data = skylight},
+				BiomeId = biomeId,
+				X = x,
+				Z = z
+			};
 			Debug.WriteLine("We should have loaded " + x + ", " + z);
-			return CC;
+			return cc;
 		}
 
-		public override void SaveChunks(string Folder)
+		public override void SaveChunks(string folder)
 		{
 			foreach (var i in ChunkCache)
 			{
@@ -184,75 +193,77 @@ namespace SharpMCRewrite.Worlds.ExperimentalV2
 			return chunk;
 		}
 
-		public override IEnumerable<ChunkColumn> GenerateChunks(int _viewDistance, double playerX, double playerZ,
-			Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed, bool output = false)
+		public override IEnumerable<ChunkColumn> GenerateChunks(int viewDistance, double playerX, double playerZ,
+			Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed, Player player, bool output = false)
 		{
 			lock (chunksUsed)
 			{
-				var newOrders = new Dictionary<Tuple<int, int>, double>();
-				var radiusSquared = _viewDistance/Math.PI;
-				var radius = Math.Ceiling(Math.Sqrt(radiusSquared));
-				var centerX = Math.Floor((playerX)/16);
-				var centerZ = Math.Floor((playerZ)/16);
+				Dictionary<Tuple<int, int>, double> newOrders = new Dictionary<Tuple<int, int>, double>();
+				double radiusSquared = viewDistance / Math.PI;
+				double radius = Math.Ceiling(Math.Sqrt(radiusSquared));
+				int centerX = (int)(playerX) >> 4;
+				int centerZ = (int)(playerZ) >> 4;
 
-				for (var x = -radius; x <= radius; ++x)
+				for (double x = -radius; x <= radius; ++x)
 				{
-					for (var z = -radius; z <= radius; ++z)
+					for (double z = -radius; z <= radius; ++z)
 					{
-						var distance = (x*x) + (z*z);
+						var distance = (x * x) + (z * z);
 						if (distance > radiusSquared)
 						{
 							continue;
 						}
-						var chunkX = (int) Math.Floor(x + centerX);
-						var chunkZ = (int) Math.Floor(z + centerZ);
-
-						var index = new Tuple<int, int>(chunkX, chunkZ);
+						int chunkX = (int)(x + centerX);
+						int chunkZ = (int)(z + centerZ);
+						Tuple<int, int> index = new Tuple<int, int>(chunkX, chunkZ);
 						newOrders[index] = distance;
 					}
 				}
 
-				if (newOrders.Count > _viewDistance)
+				if (newOrders.Count > viewDistance)
 				{
 					foreach (var pair in newOrders.OrderByDescending(pair => pair.Value))
 					{
-						if (newOrders.Count <= _viewDistance) break;
+						if (newOrders.Count <= viewDistance) break;
 						newOrders.Remove(pair.Key);
 					}
 				}
-
 
 				foreach (var chunkKey in chunksUsed.Keys.ToArray())
 				{
 					if (!newOrders.ContainsKey(chunkKey))
 					{
+						new ChunkData(player.Wrapper)
+						{
+							Queee = false,
+							Unloader = true,
+							Chunk = new ChunkColumn() { X = chunkKey.Item1, Z = chunkKey.Item2 }
+						}.Write();
+
 						chunksUsed.Remove(chunkKey);
 					}
 				}
 
-				long avarageLoadTime = -1;
 				foreach (var pair in newOrders.OrderBy(pair => pair.Value))
 				{
 					if (chunksUsed.ContainsKey(pair.Key)) continue;
 
-					var x = pair.Key.Item1;
-					var z = pair.Key.Item2;
-
-					var chunk = GenerateChunkColumn(new Vector2(x, z));
-					
+					ChunkColumn chunk = GenerateChunkColumn(new ChunkCoordinates(pair.Key.Item1, pair.Key.Item2));
 					chunksUsed.Add(pair.Key, chunk);
 
 					yield return chunk;
 				}
+
+				if (chunksUsed.Count > viewDistance) Debug.WriteLine("Too many chunks used: {0}", chunksUsed.Count);
 			}
 		}
 
 		public static int GetRandomNumber(int min, int max)
 		{
-			lock (syncLock)
+			lock (SyncLock)
 			{
 				// synchronize
-				return getrandom.Next(min, max);
+				return Getrandom.Next(min, max);
 			}
 		}
 
@@ -269,13 +280,13 @@ namespace SharpMCRewrite.Worlds.ExperimentalV2
 				treeBasePositions[t, 1] = z;
 			}
 
-			var bottom = new SimplexOctaveGenerator(_Seed.GetHashCode(), 8);
-			var overhang = new SimplexOctaveGenerator(_Seed.GetHashCode(), 8);
+			var bottom = new SimplexOctaveGenerator(Seed.GetHashCode(), 8);
+			var overhang = new SimplexOctaveGenerator(Seed.GetHashCode(), 8);
 			overhang.SetScale(1/128.0);
 			bottom.SetScale(1/256.0);
 
-			double overhangsMagnitude = 16;
-			double bottomsMagnitude = 32;
+			const double overhangsMagnitude = 16;
+			const double bottomsMagnitude = 32;
 
 			for (var x = 0; x < 16; x++)
 			{
@@ -288,7 +299,7 @@ namespace SharpMCRewrite.Worlds.ExperimentalV2
 					var bottomHeight = (int) ((bottom.Noise(ox, oz, 0.5, 0.5)*bottomsMagnitude) + 64.0);
 					var maxHeight = (int) ((overhang.Noise(ox, oz, 0.5, 0.5)*overhangsMagnitude) + bottomHeight + 32.0);
 
-					var threshold = 0.0;
+					const double threshold = 0.0;
 
 					maxHeight = Math.Max(1, maxHeight);
 
@@ -399,7 +410,7 @@ namespace SharpMCRewrite.Worlds.ExperimentalV2
 						}
 						if (y < WaterLevel - 10)
 						{
-							cavegen.GenerateCave(chunk, x, y, z);
+							_cavegen.GenerateCave(chunk, x, y, z);
 						}
 					}
 				}
@@ -414,20 +425,13 @@ namespace SharpMCRewrite.Worlds.ExperimentalV2
 		public override void SetBlock(Block block, Level level, bool broadcast)
 		{
 			ChunkColumn c;
-			if (!ChunkCache.TryGetValue(new Tuple<int, int>(block.Coordinates.X >> 4, block.Coordinates.Z >> 4), out c))
+			if (!ChunkCache.TryGetValue(new Tuple<int, int>((int)block.Coordinates.X >> 4, (int)block.Coordinates.Z >> 4), out c))
 				throw new Exception("No chunk found!");
 
-			c.SetBlock((block.Coordinates.X & 0x0f), (block.Coordinates.Y & 0x7f), (block.Coordinates.Z & 0x0f), block);
+			c.SetBlock(((int)block.Coordinates.X & 0x0f), ((int)block.Coordinates.Y & 0x7f), ((int)block.Coordinates.Z & 0x0f), block);
 			if (!broadcast) return;
-
-			foreach (var player in level.OnlinePlayers)
-			{
-				new BlockChange(player.Wrapper)
-				{
-					Block = block,
-					Location = block.Coordinates
-				}.Write();
-			}
+			//ChunkData.Broadcast(c); //Hehe, blockchanges are bugged, so temporaily solution :P
+			BlockChange.Broadcast(block);
 		}
 
 		public override Vector3 GetSpawnPoint()

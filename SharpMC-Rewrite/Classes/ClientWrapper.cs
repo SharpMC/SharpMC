@@ -5,7 +5,7 @@ using System.Timers;
 using SharpMCRewrite.Networking.Packages;
 using Timer = System.Timers.Timer;
 
-namespace SharpMCRewrite
+namespace SharpMCRewrite.Classes
 {
 	public class ClientWrapper
 	{
@@ -26,7 +26,7 @@ namespace SharpMCRewrite
 		public void AddToQuee(byte[] data, bool quee = false)
 		{
 			//ConsoleFunctions.WriteDebugLine("Data length: " + data.Length);
-			if (quee || data.Length >= 2048)
+			if (quee)
 			{
 				lock (Commands)
 				{
@@ -42,9 +42,8 @@ namespace SharpMCRewrite
 
 		private void ThreadRun()
 		{
-			while (true)
+			while (Resume.WaitOne())
 			{
-				Resume.WaitOne();
 				byte[] command;
 				lock (Commands)
 				{

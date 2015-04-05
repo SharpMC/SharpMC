@@ -2,13 +2,13 @@
 
 namespace SharpMCRewrite.Classes
 {
-	public class Records : List<IntVector3>
+	public class Records : List<Vector3>
 	{
 		public Records()
 		{
 		}
 
-		public Records(IEnumerable<IntVector3> coordinates) : base(coordinates)
+		public Records(IEnumerable<Vector3> coordinates) : base(coordinates)
 		{
 		}
 	}

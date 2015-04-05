@@ -1,4 +1,5 @@
 ﻿using SharpMCRewrite.Blocks;
+using SharpMCRewrite.Classes;
 
 namespace SharpMCRewrite.Worlds.ExperimentalV2.Structures
 {
@@ -16,23 +17,23 @@ namespace SharpMCRewrite.Worlds.ExperimentalV2.Structures
 			{
 				return new[]
 				{
-					new Block(42) {Metadata = 1, Coordinates = new IntVector3(0, 0, 0)},
-					new Block(43) {Metadata = 1, Coordinates = new IntVector3(0, 0, 0)},
-					new Block(43) {Metadata = 1, Coordinates = new IntVector3(1, 0, 0)},
-					new Block(43) {Metadata = 1, Coordinates = new IntVector3(2, 0, 0)},
-					new Block(43) {Metadata = 1, Coordinates = new IntVector3(3, 0, 0)},
-					new Block(43) {Metadata = 1, Coordinates = new IntVector3(0, 0, 1)},
-					new Block(43) {Metadata = 1, Coordinates = new IntVector3(1, 0, 1)},
-					new Block(43) {Metadata = 1, Coordinates = new IntVector3(2, 0, 1)},
-					new Block(43) {Metadata = 1, Coordinates = new IntVector3(3, 0, 1)},
-					new Block(43) {Metadata = 1, Coordinates = new IntVector3(0, 0, 2)},
-					new Block(43) {Metadata = 1, Coordinates = new IntVector3(1, 0, 2)},
-					new Block(43) {Metadata = 1, Coordinates = new IntVector3(2, 0, 2)},
-					new Block(43) {Metadata = 1, Coordinates = new IntVector3(3, 0, 2)},
-					new Block(43) {Metadata = 1, Coordinates = new IntVector3(0, 0, 3)},
-					new Block(43) {Metadata = 1, Coordinates = new IntVector3(1, 0, 3)},
-					new Block(43) {Metadata = 1, Coordinates = new IntVector3(2, 0, 3)},
-					new Block(43) {Metadata = 1, Coordinates = new IntVector3(3, 0, 3)}
+					new Block(42) {Metadata = 1, Coordinates = new Vector3(0, 0, 0)},
+					new Block(43) {Metadata = 1, Coordinates = new Vector3(0, 0, 0)},
+					new Block(43) {Metadata = 1, Coordinates = new Vector3(1, 0, 0)},
+					new Block(43) {Metadata = 1, Coordinates = new Vector3(2, 0, 0)},
+					new Block(43) {Metadata = 1, Coordinates = new Vector3(3, 0, 0)},
+					new Block(43) {Metadata = 1, Coordinates = new Vector3(0, 0, 1)},
+					new Block(43) {Metadata = 1, Coordinates = new Vector3(1, 0, 1)},
+					new Block(43) {Metadata = 1, Coordinates = new Vector3(2, 0, 1)},
+					new Block(43) {Metadata = 1, Coordinates = new Vector3(3, 0, 1)},
+					new Block(43) {Metadata = 1, Coordinates = new Vector3(0, 0, 2)},
+					new Block(43) {Metadata = 1, Coordinates = new Vector3(1, 0, 2)},
+					new Block(43) {Metadata = 1, Coordinates = new Vector3(2, 0, 2)},
+					new Block(43) {Metadata = 1, Coordinates = new Vector3(3, 0, 2)},
+					new Block(43) {Metadata = 1, Coordinates = new Vector3(0, 0, 3)},
+					new Block(43) {Metadata = 1, Coordinates = new Vector3(1, 0, 3)},
+					new Block(43) {Metadata = 1, Coordinates = new Vector3(2, 0, 3)},
+					new Block(43) {Metadata = 1, Coordinates = new Vector3(3, 0, 3)}
 				};
 			}
 		}

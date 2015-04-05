@@ -1,4 +1,4 @@
-﻿namespace SharpMCRewrite
+﻿namespace SharpMCRewrite.ExtentionMethods
 {
 	public static class StringExtensions
 	{

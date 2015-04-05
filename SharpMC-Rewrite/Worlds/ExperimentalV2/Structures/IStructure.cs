@@ -22,7 +22,7 @@ namespace SharpMCRewrite.Worlds.ExperimentalV2.Structures
 			{
 				foreach (var b in Blocks)
 				{
-					chunk.SetBlock(x + b.Coordinates.X, y + b.Coordinates.Y, z + b.Coordinates.Z, b);
+					chunk.SetBlock(x + (int)b.Coordinates.X, y + (int)b.Coordinates.Y, z + (int)b.Coordinates.Z, b);
 				}
 			}
 		}

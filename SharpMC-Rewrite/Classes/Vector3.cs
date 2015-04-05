@@ -1,7 +1,6 @@
 ﻿using System;
-using System.Net;
 
-namespace SharpMCRewrite
+namespace SharpMCRewrite.Classes
 {
 	public class Vector3
 	{
@@ -68,44 +67,6 @@ namespace SharpMCRewrite
 		public static Vector3 operator -(Vector3 a, Vector3 b)
 		{
 			return new Vector3(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
-		}
-	}
-
-	public class IntVector3
-	{
-		public IntVector3(int _X, int _Y, int _Z)
-		{
-			X = _X;
-			Y = _Y;
-			Z = _Z;
-		}
-
-		public int X { get; set; }
-		public int Y { get; set; }
-		public int Z { get; set; }
-
-		public string GetString()
-		{
-			return X + ", " + Y + ", " + Z;
-		}
-
-		public void ConvertToNetwork()
-		{
-			X = IPAddress.HostToNetworkOrder(X);
-			Y = IPAddress.HostToNetworkOrder(Y);
-			Z = IPAddress.HostToNetworkOrder(Z);
-		}
-
-		public void ConvertToHost()
-		{
-			X = IPAddress.NetworkToHostOrder(X);
-			Y = IPAddress.NetworkToHostOrder(Y);
-			Z = IPAddress.NetworkToHostOrder(Z);
-		}
-
-		public static IntVector3 operator -(IntVector3 a, IntVector3 b)
-		{
-			return new IntVector3(a.X - b.X, a.Y - b.Y, a.Z - b.Z);
 		}
 	}
 }

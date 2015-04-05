@@ -1,5 +1,5 @@
 ﻿using System.Collections.Generic;
-using SharpMCRewrite.NET;
+using SharpMCRewrite.Classes;
 
 namespace SharpMCRewrite.Networking.Packages
 {

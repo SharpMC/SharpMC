@@ -3,11 +3,12 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using MiNET.Worlds;
 using SharpMCRewrite.Blocks;
+using SharpMCRewrite.Classes;
+using SharpMCRewrite.Interfaces;
 using SharpMCRewrite.Networking.Packages;
 
-namespace SharpMCRewrite.Worlds
+namespace SharpMCRewrite.Worlds.Flatland
 {
 	public class FlatLandGenerator : IWorldProvider
 	{
@@ -38,13 +39,13 @@ namespace SharpMCRewrite.Worlds
 			throw new Exception("We couldn't find the chunk.");
 		}
 
-		public override IEnumerable<ChunkColumn> GenerateChunks(int _viewDistance, double playerX, double playerZ,
-			Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed, bool output = false)
+		public override IEnumerable<ChunkColumn> GenerateChunks(int viewDistance, double playerX, double playerZ,
+			Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed, Player player, bool output = false)
 		{
 			lock (chunksUsed)
 			{
 				var newOrders = new Dictionary<Tuple<int, int>, double>();
-				var radiusSquared = _viewDistance/Math.PI;
+				var radiusSquared = viewDistance/Math.PI;
 				var radius = Math.Ceiling(Math.Sqrt(radiusSquared));
 				var centerX = Math.Floor((playerX)/16);
 				var centerZ = Math.Floor((playerZ)/16);
@@ -66,11 +67,11 @@ namespace SharpMCRewrite.Worlds
 					}
 				}
 
-				if (newOrders.Count > _viewDistance)
+				if (newOrders.Count > viewDistance)
 				{
 					foreach (var pair in newOrders.OrderByDescending(pair => pair.Value))
 					{
-						if (newOrders.Count <= _viewDistance) break;
+						if (newOrders.Count <= viewDistance) break;
 						newOrders.Remove(pair.Key);
 					}
 				}
@@ -224,17 +225,18 @@ namespace SharpMCRewrite.Worlds
 		public override void SetBlock(Block block, Level level, bool broadcast)
 		{
 			ChunkColumn c;
-			if (!_chunkCache.TryGetValue(new Tuple<int, int>(block.Coordinates.X/16, block.Coordinates.Z/16), out c))
+			if (!_chunkCache.TryGetValue(new Tuple<int, int>((int)block.Coordinates.X >> 4, (int)block.Coordinates.Z >> 4), out c))
 				throw new Exception("No chunk found!");
 
-			c.SetBlock((block.Coordinates.X & 0x0f), (block.Coordinates.Y & 0x7f), (block.Coordinates.Z & 0x0f), block);
+			c.SetBlock(((int)block.Coordinates.X & 0x0f), ((int)block.Coordinates.Y & 0x7f), ((int)block.Coordinates.Z & 0x0f), block);
 			if (!broadcast) return;
 
 			foreach (var player in level.OnlinePlayers)
 			{
 				new BlockChange(player.Wrapper, new MSGBuffer(player.Wrapper))
 				{
-					Block = block,
+					BlockId = block.Id,
+					MetaData = block.Metadata,
 					Location = block.Coordinates
 				}.Write();
 			}

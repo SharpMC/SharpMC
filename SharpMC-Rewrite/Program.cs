@@ -1,72 +1,81 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Security.Permissions;
 using System.Threading;
-using MiNET.Utils;
 using SharpMCRewrite.Networking;
 using SharpMCRewrite.Networking.Packages;
+using SharpMCRewrite.Utils;
 using SharpMCRewrite.Worlds;
-using SharpMCRewrite.Worlds.Experimental;
 using SharpMCRewrite.Worlds.ExperimentalV2;
-using SharpMCRewrite.Worlds.Nether;
+using SharpMCRewrite.Worlds.Flatland;
 
 namespace SharpMCRewrite
 {
 	internal class MainClass
 	{
+		[SecurityPermission(SecurityAction.Demand, Flags = SecurityPermissionFlag.ControlAppDomain)]
 		public static void Main(string[] args)
 		{
-			ConfigParser.ConfigFile = "server.properties";
-			ConfigParser.InitialValue = new[]
-			{
-				"#DO NOT REMOVE THIS LINE - SharpMC Config",
-				"MaxPlayers=10",
-				"LevelType=Experimental",
-				"WorldName=world",
-				"Seed=SharpieCraft"
-			};
-			ConfigParser.Check();
+				AppDomain currentDomain = AppDomain.CurrentDomain;
+				currentDomain.UnhandledException += UnhandledException;
 
-			ConsoleFunctions.WriteInfoLine("Loading config file...");
-			Globals.MaxPlayers = ConfigParser.GetProperty("MaxPlayers", 10);
-			var Lvltype = ConfigParser.GetProperty("LevelType", "Experimental");
-			switch (Lvltype)
-			{
-				case "FlatLand":
-					Globals.Level = new FlatLandLevel(ConfigParser.GetProperty("WorldName", "world"));
-					break;
-				case "Experimental":
-					Globals.Level = new ExperimentalLevel(ConfigParser.GetProperty("WorldName", "world"));
-					break;
-				case "Hell":
-				case "Nether":
-					Globals.Level = new NetherLevel(ConfigParser.GetProperty("WorldName", "world"));
-					break;
-				default:
-					Globals.Level = new ExperimentalV2Level(ConfigParser.GetProperty("WorldName", "world"));
-					break;
-			}
-			Globals.Seed = ConfigParser.GetProperty("Seed", "SharpieCraft");
+				Config.ConfigFile = "server.properties";
+				Config.InitialValue = new[]
+				{
+					"#DO NOT REMOVE THIS LINE - SharpMC Config",
+					"MaxPlayers=10",
+					"LevelType=anvil",
+					"WorldName=world",
+					"Seed=SharpieCraft"
+				};
+				Config.Check();
 
-			ConsoleFunctions.WriteInfoLine("Generating chunks...");
-			Globals.Level.Generator.GenerateChunks(8 * 12, 0, 0, new Dictionary<Tuple<int, int>, ChunkColumn>());
+				ConsoleFunctions.WriteInfoLine("Loading config file...");
+				Globals.MaxPlayers = Config.GetProperty("MaxPlayers", 10);
+				var Lvltype = Config.GetProperty("LevelType", "Experimental");
+				switch (Lvltype.ToLower())
+				{
+					case "flatLand":
+						Globals.Level = new FlatLandLevel(Config.GetProperty("WorldName", "world"));
+						break;
+					case "normal":
+						Globals.Level = new ExperimentalV2Level(Config.GetProperty("WorldName", "world"));
+						break;
+					case "anvil":
+						Globals.Level = new AnvilLevel(Config.GetProperty("WorldName", "world"));
+						break;
+					default:
+						Globals.Level = new ExperimentalV2Level(Config.GetProperty("WorldName", "world"));
+						break;
+				}
+				Globals.Seed = Config.GetProperty("Seed", "SharpieCraft");
 
-			ConsoleFunctions.WriteInfoLine("Checking files...");
+				ConsoleFunctions.WriteInfoLine("Generating chunks...");
+				Globals.Level.Generator.GenerateChunks(8*16, 0, 0, new Dictionary<Tuple<int, int>, ChunkColumn>(), null);
 
-			if (!Directory.Exists(Globals.Level.LVLName))
-				Directory.CreateDirectory(Globals.Level.LVLName);
+				ConsoleFunctions.WriteInfoLine("Checking files...");
 
-			var ClientListener = new Thread(() => new BasicListener().ListenForClients());
-			ClientListener.Start();
+				if (!Directory.Exists(Globals.Level.LVLName))
+					Directory.CreateDirectory(Globals.Level.LVLName);
 
-			Console.CancelKeyPress += delegate
-			{
-				ConsoleFunctions.WriteInfoLine("Shutting down...");
-				//Globals.Level.BroadcastPacket(new Disconnect(), new object[] { "Server shutting down!" });
-				Disconnect.Broadcast("§fServer shutting down...");
-				ConsoleFunctions.WriteInfoLine("Saving chunks...");
-				Globals.Level.SaveChunks();
-			};
+				var ClientListener = new Thread(() => new BasicListener().ListenForClients());
+				ClientListener.Start();
+
+				Console.CancelKeyPress += delegate
+				{
+					ConsoleFunctions.WriteInfoLine("Shutting down...");
+					//Globals.Level.BroadcastPacket(new Disconnect(), new object[] { "Server shutting down!" });
+					Disconnect.Broadcast("§fServer shutting down...");
+					ConsoleFunctions.WriteInfoLine("Saving chunks...");
+					Globals.Level.SaveChunks();
+				};
+		}
+
+		static void UnhandledException(object sender, UnhandledExceptionEventArgs args)
+		{
+			Exception e = (Exception)args.ExceptionObject;
+			ConsoleFunctions.WriteErrorLine("An unhandled exception occured! Error message: " + e.Message);
 		}
 	}
 }

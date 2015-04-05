@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Threading;
+using SharpMCRewrite.Classes;
 using SharpMCRewrite.Networking.Packages;
 
 namespace SharpMCRewrite.Networking

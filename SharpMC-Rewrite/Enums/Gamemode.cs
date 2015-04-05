@@ -1,4 +1,4 @@
-﻿namespace SharpMCRewrite
+﻿namespace SharpMCRewrite.Enums
 {
 	public enum Gamemode : byte
 	{

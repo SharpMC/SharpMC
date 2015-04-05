@@ -1,7 +1,10 @@
 ﻿using System;
+using System.Linq;
 using System.Net;
 using System.Text;
-using SharpMCRewrite.NET;
+using System.Text.RegularExpressions;
+using SharpMCRewrite.Classes;
+using SharpMCRewrite.Enums;
 
 namespace SharpMCRewrite.Networking.Packages
 {
@@ -49,7 +52,9 @@ namespace SharpMCRewrite.Networking.Packages
 
 		private void HandleLogin()
 		{
-			var username = Buffer.ReadUsername();
+			var usernameRAW = Buffer.ReadString();
+			string username = new string(usernameRAW.Where(c => char.IsLetter(c) || char.IsPunctuation(c) || char.IsDigit(c)).ToArray());
+			//username = Regex.Replace(username, @"[^\u0000-\u007F]", string.Empty);
 			var uuid = getUUID(username);
 
 			new LoginSucces(Client) {Username = username, UUID = uuid}.Write();
@@ -61,11 +66,11 @@ namespace SharpMCRewrite.Networking.Packages
 			}
 
 			Globals.LastUniqueID++;
-			Client.Player = new Player
+			Client.Player = new Player(Globals.Level)
 			{
-				UUID = uuid,
+				Uuid = uuid,
 				Username = username,
-				UniqueServerID = Globals.LastUniqueID,
+				UniqueServerId = Globals.LastUniqueID,
 				Wrapper = Client,
 				Gamemode = Gamemode.Creative
 			};

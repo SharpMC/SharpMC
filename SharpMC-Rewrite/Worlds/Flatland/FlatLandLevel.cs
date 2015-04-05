@@ -1,6 +1,6 @@
-﻿using SharpMCRewrite.Worlds;
+﻿using SharpMCRewrite.Classes;
 
-namespace SharpMCRewrite
+namespace SharpMCRewrite.Worlds.Flatland
 {
 	public class FlatLandLevel : Level
 	{

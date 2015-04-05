@@ -1,33 +1,33 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.Threading;
-using MiNET;
+using SharpMCRewrite.Enums;
 using SharpMCRewrite.Networking.Packages;
 using SharpMCRewrite.Worlds;
 
-namespace SharpMCRewrite
+namespace SharpMCRewrite.Classes
 {
 	public class Player
 	{
 		private readonly Dictionary<Tuple<int, int>, ChunkColumn> _chunksUsed;
 		//Map stuff
-		private readonly Vector2 CurrentChunkPosition = new Vector2(0, 0);
+		private readonly Vector2 _currentChunkPosition = new Vector2(0, 0);
 		//Inventory stuff
 		public byte CurrentSlot = 0;
 		public PlayerInventoryManager Inventory;
 
-		public Player()
+		public Player(Level level)
 		{
 			_chunksUsed = new Dictionary<Tuple<int, int>, ChunkColumn>();
 			HealthManager = new HealthManager(this);
 			Inventory = new PlayerInventoryManager(this);
+			CurrentLevel = level;
 		}
 
 		public string Username { get; set; }
-		public string UUID { get; set; }
+		public string Uuid { get; set; }
 		public ClientWrapper Wrapper { get; set; }
-		public int UniqueServerID { get; set; }
+		public int UniqueServerId { get; set; }
 		public Gamemode Gamemode { get; set; }
 		public bool IsSpawned { get; set; }
 		public bool Digging { get; set; }
@@ -49,13 +49,11 @@ namespace SharpMCRewrite
 		//Not Sure Why Stuff
 		public EntityAction LastEntityAction { get; set; }
 
+		public Level CurrentLevel { get; set; }
+
 		public void AddToList()
 		{
-			Globals.Level.AddPlayer(this);
-		}
-
-		public void BroadcastMovement()
-		{
+			CurrentLevel.AddPlayer(this);
 		}
 
 		public void Tick()
@@ -66,101 +64,74 @@ namespace SharpMCRewrite
 				{
 					HealthManager.OnTick();
 				}
-				/* if (t == 100)
-		    {
-			    HealthManager.Health--;
-				SendHealth();
-			    t = 0;
-		    }
-		    else t += 1;*/
 			}
 		}
 
 		public void SendHealth()
 		{
 			new UpdateHealth(Wrapper).Write();
-			Console.WriteLine("Sending health...");
-		}
-
-		public static Player GetPlayer(ClientWrapper wrapper)
-		{
-			foreach (var  i in Globals.Level.OnlinePlayers)
-			{
-				if (i.Wrapper == wrapper)
-				{
-					return i;
-				}
-			}
-			throw new ArgumentOutOfRangeException("The specified player could not be found ;(");
-		}
-
-		public void SendChat(string message)
-		{
-			new ChatMessage(Wrapper, new MSGBuffer(Wrapper)) {Message = message}.Write();
 		}
 
 		public void SendChunksFromPosition()
 		{
 			if (Coordinates == null)
 			{
-				Coordinates = Globals.Level.Generator.GetSpawnPoint();
-				ViewDistance = 32;
+				Coordinates = CurrentLevel.Generator.GetSpawnPoint();
+				ViewDistance = 8;
 			}
-			SendChunksForKnownPosition(false);
+			SendChunksForKnownPosition();
+		}
+
+		private void InitializePlayer()
+		{
+			new PlayerPositionAndLook(Wrapper).Write();
+
+			IsSpawned = true;
+			CurrentLevel.AddPlayer(this);
+
+			new PlayerListItem(Wrapper)
+			{
+				Action = 0,
+				Gamemode = Wrapper.Player.Gamemode,
+				Username = Wrapper.Player.Username,
+				UUID = Wrapper.Player.Uuid
+			}.Broadcast();
+
+			CurrentLevel.BroadcastExistingPlayers(Wrapper);
+			Wrapper.Player.Inventory.SendToPlayer();
 		}
 
 		public void SendChunksForKnownPosition(bool force = false)
 		{
-			const int multiplier = 12; //Viewdistance multiplier
-			var centerX = (int) Coordinates.X/16;
-			var centerZ = (int) Coordinates.Z/16;
+			var centerX = (int) Coordinates.X >> 4;
+			var centerZ = (int) Coordinates.Z >> 4;
 
-			if (!force && IsSpawned && CurrentChunkPosition == new Vector2(centerX, centerZ)) return;
+			if (!force && IsSpawned && _currentChunkPosition == new Vector2(centerX, centerZ)) return;
 
-			CurrentChunkPosition.X = centerX;
-			CurrentChunkPosition.Z = centerZ;
+			_currentChunkPosition.X = centerX;
+			_currentChunkPosition.Z = centerZ;
 
-			var _worker = new BackgroundWorker {WorkerSupportsCancellation = true};
-			_worker.DoWork += delegate(object sender, DoWorkEventArgs args)
+			new Thread(() =>
 			{
-				var worker = sender as BackgroundWorker;
-				var Counted = 0;
+				var counted = 0;
 
 				foreach (
 					var chunk in
-						Globals.Level.Generator.GenerateChunks(ViewDistance*multiplier, Coordinates.X, Coordinates.Z,
-							force ? new Dictionary<Tuple<int, int>, ChunkColumn>() : _chunksUsed))
+						CurrentLevel.Generator.GenerateChunks((ViewDistance*16), Coordinates.X, Coordinates.Z,
+							_chunksUsed, this))
 				{
-					if (worker.CancellationPending)
-					{
-						args.Cancel = true;
-						break;
-					}
-					new ChunkData(Wrapper, new MSGBuffer(Wrapper)) {Chunk = chunk}.Write();
+
+					if (Wrapper != null && Wrapper.TCPClient.Client.Connected)
+						new ChunkData(Wrapper, new MSGBuffer(Wrapper)) {Chunk = chunk}.Write();
 					Thread.Yield();
 
-					if (Counted >= (ViewDistance*multiplier) && !IsSpawned)
+					if (counted >= 5 && !IsSpawned)
 					{
-						new PlayerPositionAndLook(Wrapper).Write();
-
-						IsSpawned = true;
-						Globals.Level.AddPlayer(this);
-
-						new PlayerListItem(Wrapper)
-						{
-							Action = 0,
-							Gamemode = Wrapper.Player.Gamemode,
-							Username = Wrapper.Player.Username,
-							UUID = Wrapper.Player.UUID
-						}.Broadcast();
-
-						Globals.Level.BroadcastExistingPlayers(Wrapper);
-						Wrapper.Player.Inventory.SendToPlayer();
+						InitializePlayer();
 					}
-					Counted++;
+					counted++;
 				}
-			};
-			_worker.RunWorkerAsync();
+			}).Start();
 		}
 	}
 

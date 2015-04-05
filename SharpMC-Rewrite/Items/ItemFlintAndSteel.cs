@@ -1,4 +1,5 @@
 ﻿using SharpMCRewrite.Blocks;
+using SharpMCRewrite.Classes;
 using SharpMCRewrite.Enums;
 
 namespace SharpMCRewrite.Items

@@ -1,9 +1,9 @@
 ﻿using System;
 using System.ComponentModel;
 using SharpMCRewrite.Blocks;
+using SharpMCRewrite.Classes;
 using SharpMCRewrite.Enums;
 using SharpMCRewrite.Items;
-using SharpMCRewrite.NET;
 
 namespace SharpMCRewrite.Networking.Packages
 {
@@ -21,8 +21,7 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Read()
 		{
-			var position = Buffer.ReadIntPosition();
-			Client.Player.SendChat("Position: " + position.GetString());
+			var position = Buffer.ReadPosition();
 
 			if (position.Y > 256)
 			{

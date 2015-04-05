@@ -1,7 +1,7 @@
 ﻿using System.Diagnostics;
 using System.Net.Sockets;
 
-namespace SharpMCRewrite.NET
+namespace SharpMCRewrite.Classes
 {
 	public abstract class Package
 	{

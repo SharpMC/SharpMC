@@ -1,9 +1,10 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using Craft.Net.Anvil;
-using MiNET.Utils;
 using SharpMCRewrite.Blocks;
+using SharpMCRewrite.Classes;
+using SharpMCRewrite.Networking.Packages;
+using SharpMCRewrite.Utils;
 
 namespace SharpMCRewrite.Worlds
 {
@@ -15,6 +16,8 @@ namespace SharpMCRewrite.Worlds
 		public NibbleArray Blocklight = new NibbleArray(16*16*256);
 		public ushort[] Blocks = new ushort[16*16*256];
 		public NibbleArray Skylight = new NibbleArray(16*16*256);
+		public byte[] biomeId;
+		public bool isDirty = false;
 
 		public ChunkColumn()
 		{
@@ -54,13 +57,23 @@ namespace SharpMCRewrite.Worlds
 			Blocklight[(x*2048) + (z*256) + y] = data;
 		}
 
+		public byte GetBlocklight(int x, int y, int z)
+		{
+			return Blocklight[(x*2048) + (z*256) + y];
+		}
+
+		public byte GetSkylight(int x, int y, int z)
+		{
+			return Skylight[(x*2048) + (z*256) + y];
+		}
+
 		public void SetSkylight(int x, int y, int z, byte data)
 		{
 			_cache = null;
 			Skylight[(x*2048) + (z*256) + y] = data;
 		}
 
-		public byte[] GetBytes()
+		public byte[] GetMeta()
 		{
 			using (var stream = new MemoryStream())
 			{
@@ -70,7 +83,21 @@ namespace SharpMCRewrite.Worlds
 					writer.Write(IPAddress.HostToNetworkOrder(Z));
 					writer.Write(true);
 					writer.Write((ushort) 0xffff); // bitmap
-					writer.WriteVarInt((Blocks.Length*2) + Skylight.Data.Length + Blocklight.Data.Length + BiomeId.Length);
+
+					writer.Flush();
+					writer.Close();
+				}
+				return stream.ToArray();
+			}
+		}
+
+		public byte[] GetChunkData()
+		{
+			using (var stream = new MemoryStream())
+			{
+				using (var writer = new NbtBinaryWriter(stream, true))
+				{
+					writer.WriteVarInt((Blocks.Length * 2) + Skylight.Data.Length + Blocklight.Data.Length + BiomeId.Length);
 
 					foreach (var i in Blocks)
 						writer.Write(i);
@@ -85,6 +112,36 @@ namespace SharpMCRewrite.Worlds
 				}
 				return stream.ToArray();
 			}
+		}
+
+		public byte[] GetBytes(bool unloader = false)	
+		{
+					MSGBuffer writer = new MSGBuffer(new byte[0]);
+					if (!unloader)
+					{
+						writer.WriteInt(X);
+						writer.WriteInt(Z);
+						writer.WriteBool(true);
+						writer.WriteUShort((ushort) 0xffff); // bitmap
+						writer.WriteVarInt((Blocks.Length*2) + Skylight.Data.Length + Blocklight.Data.Length + BiomeId.Length);
+
+						foreach (var i in Blocks)
+							writer.WriteUShort(i);
+
+						writer.Write(Blocklight.Data);
+						writer.Write(Skylight.Data);
+
+						writer.Write(BiomeId); //OK
+					}
+					else
+					{
+						writer.WriteInt(X);
+						writer.WriteInt(Z);
+						writer.WriteBool(true);
+						writer.WriteUShort((ushort)0);
+						writer.WriteVarInt(0);
+					}
+			return writer.ExportWriter;
 		}
 
 		public byte[] Export()

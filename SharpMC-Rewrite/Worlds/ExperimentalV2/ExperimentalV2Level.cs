@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
+using SharpMCRewrite.Classes;
 
 namespace SharpMCRewrite.Worlds.ExperimentalV2
 {
@@ -12,6 +13,7 @@ namespace SharpMCRewrite.Worlds.ExperimentalV2
 			LVLName = worldname;
 			LevelType = LVLType.Default;
 			Generator = new ExperimentalV2Generator(worldname);
+			ConsoleFunctions.WriteInfoLine("Level Type: Experimental V2");
 		}
 	}
 }

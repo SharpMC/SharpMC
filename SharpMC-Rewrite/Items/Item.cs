@@ -1,5 +1,4 @@
-﻿using MiNET.Utils;
-using MiNET.Worlds;
+﻿using SharpMCRewrite.Classes;
 using SharpMCRewrite.Enums;
 
 namespace SharpMCRewrite.Items

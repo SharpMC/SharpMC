@@ -1,4 +1,5 @@
-﻿using SharpMCRewrite.Enums;
+﻿using SharpMCRewrite.Classes;
+using SharpMCRewrite.Enums;
 
 namespace SharpMCRewrite.Blocks
 {
@@ -11,7 +12,7 @@ namespace SharpMCRewrite.Blocks
 			Durability = 0.5f;
 		}
 
-		public IntVector3 Coordinates { get; set; }
+		public Vector3 Coordinates { get; set; }
 		public ushort Id { get; set; }
 		public bool IsReplacible { get; set; }
 		public ushort Metadata { get; set; }
@@ -23,7 +24,7 @@ namespace SharpMCRewrite.Blocks
 			return CanPlace(world, Coordinates);
 		}
 
-		protected virtual bool CanPlace(Level world, IntVector3 blockCoordinates)
+		protected virtual bool CanPlace(Level world, Vector3 blockCoordinates)
 		{
 			return world.GetBlock(blockCoordinates).IsReplacible;
 		}
@@ -33,21 +34,21 @@ namespace SharpMCRewrite.Blocks
 			world.SetBlock(new Block(0) {Coordinates = Coordinates});
 		}
 
-		public virtual bool PlaceBlock(Level world, Player player, IntVector3 blockCoordinates, BlockFace face)
+		public virtual bool PlaceBlock(Level world, Player player, Vector3 blockCoordinates, BlockFace face)
 		{
 			// No default placement. Return unhandled.
 			return false;
 		}
 
-		public virtual bool Interact(Level world, Player player, IntVector3 blockCoordinates, BlockFace face)
+		public virtual bool Interact(Level world, Player player, Vector3 blockCoordinates, BlockFace face)
 		{
 			// No default interaction. Return unhandled.
 			return false;
 		}
 
-		public static IntVector3 GetNewCoordinatesFromFace(IntVector3 target, BlockFace face)
+		public static Vector3 GetNewCoordinatesFromFace(Vector3 target, BlockFace face)
 		{
-			var intVector = new IntVector3(target.X, target.Y, target.Z);
+			var intVector = new Vector3(target.X, target.Y, target.Z);
 			switch (face)
 			{
 				case BlockFace.NegativeY:

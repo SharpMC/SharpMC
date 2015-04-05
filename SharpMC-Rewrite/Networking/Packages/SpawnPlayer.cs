@@ -1,5 +1,5 @@
 ﻿using System;
-using SharpMCRewrite.NET;
+using SharpMCRewrite.Classes;
 
 namespace SharpMCRewrite.Networking.Packages
 {
@@ -20,8 +20,8 @@ namespace SharpMCRewrite.Networking.Packages
 		public override void Write()
 		{
 			Buffer.WriteVarInt(SendId);
-			Buffer.WriteVarInt(Player.UniqueServerID);
-			Buffer.WriteUUID(new Guid(Player.UUID));
+			Buffer.WriteVarInt(Player.UniqueServerId);
+			Buffer.WriteUUID(new Guid(Player.Uuid));
 			Buffer.WriteInt((int) Player.Coordinates.X*32);
 			Buffer.WriteInt((int) Player.Coordinates.Y*32);
 			Buffer.WriteInt((int) Player.Coordinates.Z*32);

@@ -1,5 +1,6 @@
 ﻿using System;
-using SharpMCRewrite.NET;
+using SharpMCRewrite.Classes;
+using SharpMCRewrite.Enums;
 
 namespace SharpMCRewrite.Networking.Packages
 {

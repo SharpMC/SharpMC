@@ -1,4 +1,4 @@
-﻿namespace SharpMCRewrite
+﻿namespace SharpMCRewrite.Classes
 {
 	public class Vector2
 	{

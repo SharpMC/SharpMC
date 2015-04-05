@@ -1,11 +1,11 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
-using MiNET.Utils;
-using SharpMCRewrite;
+using SharpMCRewrite.Utils;
+
 //using MiNET.Entities;
 
-namespace MiNET
+namespace SharpMCRewrite.Classes
 {
 	public enum DamageCause
 	{

@@ -1,4 +1,5 @@
-﻿using SharpMCRewrite.NET;
+﻿using SharpMCRewrite.Classes;
+using SharpMCRewrite.ExtentionMethods;
 
 namespace SharpMCRewrite.Networking.Packages
 {

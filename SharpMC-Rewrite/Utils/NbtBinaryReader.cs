@@ -4,7 +4,7 @@ using System.IO.Compression;
 using System.Text;
 using fNbt;
 
-namespace MiNET.Utils
+namespace SharpMCRewrite.Utils
 {
 	/// <summary>
 	///     BinaryReader wrapper that takes care of reading primitives from an NBT stream,

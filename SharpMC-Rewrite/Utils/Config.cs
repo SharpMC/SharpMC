@@ -1,10 +1,10 @@
 ﻿using System;
 using System.IO;
-using SharpMCRewrite;
+using SharpMCRewrite.Enums;
 
-namespace MiNET.Utils
+namespace SharpMCRewrite.Utils
 {
-	public class ConfigParser
+	public class Config
 	{
 		public static string ConfigFile = string.Empty;
 		private static string FileContents = string.Empty;

@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
-using SharpMCRewrite;
 using SharpMCRewrite.Blocks;
+using SharpMCRewrite.Classes;
 using SharpMCRewrite.Worlds;
 
-namespace MiNET.Worlds
+namespace SharpMCRewrite.Interfaces
 {
 	public class IWorldProvider
 	{
@@ -24,13 +24,13 @@ namespace MiNET.Worlds
 			throw new NotImplementedException();
 		}
 
-		public virtual IEnumerable<ChunkColumn> GenerateChunks(int _viewDistance, double playerX, double playerZ,
-			Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed, bool output = false)
+		public virtual IEnumerable<ChunkColumn> GenerateChunks(int viewDistance, double playerX, double playerZ,
+			Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed, Player player, bool output = false)
 		{
 			throw new NotImplementedException();
 		}
 
-		public virtual void SaveChunks(string Folder)
+		public virtual void SaveChunks(string folder)
 		{
 			throw new NotImplementedException();
 		}

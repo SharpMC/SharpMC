@@ -9,8 +9,8 @@ namespace SharpMCRewrite
 	public class Explosion
 	{
 		private const int Ray = 16;
-		private readonly IDictionary<IntVector3, Block> _afectedBlocks = new Dictionary<IntVector3, Block>();
-		private readonly IntVector3 _centerCoordinates;
+		private readonly IDictionary<Vector3, Block> _afectedBlocks = new Dictionary<Vector3, Block>();
+		private readonly Vector3 _centerCoordinates;
 		private readonly float _size;
 		private readonly Level _world;
 		private readonly bool CoordsSet;
@@ -23,7 +23,7 @@ namespace SharpMCRewrite
 		/// <param name="centerCoordinates"></param>
 		/// <param name="size"></param>
 		/// <param name="fire"></param>
-		public Explosion(Level world, IntVector3 centerCoordinates, float size, bool fire = false)
+		public Explosion(Level world, Vector3 centerCoordinates, float size, bool fire = false)
 		{
 			_size = size;
 			_centerCoordinates = centerCoordinates;
@@ -84,7 +84,7 @@ namespace SharpMCRewrite
 								var bx = (int) Math.Floor(cX);
 								var by = (int) Math.Floor(cY);
 								var bz = (int) Math.Floor(cZ);
-								var block = _world.GetBlock(new IntVector3(bx, by, bz));
+								var block = _world.GetBlock(new Vector3(bx, by, bz));
 
 								if (block.Id != 0)
 								{
@@ -162,7 +162,7 @@ namespace SharpMCRewrite
 					var block = _world.GetBlock(coord);
 					if (block is BlockAir)
 					{
-						var blockDown = _world.GetBlock(new IntVector3(coord.X, coord.Y--, coord.Z));
+						var blockDown = _world.GetBlock(new Vector3(coord.X, coord.Y--, coord.Z));
 						if (!(blockDown is BlockAir) && random.Next(3) == 0)
 						{
 							_world.SetBlock(new BlockFire {Coordinates = block.Coordinates});
@@ -174,7 +174,7 @@ namespace SharpMCRewrite
 			return true;
 		}
 
-		private void SpawnTNT(IntVector3 blockCoordinates, Level world)
+		private void SpawnTNT(Vector3 blockCoordinates, Level world)
 		{
 			var rand = new Random();
 			/*new PrimedTnt(world)

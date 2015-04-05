@@ -5,7 +5,7 @@ using System.Collections.ObjectModel;
 using fNbt;
 using fNbt.Serialization;
 
-namespace Craft.Net.Anvil
+namespace SharpMCRewrite.Classes
 {
 	/// <summary>
 	///     Represents an array of 4-bit values.

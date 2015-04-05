@@ -1,4 +1,6 @@
-﻿namespace SharpMCRewrite.Blocks
+﻿using SharpMCRewrite.Classes;
+
+namespace SharpMCRewrite.Blocks
 {
 	internal class BlockTNT : Block
 	{

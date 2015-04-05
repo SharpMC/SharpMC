@@ -1,6 +1,6 @@
 using System;
 
-namespace MiNET.Utils
+namespace SharpMCRewrite.Utils
 {
 	/// <summary>
 	///     Exception thrown when a format violation is detected while

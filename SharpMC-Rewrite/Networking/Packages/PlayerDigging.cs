@@ -3,7 +3,8 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SharpMCRewrite.NET;
+using SharpMCRewrite.Classes;
+using SharpMCRewrite.Enums;
 
 namespace SharpMCRewrite.Networking.Packages
 {
@@ -27,7 +28,7 @@ namespace SharpMCRewrite.Networking.Packages
 			{
 				var Position = Buffer.ReadPosition();
 				var Face = Buffer.ReadByte();
-				var intVector = new IntVector3((int)Position.X, (int)Position.Y, (int)Position.Z);
+				var intVector = new Vector3((int)Position.X, (int)Position.Y, (int)Position.Z);
 
 				var block = Globals.Level.GetBlock(intVector);
 				block.BreakBlock(Globals.Level);
