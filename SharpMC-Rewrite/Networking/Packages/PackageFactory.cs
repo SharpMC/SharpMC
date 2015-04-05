@@ -67,8 +67,7 @@ namespace SharpMCRewrite.Networking.Packages
 			{
 				if (package.ReadId == packetid)
 				{
-					var package1 = package;
-					package.Client.ThreadPool.LaunchThread(new Thread(() => package1.Read()));
+					package.Read();
 					return true;
 				}
 			}

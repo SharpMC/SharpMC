@@ -16,11 +16,14 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Write()
 		{
-			Buffer.WriteVarInt(SendId);
-			Buffer.WriteFloat(Client.Player.HealthManager.Health);
-			Buffer.WriteVarInt(Client.Player.HealthManager.Food);
-			Buffer.WriteFloat(0.0f);
-			Buffer.FlushData();
+			if (Buffer != null)
+			{
+				Buffer.WriteVarInt(SendId);
+				Buffer.WriteFloat(Client.Player.HealthManager.Health);
+				Buffer.WriteVarInt(Client.Player.HealthManager.Food);
+				Buffer.WriteFloat(0.0f);
+				Buffer.FlushData();
+			}
 		}
 	}
 }

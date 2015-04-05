@@ -16,18 +16,21 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Read()
 		{
-			var originalCoordinates = Client.Player.Coordinates;
+			if (Buffer != null)
+			{
+				var originalCoordinates = Client.Player.Coordinates;
 
-			var X = Buffer.ReadDouble();
-			var FeetY = Buffer.ReadDouble();
-			var Z = Buffer.ReadDouble();
-			var OnGround = Buffer.ReadBool();
-			Client.Player.Coordinates = new Vector3(X, FeetY, Z);
-			Client.Player.OnGround = OnGround;
-			Client.Player.SendChunksFromPosition();
+				var X = Buffer.ReadDouble();
+				var FeetY = Buffer.ReadDouble();
+				var Z = Buffer.ReadDouble();
+				var OnGround = Buffer.ReadBool();
+				Client.Player.Coordinates = new Vector3(X, FeetY, Z);
+				Client.Player.OnGround = OnGround;
+				Client.Player.SendChunksFromPosition();
 
-			var movement = Client.Player.Coordinates - originalCoordinates;
-			new EntityRelativeMove(Client) {Player = Client.Player, Movement = movement}.Broadcast(false, Client.Player);
+				var movement = Client.Player.Coordinates - originalCoordinates;
+				new EntityRelativeMove(Client) {Player = Client.Player, Movement = movement}.Broadcast(false, Client.Player);
+			}
 		}
 	}
 }

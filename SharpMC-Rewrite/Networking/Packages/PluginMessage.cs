@@ -16,9 +16,12 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Read()
 		{
-			var message = Buffer.ReadString();
+			if (Buffer != null)
+			{
+				var message = Buffer.ReadString();
 
-			ConsoleFunctions.WriteDebugLine("Plugin Message: " + message);
+				ConsoleFunctions.WriteDebugLine("Plugin Message: " + message);
+			}
 		}
 	}
 }

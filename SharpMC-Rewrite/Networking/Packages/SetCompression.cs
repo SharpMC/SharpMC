@@ -17,9 +17,12 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Write()
 		{
-			Buffer.WriteVarInt(SendId);
-			Buffer.WriteVarInt(CompressionLevel);
-			Buffer.FlushData();
+			if (Buffer != null)
+			{
+				Buffer.WriteVarInt(SendId);
+				Buffer.WriteVarInt(CompressionLevel);
+				Buffer.FlushData();
+			}
 		}
 	}
 }

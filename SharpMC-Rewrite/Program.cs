@@ -31,6 +31,15 @@ namespace SharpMCRewrite
 				};
 				Config.Check();
 
+				Console.CancelKeyPress += delegate
+				{
+					ConsoleFunctions.WriteInfoLine("Shutting down...");
+					//Globals.Level.BroadcastPacket(new Disconnect(), new object[] { "Server shutting down!" });
+					Disconnect.Broadcast("§fServer shutting down...");
+					ConsoleFunctions.WriteInfoLine("Saving chunks...");
+					Globals.Level.SaveChunks();
+				};
+
 				ConsoleFunctions.WriteInfoLine("Loading config file...");
 				Globals.MaxPlayers = Config.GetProperty("MaxPlayers", 10);
 				var Lvltype = Config.GetProperty("LevelType", "Experimental");
@@ -61,15 +70,6 @@ namespace SharpMCRewrite
 
 				var ClientListener = new Thread(() => new BasicListener().ListenForClients());
 				ClientListener.Start();
-
-				Console.CancelKeyPress += delegate
-				{
-					ConsoleFunctions.WriteInfoLine("Shutting down...");
-					//Globals.Level.BroadcastPacket(new Disconnect(), new object[] { "Server shutting down!" });
-					Disconnect.Broadcast("§fServer shutting down...");
-					ConsoleFunctions.WriteInfoLine("Saving chunks...");
-					Globals.Level.SaveChunks();
-				};
 		}
 
 		static void UnhandledException(object sender, UnhandledExceptionEventArgs args)

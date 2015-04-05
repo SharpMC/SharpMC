@@ -17,15 +17,18 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Write()
 		{
-			Buffer.WriteVarInt(SendId);
-			Buffer.WriteInt(Player.UniqueServerId);
-			Buffer.WriteByte((byte)Player.Gamemode);
-			Buffer.WriteByte((byte)Player.Dimension);
-			Buffer.WriteByte((byte)Globals.Level.Difficulty);
-			Buffer.WriteByte((byte)Globals.MaxPlayers);
-			Buffer.WriteString(Globals.Level.LevelType.ToString());
-			Buffer.WriteBool(false);
-			Buffer.FlushData();
+			if (Buffer != null)
+			{
+				Buffer.WriteVarInt(SendId);
+				Buffer.WriteInt(Player.UniqueServerId);
+				Buffer.WriteByte((byte) Player.Gamemode);
+				Buffer.WriteByte((byte) Player.Dimension);
+				Buffer.WriteByte((byte) Globals.Level.Difficulty);
+				Buffer.WriteByte((byte) Globals.MaxPlayers);
+				Buffer.WriteString(Globals.Level.LevelType.ToString());
+				Buffer.WriteBool(false);
+				Buffer.FlushData();
+			}
 		}
 	}
 }

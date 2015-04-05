@@ -22,15 +22,18 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Write()
 		{
-			Buffer.WriteVarInt(SendId);
-			Buffer.WriteVarInt(UniqueServerID);
-			Buffer.WriteInt((int) Coordinates.X*32);
-			Buffer.WriteInt((int) Coordinates.Y*32);
-			Buffer.WriteInt((int) Coordinates.Z*32);
-			Buffer.WriteByte(Yaw);
-			Buffer.WriteByte(Pitch);
-			Buffer.WriteBool(OnGround);
-			Buffer.FlushData();
+			if (Buffer != null)
+			{
+				Buffer.WriteVarInt(SendId);
+				Buffer.WriteVarInt(UniqueServerID);
+				Buffer.WriteInt((int) Coordinates.X*32);
+				Buffer.WriteInt((int) Coordinates.Y*32);
+				Buffer.WriteInt((int) Coordinates.Z*32);
+				Buffer.WriteByte(Yaw);
+				Buffer.WriteByte(Pitch);
+				Buffer.WriteBool(OnGround);
+				Buffer.FlushData();
+			}
 		}
 
 		public static void Broadcast(Player player)

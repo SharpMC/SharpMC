@@ -23,10 +23,13 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Write()
 		{
-			Buffer.WriteVarInt(SendId);
-			Buffer.WritePosition(Location);
-			Buffer.WriteVarInt(BlockId << 4 | MetaData);
-			Buffer.FlushData();
+			if (Buffer != null)
+			{
+				Buffer.WriteVarInt(SendId);
+				Buffer.WritePosition(Location);
+				Buffer.WriteVarInt(BlockId << 4 | MetaData);
+				Buffer.FlushData();
+			}
 		}
 
 		public static void Broadcast(Block block, bool self = true, Player source = null)

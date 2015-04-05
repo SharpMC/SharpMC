@@ -18,10 +18,13 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Write()
 		{
-			Buffer.WriteVarInt (SendId);
-            Buffer.WriteLong (Day);
-            Buffer.WriteLong (Time);
-			Buffer.FlushData();
+			if (Buffer != null)
+			{
+				Buffer.WriteVarInt(SendId);
+				Buffer.WriteLong(Day);
+				Buffer.WriteLong(Time);
+				Buffer.FlushData();
+			}
 		}
 	}
 }

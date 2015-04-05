@@ -21,59 +21,62 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Read()
 		{
-			var position = Buffer.ReadPosition();
-
-			if (position.Y > 256)
+			if (Buffer != null)
 			{
-				return;
-			}
+				var position = Buffer.ReadPosition();
 
-			var face = Buffer.ReadByte();
+				if (position.Y > 256)
+				{
+					return;
+				}
 
-			switch (face)
-			{
-				case 0:
-					position.Y--;
-					break;
-				case 1:
-					position.Y++;
-					break;
-				case 2:
-					position.Z--;
-					break;
-				case 3:
-					position.Z++;
-					break;
-				case 4:
-					position.X--;
-					break;
-				case 5:
-					position.X++;
-					break;
-			}
+				var face = Buffer.ReadByte();
 
-			var heldItem = Buffer.ReadUShort();
-			if (heldItem <= UInt16.MinValue || heldItem >= UInt16.MaxValue) return;
+				switch (face)
+				{
+					case 0:
+						position.Y--;
+						break;
+					case 1:
+						position.Y++;
+						break;
+					case 2:
+						position.Z--;
+						break;
+					case 3:
+						position.Z++;
+						break;
+					case 4:
+						position.X--;
+						break;
+					case 5:
+						position.X++;
+						break;
+				}
 
-			var itemCount = Buffer.ReadByte();
-			var itemDamage = Buffer.ReadByte();
-			var itemMeta = (byte) Buffer.ReadByte();
+				var heldItem = Buffer.ReadUShort();
+				if (heldItem <= UInt16.MinValue || heldItem >= UInt16.MaxValue) return;
 
-			var CursorX = Buffer.ReadByte(); //Unused
-			var CursorY = Buffer.ReadByte(); //Unused
-			var CursorZ = Buffer.ReadByte(); //Unused
+				var itemCount = Buffer.ReadByte();
+				var itemDamage = Buffer.ReadByte();
+				var itemMeta = (byte) Buffer.ReadByte();
 
-			/*if (position.X == -1 && position.Y == 256 && position.Z == -1)
+				var CursorX = Buffer.ReadByte(); //Unused
+				var CursorY = Buffer.ReadByte(); //Unused
+				var CursorZ = Buffer.ReadByte(); //Unused
+
+				/*if (position.X == -1 && position.Y == 256 && position.Z == -1)
 			{
 				ItemFactory.GetItemById(heldItem, itemMeta)
 					.UseItem(Globals.Level, Client.Player, new Vector3(position.X, position.Y, position.Z), (BlockFace) face);
 				return;
 			}*/
 
-			var b = BlockFactory.GetBlockById(heldItem);
-			b.Coordinates = position;
-			b.Metadata = itemMeta;
-			Globals.Level.SetBlock(b, true);
+				var b = BlockFactory.GetBlockById(heldItem);
+				b.Coordinates = position;
+				b.Metadata = itemMeta;
+				Globals.Level.SetBlock(b, true);
+			}
 		}
 	}
 }

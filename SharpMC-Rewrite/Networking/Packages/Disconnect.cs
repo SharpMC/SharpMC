@@ -18,9 +18,12 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Write()
 		{
-			Buffer.WriteVarInt(SendId);
-			Buffer.WriteString("{ \"text\": \"" + Reason + "\" }");
-			Buffer.FlushData();
+			if (Buffer != null)
+			{
+				Buffer.WriteVarInt(SendId);
+				Buffer.WriteString("{ \"text\": \"" + Reason + "\" }");
+				Buffer.FlushData();
+			}
 		}
 
 		public static void Broadcast(string reason, bool self = true, Player source = null)

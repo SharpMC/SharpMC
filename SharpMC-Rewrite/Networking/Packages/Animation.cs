@@ -26,10 +26,13 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Write()
 		{
-			Buffer.WriteVarInt(SendId);
-			Buffer.WriteVarInt(TargetPlayer.UniqueServerId);
-			Buffer.WriteByte(AnimationId);
-			Buffer.FlushData();
+			if (Buffer != null)
+			{
+				Buffer.WriteVarInt(SendId);
+				Buffer.WriteVarInt(TargetPlayer.UniqueServerId);
+				Buffer.WriteByte(AnimationId);
+				Buffer.FlushData();
+			}
 		}
 	}
 }

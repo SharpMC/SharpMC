@@ -21,7 +21,10 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Read()
 		{
-			Client.SendData(Buffer.BufferedData);
+			if (Buffer != null)
+			{
+				Client.SendData(Buffer.BufferedData);
+			}
 		}
 	}
 }

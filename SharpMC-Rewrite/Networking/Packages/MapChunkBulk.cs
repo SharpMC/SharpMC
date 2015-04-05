@@ -25,21 +25,24 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Write()
 		{
-			Buffer.WriteVarInt(SendId);
-			Buffer.WriteBool(SkyLightSend);
-			Buffer.WriteVarInt(Chunks.Length);
-
-			foreach (var chunk in Chunks)
+			if (Buffer != null)
 			{
-				Buffer.Write(chunk.GetMeta());
-			}
+				Buffer.WriteVarInt(SendId);
+				Buffer.WriteBool(SkyLightSend);
+				Buffer.WriteVarInt(Chunks.Length);
 
-			foreach (var chunk in Chunks)
-			{
-				Buffer.Write(chunk.GetChunkData());
-			}
+				foreach (var chunk in Chunks)
+				{
+					Buffer.Write(chunk.GetMeta());
+				}
 
-			Buffer.FlushData();
+				foreach (var chunk in Chunks)
+				{
+					Buffer.Write(chunk.GetChunkData());
+				}
+
+				Buffer.FlushData();
+			}
 		}
 	}
 }

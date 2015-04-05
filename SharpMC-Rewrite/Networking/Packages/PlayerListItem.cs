@@ -23,26 +23,29 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Write()
 		{
-			Buffer.WriteVarInt(SendId);
-			Buffer.WriteVarInt(Action);
-			Buffer.WriteVarInt(1);
-			//foreach(Player player in Globals.Level.OnlinePlayers)
-			//{
-			Buffer.WriteUUID(new Guid(UUID));
-			switch (Action)
+			if (Buffer != null)
 			{
-				case 0:
-					Buffer.WriteString(Username);
-					Buffer.WriteVarInt(0);
-					Buffer.WriteVarInt((byte) Gamemode);
-					Buffer.WriteVarInt(0);
-					Buffer.WriteBool(false);
-					break;
-				case 4:
-					break;
+				Buffer.WriteVarInt(SendId);
+				Buffer.WriteVarInt(Action);
+				Buffer.WriteVarInt(1);
+				//foreach(Player player in Globals.Level.OnlinePlayers)
+				//{
+				Buffer.WriteUUID(new Guid(UUID));
+				switch (Action)
+				{
+					case 0:
+						Buffer.WriteString(Username);
+						Buffer.WriteVarInt(0);
+						Buffer.WriteVarInt((byte) Gamemode);
+						Buffer.WriteVarInt(0);
+						Buffer.WriteBool(false);
+						break;
+					case 4:
+						break;
+				}
+				//}
+				Buffer.FlushData();
 			}
-			//}
-			Buffer.FlushData();
 		}
 	}
 }

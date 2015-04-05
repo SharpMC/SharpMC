@@ -32,15 +32,15 @@ namespace SharpMCRewrite.Networking
 			{
 				try
 				{
-					var Buf = new MSGBuffer(Client);
-					var ReceivedData = clientStream.Read(Buf.BufferedData, 0, Buf.BufferedData.Length);
-					if (ReceivedData > 0)
+					var buf = new MSGBuffer(Client);
+					var receivedData = clientStream.Read(buf.BufferedData, 0, buf.BufferedData.Length);
+					if (receivedData > 0)
 					{
-						var length = Buf.ReadVarInt();
-						Buf.Size = length;
-						var packid = Buf.ReadVarInt();
+						var length = buf.ReadVarInt();
+						buf.Size = length;
+						var packid = buf.ReadVarInt();
 
-						if (!new PackageFactory(Client, Buf).Handle(packid))
+						if (!new PackageFactory(Client, buf).Handle(packid))
 						{
 							ConsoleFunctions.WriteWarningLine("Unknown packet received! \"0x" + packid.ToString("X2") + "\"");
 						}

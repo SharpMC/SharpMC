@@ -23,17 +23,20 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Write()
 		{
-			Buffer.WriteVarInt(SendId);
-			Buffer.WriteByte(WindowId);
-			Buffer.WriteShort(Slot);
-			Buffer.WriteShort((short) (ItemId << 4 | MetaData));
-			if (ItemId != -1)
+			if (Buffer != null)
 			{
-				Buffer.WriteByte(ItemCount);
-				Buffer.WriteShort(ItemDamage);
-				Buffer.WriteByte(0);
+				Buffer.WriteVarInt(SendId);
+				Buffer.WriteByte(WindowId);
+				Buffer.WriteShort(Slot);
+				Buffer.WriteShort((short) (ItemId << 4 | MetaData));
+				if (ItemId != -1)
+				{
+					Buffer.WriteByte(ItemCount);
+					Buffer.WriteShort(ItemDamage);
+					Buffer.WriteByte(0);
+				}
+				Buffer.FlushData(true);
 			}
-			Buffer.FlushData(true);
 		}
 	}
 }

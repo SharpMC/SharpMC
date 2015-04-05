@@ -16,11 +16,14 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Read()
 		{
-			Client.Player.Yaw = Buffer.ReadFloat();
-			Client.Player.Pitch = Buffer.ReadFloat();
-			Client.Player.OnGround = Buffer.ReadBool();
+			if (Buffer != null)
+			{
+				Client.Player.Yaw = Buffer.ReadFloat();
+				Client.Player.Pitch = Buffer.ReadFloat();
+				Client.Player.OnGround = Buffer.ReadBool();
 
-			new EntityLook(Client) {Player = Client.Player}.Broadcast(false, Client.Player);
+				new EntityLook(Client) {Player = Client.Player}.Broadcast(false, Client.Player);
+			}
 		}
 	}
 }

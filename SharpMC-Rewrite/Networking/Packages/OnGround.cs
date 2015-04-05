@@ -16,7 +16,10 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Read()
 		{
-			Client.Player.OnGround = Buffer.ReadBool();
+			if (Buffer != null)
+			{
+				Client.Player.OnGround = Buffer.ReadBool();
+			}
 		}
 	}
 }

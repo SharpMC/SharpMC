@@ -19,10 +19,13 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Write()
 		{
-			var id = new Random().Next(0, 100);
-			Buffer.WriteVarInt(SendId);
-			Buffer.WriteVarInt(id);
-			Buffer.FlushData();
+			if (Buffer != null)
+			{
+				var id = new Random().Next(0, 100);
+				Buffer.WriteVarInt(SendId);
+				Buffer.WriteVarInt(id);
+				Buffer.FlushData();
+			}
 		}
 	}
 }

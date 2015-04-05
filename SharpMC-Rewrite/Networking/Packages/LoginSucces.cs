@@ -21,10 +21,13 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Write()
 		{
-			Buffer.WriteVarInt(SendId);
-			Buffer.WriteString(UUID);
-			Buffer.WriteString(Username);
-			Buffer.FlushData();
+			if (Buffer != null)
+			{
+				Buffer.WriteVarInt(SendId);
+				Buffer.WriteString(UUID);
+				Buffer.WriteString(Username);
+				Buffer.FlushData();
+			}
 		}
 	}
 }

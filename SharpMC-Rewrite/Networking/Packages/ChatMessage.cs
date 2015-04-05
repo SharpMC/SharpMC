@@ -28,10 +28,13 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Write()
 		{
-			Buffer.WriteVarInt(SendId);
-			Buffer.WriteString("{ \"text\": \"" + Message + "\" }");
-			Buffer.WriteByte(0);
-			Buffer.FlushData();
+			if (Buffer != null)
+			{
+				Buffer.WriteVarInt(SendId);
+				Buffer.WriteString("{ \"text\": \"" + Message + "\" }");
+				Buffer.WriteByte(0);
+				Buffer.FlushData();
+			}
 		}
 	}
 }

@@ -19,18 +19,18 @@ namespace SharpMCRewrite.Worlds
 	{
 		//private static readonly ILog Log = LogManager.GetLogger(typeof(AnvilWorldProvider));
 		private byte _waterOffsetY;
-		private ExperimentalV2.ExperimentalV2Generator _flatland;
+		private readonly ExperimentalV2.ExperimentalV2Generator _backEndGenerator;
 		private LevelInfo _level;
 		private readonly ConcurrentDictionary<ChunkCoordinates, ChunkColumn> _chunkCache = new ConcurrentDictionary<ChunkCoordinates, ChunkColumn>();
 		private string _basePath;
 
-		public bool IsCaching { get; private set; }
+		public override sealed bool IsCaching { get; set; }
 
 
 		public AnvilWorldProvider()
 		{
 			IsCaching = true;
-			_flatland = new ExperimentalV2.ExperimentalV2Generator("v2");
+			_backEndGenerator = new ExperimentalV2.ExperimentalV2Generator("v2");
 		}
 
 		public AnvilWorldProvider(string basePath)
@@ -219,7 +219,7 @@ namespace SharpMCRewrite.Worlds
 
 			string filePath = Path.Combine(_basePath, string.Format(@"region\r.{0}.{1}.mca", rx, rz));
 
-			if (!File.Exists(filePath)) return _flatland.GenerateChunkColumn(new Vector2(X, Z));
+			if (!File.Exists(filePath)) return _backEndGenerator.GenerateChunkColumn(new Vector2(X, Z));
 
 			using (var regionFile = File.OpenRead(filePath))
 			{
@@ -242,7 +242,7 @@ namespace SharpMCRewrite.Worlds
 
 				int length = regionFile.ReadByte();
 
-				if (offset == 0 || length == 0) return _flatland.GenerateChunkColumn(new Vector2(X, Z));
+				if (offset == 0 || length == 0) return _backEndGenerator.GenerateChunkColumn(new Vector2(X, Z));
 
 				regionFile.Seek(offset, SeekOrigin.Begin);
 				byte[] waste = new byte[4];
@@ -288,7 +288,7 @@ namespace SharpMCRewrite.Worlds
 							for (int y = 0; y < 16; y++)
 							{
 								int yi = sy + y - _waterOffsetY;
-								if (yi < 0 || yi >= 128) continue;
+								if (yi < 0 || yi >= 256) continue;
 
 								int anvilIndex = y * 16 * 16 + z * 16 + x;
 								int blockId = blocks[anvilIndex] + (Nibble4(adddata, anvilIndex) << 8);

@@ -16,10 +16,13 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Read()
 		{
-			var flags = (byte) Buffer.ReadByte();
-			var flyingSpeed = Buffer.ReadFloat();
-			var walkingSpeed = Buffer.ReadFloat();
-			//We don't do anything with this for now. Not really needed.
+			if (Buffer != null)
+			{
+				var flags = (byte) Buffer.ReadByte();
+				var flyingSpeed = Buffer.ReadFloat();
+				var walkingSpeed = Buffer.ReadFloat();
+				//We don't do anything with this for now. Not really needed.
+			}
 		}
 	}
 }

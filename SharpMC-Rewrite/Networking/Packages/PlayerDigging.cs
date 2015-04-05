@@ -22,22 +22,25 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Read()
 		{
-			var status = Buffer.ReadByte();
-
-			if (status == 2 || Client.Player.Gamemode == Gamemode.Creative)
+			if (Buffer != null)
 			{
-				var Position = Buffer.ReadPosition();
-				var Face = Buffer.ReadByte();
-				var intVector = new Vector3((int)Position.X, (int)Position.Y, (int)Position.Z);
+				var status = Buffer.ReadByte();
 
-				var block = Globals.Level.GetBlock(intVector);
-				block.BreakBlock(Globals.Level);
-				//Globals.Level.SetBlock(new BlockAir() {Coordinates = intVector});
-				Client.Player.Digging = false;
-			}
-			else if (status == 0)
-			{
-				Client.Player.Digging = true;
+				if (status == 2 || Client.Player.Gamemode == Gamemode.Creative)
+				{
+					var Position = Buffer.ReadPosition();
+					var Face = Buffer.ReadByte();
+					var intVector = new Vector3((int) Position.X, (int) Position.Y, (int) Position.Z);
+
+					var block = Globals.Level.GetBlock(intVector);
+					block.BreakBlock(Globals.Level);
+					//Globals.Level.SetBlock(new BlockAir() {Coordinates = intVector});
+					Client.Player.Digging = false;
+				}
+				else if (status == 0)
+				{
+					Client.Player.Digging = true;
+				}
 			}
 		}
 	}

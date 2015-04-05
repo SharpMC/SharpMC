@@ -18,14 +18,20 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Read()
 		{
-			var slot = (byte) Buffer.ReadByte();
-			Client.Player.CurrentSlot = slot;
+			if (Buffer != null)
+			{
+				var slot = (byte) Buffer.ReadByte();
+				Client.Player.CurrentSlot = slot;
+			}
 		}
 
 		public override void Write()
 		{
-			Buffer.WriteByte(Client.Player.CurrentSlot);
-			Buffer.FlushData();
+			if (Buffer != null)
+			{
+				Buffer.WriteByte(Client.Player.CurrentSlot);
+				Buffer.FlushData();
+			}
 		}
 	}
 }

@@ -23,64 +23,74 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Read()
 		{
-			var protocol = Buffer.ReadVarInt();
-			var host = Buffer.ReadString();
-			var port = Buffer.ReadShort();
-			var state = Buffer.ReadVarInt();
-
-			switch (@state)
+			if (Buffer != null)
 			{
-				case 1:
-					HandleStatusRequest();
-					break;
-				case 2:
-					HandleLogin();
-					break;
+				var protocol = Buffer.ReadVarInt();
+				var host = Buffer.ReadString();
+				var port = Buffer.ReadShort();
+				var state = Buffer.ReadVarInt();
+
+				switch (@state)
+				{
+					case 1:
+						HandleStatusRequest();
+						break;
+					case 2:
+						HandleLogin();
+						break;
+				}
 			}
 		}
 
 		private void HandleStatusRequest()
 		{
-			Buffer.WriteVarInt(SendId);
-			Buffer.WriteString("{\"version\": {\"name\": \"" + Globals.ProtocolName + "\",\"protocol\": " +
-			                   Globals.ProtocolVersion + "},\"players\": {\"max\": " + Globals.MaxPlayers + ",\"online\": " +
-			                   Globals.Level.OnlinePlayers.Count + "},\"description\": {\"text\":\"" + Globals.RandomMOTD +
-			                   "\"}}");
-			Buffer.FlushData();
+			if (Buffer != null)
+			{
+				Buffer.WriteVarInt(SendId);
+				Buffer.WriteString("{\"version\": {\"name\": \"" + Globals.ProtocolName + "\",\"protocol\": " +
+				                   Globals.ProtocolVersion + "},\"players\": {\"max\": " + Globals.MaxPlayers + ",\"online\": " +
+				                   Globals.Level.OnlinePlayers.Count + "},\"description\": {\"text\":\"" + Globals.RandomMOTD +
+				                   "\"}}");
+				Buffer.FlushData();
+			}
 		}
 
 		private void HandleLogin()
 		{
-			var usernameRaw = Buffer.ReadString();
-			string username = new string(usernameRaw.Where(c => char.IsLetter(c) || char.IsPunctuation(c) || char.IsDigit(c)).ToArray());
-			//username = Regex.Replace(username, @"[^\u0000-\u007F]", string.Empty);
-			var uuid = getUUID(username);
-
-			new LoginSucces(Client) {Username = username, UUID = uuid}.Write();
-
-			if (Encoding.UTF8.GetBytes(username).Length == 0)
+			if (Buffer != null)
 			{
-				new Disconnect(Client) {Reason = "§4SharpMC\n§fSomething went wrong while decoding your username!"}.Write();
-				return;
+				var usernameRaw = Buffer.ReadString();
+				string username =
+					new string(usernameRaw.Where(c => char.IsLetter(c) || char.IsPunctuation(c) || char.IsDigit(c)).ToArray());
+				//username = Regex.Replace(username, @"[^\u0000-\u007F]", string.Empty);
+				var uuid = getUUID(username);
+
+				new LoginSucces(Client) {Username = username, UUID = uuid}.Write();
+
+				if (Encoding.UTF8.GetBytes(username).Length == 0)
+				{
+					new Disconnect(Client) {Reason = "§4SharpMC\n§fSomething went wrong while decoding your username!"}.Write();
+					return;
+				}
+
+				Globals.LastUniqueID++;
+				Client.Player = new Player(Globals.Level)
+				{
+					Uuid = uuid,
+					Username = username,
+					UniqueServerId = Globals.LastUniqueID,
+					Wrapper = Client,
+					Gamemode = Gamemode.Creative
+				};
+				Client.PlayMode = true;
+
+				new SetCompression(Client).Write();
+
+				new JoinGame(Client) {Player = Client.Player}.Write();
+				new SpawnPosition(Client).Write();
+				Client.StartKeepAliveTimer();
+				Client.Player.SendChunksFromPosition();
 			}
-
-			Globals.LastUniqueID++;
-			Client.Player = new Player(Globals.Level)
-			{
-				Uuid = uuid,
-				Username = username,
-				UniqueServerId = Globals.LastUniqueID,
-				Wrapper = Client,
-				Gamemode = Gamemode.Creative
-			};
-			Client.PlayMode = true;
-
-			new SetCompression(Client).Write();
-
-			new JoinGame(Client){Player = Client.Player}.Write();
-			new SpawnPosition(Client).Write();
-			Client.StartKeepAliveTimer();
-			Client.Player.SendChunksFromPosition();
 		}
 
 		private string getUUID(string username)

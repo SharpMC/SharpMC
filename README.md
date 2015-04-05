@@ -1,5 +1,15 @@
-# SharpMC-Rewrite
+# SharpMC
 Build state:        ![alt tag](https://ci.appveyor.com/api/projects/status/qlviwrgvaeqa1u06?svg=true)
+
+What is SharpMC?
+----------------
+SharpMC is a Minecraft server written in C# made by Kennyvv
+It is a hobby project, the goal is to create an alternative to Spigot/Bukkit/Sponge.
+
+Will this be an alternative to Spigot/Bukkit/Sponge?
+-------------------------------------------------------
+I must honestly say, i doubt it. It is a hobby project, i don't have the time to work on it that much.
+However, it is my goal! But you have to understand that i'm on my own working on this so it might take some time...
 
 
 Current Specs
@@ -11,11 +21,6 @@ Current Specs
   - Entities: Partial
   - Scripting: Planned - C# plugin system (Maybe LUA)
   - Platforms: Windows. Mac & Linux using Mono.
-
-Will this be an alternative to Spigot/Bukkit/Sponge?
--------------------------------------------------------
-I must honestly say, i doubt it. It is a hobby project, i don't have the time to work on it that much.
-However, it is my goal! But you have to understand that i'm on my own working on this so it might take some time...
 
 Made possible by
 ------------------

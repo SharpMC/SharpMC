@@ -21,12 +21,15 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Write()
 		{
-			Buffer.WriteVarInt(SendId);
-			Buffer.WriteByte(WindowId);
-			Buffer.WriteString(WindowType);
-			Buffer.WriteString(WindowTitle);
-			Buffer.WriteByte(NumberOfSlots);
-			Buffer.FlushData();
+			if (Buffer != null)
+			{
+				Buffer.WriteVarInt(SendId);
+				Buffer.WriteByte(WindowId);
+				Buffer.WriteString(WindowType);
+				Buffer.WriteString(WindowTitle);
+				Buffer.WriteByte(NumberOfSlots);
+				Buffer.FlushData();
+			}
 		}
 	}
 }
