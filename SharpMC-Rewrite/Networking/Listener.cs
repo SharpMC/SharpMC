@@ -53,6 +53,7 @@ namespace SharpMCRewrite.Networking
 				}
 				catch (Exception ex)
 				{
+					Client.ThreadPool.KillAllThreads();
 					//Exception, disconnect!
 					ConsoleFunctions.WriteDebugLine("Error: \n" + ex);
 					new Disconnect(Client)
@@ -63,6 +64,7 @@ namespace SharpMCRewrite.Networking
 				}
 			}
 			//Close the connection with the client. :)
+			Client.ThreadPool.KillAllThreads();
 			Client.StopKeepAliveTimer();
 
 			if (Client.Player != null)
@@ -70,7 +72,8 @@ namespace SharpMCRewrite.Networking
 				Globals.Level.RemovePlayer(Client.Player);
 				Globals.Level.BroadcastPlayerRemoval(Client);
 			}
-			Client.TCPClient.Close();
+			Client.TcpClient.Close();
+			Thread.CurrentThread.Abort();
 		}
 	}
 }

@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Threading;
 using SharpMCRewrite.Classes;
 
 namespace SharpMCRewrite.Networking.Packages
@@ -66,7 +67,8 @@ namespace SharpMCRewrite.Networking.Packages
 			{
 				if (package.ReadId == packetid)
 				{
-					package.Read();
+					var package1 = package;
+					package.Client.ThreadPool.LaunchThread(new Thread(() => package1.Read()));
 					return true;
 				}
 			}

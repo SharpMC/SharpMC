@@ -14,17 +14,17 @@ namespace SharpMCRewrite.Classes
 
 		public Package(ClientWrapper client)
 		{
-			if (!client.TCPClient.Connected) return;
+			if (!client.TcpClient.Connected) return;
 			Client = client;
-			_stream = client.TCPClient.GetStream();
+			_stream = client.TcpClient.GetStream();
 			Buffer = new MSGBuffer(client);
 		}
 
 		public Package(ClientWrapper client, MSGBuffer buffer)
 		{
-			if (!client.TCPClient.Connected) return;
+			if (!client.TcpClient.Connected) return;
 			Client = client;
-			_stream = client.TCPClient.GetStream();
+			_stream = client.TcpClient.GetStream();
 			Buffer = buffer;
 		}
 
@@ -46,7 +46,7 @@ namespace SharpMCRewrite.Classes
 				}
 				Client = i.Wrapper;
 				Buffer = new MSGBuffer(i.Wrapper);
-				_stream = i.Wrapper.TCPClient.GetStream();
+				_stream = i.Wrapper.TcpClient.GetStream();
 				Write();
 			}
 		}

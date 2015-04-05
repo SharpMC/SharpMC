@@ -17,7 +17,7 @@ namespace SharpMCRewrite.Classes
 		public MSGBuffer(ClientWrapper client)
 		{
 			_client = client;
-			if (client.TCPClient.Connected) mStream = client.TCPClient.GetStream();
+			if (client.TcpClient.Connected) mStream = client.TcpClient.GetStream();
 		}
 
 		public MSGBuffer(NetworkStream stream)

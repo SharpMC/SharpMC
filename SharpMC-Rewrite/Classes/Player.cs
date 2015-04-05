@@ -121,7 +121,7 @@ namespace SharpMCRewrite.Classes
 							_chunksUsed, this))
 				{
 
-					if (Wrapper != null && Wrapper.TCPClient.Client.Connected)
+					if (Wrapper != null && Wrapper.TcpClient.Client.Connected)
 						new ChunkData(Wrapper, new MSGBuffer(Wrapper)) {Chunk = chunk}.Write();
 					Thread.Yield();
 

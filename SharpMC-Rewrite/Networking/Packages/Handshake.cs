@@ -2,7 +2,6 @@
 using System.Linq;
 using System.Net;
 using System.Text;
-using System.Text.RegularExpressions;
 using SharpMCRewrite.Classes;
 using SharpMCRewrite.Enums;
 
@@ -52,8 +51,8 @@ namespace SharpMCRewrite.Networking.Packages
 
 		private void HandleLogin()
 		{
-			var usernameRAW = Buffer.ReadString();
-			string username = new string(usernameRAW.Where(c => char.IsLetter(c) || char.IsPunctuation(c) || char.IsDigit(c)).ToArray());
+			var usernameRaw = Buffer.ReadString();
+			string username = new string(usernameRaw.Where(c => char.IsLetter(c) || char.IsPunctuation(c) || char.IsDigit(c)).ToArray());
 			//username = Regex.Replace(username, @"[^\u0000-\u007F]", string.Empty);
 			var uuid = getUUID(username);
 

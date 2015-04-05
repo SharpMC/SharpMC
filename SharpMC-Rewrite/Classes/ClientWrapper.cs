@@ -9,18 +9,21 @@ namespace SharpMCRewrite.Classes
 {
 	public class ClientWrapper
 	{
-		private readonly Queue<byte[]> Commands = new Queue<byte[]>();
-		private readonly Timer kTimer = new Timer();
-		private readonly AutoResetEvent Resume = new AutoResetEvent(false);
-		private readonly Timer tickTimer = new Timer();
+		private readonly Queue<byte[]> _commands = new Queue<byte[]>();
+		private readonly Timer _kTimer = new Timer();
+		private readonly AutoResetEvent _resume = new AutoResetEvent(false);
+		private readonly Timer _tickTimer = new Timer();
 		public Player Player;
 		public bool PlayMode = false;
-		public TcpClient TCPClient;
+		public TcpClient TcpClient;
+		public MyThreadPool ThreadPool;
 
 		public ClientWrapper(TcpClient client)
 		{
-			TCPClient = client;
-			new Thread(() => ThreadRun()).Start();
+			TcpClient = client;
+			ThreadPool = new MyThreadPool();
+			ThreadPool.LaunchThread(new Thread(ThreadRun));
+			//new Thread(ThreadRun).Start();
 		}
 
 		public void AddToQuee(byte[] data, bool quee = false)
@@ -28,11 +31,11 @@ namespace SharpMCRewrite.Classes
 			//ConsoleFunctions.WriteDebugLine("Data length: " + data.Length);
 			if (quee)
 			{
-				lock (Commands)
+				lock (_commands)
 				{
-					Commands.Enqueue(data);
+					_commands.Enqueue(data);
 				}
-				Resume.Set();
+				_resume.Set();
 			}
 			else
 			{
@@ -42,23 +45,23 @@ namespace SharpMCRewrite.Classes
 
 		private void ThreadRun()
 		{
-			while (Resume.WaitOne())
+			while (_resume.WaitOne())
 			{
 				byte[] command;
-				lock (Commands)
+				lock (_commands)
 				{
-					command = Commands.Dequeue();
+					command = _commands.Dequeue();
 				}
 				SendData(command);
 			}
 		}
 
-		public void SendData(byte[] Data, int Length)
+		public void SendData(byte[] data, int length)
 		{
 			try
 			{
-				var a = TCPClient.GetStream();
-				a.Write(Data, 0, Length);
+				var a = TcpClient.GetStream();
+				a.Write(data, 0, length);
 				a.Flush();
 			}
 			catch
@@ -67,12 +70,12 @@ namespace SharpMCRewrite.Classes
 			}
 		}
 
-		public void SendData(byte[] Data, int Offset, int Length)
+		public void SendData(byte[] data, int offset, int length)
 		{
 			try
 			{
-				var a = TCPClient.GetStream();
-				a.Write(Data, Offset, Length);
+				var a = TcpClient.GetStream();
+				a.Write(data, offset, length);
 				a.Flush();
 			}
 			catch
@@ -85,7 +88,7 @@ namespace SharpMCRewrite.Classes
 		{
 			try
 			{
-				var a = TCPClient.GetStream();
+				var a = TcpClient.GetStream();
 				a.Write(data, 0, data.Length);
 				a.Flush();
 			}
@@ -97,18 +100,18 @@ namespace SharpMCRewrite.Classes
 
 		public void StartKeepAliveTimer()
 		{
-			kTimer.Elapsed += DisplayTimeEvent;
-			kTimer.Interval = 5000;
-			kTimer.Start();
+			_kTimer.Elapsed += DisplayTimeEvent;
+			_kTimer.Interval = 5000;
+			_kTimer.Start();
 
-			tickTimer.Elapsed += DoTick;
-			tickTimer.Interval = 50;
-			tickTimer.Start();
+			_tickTimer.Elapsed += DoTick;
+			_tickTimer.Interval = 50;
+			_tickTimer.Start();
 		}
 
 		public void StopKeepAliveTimer()
 		{
-			kTimer.Stop();
+			_kTimer.Stop();
 		}
 
 		public void DisplayTimeEvent(object source, ElapsedEventArgs e)
@@ -122,6 +125,64 @@ namespace SharpMCRewrite.Classes
 			{
 				Player.Tick();
 			}
+		}
+	}
+
+	public class MyThreadPool
+	{
+		private IList<Thread> _threads;
+		private const int MaxThreads = 500;
+
+		public MyThreadPool()
+		{
+			_threads = new List<Thread>();
+		}
+
+		public void LaunchThread(Thread thread)
+		{
+			thread.IsBackground = true;
+			thread.Name = "Thread" + _threads.Count + 1;
+			_threads.Add(thread);
+			thread.Start();
+		}
+
+		public void KillAllThreads()
+		{
+			foreach (var thread in _threads)
+			{
+				if (thread.IsAlive)
+				{
+					thread.Abort();
+				}
+			}
+		}
+
+		public void LaunchThreads()
+		{
+			for (int i = 0; i < MaxThreads; i++)
+			{
+				Thread thread = new Thread(ThreadEntry);
+				thread.IsBackground = true;
+				thread.Name = string.Format("MyThread{0}", i);
+
+				_threads.Add(thread);
+				thread.Start();
+			}
+		}
+
+		public void KillThread(int index)
+		{
+			string id = string.Format("MyThread{0}", index);
+			foreach (Thread thread in _threads)
+			{
+				if (thread.Name == id)
+					thread.Abort();
+			}
+		}
+
+		void ThreadEntry()
+		{
+
 		}
 	}
 }

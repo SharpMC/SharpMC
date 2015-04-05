@@ -1,18 +1,21 @@
 # SharpMC-Rewrite
 Build state:        ![alt tag](https://ci.appveyor.com/api/projects/status/qlviwrgvaeqa1u06?svg=true)
 
-Demo server: 94.23.50.5:25565<br>
-	-Might not be online at some moments!
 
 Current Specs
 -----------------
-  - Protocol: 47
-  - World Format: Custom
+  - Protocol: #47
+  - World Format: Anvil
   - Multiworld: Planned
   - Physics: Planned
-  - Entities: Planned
-  - Scripting: Planned - C# plugin system
+  - Entities: Partial
+  - Scripting: Planned - C# plugin system (Maybe LUA)
   - Platforms: Windows. Mac & Linux using Mono.
+
+Will this be an alternative to Spigot/Bukkit/Sponge?
+-------------------------------------------------------
+I must honestly say, i doubt it. It is a hobby project, i don't have the time to work on it that much.
+However, it is my goal! But you have to understand that i'm on my own working on this so it might take some time...
 
 Made possible by
 ------------------

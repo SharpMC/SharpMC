@@ -21,9 +21,12 @@ namespace SharpMCRewrite.Networking.Packages
 
 		public override void Write()
 		{
-			Buffer.WriteVarInt(SendId);
-			Buffer.Write(Chunk.GetBytes(Unloader));
-			Buffer.FlushData(Queee);
+			if (Buffer != null)
+			{
+				Buffer.WriteVarInt(SendId);
+				Buffer.Write(Chunk.GetBytes(Unloader));
+				Buffer.FlushData(Queee);
+			}
 		}
 	}
 }
