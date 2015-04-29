@@ -28,17 +28,21 @@ namespace SharpMC.Classes
 				if (thread.IsAlive)
 				{
 					thread.Abort();
+                                        _threads.Remove(thread);
 				}
 			}
 		}
 
 		public void KillThread(int index)
 		{
-			var id = string.Format("MyThread{0}", index);
+			var id = string.Concat("Thread", index.ToString());
 			foreach (var thread in _threads)
 			{
-				if (thread.Name == id)
+				if (thread.Name == id) 
+                                {
 					thread.Abort();
+                                        _threads.Remove(thread);
+                                }
 			}
 		}
 	}
