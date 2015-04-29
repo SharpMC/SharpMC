@@ -1,4 +1,5 @@
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 
 namespace SharpMC.Classes
@@ -23,27 +24,19 @@ namespace SharpMC.Classes
 
 		public void KillAllThreads()
 		{
-			foreach (var thread in _threads)
-			{
-				if (thread.IsAlive)
-				{
-					thread.Abort();
-                                        _threads.Remove(thread);
-				}
-			}
+		    foreach (var thread in _threads.Where(thread => thread.IsAlive))
+		    {
+		        thread.Abort();
+		    }
 		}
 
-		public void KillThread(int index)
-		{
-			var id = string.Concat("Thread", index.ToString());
-			foreach (var thread in _threads)
-			{
-				if (thread.Name == id) 
-                                {
-					thread.Abort();
-                                        _threads.Remove(thread);
-                                }
-			}
-		}
+	    public void KillThread(int index)
+	    {
+	        var id = string.Concat("Thread", index.ToString());
+	        foreach (var thread in _threads.Where(thread => thread.Name == id))
+	        {
+	            thread.Abort();
+	        }
+	    }
 	}
 }
