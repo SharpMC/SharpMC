@@ -21,7 +21,7 @@ namespace SharpMC.Networking.Packages
 				Buffer.WriteVarInt(SendId);
 				Buffer.WriteFloat(Client.Player.HealthManager.Health);
 				Buffer.WriteVarInt(Client.Player.HealthManager.Food);
-				Buffer.WriteFloat(-0.1f);
+				Buffer.WriteFloat(0.0f);
 				Buffer.FlushData();
 			}
 		}

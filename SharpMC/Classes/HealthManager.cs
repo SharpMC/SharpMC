@@ -12,14 +12,15 @@ namespace SharpMC.Classes
 	{
 		//public Entity LastDamageSource { get; set; }
 
-		public HealthManager(Player player)
+		public HealthManager(Entity.Entity entity)
 		{
-			Player = player;
+			//Player = player;
+			Entity = entity;
 			ResetHealth();
 		}
 
-		//public Entity Entity { get; set; }
-		public Player Player { get; set; }
+		public Entity.Entity Entity { get; set; }
+		//public Player Player { get; set; }
 		public int Health { get; set; }
 		public short Air { get; set; }
 		public short Food { get; set; }
@@ -31,6 +32,7 @@ namespace SharpMC.Classes
 		public Player LastDamageSource { get; set; }
 		private int FallDamage { get; set; }
 		private int FallTick { get; set; }
+		private int RegenTick { get; set; }
 
 		public byte[] Export()
 		{
@@ -65,16 +67,16 @@ namespace SharpMC.Classes
 
 			LastDamageSource = source;
 
-			//Untested code below, should work fine, however this is not sure yet.
-			//	int Damage = ItemFactory.GetItem(sourcePlayer.Inventory.ItemInHand.Value.Id).GetDamage();
-			//	Health -= Damage - Entity.Armour;
-
 			Health -= damage;
 
-			//if (Player != null)
-			//Player.SendSetHealth();
-			Player.SendHealth();
-			Player.BroadcastEntityAnimation(Animations.TakeDamage);
+			if (Entity == null) return;
+
+			var player = Entity as Player;
+			if (player != null)
+			{
+				player.SendHealth();
+				player.BroadcastEntityAnimation(Animations.TakeDamage);
+			}
 		}
 
 		public void Kill()
@@ -82,14 +84,14 @@ namespace SharpMC.Classes
 			if (IsDead) return;
 
 			IsDead = true;
-			Health = 0;
-			if (Player != null)
-			{
-				//player.SendSetHealth();
+			//Health = 0;
+			//if (Player != null)
+			//{
+			//	//player.SendSetHealth();
 				//player.BroadcastEntityEvent();
 				//player.BroadcastSetEntityData();
-				Player.SendHealth();
-			}
+			//	Player.SendHealth();
+			//}
 
 			//Entity.DespawnEntity();
 		}
@@ -104,10 +106,39 @@ namespace SharpMC.Classes
 			FireTick = 0;
 			IsDead = false;
 			LastDamageCause = DamageCause.Unknown;
+			RegenTick = 0;
 		}
 
 		public void OnTick()
 		{
+			var player = Entity as Player;
+			if (IsDead) return;
+
+			if (Health <= 0)
+			{
+				IsDead = true;
+				if (player != null)
+				{
+					Entity.Level.BroadcastChat("§e" + GetDescription(LastDamageCause).Replace("{0}", player.Username));
+				}
+				return;
+			}
+
+			if (Food > 16 && Health < 20 && !IsOnFire)
+			{
+				//Regenerate health.
+				if (RegenTick >= 80)
+				{
+					Health++;
+					if (player != null)
+					{
+						player.SendHealth();
+					}
+					RegenTick = 0;
+				}
+				else RegenTick++;
+			}
+
 			if (FoodTick == 300)
 			{
 				if (Food > 0)
@@ -118,16 +149,20 @@ namespace SharpMC.Classes
 				{
 					Health--;
 				}
-				Player.SendHealth();
+				if (player != null)
+				{
+					player.SendHealth();
+				}
 				FoodTick = 0;
 			}
 			else FoodTick += 1;
 
-			//TODO: Rewrite to fit all entities
+
+			//TODO: Fix falldamage code below :P
 
 			/*if (!Player.OnGround)
 			{
-				if (FallTick > 9)
+				if (FallTick > 3)
 				{
 					FallDamage++;
 					FallTick = 0;
@@ -138,14 +173,17 @@ namespace SharpMC.Classes
 			{
 				if (FallDamage > 0)
 				{
-					Health -= FallDamage;
+					//Health -= FallDamage;
+					if (FallDamage > 3)
+					{
+						TakeHit(Player, FallDamage - 3, DamageCause.Fall);
+					}
+
 					FallDamage = 0;
 					FallTick = 0;
-					Player.SendHealth();
 				}
+				if (FallTick > 0) FallTick = 0;
 			}*/
-
-			if (IsDead) return;
 
 			if (Health <= 0)
 			{
@@ -153,73 +191,54 @@ namespace SharpMC.Classes
 				return;
 			}
 
-			if (Player.Coordinates.Y < 0 && !IsDead)
+			if (player != null)
 			{
-				TakeHit(null, 10);
-				LastDamageCause = DamageCause.Void;
-				return;
-			}
-
-			if (IsInWater(Player.Coordinates))
-			{
-				Air--;
-				if (Air <= 0)
+				if (player.KnownPosition.Y < 0 && !IsDead)
 				{
-					if (Math.Abs(Air)%10 == 0)
+					TakeHit(player, 20, DamageCause.Void);
+					return;
+				}
+
+
+				if (IsInWater(player.KnownPosition))
+				{
+					Air--;
+					if (Air <= 0)
 					{
-						Health--;
-						//var player = Entity as Player;
-						if (Player != null)
+						if (Math.Abs(Air)%10 == 0)
 						{
-							//	player.SendSetHealth();
-							//	player.BroadcastEntityEvent();
-							//	player.BroadcastSetEntityData();
-							Player.SendHealth();
-							LastDamageCause = DamageCause.Drowning;
+							TakeHit(player, 1, DamageCause.Drowning);
 						}
 					}
+
+					if (IsOnFire)
+					{
+						IsOnFire = false;
+						FireTick = 0;
+					}
+				}
+				else
+				{
+					Air = 300;
+				}
+
+				if (!IsOnFire && IsInLava(player.KnownPosition))
+				{
+					FireTick = 300;
+					IsOnFire = true;
 				}
 
 				if (IsOnFire)
 				{
-					IsOnFire = false;
-					FireTick = 0;
-					//if (Player != null)
-					//player.BroadcastSetEntityData();
-				}
-			}
-			else
-			{
-				Air = 300;
-			}
-
-			if (!IsOnFire && IsInLava(Player.Coordinates))
-			{
-				FireTick = 300;
-				IsOnFire = true;
-				//var player = Entity as Player;
-				//	if (Player != null)
-				//		player.BroadcastSetEntityData();
-			}
-
-			if (IsOnFire)
-			{
-				FireTick--;
-				if (FireTick <= 0)
-				{
-					IsOnFire = false;
-				}
-
-				if (Math.Abs(FireTick)%20 == 0)
-				{
-					Health--;
-					if (Player != null)
+					FireTick--;
+					if (FireTick <= 0)
 					{
-						//	player.SendSetHealth();
-						//	player.BroadcastEntityEvent();
-						//	player.BroadcastSetEntityData();
-						Player.SendHealth();
-						LastDamageCause = DamageCause.FireTick;
+						IsOnFire = false;
+					}
+
+					if (Math.Abs(FireTick)%20 == 0)
+					{
+						TakeHit(player, 1, DamageCause.Fire);
 					}
 				}
 			}
@@ -227,24 +246,15 @@ namespace SharpMC.Classes
 
 		private bool IsInWater(Vector3 playerPosition)
 		{
-			var y = playerPosition.Y + 1;
-
-			var waterPos = new Vector3(Math.Floor(playerPosition.X), Math.Floor(y), Math.Floor(playerPosition.Z));
-
-			var block = Player.CurrentLevel.GetBlock(waterPos);
-
-			if (block.Id != 8 && block.Id != 9) return false;
-
-			return y < Math.Floor(y) + 1 - ((1.0/9.0) - 0.1111111);
+			playerPosition.Y++;
+			var block = Entity.Level.GetBlock(playerPosition);
+			return block.Id == 8 || block.Id == 9;
 		}
 
 		private bool IsInLava(Vector3 playerPosition)
 		{
-			var block = Player.CurrentLevel.GetBlock(playerPosition);
-
-			if (block == null || (block.Id != 10 && block.Id != 11)) return false;
-
-			return playerPosition.Y < Math.Floor(playerPosition.Y) + 1 - ((1/9) - 0.1111111);
+			var block = Entity.Level.GetBlock(playerPosition);
+			return block.Id == 10 || block.Id == 11;
 		}
 
 		public static string GetDescription(Enum value)

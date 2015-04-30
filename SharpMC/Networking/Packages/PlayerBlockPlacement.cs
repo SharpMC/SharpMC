@@ -69,12 +69,12 @@ namespace SharpMC.Networking.Packages
 				return;
 			}*/
 
-				if (Client.Player.CurrentLevel.GetBlock(position).Id == 0)
+				if (Client.Player.Level.GetBlock(position).Id == 0)
 				{
 					var b = BlockFactory.GetBlockById(heldItem);
 					b.Coordinates = position;
 					b.Metadata = itemMeta;
-					Client.Player.CurrentLevel.SetBlock(b, true);
+					Client.Player.Level.SetBlock(b, true);
 				}
 			}
 		}

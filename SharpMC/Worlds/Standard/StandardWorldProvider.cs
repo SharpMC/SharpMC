@@ -63,7 +63,7 @@ namespace SharpMC.Worlds.Standard
 			var blockies = new Block[block.Length];
 			for (var i = 0; i < block.Length; i++)
 			{
-				blockies[i] = new Block(block[i]) {Metadata = blockmeta[i]};
+				blockies[i] = new Block(block[i]) {Metadata = (byte) blockmeta[i]};
 			}
 			var skyLength = reader.ReadInt();
 			var skylight = reader.Read(skyLength);

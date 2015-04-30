@@ -14,7 +14,7 @@ namespace SharpMC.Worlds.Standard.Decorators
 					if (chunk.GetBlock(x, y, z) == biome.TopBlock.Id)
 					{
 						var meta = StandardWorldProvider.GetRandomNumber(0, 8);
-						chunk.SetBlock(x, y + 1, z, new Block(38) {Metadata = (ushort) meta});
+						chunk.SetBlock(x, y + 1, z, new Block(38) {Metadata = (byte) meta});
 					}
 				}
 			}

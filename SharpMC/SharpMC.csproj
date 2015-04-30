@@ -41,6 +41,7 @@
     <Compile Include="Blocks\BlockAir.cs" />
     <Compile Include="Blocks\BlockBedrock.cs" />
     <Compile Include="Blocks\Block.cs" />
+    <Compile Include="Blocks\BlockDirt.cs" />
     <Compile Include="Blocks\BlockFactory.cs" />
     <Compile Include="Blocks\BlockFire.cs" />
     <Compile Include="Blocks\BlockGrass.cs" />
@@ -54,11 +55,16 @@
     <Compile Include="Classes\LVLType.cs" />
     <Compile Include="Classes\MyThreadPool.cs" />
     <Compile Include="Classes\Package.cs" />
+    <Compile Include="Classes\PlayerLocation.cs" />
     <Compile Include="Classes\ReadOnlyNibbleArray.cs" />
     <Compile Include="Classes\Records.cs" />
     <Compile Include="Classes\ItemStack.cs" />
+    <Compile Include="Entity\Entity.cs" />
+    <Compile Include="Entity\EntityManager.cs" />
+    <Compile Include="Entity\ItemEntity.cs" />
     <Compile Include="Enums\Animations.cs" />
     <Compile Include="Enums\BlockFace.cs" />
+    <Compile Include="Enums\ObjectType.cs" />
     <Compile Include="Items\Item.cs" />
     <Compile Include="Items\ItemFactory.cs" />
     <Compile Include="Items\ItemFlintAndSteel.cs" />
@@ -71,9 +77,12 @@
     <Compile Include="Networking\Packages\ChunkData.cs" />
     <Compile Include="Networking\Packages\ClientSettings.cs" />
     <Compile Include="Networking\Packages\ClientStatus.cs" />
+    <Compile Include="Networking\Packages\CollectItem.cs" />
+    <Compile Include="Networking\Packages\DestroyEntities.cs" />
     <Compile Include="Networking\Packages\Disconnect.cs" />
     <Compile Include="Networking\Packages\EntityAction.cs" />
     <Compile Include="Networking\Packages\EntityLook.cs" />
+    <Compile Include="Networking\Packages\EntityMetadata.cs" />
     <Compile Include="Networking\Packages\EntityRelativeMove.cs" />
     <Compile Include="Networking\Packages\EntityTeleport.cs" />
     <Compile Include="Networking\Packages\Handshake.cs" />
@@ -99,6 +108,7 @@
     <Compile Include="Networking\Packages\Respawn.cs" />
     <Compile Include="Networking\Packages\SetCompression.cs" />
     <Compile Include="Networking\Packages\SetSlot.cs" />
+    <Compile Include="Networking\Packages\SpawnObject.cs" />
     <Compile Include="Networking\Packages\SpawnPlayer.cs" />
     <Compile Include="Networking\Packages\SpawnPosition.cs" />
     <Compile Include="Networking\Packages\TimeUpdate.cs" />

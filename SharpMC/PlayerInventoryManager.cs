@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Net;
 using System.Runtime.Remoting;
 using SharpMC.Classes;
+using SharpMC.Entity;
 using SharpMC.Networking.Packages;
 
 namespace SharpMC
@@ -55,6 +56,11 @@ namespace SharpMC
 			}
 		}
 
+		public bool AddItem(ItemStack item)
+		{
+			return AddItem(item.ItemId, item.MetaData, item.ItemCount);
+		}
+
 		public bool AddItem(short itemId, byte metadata, byte itemcount = 1)
 		{
 
@@ -100,13 +106,23 @@ namespace SharpMC
 		public void DropCurrentItem()
 		{
 			//Drop the current hold item
-			ConsoleFunctions.WriteWarningLine("UnImplemented feature called! (Drop current item)");
+			int slottarget = 36 + _player.CurrentSlot;
+			var slot = GetSlot(slottarget);
+			if (slot.ItemCount > 1)
+			{
+				SetSlot(slottarget, slot.ItemId, slot.MetaData, (byte) (slot.ItemCount -1));
+			}
+			else
+			{
+				SetSlot(slottarget, -1, 0, 0);
+			}
+			new ItemEntity(_player.Level, new ItemStack(slot.ItemId, 1, slot.MetaData)) {KnownPosition = _player.KnownPosition}.SpawnEntity();
 		}
 
 		public void DropCurrentItemStack()
 		{
 			//Drop current hold item stack
-			ConsoleFunctions.WriteWarningLine("UnImplemented feature called! (Drop current item stack)");
+			ConsoleFunctions.WriteDebugLine("Unimplemented feature called!");
 		}
 
 		public void SendToPlayer()

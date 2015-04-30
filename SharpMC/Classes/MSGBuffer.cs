@@ -335,10 +335,6 @@ namespace SharpMC.Classes
 				WriteVarInt(AllData.Length);
 				var Buffer = bffr.ToArray();
 
-				// ConsoleFunctions.WriteDebugLine ("Specified Data length: " + AllData.Length);
-				//  ConsoleFunctions.WriteDebugLine ("Full packet length: " + (AllData.Length + Buffer.Length));
-				//                mStream.Write (Buffer, 0, Buffer.Length);
-				//              mStream.Write (AllData, 0, AllData.Length);
 				var data = new List<byte>();
 				foreach (var i in Buffer)
 				{
@@ -368,8 +364,6 @@ namespace SharpMC.Classes
 				WriteVarInt(AllData.Length);
 				var Buffer = bffr.ToArray();
 
-				// ConsoleFunctions.WriteDebugLine ("Specified Data length: " + AllData.Length);
-				//  ConsoleFunctions.WriteDebugLine ("Full packet length: " + (AllData.Length + Buffer.Length));
 				mStream.Write(Buffer, 0, Buffer.Length);
 				mStream.Write(AllData, 0, AllData.Length);
 				bffr.Clear();
@@ -383,10 +377,10 @@ namespace SharpMC.Classes
 		private byte[] HostToNetworkOrder(double d)
 		{
 			var data = BitConverter.GetBytes(d);
+
 			if (BitConverter.IsLittleEndian)
-			{
 				Array.Reverse(data);
-			}
+
 			return data;
 		}
 

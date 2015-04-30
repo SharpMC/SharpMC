@@ -22,9 +22,9 @@ namespace SharpMC.Networking.Packages
 			{
 				Buffer.WriteVarInt(SendId);
 				Buffer.WriteVarInt(Player.EntityId);
-				Buffer.WriteByte((byte) Player.Yaw);
-				Buffer.WriteByte((byte) Player.Pitch);
-				Buffer.WriteBool(Player.OnGround);
+				Buffer.WriteByte((byte)Player.KnownPosition.Yaw);
+				Buffer.WriteByte((byte)Player.KnownPosition.Pitch);
+				Buffer.WriteBool(Player.KnownPosition.OnGround);
 				Buffer.FlushData();
 			}
 		}

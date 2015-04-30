@@ -76,7 +76,7 @@ namespace SharpMC.Classes
 
 			_tickTimer.Elapsed += DoTick;
 			_tickTimer.Interval = 50;
-			_tickTimer.Start();
+			//_tickTimer.Start();
 		}
 
 		public void StopKeepAliveTimer()
@@ -91,10 +91,10 @@ namespace SharpMC.Classes
 
 		public void DoTick(object source, ElapsedEventArgs e)
 		{
-			if (Player != null)
-			{
-				Player.Tick();
-			}
+			//if (Player != null)
+			//{
+			//	Player.OnTick();
+			//}
 		}
 	}
 }

@@ -40,7 +40,7 @@ namespace SharpMC.Networking.Packages
 			else if (type == 1)
 			{
 				//Player hit
-				var targ = Client.Player.CurrentLevel.GetPlayer(target);
+				var targ = Client.Player.Level.GetPlayer(target);
 				if (targ != null)
 				{
 					targ.HealthManager.TakeHit(Client.Player, 1, DamageCause.EntityAttack);

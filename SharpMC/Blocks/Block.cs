@@ -1,24 +1,25 @@
 ﻿using SharpMC.Classes;
 using SharpMC.Enums;
+using SharpMC.Items;
 
 namespace SharpMC.Blocks
 {
-	public class Block
+	public class Block : Item
 	{
-		internal Block(ushort id)
+		internal Block(ushort id) : base(id, 0)
 		{
 			Id = id;
 			IsSolid = true;
 			Durability = 0.5f;
 			Metadata = 0;
+			Drops = this;
 		}
 
 		public Vector3 Coordinates { get; set; }
-		public ushort Id { get; set; }
 		public bool IsReplacible { get; set; }
-		public ushort Metadata { get; set; }
 		public bool IsSolid { get; set; }
 		public float Durability { get; set; }
+		public Block Drops { get; set; }
 
 		public bool CanPlace(Level world)
 		{

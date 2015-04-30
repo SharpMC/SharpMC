@@ -24,10 +24,11 @@ namespace SharpMC.Classes
 		public int Difficulty { get; set; }
 		public Gamemode DefaultGamemode { get; set; }
 		public LVLType LevelType { get; set; }
-		public List<Player> OnlinePlayers { get; set; }
+		public List<Player> OnlinePlayers { get; private set; }
 		public int Tick { get; set; }
 		public int Day { get; set; }
 		public IWorldProvider Generator { get; set; }
+		public List<Entity.Entity> Entities { get; private set; }
 
 		public void RemovePlayer(Player player)
 		{
@@ -117,7 +118,7 @@ namespace SharpMC.Classes
 			var metadata = chunk.GetMetadata((int) blockCoordinates.X & 0x0f, (int) blockCoordinates.Y & 0x7f,
 				(int) blockCoordinates.Z & 0x0f);
 
-			bid = (ushort) (bid >> 4);
+			//bid = (ushort) (bid >> 4);
 
 			var block = BlockFactory.GetBlockById(bid);
 			block.Coordinates = blockCoordinates;

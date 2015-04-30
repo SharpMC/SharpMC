@@ -18,7 +18,7 @@ namespace SharpMC.Networking.Packages
 		{
 			if (Buffer != null)
 			{
-				Client.Player.OnGround = Buffer.ReadBool();
+				Client.Player.KnownPosition.OnGround = Buffer.ReadBool();
 			}
 		}
 	}

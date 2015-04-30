@@ -11,7 +11,6 @@ namespace SharpMC
 	public class Globals
 	{
 		public static int ProtocolVersion = 47;
-		public static int LastUniqueId = 0;
 		public static bool UseCompression = false; //Please note, this is not working yet! (not planning on adding any where soon)
 		public static TcpListener ServerListener = new TcpListener(IPAddress.Any, 25565);
 		public static Level Level;

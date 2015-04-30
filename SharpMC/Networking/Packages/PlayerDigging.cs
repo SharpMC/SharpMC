@@ -1,5 +1,6 @@
 ﻿using System.Runtime.InteropServices;
 using SharpMC.Classes;
+using SharpMC.Entity;
 using SharpMC.Enums;
 
 namespace SharpMC.Networking.Packages
@@ -42,10 +43,13 @@ namespace SharpMC.Networking.Packages
 					var Face = Buffer.ReadByte();
 					var intVector = new Vector3((int) Position.X, (int) Position.Y, (int) Position.Z);
 
-					var block = Client.Player.CurrentLevel.GetBlock(intVector);
-					block.BreakBlock(Client.Player.CurrentLevel);
+					var block = Client.Player.Level.GetBlock(intVector);
+					block.BreakBlock(Client.Player.Level);
 					//Globals.Level.SetBlock(new BlockAir() {Coordinates = intVector});
 					Client.Player.Digging = false;
+					
+					//new SpawnObject(Client) {EntityId = EntityManager.GetEntityId(), X = Position.X, Y = Position.Y, Z = Position.Z, Type = ObjectType.ItemStack, Data = new ItemStack((short)block.Id, 1, (byte)block.Metadata)}.Write();
+					new ItemEntity(Client.Player.Level, new ItemStack((short) block.Drops.Id, 1, block.Drops.Metadata)) {KnownPosition = new PlayerLocation(Position.X, Position.Y, Position.Z)}.SpawnEntity();	
 				}
 				else if (status == 0)
 				{

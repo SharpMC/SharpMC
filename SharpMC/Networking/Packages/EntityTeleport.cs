@@ -43,11 +43,11 @@ namespace SharpMC.Networking.Packages
 				if (i != player)
 					new EntityTeleport(i.Wrapper)
 					{
-						Coordinates = player.Coordinates,
-						OnGround = player.OnGround,
+						Coordinates = player.KnownPosition,
+						OnGround = player.KnownPosition.OnGround,
 						UniqueServerID = player.EntityId,
-						Pitch = (byte) player.Pitch,
-						Yaw = (byte) player.Yaw
+						Pitch = (byte)player.KnownPosition.Pitch,
+						Yaw = (byte)player.KnownPosition.Yaw
 					}.Write();
 			}
 		}

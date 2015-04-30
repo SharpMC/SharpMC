@@ -4,6 +4,7 @@
 	{
 		internal BlockGrass() : base(2)
 		{
+			Drops = new BlockDirt();
 		}
 	}
 }

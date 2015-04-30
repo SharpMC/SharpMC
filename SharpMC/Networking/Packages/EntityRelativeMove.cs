@@ -26,7 +26,7 @@ namespace SharpMC.Networking.Packages
 				Buffer.WriteByte((byte) (Movement.X*32));
 				Buffer.WriteByte((byte) (Movement.Y*32));
 				Buffer.WriteByte((byte) (Movement.Z*32));
-				Buffer.WriteBool(Player.OnGround);
+				Buffer.WriteBool(Player.KnownPosition.OnGround);
 				Buffer.FlushData();
 			}
 		}

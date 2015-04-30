@@ -86,12 +86,10 @@ namespace SharpMC.Networking.Packages
 					return;
 				}
 
-				Globals.LastUniqueId++;
 				Client.Player = new Player(Globals.Level)
 				{
 					Uuid = uuid,
 					Username = username,
-					EntityId = Globals.LastUniqueId,
 					Wrapper = Client,
 					Gamemode = Gamemode.Surival
 				};

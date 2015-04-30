@@ -50,7 +50,7 @@ namespace SharpMC
 			var Lvltype = Config.GetProperty("LevelType", "Experimental");
 			switch (Lvltype.ToLower())
 			{
-				case "flatLand":
+				case "flatland":
 					Globals.Level = new FlatLandLevel(Config.GetProperty("WorldName", "world"));
 					break;
 				case "standard":

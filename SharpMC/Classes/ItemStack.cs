@@ -11,10 +11,10 @@
 			MetaData = metadata;
 		}
 
-		public short ItemId { get; private set; }
-		public byte ItemCount { get; private set; }
+		public short ItemId { get; set; }
+		public byte ItemCount { get; set; }
 		//public short ItemDamage { get; private set; }
-		public byte MetaData { get; private set; }
+		public byte MetaData { get; set; }
 		public byte Nbt { get; private set; }
 	}
 }

@@ -18,9 +18,9 @@ namespace SharpMC.Networking.Packages
 		{
 			if (Buffer != null)
 			{
-				Client.Player.Yaw = Buffer.ReadFloat();
-				Client.Player.Pitch = Buffer.ReadFloat();
-				Client.Player.OnGround = Buffer.ReadBool();
+				Client.Player.KnownPosition.Yaw = Buffer.ReadFloat();
+				Client.Player.KnownPosition.Pitch = Buffer.ReadFloat();
+				Client.Player.KnownPosition.OnGround = Buffer.ReadBool();
 
 				new EntityLook(Client) {Player = Client.Player}.Broadcast(false, Client.Player);
 			}

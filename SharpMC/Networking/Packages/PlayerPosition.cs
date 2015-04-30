@@ -18,17 +18,17 @@ namespace SharpMC.Networking.Packages
 		{
 			if (Buffer != null)
 			{
-				var originalCoordinates = Client.Player.Coordinates;
+				var originalCoordinates = Client.Player.KnownPosition;
 
 				var X = Buffer.ReadDouble();
 				var FeetY = Buffer.ReadDouble();
 				var Z = Buffer.ReadDouble();
 				var OnGround = Buffer.ReadBool();
-				Client.Player.Coordinates = new Vector3(X, FeetY, Z);
-				Client.Player.OnGround = OnGround;
+				Client.Player.KnownPosition = new PlayerLocation(X, FeetY, Z);
+				Client.Player.KnownPosition.OnGround = OnGround;
 				Client.Player.SendChunksFromPosition();
 
-				var movement = Client.Player.Coordinates - originalCoordinates;
+				var movement = Client.Player.KnownPosition - originalCoordinates;
 				new EntityRelativeMove(Client) {Player = Client.Player, Movement = movement}.Broadcast(false, Client.Player);
 			}
 		}

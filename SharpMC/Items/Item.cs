@@ -14,7 +14,7 @@ namespace SharpMC.Items
 	{
 		private short _fuelEfficiency;
 
-		internal Item(int id, byte metadata)
+		internal Item(ushort id, byte metadata)
 		{
 			Id = id;
 			Metadata = metadata;
@@ -23,12 +23,12 @@ namespace SharpMC.Items
 			ItemType = ItemType.Item;
 		}
 
-		protected Item(int id, byte metadata, short fuelEfficiency) : this(id, metadata)
+		protected Item(ushort id, byte metadata, short fuelEfficiency) : this(id, metadata)
 		{
 			FuelEfficiency = fuelEfficiency;
 		}
 
-		public int Id { get; set; }
+		public ushort Id { get; set; }
 		public ItemMaterial ItemMaterial { get; set; }
 		public ItemType ItemType { get; set; }
 		public byte Metadata { get; set; }

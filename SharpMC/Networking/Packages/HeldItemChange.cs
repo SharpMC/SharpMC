@@ -20,7 +20,7 @@ namespace SharpMC.Networking.Packages
 		{
 			if (Buffer != null)
 			{
-				var slot = (byte) Buffer.ReadByte();
+				var slot = (byte) Buffer.ReadShort();
 				Client.Player.CurrentSlot = slot;
 			}
 		}

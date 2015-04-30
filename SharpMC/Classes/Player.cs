@@ -1,13 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using System.Timers;
 using SharpMC.Enums;
 using SharpMC.Networking.Packages;
 using SharpMC.Worlds;
 
 namespace SharpMC.Classes
 {
-	public class Player
+	public class Player : Entity.Entity
 	{
 		private readonly Dictionary<Tuple<int, int>, ChunkColumn> _chunksUsed;
 		//Map stuff
@@ -16,27 +17,20 @@ namespace SharpMC.Classes
 		public byte CurrentSlot = 0;
 		public PlayerInventoryManager Inventory;
 
-		public Player(Level level)
+		public Player(Level level) : base(-1 ,level)
 		{
 			_chunksUsed = new Dictionary<Tuple<int, int>, ChunkColumn>();
-			HealthManager = new HealthManager(this);
 			Inventory = new PlayerInventoryManager(this);
-			CurrentLevel = level;
+			Level = level;
 		}
 
 		public string Username { get; set; }
 		public string Uuid { get; set; }
 		public ClientWrapper Wrapper { get; set; }
-		public int EntityId { get; set; }
 		public Gamemode Gamemode { get; set; }
 		public bool IsSpawned { get; set; }
 		public bool Digging { get; set; }
-		//Location stuff
-		public byte Dimension { get; set; }
-		public Vector3 Coordinates { get; set; }
-		public float Yaw { get; set; }
-		public float Pitch { get; set; }
-		public bool OnGround { get; set; }
+
 		//Client settings
 		public string Locale { get; set; }
 		public byte ViewDistance { get; set; }
@@ -44,18 +38,16 @@ namespace SharpMC.Classes
 		public bool ChatColours { get; set; }
 		public byte SkinParts { get; set; }
 		public bool ForceChunkReload { get; set; }
-		//Healh
-		public HealthManager HealthManager { get; set; }
+
 		//Not Sure Why Stuff
 		public EntityAction LastEntityAction { get; set; }
-		public Level CurrentLevel { get; set; }
 
 		public void AddToList()
 		{
-			CurrentLevel.AddPlayer(this);
+			Level.AddPlayer(this);
 		}
 
-		public void Tick()
+		public override void OnTick(object sender, ElapsedEventArgs elapsedEventArgs)
 		{
 			if (IsSpawned)
 			{
@@ -84,9 +76,10 @@ namespace SharpMC.Classes
 
 		public void SendChunksFromPosition()
 		{
-			if (Coordinates == null)
+			if (KnownPosition == null)
 			{
-				Coordinates = CurrentLevel.Generator.GetSpawnPoint();
+				var d = Level.Generator.GetSpawnPoint();
+				KnownPosition = new PlayerLocation(d.X, d.Y, d.Z);
 				ViewDistance = 8;
 			}
 			SendChunksForKnownPosition();
@@ -97,7 +90,7 @@ namespace SharpMC.Classes
 			new PlayerPositionAndLook(Wrapper).Write();
 
 			IsSpawned = true;
-			CurrentLevel.AddPlayer(this);
+			Level.AddPlayer(this);
 			Wrapper.Player.Inventory.SendToPlayer();
 			if (Globals.SupportSharpMC)
 			{
@@ -107,8 +100,8 @@ namespace SharpMC.Classes
 
 		public void SendChunksForKnownPosition(bool force = false)
 		{
-			var centerX = (int) Coordinates.X >> 4;
-			var centerZ = (int) Coordinates.Z >> 4;
+			var centerX = (int) KnownPosition.X >> 4;
+			var centerZ = (int)KnownPosition.Z >> 4;
 
 			if (!force && IsSpawned && _currentChunkPosition == new Vector2(centerX, centerZ)) return;
 
@@ -121,7 +114,7 @@ namespace SharpMC.Classes
 
 				foreach (
 					var chunk in
-						CurrentLevel.Generator.GenerateChunks((ViewDistance*16), Coordinates.X, Coordinates.Z,
+						Level.Generator.GenerateChunks((ViewDistance * 16), KnownPosition.X, KnownPosition.Z,
 							_chunksUsed, this))
 				{
 					if (Wrapper != null && Wrapper.TcpClient.Client.Connected)

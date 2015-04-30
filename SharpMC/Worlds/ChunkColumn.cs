@@ -167,7 +167,7 @@ namespace SharpMC.Worlds
 
 			buffer.WriteInt(Blocks.Length);
 			foreach (var i in Blocks)
-				buffer.WriteUShort(i != null ? i.Id : (ushort) 0);
+				buffer.WriteUShort(i != null ? (ushort) i.Id : (ushort) 0);
 
 			buffer.WriteInt(Blocks.Length);
 			foreach (var i in Blocks)

@@ -162,91 +162,97 @@ namespace SharpMC.Worlds.Flatland
 
 		public int PopulateChunk(ChunkColumn chunk)
 		{
-			var blocks = new Block[16*16*256];
-			var Last = 0;
-			for (var x = 0; x < 256; x ++)
+			for (int x = 0; x < 16; x++)
 			{
-				//blocks[x] = (7 << 4) | 0; // Bedrock
-				blocks[x] = BlockFactory.GetBlockById(7);
-				Last++;
+				for (int z = 0; z < 16; z++)
+				{
+					for (int y = 0; y < 4; y++)
+					{
+						if (y == 0)
+						{
+							chunk.SetBlock(x, y, z, new BlockBedrock());
+						}
+
+						
+						if (y == 1 || y == 2)
+						{
+							chunk.SetBlock(x, y, z, new Block(3));
+						}
+
+						if (y == 3)
+						{
+							chunk.SetBlock(x, y, z, new BlockGrass());
+						}
+
+						if (chunk.X == 1 && chunk.Z == 1)
+						{
+							if (y == 1 || y == 2 || y == 3)
+							{
+								chunk.SetBlock(x, y, z, new Block(8));
+							}
+						}
+
+						if (chunk.X == 3 && chunk.Z == 1)
+						{
+							if (y == 3)
+							{
+								chunk.SetBlock(x, y, z, new Block(10));
+							}
+						}
+					}
+				}
 			}
 
-			for (var x = Last; x < (256*3); x ++)
-			{
-				//blocks[x] = (3 << 4) | 0; // Dirt?
-				blocks[x] = BlockFactory.GetBlockById(3);
-				Last++;
-			}
-
-			for (var x = Last; x < (256*4); x ++)
-			{
-				//blocks[x] = (2 << 4) | 0; // Grass??
-				blocks[x] = BlockFactory.GetBlockById(2);
-				Last++;
-			}
-
-			chunk.Blocks = blocks;
 			return 4;
 		}
 
 		public override void SaveChunks(string folder)
 		{
-			foreach (var i in _chunkCache)
+			lock (_chunkCache)
 			{
-				File.WriteAllBytes(folder + "/" + i.Value.X + "." + i.Value.Z + ".cfile", Globals.Compress(i.Value.Export()));
+				foreach (var i in _chunkCache)
+				{
+					File.WriteAllBytes(Folder + "/" + i.Value.X + "." + i.Value.Z + ".cfile", Globals.Compress(i.Value.Export()));
+				}
 			}
 		}
 
 		public override ChunkColumn LoadChunk(int x, int z)
 		{
-			/*	var u = Globals.Decompress(File.ReadAllBytes(Folder + "/" + x + "." + z + ".cfile"));
+			var u = Globals.Decompress(File.ReadAllBytes(Folder + "/" + x + "." + z + ".cfile"));
 			var reader = new MSGBuffer(u);
 
-			var BlockLength = reader.ReadInt();
-			var Block = reader.ReadUShortLocal(BlockLength);
+			var blockLength = reader.ReadInt();
+			var block = reader.ReadUShortLocal(blockLength);
 
-			var SkyLength = reader.ReadInt();
-			var Skylight = reader.Read(SkyLength);
+			var metalength = reader.ReadInt();
+			var blockmeta = reader.ReadUShortLocal(metalength);
 
-			var LightLength = reader.ReadInt();
-			var Blocklight = reader.Read(LightLength);
-
-			var BiomeIDLength = reader.ReadInt();
-			var BiomeID = reader.Read(BiomeIDLength);
-
-			var CC = new ChunkColumn();
-			CC.Blocks = Block;
-			CC.Blocklight.Data = Blocklight;
-			CC.Skylight.Data = Skylight;
-			CC.BiomeId = BiomeID;
-			CC.X = x;
-			CC.Z = z;
-			Debug.WriteLine("We should have loaded " + x + ", " + z);
-			return CC;
-			*/
-			throw new NotImplementedException();
-		}
-
-		public override void SetBlock(Block block, Level level, bool broadcast)
-		{
-			ChunkColumn c;
-			if (
-				!_chunkCache.TryGetValue(new Tuple<int, int>((int) block.Coordinates.X >> 4, (int) block.Coordinates.Z >> 4), out c))
-				throw new Exception("No chunk found!");
-
-			c.SetBlock(((int) block.Coordinates.X & 0x0f), ((int) block.Coordinates.Y & 0x7f), ((int) block.Coordinates.Z & 0x0f),
-				block);
-			if (!broadcast) return;
-
-			foreach (var player in level.OnlinePlayers)
+			var blockies = new Block[block.Length];
+			for (var i = 0; i < block.Length; i++)
 			{
-				new BlockChange(player.Wrapper, new MSGBuffer(player.Wrapper))
-				{
-					BlockId = block.Id,
-					MetaData = block.Metadata,
-					Location = block.Coordinates
-				}.Write();
+				blockies[i] = new Block(block[i]) { Metadata = (byte) blockmeta[i] };
 			}
+			var skyLength = reader.ReadInt();
+			var skylight = reader.Read(skyLength);
+
+			var lightLength = reader.ReadInt();
+			var blocklight = reader.Read(lightLength);
+
+			var biomeIdLength = reader.ReadInt();
+			var biomeId = reader.Read(biomeIdLength);
+
+			var cc = new ChunkColumn
+			{
+				Blocks = blockies,
+				Blocklight = { Data = blocklight },
+				Skylight = { Data = skylight },
+				BiomeId = biomeId,
+				X = x,
+				Z = z
+			};
+			Debug.WriteLine("We should have loaded " + x + ", " + z);
+			return cc;
 		}
 	}
 }
