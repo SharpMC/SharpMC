@@ -21,7 +21,7 @@ namespace SharpMC.Networking.Packages
 			if (Buffer != null)
 			{
 				Buffer.WriteVarInt(SendId);
-				Buffer.WriteInt(Player.UniqueServerId);
+				Buffer.WriteInt(Player.EntityId);
 				Buffer.WriteByte((byte) Player.Gamemode);
 				Buffer.WriteByte(Player.Dimension);
 				Buffer.WriteByte((byte) Globals.Level.Difficulty);

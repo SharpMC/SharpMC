@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using SharpMC.Enums;
 using SharpMC.Utils;
 
 //using MiNET.Entities;
@@ -28,6 +29,8 @@ namespace SharpMC.Classes
 		public bool IsOnFire { get; set; }
 		public DamageCause LastDamageCause { get; set; }
 		public Player LastDamageSource { get; set; }
+		private int FallDamage { get; set; }
+		private int FallTick { get; set; }
 
 		public byte[] Export()
 		{
@@ -71,6 +74,7 @@ namespace SharpMC.Classes
 			//if (Player != null)
 			//Player.SendSetHealth();
 			Player.SendHealth();
+			Player.BroadcastEntityAnimation(Animations.TakeDamage);
 		}
 
 		public void Kill()
@@ -120,6 +124,26 @@ namespace SharpMC.Classes
 			else FoodTick += 1;
 
 			//TODO: Rewrite to fit all entities
+
+			/*if (!Player.OnGround)
+			{
+				if (FallTick > 9)
+				{
+					FallDamage++;
+					FallTick = 0;
+				}
+				FallTick++;
+			}
+			else
+			{
+				if (FallDamage > 0)
+				{
+					Health -= FallDamage;
+					FallDamage = 0;
+					FallTick = 0;
+					Player.SendHealth();
+				}
+			}*/
 
 			if (IsDead) return;
 
@@ -203,20 +227,20 @@ namespace SharpMC.Classes
 
 		private bool IsInWater(Vector3 playerPosition)
 		{
-			var y = playerPosition.Y + 1.62f;
+			var y = playerPosition.Y + 1;
 
 			var waterPos = new Vector3(Math.Floor(playerPosition.X), Math.Floor(y), Math.Floor(playerPosition.Z));
 
-			var block = Globals.Level.GetBlock(waterPos);
+			var block = Player.CurrentLevel.GetBlock(waterPos);
 
 			if (block.Id != 8 && block.Id != 9) return false;
 
-			return y < Math.Floor(y) + 1 - ((1/9) - 0.1111111);
+			return y < Math.Floor(y) + 1 - ((1.0/9.0) - 0.1111111);
 		}
 
 		private bool IsInLava(Vector3 playerPosition)
 		{
-			var block = Globals.Level.GetBlock(playerPosition);
+			var block = Player.CurrentLevel.GetBlock(playerPosition);
 
 			if (block == null || (block.Id != 10 && block.Id != 11)) return false;
 

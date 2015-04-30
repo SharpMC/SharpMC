@@ -91,9 +91,9 @@ namespace SharpMC.Networking.Packages
 				{
 					Uuid = uuid,
 					Username = username,
-					UniqueServerId = Globals.LastUniqueId,
+					EntityId = Globals.LastUniqueId,
 					Wrapper = Client,
-					Gamemode = Gamemode.Creative
+					Gamemode = Gamemode.Surival
 				};
 				Client.PlayMode = true;
 

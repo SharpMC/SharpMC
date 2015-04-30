@@ -36,6 +36,8 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\Plugin.cs" />
+    <Compile Include="API\PluginExternals.cs" />
     <Compile Include="Blocks\BlockAir.cs" />
     <Compile Include="Blocks\BlockBedrock.cs" />
     <Compile Include="Blocks\Block.cs" />
@@ -54,7 +56,8 @@
     <Compile Include="Classes\Package.cs" />
     <Compile Include="Classes\ReadOnlyNibbleArray.cs" />
     <Compile Include="Classes\Records.cs" />
-    <Compile Include="Classes\Slot.cs" />
+    <Compile Include="Classes\ItemStack.cs" />
+    <Compile Include="Enums\Animations.cs" />
     <Compile Include="Enums\BlockFace.cs" />
     <Compile Include="Items\Item.cs" />
     <Compile Include="Items\ItemFactory.cs" />
@@ -67,6 +70,7 @@
     <Compile Include="Networking\Packages\ChatMessage.cs" />
     <Compile Include="Networking\Packages\ChunkData.cs" />
     <Compile Include="Networking\Packages\ClientSettings.cs" />
+    <Compile Include="Networking\Packages\ClientStatus.cs" />
     <Compile Include="Networking\Packages\Disconnect.cs" />
     <Compile Include="Networking\Packages\EntityAction.cs" />
     <Compile Include="Networking\Packages\EntityLook.cs" />
@@ -78,6 +82,7 @@
     <Compile Include="Networking\Packages\KeepAlive.cs" />
     <Compile Include="Networking\Packages\LoginSucces.cs" />
     <Compile Include="Networking\Packages\MapChunkBulk.cs" />
+    <Compile Include="Networking\Packages\MsgBuffer.cs" />
     <Compile Include="Networking\Packages\OnGround.cs" />
     <Compile Include="Networking\Packages\OpenWindow.cs" />
     <Compile Include="Networking\Packages\PackageFactory.cs" />
@@ -91,12 +96,14 @@
     <Compile Include="Networking\Packages\PlayerPosition.cs" />
     <Compile Include="Networking\Packages\PlayerPositionAndLook.cs" />
     <Compile Include="Networking\Packages\PluginMessage.cs" />
+    <Compile Include="Networking\Packages\Respawn.cs" />
     <Compile Include="Networking\Packages\SetCompression.cs" />
     <Compile Include="Networking\Packages\SetSlot.cs" />
     <Compile Include="Networking\Packages\SpawnPlayer.cs" />
     <Compile Include="Networking\Packages\SpawnPosition.cs" />
     <Compile Include="Networking\Packages\TimeUpdate.cs" />
     <Compile Include="Networking\Packages\UpdateHealth.cs" />
+    <Compile Include="Networking\Packages\UseEntity.cs" />
     <Compile Include="Networking\Packages\WindowItems.cs" />
     <Compile Include="PlayerInventoryManager.cs" />
     <Compile Include="MainClass.cs" />
@@ -117,7 +124,7 @@
     <Compile Include="Classes\ChunkCoordinates.cs" />
     <Compile Include="Worlds\Anvil\AnvilLevel.cs" />
     <Compile Include="Worlds\Anvil\LevelInfo.cs" />
-    <Compile Include="Worlds\ArrayOf.cs" />
+    <Compile Include="Utils\ArrayOf.cs" />
     <Compile Include="Worlds\Standard\Biome.cs" />
     <Compile Include="Worlds\Standard\BiomeSystem\BiomeBase.cs" />
     <Compile Include="Worlds\Standard\BiomeSystem\BiomeManager.cs" />

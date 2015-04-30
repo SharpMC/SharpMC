@@ -1,4 +1,4 @@
-namespace SharpMC.Worlds
+namespace SharpMC.Utils
 {
 	public static class ArrayOf<T> where T : new()
 	{

@@ -4,7 +4,7 @@ namespace SharpMC.Networking.Packages
 {
 	internal class WindowItems : Package<WindowItems>
 	{
-		public Slot[] Slots;
+		public ItemStack[] ItemStacks;
 		public byte WindowId = 0;
 
 		public WindowItems(ClientWrapper client) : this(client, new MSGBuffer(client))
@@ -22,14 +22,14 @@ namespace SharpMC.Networking.Packages
 			{
 				Buffer.WriteVarInt(SendId);
 				Buffer.WriteByte(WindowId);
-				Buffer.WriteShort((short) (Slots.Length));
-				foreach (var i in Slots)
+				Buffer.WriteShort((short) (ItemStacks.Length));
+				foreach (var i in ItemStacks)
 				{
 					Buffer.WriteShort(i.ItemId);
 					if (i.ItemId != -1)
 					{
 						Buffer.WriteByte(i.ItemCount);
-						Buffer.WriteShort(i.ItemDamage);
+						Buffer.WriteShort(i.MetaData);
 						Buffer.WriteByte(0);
 					}
 				}

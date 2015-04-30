@@ -45,7 +45,7 @@ namespace SharpMC.Networking.Packages
 					{
 						Coordinates = player.Coordinates,
 						OnGround = player.OnGround,
-						UniqueServerID = player.UniqueServerId,
+						UniqueServerID = player.EntityId,
 						Pitch = (byte) player.Pitch,
 						Yaw = (byte) player.Yaw
 					}.Write();

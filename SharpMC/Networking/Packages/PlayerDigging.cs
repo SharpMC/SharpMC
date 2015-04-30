@@ -1,4 +1,5 @@
-﻿using SharpMC.Classes;
+﻿using System.Runtime.InteropServices;
+using SharpMC.Classes;
 using SharpMC.Enums;
 
 namespace SharpMC.Networking.Packages
@@ -21,6 +22,20 @@ namespace SharpMC.Networking.Packages
 			{
 				var status = Buffer.ReadByte();
 
+				if (status == 3)
+				{
+					//Drop item stack
+					Client.Player.Inventory.DropCurrentItemStack();
+					return;
+				}
+
+				if (status == 4)
+				{
+					//Drop item
+					Client.Player.Inventory.DropCurrentItem();
+					return;
+				}
+
 				if (status == 2 || Client.Player.Gamemode == Gamemode.Creative)
 				{
 					var Position = Buffer.ReadPosition();
@@ -35,6 +50,10 @@ namespace SharpMC.Networking.Packages
 				else if (status == 0)
 				{
 					Client.Player.Digging = true;
+				}
+				else if (status == 1)
+				{
+					Client.Player.Digging = false;
 				}
 			}
 		}

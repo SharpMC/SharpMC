@@ -27,7 +27,7 @@ namespace SharpMC.Classes
 		public string Username { get; set; }
 		public string Uuid { get; set; }
 		public ClientWrapper Wrapper { get; set; }
-		public int UniqueServerId { get; set; }
+		public int EntityId { get; set; }
 		public Gamemode Gamemode { get; set; }
 		public bool IsSpawned { get; set; }
 		public bool Digging { get; set; }
@@ -66,9 +66,20 @@ namespace SharpMC.Classes
 			}
 		}
 
+		public void Respawn()
+		{
+			HealthManager.ResetHealth();
+			if (Wrapper != null && Wrapper.TcpClient.Connected) new Respawn(Wrapper) {GameMode = (byte)Gamemode}.Write();
+		}
+
 		public void SendHealth()
 		{
 			new UpdateHealth(Wrapper).Write();
+		}
+
+		public void BroadcastEntityAnimation(Animations action)
+		{
+			new Animation(Wrapper){AnimationId = (byte)action, TargetPlayer = this}.Broadcast();
 		}
 
 		public void SendChunksFromPosition()

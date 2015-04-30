@@ -276,7 +276,7 @@ namespace SharpMC.Classes
 
 		public void WriteShort(short Data)
 		{
-			var ShortData = BitConverter.GetBytes(Data);
+			var ShortData = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(Data));
 			Write(ShortData);
 		}
 

@@ -21,7 +21,7 @@ namespace SharpMC.Networking.Packages
 			if (Buffer != null)
 			{
 				Buffer.WriteVarInt(SendId);
-				Buffer.WriteVarInt(Player.UniqueServerId);
+				Buffer.WriteVarInt(Player.EntityId);
 				Buffer.WriteByte((byte) Player.Yaw);
 				Buffer.WriteByte((byte) Player.Pitch);
 				Buffer.WriteBool(Player.OnGround);

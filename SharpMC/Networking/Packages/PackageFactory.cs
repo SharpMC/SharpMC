@@ -35,6 +35,7 @@ namespace SharpMC.Networking.Packages
 			PlayPackages.Add(new OnGround(client, buffer));
 			PlayPackages.Add(new ClientSettings(client, buffer));
 			PlayPackages.Add(new PlayerDigging(client, buffer));
+			PlayPackages.Add(new ClientStatus(client, buffer));
 
 			#endregion
 

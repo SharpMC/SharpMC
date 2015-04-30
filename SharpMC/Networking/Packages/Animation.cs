@@ -29,7 +29,7 @@ namespace SharpMC.Networking.Packages
 			if (Buffer != null)
 			{
 				Buffer.WriteVarInt(SendId);
-				Buffer.WriteVarInt(TargetPlayer.UniqueServerId);
+				Buffer.WriteVarInt(TargetPlayer.EntityId);
 				Buffer.WriteByte(AnimationId);
 				Buffer.FlushData();
 			}

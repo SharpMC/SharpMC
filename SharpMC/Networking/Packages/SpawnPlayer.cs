@@ -22,7 +22,7 @@ namespace SharpMC.Networking.Packages
 			if (Buffer != null)
 			{
 				Buffer.WriteVarInt(SendId);
-				Buffer.WriteVarInt(Player.UniqueServerId);
+				Buffer.WriteVarInt(Player.EntityId);
 				Buffer.WriteUUID(new Guid(Player.Uuid));
 				Buffer.WriteInt((int) Player.Coordinates.X*32);
 				Buffer.WriteInt((int) Player.Coordinates.Y*32);

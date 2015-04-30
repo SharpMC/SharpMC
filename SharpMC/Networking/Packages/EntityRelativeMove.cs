@@ -22,7 +22,7 @@ namespace SharpMC.Networking.Packages
 			if (Buffer != null)
 			{
 				Buffer.WriteVarInt(SendId);
-				Buffer.WriteVarInt(Player.UniqueServerId);
+				Buffer.WriteVarInt(Player.EntityId);
 				Buffer.WriteByte((byte) (Movement.X*32));
 				Buffer.WriteByte((byte) (Movement.Y*32));
 				Buffer.WriteByte((byte) (Movement.Z*32));

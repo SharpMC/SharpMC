@@ -37,6 +37,18 @@ namespace SharpMC.Classes
 			}
 		}
 
+		public Player GetPlayer(int entityId)
+		{
+			foreach (Player p in OnlinePlayers)
+			{
+				if (p.EntityId == entityId)
+				{
+					return p;
+				}
+			}
+			return null;
+		}
+
 		public void AddPlayer(Player player)
 		{
 			OnlinePlayers.Add(player);
