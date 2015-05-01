@@ -92,6 +92,7 @@ namespace SharpMC.Worlds
 					}.Write(); //Send TAB Item
 					new SpawnPlayer(caller) {Player = i}.Write(); //Spawn the old player to new player
 					new SpawnPlayer(i.Wrapper) {Player = caller.Player}.Write(); //Spawn the new player to old player
+					i.BroadcastEquipment();
 				}
 			}
 		}

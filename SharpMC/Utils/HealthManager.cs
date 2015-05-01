@@ -4,23 +4,18 @@ using System.IO;
 using SharpMC.Entity;
 using SharpMC.Enums;
 
-//using MiNET.Entities;
-
 namespace SharpMC.Utils
 {
 	public class HealthManager
 	{
-		//public Entity LastDamageSource { get; set; }
-
 		public HealthManager(Entity.Entity entity)
 		{
-			//Player = player;
 			Entity = entity;
 			ResetHealth();
+			IsInvulnerable = false;
 		}
 
 		public Entity.Entity Entity { get; set; }
-		//public Player Player { get; set; }
 		public int Health { get; set; }
 		public short Air { get; set; }
 		public short Food { get; set; }
@@ -33,6 +28,7 @@ namespace SharpMC.Utils
 		private int FallDamage { get; set; }
 		private int FallTick { get; set; }
 		private int RegenTick { get; set; }
+		public bool IsInvulnerable { get; set; }
 
 		public byte[] Export()
 		{
@@ -114,12 +110,14 @@ namespace SharpMC.Utils
 			var player = Entity as Player;
 			if (IsDead) return;
 
+			if (IsInvulnerable) Health = 200;
+
 			if (Health <= 0)
 			{
 				IsDead = true;
 				if (player != null)
 				{
-					Entity.Level.BroadcastChat("§e" + GetDescription(LastDamageCause).Replace("{0}", player.Username));
+					Entity.Level.BroadcastChat("§e" + GetDescription(LastDamageCause).Replace("{0}", player.Username).Replace("{1}", LastDamageSource.Username));
 				}
 				return;
 			}

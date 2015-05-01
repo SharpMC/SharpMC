@@ -21,7 +21,8 @@ namespace SharpMC.Networking.Packages
 			if (Buffer != null)
 			{
 				var slot = (byte) Buffer.ReadShort();
-				Client.Player.Inventory.CurrentSlot = slot;
+				//Client.Player.Inventory.CurrentSlot = slot;
+				Client.Player.HeldItemChanged(slot);
 			}
 		}
 

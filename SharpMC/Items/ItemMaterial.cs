@@ -7,6 +7,8 @@ namespace SharpMC.Items
 		Stone = 4,
 		Iron = 6,
 		Diamond = 8,
-		Gold = 12
+		Gold = 12,
+		Leather = -2,
+		Chain = -1,
 	}
 }

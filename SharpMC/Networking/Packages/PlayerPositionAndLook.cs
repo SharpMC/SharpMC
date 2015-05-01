@@ -35,8 +35,6 @@ namespace SharpMC.Networking.Packages
 		{
 			if (Buffer != null)
 			{
-				var originalCoordinates = Client.Player.KnownPosition;
-
 				var X = Buffer.ReadDouble();
 				var FeetY = Buffer.ReadDouble();
 				var Z = Buffer.ReadDouble();
@@ -44,13 +42,14 @@ namespace SharpMC.Networking.Packages
 				var Pitch = Buffer.ReadFloat();
 				var OnGround = Buffer.ReadBool();
 
-				Client.Player.KnownPosition.OnGround = OnGround;
-				Client.Player.KnownPosition.Yaw = Yaw;
-				Client.Player.KnownPosition.Pitch = Pitch;
-				Client.Player.KnownPosition = new PlayerLocation(X, FeetY, Z);
+				//Client.Player.KnownPosition.OnGround = OnGround;
+				//Client.Player.KnownPosition.Yaw = Yaw;
+				//Client.Player.KnownPosition.Pitch = Pitch;
+				//Client.Player.KnownPosition = new PlayerLocation(X, FeetY, Z);
 
-				var movement = Client.Player.KnownPosition - originalCoordinates;
-				new EntityRelativeMove(Client) {Player = Client.Player, Movement = movement}.Broadcast(false, Client.Player);
+				//var movement = Client.Player.KnownPosition - originalCoordinates;
+				//new EntityRelativeMove(Client) {Player = Client.Player, Movement = movement}.Broadcast(false, Client.Player);
+				Client.Player.PositionChanged(new Vector3(X, FeetY, Z), Yaw, Pitch, OnGround);
 			}
 		}
 	}

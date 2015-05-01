@@ -51,6 +51,77 @@ namespace SharpMC.Entity
 			Level.AddPlayer(this);
 		}
 
+		public void PositionChanged(Vector3 location, float yaw = 0.0f, float pitch = 0.0f, bool onGround = false)
+		{
+			var originalcoordinates = KnownPosition;
+			KnownPosition.Yaw = yaw;
+			KnownPosition.Pitch = pitch;
+			KnownPosition.Y = location.Y;
+			KnownPosition.X = location.X;
+			KnownPosition.Z = location.Z;
+			KnownPosition.OnGround = onGround;
+
+			SendChunksForKnownPosition();
+			new EntityTeleport(Wrapper) {UniqueServerID = EntityId, Coordinates = location, OnGround = onGround, Pitch = (byte)pitch, Yaw = (byte)yaw}.Broadcast(false, this);
+			//We teleport for now, Entityrelativemove will be used later on when i know what is wrong with it? :(
+
+			//new EntityRelativeMove(Client) {Player = Client.Player, Movement = movement}.Broadcast(false, Client.Player);
+		}
+
+		public void HeldItemChanged(int slot)
+		{
+			Inventory.CurrentSlot = slot;
+			BroadcastEquipment();
+		}
+
+		public void BroadcastEquipment()
+		{
+			//HeldItem
+			var slotdata = Inventory.GetSlot(36 + Inventory.CurrentSlot);
+			new EntityEquipment(Wrapper)
+			{
+				Slot = EquipmentSlot.Held,
+				Item = slotdata,
+				EntityId = EntityId
+			}.Broadcast(false, this);
+
+			//Helmet
+			slotdata = Inventory.GetSlot(5);
+			new EntityEquipment(Wrapper)
+			{
+				Slot = EquipmentSlot.Helmet,
+				Item = slotdata,
+				EntityId = EntityId
+			}.Broadcast(false, this);
+
+			//Chestplate
+			slotdata = Inventory.GetSlot(6);
+			new EntityEquipment(Wrapper)
+			{
+				Slot = EquipmentSlot.Chestplate,
+				Item = slotdata,
+				EntityId = EntityId
+			}.Broadcast(false, this);
+
+			//Leggings
+			slotdata = Inventory.GetSlot(7);
+			new EntityEquipment(Wrapper)
+			{
+				Slot = EquipmentSlot.Leggings,
+				Item = slotdata,
+				EntityId = EntityId
+			}.Broadcast(false, this);
+
+			//Boots
+			slotdata = Inventory.GetSlot(8);
+			new EntityEquipment(Wrapper)
+			{
+				Slot = EquipmentSlot.Boots,
+				Item = slotdata,
+				EntityId = EntityId
+			}.Broadcast(false, this);
+		}
+
 		public override void OnTick(object sender, ElapsedEventArgs elapsedEventArgs)
 		{
 			if (IsSpawned)
@@ -106,6 +177,7 @@ namespace SharpMC.Entity
 			{
 				new PlayerListHeaderFooter(Wrapper) {Header = "§6§l" + Globals.ProtocolName, Footer = "§eC# Powered!"}.Write();
 			}
+			BroadcastEquipment();
 		}
 
 		public void SendChunksForKnownPosition(bool force = false)
