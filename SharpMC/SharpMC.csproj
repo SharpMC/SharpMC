@@ -115,7 +115,7 @@
     <Compile Include="Networking\Packages\UpdateHealth.cs" />
     <Compile Include="Networking\Packages\UseEntity.cs" />
     <Compile Include="Networking\Packages\WindowItems.cs" />
-    <Compile Include="PlayerInventoryManager.cs" />
+    <Compile Include="Utils\PlayerInventoryManager.cs" />
     <Compile Include="MainClass.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ConsoleFunctions.cs" />
