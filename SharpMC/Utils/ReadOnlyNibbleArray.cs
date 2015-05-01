@@ -1,7 +1,7 @@
 using System;
 using System.Collections.ObjectModel;
 
-namespace SharpMC.Classes
+namespace SharpMC.Utils
 {
 	public class ReadOnlyNibbleArray
 	{

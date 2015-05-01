@@ -1,12 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
-using System.Runtime.Remoting;
-using SharpMC.Classes;
 using SharpMC.Entity;
 using SharpMC.Networking.Packages;
 
-namespace SharpMC
+namespace SharpMC.Utils
 {
 	public class PlayerInventoryManager
 	{

@@ -2,7 +2,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
 
-namespace SharpMC.Classes
+namespace SharpMC.Utils
 {
 	public class MyThreadPool
 	{

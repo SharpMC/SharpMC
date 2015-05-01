@@ -5,9 +5,10 @@ using SharpMC.Blocks;
 using SharpMC.Enums;
 using SharpMC.Interfaces;
 using SharpMC.Networking.Packages;
+using SharpMC.Utils;
 using Timer = System.Timers.Timer;
 
-namespace SharpMC.Classes
+namespace SharpMC.Worlds
 {
 	public class Level
 	{

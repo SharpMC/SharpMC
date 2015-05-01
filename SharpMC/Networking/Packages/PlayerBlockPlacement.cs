@@ -1,6 +1,6 @@
 ﻿using System;
 using SharpMC.Blocks;
-using SharpMC.Classes;
+using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
 {

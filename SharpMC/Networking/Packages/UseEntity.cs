@@ -3,8 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
-using SharpMC.Classes;
+using SharpMC.Enums;
 using SharpMC.Items;
+using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
 {

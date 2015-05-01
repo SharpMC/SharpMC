@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Text;
 
-namespace SharpMC.Classes
+namespace SharpMC.Utils
 {
 	public class MSGBuffer
 	{

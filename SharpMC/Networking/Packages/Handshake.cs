@@ -2,8 +2,8 @@
 using System.Linq;
 using System.Net;
 using System.Text;
-using SharpMC.Classes;
 using SharpMC.Enums;
+using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
 {

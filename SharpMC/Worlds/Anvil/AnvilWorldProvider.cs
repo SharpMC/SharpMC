@@ -6,7 +6,6 @@ using System.IO;
 using System.Linq;
 using fNbt;
 using SharpMC.Blocks;
-using SharpMC.Classes;
 using SharpMC.Interfaces;
 using SharpMC.Networking.Packages;
 using SharpMC.Utils;

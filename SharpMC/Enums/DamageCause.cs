@@ -1,6 +1,6 @@
 using System.ComponentModel;
 
-namespace SharpMC.Classes
+namespace SharpMC.Enums
 {
 	public enum DamageCause
 	{

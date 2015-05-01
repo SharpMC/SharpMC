@@ -1,5 +1,5 @@
 ﻿using System;
-using SharpMC.Classes;
+using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
 {

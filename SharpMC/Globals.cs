@@ -4,7 +4,7 @@ using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Net.Sockets;
-using SharpMC.Classes;
+using SharpMC.Worlds;
 
 namespace SharpMC
 {

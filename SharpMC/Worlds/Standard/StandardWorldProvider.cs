@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using SharpMC.Blocks;
-using SharpMC.Classes;
 using SharpMC.Interfaces;
 using SharpMC.Networking.Packages;
+using SharpMC.Utils;
 using SharpMC.Worlds.Standard.BiomeSystem;
 using SharpMC.Worlds.Standard.Decorators;
 

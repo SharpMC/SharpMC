@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SharpMC.Classes
+namespace SharpMC.Utils
 {
 	public class PlayerLocation : Vector3
 	{

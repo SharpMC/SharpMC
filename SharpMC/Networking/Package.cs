@@ -1,6 +1,7 @@
 ﻿using System.Net.Sockets;
+using SharpMC.Utils;
 
-namespace SharpMC.Classes
+namespace SharpMC.Networking
 {
 	public abstract class Package
 	{

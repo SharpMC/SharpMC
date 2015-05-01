@@ -2,11 +2,10 @@
 using System.ComponentModel;
 using System.IO;
 using SharpMC.Enums;
-using SharpMC.Utils;
 
 //using MiNET.Entities;
 
-namespace SharpMC.Classes
+namespace SharpMC.Utils
 {
 	public class HealthManager
 	{

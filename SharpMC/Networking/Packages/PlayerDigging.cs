@@ -1,7 +1,7 @@
 ﻿using System.Runtime.InteropServices;
-using SharpMC.Classes;
 using SharpMC.Entity;
 using SharpMC.Enums;
+using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
 {

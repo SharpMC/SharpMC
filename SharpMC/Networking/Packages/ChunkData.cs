@@ -1,4 +1,4 @@
-﻿using SharpMC.Classes;
+﻿using SharpMC.Utils;
 using SharpMC.Worlds;
 
 namespace SharpMC.Networking.Packages

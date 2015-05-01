@@ -1,4 +1,4 @@
-﻿namespace SharpMC.Classes
+﻿namespace SharpMC.Utils
 {
 	public class ChunkCoordinates : Vector2
 	{

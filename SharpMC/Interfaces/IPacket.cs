@@ -1,4 +1,4 @@
-﻿using SharpMC.Classes;
+﻿using SharpMC.Utils;
 
 namespace SharpMC.Interfaces
 {

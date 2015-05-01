@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
 
-namespace SharpMC.Classes
+namespace SharpMC.Utils
 {
 	public class Records : List<Vector3>
 	{

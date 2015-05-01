@@ -1,7 +1,6 @@
 ﻿using System.IO;
 using System.Net;
 using SharpMC.Blocks;
-using SharpMC.Classes;
 using SharpMC.Utils;
 using SharpMC.Worlds.Standard.BiomeSystem;
 

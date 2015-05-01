@@ -1,5 +1,5 @@
 ﻿using SharpMC.Blocks;
-using SharpMC.Classes;
+using SharpMC.Utils;
 
 namespace SharpMC.Worlds.Standard.Structures
 {

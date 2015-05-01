@@ -5,8 +5,9 @@ using System.Timers;
 using SharpMC.Enums;
 using SharpMC.Networking.Packages;
 using SharpMC.Worlds;
+using EntityAction = SharpMC.Enums.EntityAction;
 
-namespace SharpMC.Classes
+namespace SharpMC.Utils
 {
 	public class Player : Entity.Entity
 	{

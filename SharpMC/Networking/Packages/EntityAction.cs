@@ -1,4 +1,4 @@
-﻿using SharpMC.Classes;
+﻿using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
 {
@@ -20,7 +20,7 @@ namespace SharpMC.Networking.Packages
 			var ActionID = Buffer.ReadVarInt();
 			var JumpBoost = Buffer.ReadVarInt();
 
-			Client.Player.LastEntityAction = (Classes.EntityAction) ActionID;
+			Client.Player.LastEntityAction = (Enums.EntityAction) ActionID;
 		}
 	}
 }

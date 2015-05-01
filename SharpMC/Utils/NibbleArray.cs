@@ -3,7 +3,7 @@
 using fNbt;
 using fNbt.Serialization;
 
-namespace SharpMC.Classes
+namespace SharpMC.Utils
 {
 	/// <summary>
 	///     Represents an array of 4-bit values.

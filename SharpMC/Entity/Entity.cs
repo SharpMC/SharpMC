@@ -1,6 +1,7 @@
 ﻿using System;
-using SharpMC.Classes;
 using System.Timers;
+using SharpMC.Utils;
+using SharpMC.Worlds;
 
 namespace SharpMC.Entity
 {

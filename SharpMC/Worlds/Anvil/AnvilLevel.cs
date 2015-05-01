@@ -1,4 +1,4 @@
-﻿using SharpMC.Classes;
+﻿using SharpMC.Enums;
 
 namespace SharpMC.Worlds.Anvil
 {

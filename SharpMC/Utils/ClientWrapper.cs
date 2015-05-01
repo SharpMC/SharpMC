@@ -5,7 +5,7 @@ using System.Timers;
 using SharpMC.Networking.Packages;
 using Timer = System.Timers.Timer;
 
-namespace SharpMC.Classes
+namespace SharpMC.Utils
 {
 	public class ClientWrapper
 	{

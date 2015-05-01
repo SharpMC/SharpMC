@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Threading;
-using SharpMC.Classes;
 using SharpMC.Networking.Packages;
+using SharpMC.Utils;
 
 namespace SharpMC.Networking
 {

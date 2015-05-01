@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SharpMC.Blocks;
-using SharpMC.Classes;
+using SharpMC.Utils;
 using SharpMC.Worlds;
 
 namespace SharpMC.Interfaces

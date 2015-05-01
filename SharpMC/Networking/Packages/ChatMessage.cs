@@ -1,5 +1,5 @@
-﻿using SharpMC.Classes;
-using SharpMC.ExtentionMethods;
+﻿using SharpMC.ExtentionMethods;
+using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
 {
