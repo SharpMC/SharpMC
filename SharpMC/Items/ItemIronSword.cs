@@ -6,6 +6,7 @@
 		{
 			ItemMaterial = ItemMaterial.Iron;
 			ItemType = ItemType.Sword;
+			MaxStackSize = 1;
 		}
 	}
 }

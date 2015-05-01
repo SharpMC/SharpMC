@@ -6,6 +6,7 @@
 		{
 			ItemType = ItemType.Sword;
 			ItemMaterial = ItemMaterial.Diamond;
+			MaxStackSize = 1;
 		}
 	}
 }

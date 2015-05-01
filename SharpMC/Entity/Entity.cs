@@ -40,13 +40,9 @@ namespace SharpMC.Entity
 			EntityTypeId = entityTypeId;
 			KnownPosition = new PlayerLocation(0,0,0);
 			HealthManager = new HealthManager(this);
-
-			TickTimer.Elapsed += OnTick;
-			TickTimer.Interval = 50;
-			TickTimer.Start();
 		}
 
-		public virtual void OnTick(object sender, ElapsedEventArgs elapsedEventArgs)
+		public virtual void OnTick()
 		{
 		}
 	}

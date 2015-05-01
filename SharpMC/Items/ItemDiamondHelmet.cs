@@ -6,6 +6,7 @@
 		{
 			ItemType = ItemType.Helmet;
 			ItemMaterial = ItemMaterial.Diamond;
+			MaxStackSize = 1;
 		}
 	}
 }

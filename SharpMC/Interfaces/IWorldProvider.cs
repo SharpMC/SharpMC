@@ -45,14 +45,5 @@ namespace SharpMC.Interfaces
 		{
 			//throw new NotImplementedException();
 		}
-
-		public virtual void OverWriteCache(ChunkColumn chunk)
-		{
-		}
-
-		public virtual ChunkColumn GetChunk(int x, int z)
-		{
-			throw new NotImplementedException();
-		}
 	}
 }

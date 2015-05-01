@@ -56,12 +56,14 @@
     <Compile Include="Blocks\BlockSandStone.cs" />
     <Compile Include="Blocks\BlockStationaryWater.cs" />
     <Compile Include="Blocks\BlockStone.cs" />
+    <Compile Include="Blocks\BlockTallGrass.cs" />
     <Compile Include="Blocks\BlockTNT.cs" />
     <Compile Include="Blocks\Flowing.cs" />
     <Compile Include="Blocks\Stationairy.cs" />
     <Compile Include="Blocks\BlockStationaryLava.cs" />
     <Compile Include="Enums\DamageCause.cs" />
     <Compile Include="Enums\EntityAction.cs" />
+    <Compile Include="Items\ItemBucket.cs" />
     <Compile Include="Items\ItemCoal.cs" />
     <Compile Include="Items\ItemDiamond.cs" />
     <Compile Include="Items\ItemDiamondBoots.cs" />
@@ -75,6 +77,8 @@
     <Compile Include="Items\ItemIronLeggings.cs" />
     <Compile Include="Items\ItemIronSword.cs" />
     <Compile Include="Items\ItemLapisLazuli.cs" />
+    <Compile Include="Items\ItemLavaBucket.cs" />
+    <Compile Include="Items\ItemWaterBucket.cs" />
     <Compile Include="Networking\Packages\ClickWindow.cs" />
     <Compile Include="Networking\Packages\EntityEquipment.cs" />
     <Compile Include="Utils\BlockCoordinates.cs" />

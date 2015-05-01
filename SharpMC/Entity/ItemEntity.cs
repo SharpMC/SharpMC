@@ -44,10 +44,12 @@ namespace SharpMC.Entity
 					EntityIds = new int[] {EntityId}
 				}.Write();
 			}
+			Level.RemoveEntity(this);
 		}
 
 		public void SpawnEntity()
 		{
+			Level.AddEntity(this);
 			foreach (Player i in Level.OnlinePlayers)
 			{
 				var SpawnedBy = i.Wrapper;
@@ -70,7 +72,7 @@ namespace SharpMC.Entity
 			}
 		}
 
-		public override void OnTick(object sender, ElapsedEventArgs elapsedEventArgs)
+		public override void OnTick()
 		{
 			TimeToLive--;
 			PickupDelay--;

@@ -239,22 +239,7 @@ namespace SharpMC.Worlds.Anvil
 			}
 		}
 
-		public override void OverWriteCache(ChunkColumn chunk)
-		{
-			lock (_chunkCache)
-			{
-				var d = new ChunkCoordinates(chunk.X, chunk.Z);
-				if (_chunkCache.ContainsKey(d))
-				{
-					if (_chunkCache.TryRemove(d, out chunk))
-					{
-						_chunkCache.TryAdd(d, chunk);
-					}
-				}
-			}
-		}
-
-		public override ChunkColumn GetChunk(int X, int Z)
+		public ChunkColumn GetChunk(int X, int Z)
 		{
 			var width = 32;
 			var depth = 32;
@@ -357,17 +342,6 @@ namespace SharpMC.Worlds.Anvil
 				return chunk;
 			}
 		}
-
-		/*public override void SetBlock(Block block, Level level, bool broadcast)
-		{
-			ChunkColumn c = GetChunk((int) block.Coordinates.X >> 4, (int) block.Coordinates.Z >> 4);
-			c.IsDirty = true;
-			c.SetBlock(((int)block.Coordinates.X & 0x0f), ((int)block.Coordinates.Y & 0x7f), ((int)block.Coordinates.Z & 0x0f), block);
-			SaveChunk(c, _basePath, 0);
-			if (!broadcast) return;
-
-			BlockChange.Broadcast(block);
-		}*/
 
 
 		public override Vector3 GetSpawnPoint()

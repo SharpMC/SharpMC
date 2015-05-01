@@ -23,6 +23,8 @@ namespace SharpMC.Items
 
 			ItemMaterial = ItemMaterial.None;
 			ItemType = ItemType.Item;
+			IsUsable = false;
+			MaxStackSize = 64;
 		}
 
 		protected Item(ushort id, byte metadata, short fuelEfficiency) : this(id, metadata)
@@ -34,7 +36,8 @@ namespace SharpMC.Items
 		public ItemMaterial ItemMaterial { get; set; }
 		public ItemType ItemType { get; set; }
 		public byte Metadata { get; set; }
-
+		public bool IsUsable { get; set; }
+		public int MaxStackSize { get; set; }
 		protected short FuelEfficiency
 		{
 			set { _fuelEfficiency = value; }

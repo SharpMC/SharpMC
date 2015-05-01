@@ -92,7 +92,7 @@ namespace SharpMC.Networking.Packages
 					Uuid = uuid,
 					Username = username,
 					Wrapper = Client,
-					Gamemode = Gamemode.Surival
+					Gamemode = Globals.Level.DefaultGamemode
 				};
 				Client.PlayMode = true;
 

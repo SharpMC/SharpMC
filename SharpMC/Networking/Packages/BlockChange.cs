@@ -35,22 +35,26 @@ namespace SharpMC.Networking.Packages
 
 		public static void Broadcast(Block block, bool self = true, Player source = null)
 		{
-			foreach (var i in Globals.Level.OnlinePlayers)
+			lock (Globals.Level.OnlinePlayers)
 			{
-				if (!self && i == source)
+				foreach (var i in Globals.Level.OnlinePlayers.ToArray())
 				{
-					continue;
+					if (!self && i == source)
+					{
+						continue;
+					}
+					//Client = i.Wrapper;
+					//Buffer = new MSGBuffer(i.Wrapper);
+					//_stream = i.Wrapper.TCPClient.GetStream();
+					//Write();
+					new BlockChange(i.Wrapper, new MSGBuffer(i.Wrapper))
+					{
+						BlockId = block.Id,
+						MetaData = block.Metadata,
+						Location = block.Coordinates
+					}.Write();
+
 				}
-				//Client = i.Wrapper;
-				//Buffer = new MSGBuffer(i.Wrapper);
-				//_stream = i.Wrapper.TCPClient.GetStream();
-				//Write();
-				new BlockChange(i.Wrapper, new MSGBuffer(i.Wrapper))
-				{
-					BlockId = block.Id,
-					MetaData = block.Metadata,
-					Location = block.Coordinates
-				}.Write();
 			}
 		}
 	}

@@ -1,5 +1,7 @@
 ﻿using System;
 using SharpMC.Blocks;
+using SharpMC.Enums;
+using SharpMC.Items;
 using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
@@ -62,19 +64,30 @@ namespace SharpMC.Networking.Packages
 				var CursorY = Buffer.ReadByte(); //Unused
 				var CursorZ = Buffer.ReadByte(); //Unused
 
-				/*if (position.X == -1 && position.Y == 256 && position.Z == -1)
-			{
-				ItemFactory.GetItemById(heldItem, itemMeta)
-					.UseItem(Globals.Level, Client.Player, new Vector3(position.X, position.Y, position.Z), (BlockFace) face);
-				return;
-			}*/
-
-				if (Client.Player.Level.GetBlock(position).Id == 0)
+				if (Client.Player.Level.GetBlock(position).Id == 0 || Client.Player.Level.GetBlock(position).IsReplacible)
 				{
-					var b = BlockFactory.GetBlockById(heldItem);
-					b.Coordinates = position;
-					b.Metadata = itemMeta;
-					Client.Player.Level.SetBlock(b, true);
+					if (Client.Player.Inventory.HasItem(heldItem) || Client.Player.Gamemode == Gamemode.Creative)
+					{
+						if (ItemFactory.GetItemById((short) heldItem).IsUsable)
+						{
+							ItemFactory.GetItemById((short) heldItem).UseItem(Client.Player.Level, Client.Player, position, (BlockFace)face);
+							return;
+						}
+
+						var b = BlockFactory.GetBlockById(heldItem);
+						b.Coordinates = position;
+						b.Metadata = itemMeta;
+						Client.Player.Level.SetBlock(b, true, heldItem == 8 || heldItem == 10);
+
+						if (Client.Player.Gamemode != Gamemode.Creative)
+						{
+								Client.Player.Inventory.RemoveItem((short) b.Id, itemMeta, 1);
+						}
+					}
+					else
+					{
+						Client.Player.Inventory.SendToPlayer(); //Client not synced up, SYNC!
+					}
 				}
 			}
 		}

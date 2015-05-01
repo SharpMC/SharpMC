@@ -74,8 +74,8 @@ namespace SharpMC
 
 			ConsoleFunctions.WriteInfoLine("Checking files...");
 
-			if (!Directory.Exists(Globals.Level.LVLName))
-				Directory.CreateDirectory(Globals.Level.LVLName);
+			if (!Directory.Exists(Globals.Level.LvlName))
+				Directory.CreateDirectory(Globals.Level.LvlName);
 
 			var ClientListener = new Thread(() => new BasicListener().ListenForClients());
 			ClientListener.Start();

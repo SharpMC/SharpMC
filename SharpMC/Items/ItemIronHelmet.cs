@@ -6,6 +6,7 @@
 		{
 			ItemType = ItemType.Helmet;
 			ItemMaterial = ItemMaterial.Iron;
+			MaxStackSize = 1;
 		}
 	}
 }

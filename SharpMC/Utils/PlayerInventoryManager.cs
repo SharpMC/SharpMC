@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SharpMC.Entity;
 using SharpMC.Networking.Packages;
 
@@ -32,6 +33,10 @@ namespace SharpMC.Utils
 
 			SetSlot(43, 5, 2, 64);
 			SetSlot(44, 20, 0, 12);
+
+			SetSlot(41, 327, 0, 1);
+			SetSlot(42, 326, 0, 1);
+			SetSlot(40, 325, 0, 1);
 		}
 
 		public void SetSlot(int slot, short itemId, byte metadata, byte itemcount)
@@ -126,6 +131,37 @@ namespace SharpMC.Utils
 		{
 			//Drop current hold item stack
 			ConsoleFunctions.WriteDebugLine("Unimplemented feature called!");
+		}
+
+		public bool HasItem(int itemId)
+		{
+			if (_slots.Any(itemStack => itemStack.ItemId == itemId))
+			{
+				return true;
+			}
+			return false;
+		}
+
+		public bool RemoveItem(short itemId, short metaData, short count)
+		{
+			for (int index = 0; index < _slots.Count; index++)
+			{
+				ItemStack itemStack = _slots[index];
+				if (itemStack.ItemId == itemId && itemStack.MetaData == metaData && itemStack.ItemCount >= count)
+				{
+					if ((itemStack.ItemCount - count) > 0)
+					{
+						SetSlot(index, itemStack.ItemId, itemStack.MetaData, (byte) (itemStack.ItemCount - count));
+						return true;
+					}
+					else
+					{
+						SetSlot(index, -1, 0, 0);
+						return true;
+					}
+				}
+			}
+			return false;
 		}
 
 		public void SendToPlayer()

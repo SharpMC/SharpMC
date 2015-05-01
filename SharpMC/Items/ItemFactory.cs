@@ -1,4 +1,6 @@
-﻿namespace SharpMC.Items
+﻿using SharpMC.Blocks;
+
+namespace SharpMC.Items
 {
 	internal class ItemFactory
 	{
@@ -21,6 +23,10 @@
 			if (id == 308) return new ItemIronLeggings();
 			if (id == 309) return new ItemIronBoots();
 			if (id == 267) return new ItemIronSword();
+			if (id == 326) return new ItemWaterBucket();
+			if (id == 327) return new ItemLavaBucket();
+			if (id == 325) return new ItemBucket();
+
 			return new Item((ushort) id, metadata);
 		}
 	}

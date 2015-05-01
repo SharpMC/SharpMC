@@ -7,7 +7,7 @@ namespace SharpMC.Worlds.Flatland
 		public FlatLandLevel(string world)
 		{
 			Difficulty = 0;
-			LVLName = world;
+			LvlName = world;
 			Generator = new FlatLandGenerator(world);
 			LevelType = LVLType.flat;
 		}

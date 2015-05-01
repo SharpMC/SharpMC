@@ -6,6 +6,7 @@
 		{
 			ItemType = ItemType.Leggings;
 			ItemMaterial = ItemMaterial.Diamond;
+			MaxStackSize = 1;
 		}
 	}
 }

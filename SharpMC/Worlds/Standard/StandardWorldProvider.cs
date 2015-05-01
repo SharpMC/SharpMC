@@ -38,18 +38,6 @@ namespace SharpMC.Worlds.Standard
 
 		public override sealed bool IsCaching { get; set; }
 
-		public override ChunkColumn GetChunk(int x, int z)
-		{
-			foreach (var ch in ChunkCache.ToArray())
-			{
-				if (ch.Key.Item1 == x && ch.Key.Item2 == z)
-				{
-					return ch.Value;
-				}
-			}
-			throw new Exception("We couldn't find the chunk.");
-		}
-
 		public override ChunkColumn LoadChunk(int x, int z)
 		{
 			var u = Globals.Decompress(File.ReadAllBytes(_folder + "/" + x + "." + z + ".cfile"));
@@ -102,25 +90,19 @@ namespace SharpMC.Worlds.Standard
 
 		public override ChunkColumn GenerateChunkColumn(Vector2 chunkCoordinates)
 		{
-			if (ChunkCache.ContainsKey(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z)))
-			{
-				ChunkColumn c;
-				if (ChunkCache.TryGetValue(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z), out c))
-				{
-					Debug.WriteLine("Chunk " + chunkCoordinates.X + ":" + chunkCoordinates.Z + " was already generated!");
-					return c;
-				}
-			}
+			ChunkColumn c;
+			if (ChunkCache.TryGetValue(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z), out c)) return c;
 
 			if (File.Exists((_folder + "/" + chunkCoordinates.X + "." + chunkCoordinates.Z + ".cfile")))
 			{
 				var cd = LoadChunk(chunkCoordinates.X, chunkCoordinates.Z);
-				if (!ChunkCache.ContainsKey(new Tuple<int, int>(cd.X, cd.Z)))
-					ChunkCache.Add(new Tuple<int, int>(cd.X, cd.Z), cd);
+				lock (ChunkCache)
+				{
+					if (!ChunkCache.ContainsKey(new Tuple<int, int>(cd.X, cd.Z)))
+						ChunkCache.Add(new Tuple<int, int>(cd.X, cd.Z), cd);
+				}
 				return cd;
 			}
-
-			Debug.WriteLine("ChunkFile not found, generating...");
 
 			var chunk = new ChunkColumn {X = chunkCoordinates.X, Z = chunkCoordinates.Z};
 			PopulateChunk(chunk);
@@ -294,9 +276,12 @@ namespace SharpMC.Worlds.Standard
 		public override void SetBlock(Block block, Level level, bool broadcast)
 		{
 			ChunkColumn c;
-			if (
-				!ChunkCache.TryGetValue(new Tuple<int, int>((int) block.Coordinates.X >> 4, (int) block.Coordinates.Z >> 4), out c))
-				throw new Exception("No chunk found!");
+			lock (ChunkCache)
+			{
+				if (
+					!ChunkCache.TryGetValue(new Tuple<int, int>((int) block.Coordinates.X >> 4, (int) block.Coordinates.Z >> 4), out c))
+					throw new Exception("No chunk found!");
+			}
 
 			c.SetBlock(((int) block.Coordinates.X & 0x0f), ((int) block.Coordinates.Y & 0x7f), ((int) block.Coordinates.Z & 0x0f),
 				block);

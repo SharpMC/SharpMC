@@ -17,6 +17,7 @@
 			if (id == 8) return new BlockFlowingWater();
 			if (id == 11) return new BlockStationaryLava();
 			if (id == 9) return new BlockStationaryWater();
+			if (id == 31 && metadata == 1) return new BlockTallGrass();
 			return new Block(id);
 		}
 

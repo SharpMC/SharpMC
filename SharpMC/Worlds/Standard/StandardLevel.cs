@@ -7,7 +7,7 @@ namespace SharpMC.Worlds.Standard
 		public StandardLevel(string worldname)
 		{
 			Difficulty = 0;
-			LVLName = worldname;
+			LvlName = worldname;
 			LevelType = LVLType.Default;
 			Generator = new StandardWorldProvider(worldname);
 			ConsoleFunctions.WriteInfoLine("Level Type: Standard");

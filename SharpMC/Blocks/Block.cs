@@ -25,11 +25,11 @@ namespace SharpMC.Blocks
 
 		public Vector3 Coordinates { get; set; }
 		public bool IsReplacible { get; set; }
-		public bool IsBuildable { get; set; }
 		public bool IsSolid { get; set; }
 		public bool IsTransparent { get; set; }
 		public float Durability { get; set; }
 		public Item Drops { get; set; }
+		public bool IsBuildable { get; set; }
 
 		public bool CanPlace(Level world)
 		{

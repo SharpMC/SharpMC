@@ -6,6 +6,7 @@
 		{
 			ItemType = ItemType.Boots;
 			ItemMaterial = ItemMaterial.Iron;
+			MaxStackSize = 1;
 		}
 	}
 }

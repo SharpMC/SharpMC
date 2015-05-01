@@ -6,6 +6,7 @@
 		{
 			ItemType = ItemType.Leggings;
 			ItemMaterial = ItemMaterial.Iron;
+			MaxStackSize = 1;
 		}
 	}
 }

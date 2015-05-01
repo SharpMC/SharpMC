@@ -122,7 +122,7 @@ namespace SharpMC.Entity
 			}.Broadcast(false, this);
 		}
 
-		public override void OnTick(object sender, ElapsedEventArgs elapsedEventArgs)
+		public override void OnTick()
 		{
 			if (IsSpawned)
 			{

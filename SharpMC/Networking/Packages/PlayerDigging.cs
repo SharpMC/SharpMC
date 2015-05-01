@@ -41,9 +41,8 @@ namespace SharpMC.Networking.Packages
 				{
 					var Position = Buffer.ReadPosition();
 					var Face = Buffer.ReadByte();
-					var intVector = new Vector3((int) Position.X, (int) Position.Y, (int) Position.Z);
 
-					var block = Client.Player.Level.GetBlock(intVector);
+					var block = Client.Player.Level.GetBlock(Position);
 					block.BreakBlock(Client.Player.Level);
 					//Globals.Level.SetBlock(new BlockAir() {Coordinates = intVector});
 					Client.Player.Digging = false;

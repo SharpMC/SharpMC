@@ -6,6 +6,7 @@
 		{
 			ItemType = ItemType.Chestplate;
 			ItemMaterial = ItemMaterial.Iron;
+			MaxStackSize = 1;
 		}
 	}
 }

@@ -28,18 +28,6 @@ namespace SharpMC.Worlds.Flatland
 		{
 		}
 
-		public override ChunkColumn GetChunk(int x, int z)
-		{
-			foreach (var ch in _chunkCache)
-			{
-				if (ch.Key.Item1 == x && ch.Key.Item2 == z)
-				{
-					return ch.Value;
-				}
-			}
-			throw new Exception("We couldn't find the chunk.");
-		}
-
 		public override IEnumerable<ChunkColumn> GenerateChunks(int viewDistance, double playerX, double playerZ,
 			Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed, Player player, bool output = false)
 		{

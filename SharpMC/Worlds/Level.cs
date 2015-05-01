@@ -1,5 +1,6 @@
 ﻿using System.Collections.Concurrent;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Timers;
 using SharpMC.Blocks;
@@ -16,20 +17,21 @@ namespace SharpMC.Worlds
 	{
 		public Level()
 		{
-			Tick = 1200;
-			Day = 0;
+			CurrentWorldTime = 1200;
+			Day = 1;
 			OnlinePlayers = new List<Player>();
-			DefaultGamemode = Gamemode.Creative;
+			DefaultGamemode = Gamemode.Surival;
 			BlockWithTicks = new ConcurrentDictionary<Vector3, int>();
 			StartTimeOfDayTimer();
+			Entities = new List<Entity.Entity>();
 		}
 
-		public string LVLName { get; set; }
+		public string LvlName { get; set; }
 		public int Difficulty { get; set; }
 		public Gamemode DefaultGamemode { get; set; }
 		public LVLType LevelType { get; set; }
 		public List<Player> OnlinePlayers { get; private set; }
-		public int Tick { get; set; }
+		public int CurrentWorldTime { get; set; }
 		public int Day { get; set; }
 		public IWorldProvider Generator { get; set; }
 		public List<Entity.Entity> Entities { get; private set; }
@@ -44,14 +46,7 @@ namespace SharpMC.Worlds
 
 		public Player GetPlayer(int entityId)
 		{
-			foreach (Player p in OnlinePlayers)
-			{
-				if (p.EntityId == entityId)
-				{
-					return p;
-				}
-			}
-			return null;
+			return OnlinePlayers.FirstOrDefault(p => p.EntityId == entityId);
 		}
 
 		public void AddPlayer(Player player)
@@ -110,12 +105,12 @@ namespace SharpMC.Worlds
 
 		public void SaveChunks()
 		{
-			Generator.SaveChunks(LVLName);
+			Generator.SaveChunks(LvlName);
 		}
 
 		public Block GetBlock(Vector3 blockCoordinates)
 		{
-			var chunk = Generator.GetChunk((int) blockCoordinates.X >> 4, (int) blockCoordinates.Z >> 4);
+			var chunk = Generator.GenerateChunkColumn(new Vector2((int)blockCoordinates.X >> 4, (int)blockCoordinates.Z >> 4));
 
 			var bid = chunk.GetBlock((int) blockCoordinates.X & 0x0f, (int) blockCoordinates.Y & 0x7f,
 				(int) blockCoordinates.Z & 0x0f);
@@ -125,7 +120,7 @@ namespace SharpMC.Worlds
 
 			//bid = (ushort) (bid >> 4);
 
-			var block = BlockFactory.GetBlockById(bid);
+			var block = BlockFactory.GetBlockById(bid, metadata);
 			block.Coordinates = blockCoordinates;
 			block.Metadata = metadata;
 
@@ -138,10 +133,8 @@ namespace SharpMC.Worlds
 				Generator.GenerateChunkColumn(new ChunkCoordinates((int) block.Coordinates.X >> 4, (int) block.Coordinates.Z >> 4));
 			chunk.SetBlock((int) block.Coordinates.X & 0x0f, (int) block.Coordinates.Y & 0x7f, (int) block.Coordinates.Z & 0x0f,
 				block);
-			//chunk.SetMetadata(block.Coordinates.X & 0x0f, block.Coordinates.Y & 0x7f, block.Coordinates.Z & 0x0f, block.Metadata);
 			chunk.IsDirty = true;
-			//if (applyPhysics) ApplyPhysics(block.Coordinates.X, block.Coordinates.Y, block.Coordinates.Z);
-			Generator.OverWriteCache(chunk);
+
 			if (applyPhysics) ApplyPhysics((int) block.Coordinates.X, (int) block.Coordinates.Y, (int) block.Coordinates.Z);
 
 			if (!broadcast) return;
@@ -167,7 +160,17 @@ namespace SharpMC.Worlds
 
 		public void ScheduleBlockTick(Block block, int tickRate)
 		{
-			BlockWithTicks[block.Coordinates] = Tick + tickRate;
+			BlockWithTicks[block.Coordinates] = CurrentWorldTime + tickRate;
+		}
+
+		public void AddEntity(Entity.Entity entity)
+		{
+			Entities.Add(entity);
+		}
+
+		public void RemoveEntity(Entity.Entity entity)
+		{
+			if (Entities.Contains(entity)) Entities.Remove(entity);
 		}
 
 		#region TickTimer
@@ -214,13 +217,13 @@ namespace SharpMC.Worlds
 
 		private void RunDayTick(object source, ElapsedEventArgs e)
 		{
-			if (Tick < 24000)
+			if (CurrentWorldTime < 24000)
 			{
-				Tick += 20;
+				CurrentWorldTime += 20;
 			}
 			else
 			{
-				Tick = 0;
+				CurrentWorldTime = 0;
 				Day++;
 			}
 
@@ -228,7 +231,7 @@ namespace SharpMC.Worlds
 			{
 				foreach (var i in OnlinePlayers)
 				{
-					new TimeUpdate(i.Wrapper) {Time = Tick, Day = Day}.Write();
+					new TimeUpdate(i.Wrapper) {Time = CurrentWorldTime, Day = Day}.Write();
 				}
 			}
 		}
@@ -237,12 +240,22 @@ namespace SharpMC.Worlds
 		{
 			foreach (KeyValuePair<Vector3, int> blockEvent in BlockWithTicks.ToArray())
 			{
-				if (blockEvent.Value <= Tick)
+				if (blockEvent.Value <= CurrentWorldTime)
 				{
 					GetBlock(blockEvent.Key).OnTick(this);
 					int value;
 					BlockWithTicks.TryRemove(blockEvent.Key, out value);
 				}
+			}
+
+			foreach (Player player in OnlinePlayers.ToArray())
+			{
+				player.OnTick();
+			}
+
+			foreach (Entity.Entity entity in Entities.ToArray())
+			{
+				entity.OnTick();
 			}
 		}
 
