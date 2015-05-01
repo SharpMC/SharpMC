@@ -15,9 +15,9 @@ However, it is my goal! But you have to understand that i'm on my own working on
 Current Specs
 -----------------
   - Protocol: #47
-  - World Format: Anvil
+  - World Format: Anvil (Supported) | Main: Custom
   - Multiworld: Planned
-  - Physics: Planned
+  - Physics: Partial
   - Entities: Partial
   - Scripting: Planned - C# plugin system (Maybe LUA)
   - Platforms: Windows. Mac & Linux using Mono.
@@ -26,7 +26,7 @@ Made possible by
 ------------------
   - <a href="http://wiki.vg/">Wiki.VG</a> for providing Protocol information.<br>
   - All people that helped me!<br><br>
-
+  - A special thanks to <a href="https://github.com/NiclasOlofsson/">Niclas Olofsson</a>.
 
 Licensing
 ----------
