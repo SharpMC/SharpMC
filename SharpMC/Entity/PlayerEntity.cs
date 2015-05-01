@@ -1,36 +1,39 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Runtime.CompilerServices;
 using System.Threading;
 using System.Timers;
 using SharpMC.Enums;
 using SharpMC.Networking.Packages;
+using SharpMC.Utils;
 using SharpMC.Worlds;
 using EntityAction = SharpMC.Enums.EntityAction;
 
-namespace SharpMC.Utils
+namespace SharpMC.Entity
 {
-	public class Player : Entity.Entity
+	public class Player : Entity
 	{
-		private readonly Dictionary<Tuple<int, int>, ChunkColumn> _chunksUsed;
-		//Map stuff
-		private readonly Vector2 _currentChunkPosition = new Vector2(0, 0);
-		//Inventory stuff
-		public byte CurrentSlot = 0;
-		public PlayerInventoryManager Inventory;
-
 		public Player(Level level) : base(-1 ,level)
 		{
 			_chunksUsed = new Dictionary<Tuple<int, int>, ChunkColumn>();
 			Inventory = new PlayerInventoryManager(this);
 			Level = level;
+
+			Width = 0.6;
+			Height = 1.62;
+			Length = 0.6;
 		}
 
-		public string Username { get; set; }
-		public string Uuid { get; set; }
-		public ClientWrapper Wrapper { get; set; }
-		public Gamemode Gamemode { get; set; }
-		public bool IsSpawned { get; set; }
-		public bool Digging { get; set; }
+		private readonly Dictionary<Tuple<int, int>, ChunkColumn> _chunksUsed;
+		private readonly Vector2 _currentChunkPosition = new Vector2(0, 0);
+		public PlayerInventoryManager Inventory; //The player's Inventory
+		public string Username { get; set; } //The player's username
+		public string Uuid { get; set; } // The player's UUID
+		public ClientWrapper Wrapper { get; set; } //The player's associated ClientWrapper
+		public Gamemode Gamemode { get; set; } //The player's gamemode
+		public bool IsSpawned { get; private set; }  //Is the player spawned?
+		public bool Digging { get; set; } // Is the player digging?
+		private bool CanFly { get; set; } //Can the player fly?
 
 		//Client settings
 		public string Locale { get; set; }
@@ -57,6 +60,12 @@ namespace SharpMC.Utils
 					HealthManager.OnTick();
 				}
 			}
+		}
+
+		public void SetGamemode(Gamemode target)
+		{
+			Gamemode = target;
+
 		}
 
 		public void Respawn()

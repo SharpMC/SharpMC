@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using SharpMC.Blocks;
+using SharpMC.Entity;
 using SharpMC.Interfaces;
 using SharpMC.Networking.Packages;
 using SharpMC.Utils;

@@ -4,6 +4,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Linq;
 using SharpMC.Blocks;
+using SharpMC.Entity;
 using SharpMC.Interfaces;
 using SharpMC.Networking.Packages;
 using SharpMC.Utils;
@@ -39,7 +40,7 @@ namespace SharpMC.Worlds.Standard
 
 		public override ChunkColumn GetChunk(int x, int z)
 		{
-			foreach (var ch in ChunkCache)
+			foreach (var ch in ChunkCache.ToArray())
 			{
 				if (ch.Key.Item1 == x && ch.Key.Item2 == z)
 				{

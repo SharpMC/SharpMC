@@ -1,4 +1,5 @@
-﻿using SharpMC.Enums;
+﻿using SharpMC.Entity;
+using SharpMC.Enums;
 using SharpMC.Utils;
 using SharpMC.Worlds;
 

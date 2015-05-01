@@ -1,4 +1,5 @@
 ﻿using SharpMC.Blocks;
+using SharpMC.Entity;
 using SharpMC.Enums;
 using SharpMC.Utils;
 using SharpMC.Worlds;
@@ -7,7 +8,7 @@ namespace SharpMC.Items
 {
 	internal class ItemFlintAndSteel : Item
 	{
-		public ItemFlintAndSteel(byte metadata) : base(259, metadata)
+		public ItemFlintAndSteel() : base(259, 0)
 		{
 		}
 

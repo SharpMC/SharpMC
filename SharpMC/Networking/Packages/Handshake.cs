@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Text;
+using SharpMC.Entity;
 using SharpMC.Enums;
 using SharpMC.Utils;
 

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using SharpMC.Blocks;
+using SharpMC.Entity;
 using SharpMC.Utils;
 using SharpMC.Worlds;
 

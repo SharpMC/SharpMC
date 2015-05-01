@@ -2,6 +2,7 @@
 using System.Net.Sockets;
 using System.Threading;
 using System.Timers;
+using SharpMC.Entity;
 using SharpMC.Networking.Packages;
 using Timer = System.Timers.Timer;
 

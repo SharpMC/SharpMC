@@ -1,4 +1,5 @@
 ﻿using System;
+using SharpMC.Entity;
 using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages

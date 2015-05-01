@@ -1,4 +1,5 @@
 ﻿using System.Net.Sockets;
+using SharpMC.Entity;
 using SharpMC.Utils;
 
 namespace SharpMC.Networking

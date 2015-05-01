@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using System.Timers;
 using SharpMC.Blocks;
+using SharpMC.Entity;
 using SharpMC.Enums;
 using SharpMC.Interfaces;
 using SharpMC.Networking.Packages;
@@ -18,6 +20,7 @@ namespace SharpMC.Worlds
 			Day = 0;
 			OnlinePlayers = new List<Player>();
 			DefaultGamemode = Gamemode.Creative;
+			BlockWithTicks = new ConcurrentDictionary<Vector3, int>();
 			StartTimeOfDayTimer();
 		}
 
@@ -30,7 +33,7 @@ namespace SharpMC.Worlds
 		public int Day { get; set; }
 		public IWorldProvider Generator { get; set; }
 		public List<Entity.Entity> Entities { get; private set; }
-
+		public ConcurrentDictionary<Vector3, int> BlockWithTicks { get; private set; }
 		public void RemovePlayer(Player player)
 		{
 			lock (OnlinePlayers)
@@ -128,7 +131,7 @@ namespace SharpMC.Worlds
 			return block;
 		}
 
-		public void SetBlock(Block block, bool broadcast = true)
+		public void SetBlock(Block block, bool broadcast = true, bool applyPhysics = true)
 		{
 			var chunk =
 				Generator.GenerateChunkColumn(new ChunkCoordinates((int) block.Coordinates.X >> 4, (int) block.Coordinates.Z >> 4));
@@ -138,9 +141,32 @@ namespace SharpMC.Worlds
 			chunk.IsDirty = true;
 			//if (applyPhysics) ApplyPhysics(block.Coordinates.X, block.Coordinates.Y, block.Coordinates.Z);
 			Generator.OverWriteCache(chunk);
+			if (applyPhysics) ApplyPhysics((int) block.Coordinates.X, (int) block.Coordinates.Y, (int) block.Coordinates.Z);
 
 			if (!broadcast) return;
 			BlockChange.Broadcast(block);
+		}
+
+		public void ApplyPhysics(int x, int y, int z)
+		{
+			DoPhysics(x - 1, y, z);
+			DoPhysics(x + 1, y, z);
+			DoPhysics(x, y - 1, z);
+			DoPhysics(x, y + 1, z);
+			DoPhysics(x, y, z - 1);
+			DoPhysics(x, y, z + 1);
+		}
+
+		private void DoPhysics(int x, int y, int z)
+		{
+			Block block = GetBlock(new Vector3(x,y,z));
+			if (block is BlockAir) return;
+			block.DoPhysics(this);
+		}
+
+		public void ScheduleBlockTick(Block block, int tickRate)
+		{
+			BlockWithTicks[block.Coordinates] = Tick + tickRate;
 		}
 
 		#region TickTimer
@@ -208,6 +234,15 @@ namespace SharpMC.Worlds
 
 		private void GameTick(object source, ElapsedEventArgs e)
 		{
+			foreach (KeyValuePair<Vector3, int> blockEvent in BlockWithTicks.ToArray())
+			{
+				if (blockEvent.Value <= Tick)
+				{
+					GetBlock(blockEvent.Key).OnTick(this);
+					int value;
+					BlockWithTicks.TryRemove(blockEvent.Key, out value);
+				}
+			}
 		}
 
 		#endregion

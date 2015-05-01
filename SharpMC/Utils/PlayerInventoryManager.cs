@@ -9,6 +9,8 @@ namespace SharpMC.Utils
 	{
 		private readonly Player _player;
 		private readonly List<ItemStack> _slots = new List<ItemStack>();
+		public ItemStack ClickedItem { get; set; }
+		public int CurrentSlot { get; set; }
 
 		public PlayerInventoryManager(Player player)
 		{
@@ -30,7 +32,6 @@ namespace SharpMC.Utils
 
 			SetSlot(43, 5, 2, 64);
 			SetSlot(44, 20, 0, 12);
-
 		}
 
 		public void SetSlot(int slot, short itemId, byte metadata, byte itemcount)
@@ -103,7 +104,7 @@ namespace SharpMC.Utils
 		public void DropCurrentItem()
 		{
 			//Drop the current hold item
-			int slottarget = 36 + _player.CurrentSlot;
+			int slottarget = 36 + CurrentSlot;
 			var slot = GetSlot(slottarget);
 			if (slot.ItemCount > 1)
 			{
@@ -113,7 +114,12 @@ namespace SharpMC.Utils
 			{
 				SetSlot(slottarget, -1, 0, 0);
 			}
-			new ItemEntity(_player.Level, new ItemStack(slot.ItemId, 1, slot.MetaData)) {KnownPosition = _player.KnownPosition}.SpawnEntity();
+
+			if (slot.ItemId != -1)
+			{
+				new ItemEntity(_player.Level, new ItemStack(slot.ItemId, 1, slot.MetaData)) {KnownPosition = _player.KnownPosition}
+					.SpawnEntity();
+			}
 		}
 
 		public void DropCurrentItemStack()

@@ -1,6 +1,7 @@
 ﻿using System;
 using System.ComponentModel;
 using System.IO;
+using SharpMC.Entity;
 using SharpMC.Enums;
 
 //using MiNET.Entities;
@@ -245,7 +246,7 @@ namespace SharpMC.Utils
 
 		private bool IsInWater(Vector3 playerPosition)
 		{
-			playerPosition.Y++;
+			playerPosition.Y ++; //We want to check at 'head' height
 			var block = Entity.Level.GetBlock(playerPosition);
 			return block.Id == 8 || block.Id == 9;
 		}

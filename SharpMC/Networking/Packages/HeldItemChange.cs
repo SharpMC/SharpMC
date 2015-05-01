@@ -21,7 +21,7 @@ namespace SharpMC.Networking.Packages
 			if (Buffer != null)
 			{
 				var slot = (byte) Buffer.ReadShort();
-				Client.Player.CurrentSlot = slot;
+				Client.Player.Inventory.CurrentSlot = slot;
 			}
 		}
 
@@ -29,7 +29,7 @@ namespace SharpMC.Networking.Packages
 		{
 			if (Buffer != null)
 			{
-				Buffer.WriteByte(Client.Player.CurrentSlot);
+				Buffer.WriteByte((byte)Client.Player.Inventory.CurrentSlot);
 				Buffer.FlushData();
 			}
 		}
