@@ -1,4 +1,27 @@
-﻿using System;
+﻿// Distrubuted under the MIT license
+// ===================================================
+// SharpMC uses the permissive MIT license.
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the “Software”), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software
+// 
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+// 
+// ©Copyright Kenny van Vulpen - 2015
+using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
@@ -15,7 +38,6 @@ namespace SharpMC.Worlds.Standard
 {
 	internal class StandardWorldProvider : IWorldProvider
 	{
-		public static int WaterLevel = 72;
 		private static readonly Random Getrandom = new Random();
 		private static readonly object SyncLock = new object();
 		private readonly BiomeManager _biomeManager;
@@ -81,10 +103,10 @@ namespace SharpMC.Worlds.Standard
 		{
 			lock (ChunkCache)
 			{
-				foreach (var i in ChunkCache)
-				{
-					File.WriteAllBytes(_folder + "/" + i.Value.X + "." + i.Value.Z + ".cfile", Globals.Compress(i.Value.Export()));
-				}
+			//	foreach (var i in ChunkCache)
+			//	{
+			//		File.WriteAllBytes(_folder + "/" + i.Value.X + "." + i.Value.Z + ".cfile", Globals.Compress(i.Value.Export()));
+			//	}
 			}
 		}
 
@@ -198,9 +220,17 @@ namespace SharpMC.Worlds.Standard
 		private const double OverhangScale = 128.0; //Old value: 128.0 || Changes the scale of the overhang.
 		private const double Groundscale = 256.0; //Old value: 256.0   || Changes the scale of the ground.
 
-		private const double Threshold = 0.0; //Old value: 0.0 || Cool value: -0.3 hehehe
+		private const double Threshold = 0.1; //Old value: 0.0 || Cool value: -0.3 hehehe
+
+		private const double BottomsFrequency = 0.5; //Original 0.5
+		private const double BottomsAmplitude = 0.5; //Original 0.5
+
+		private const double OverhangFrequency = 0.5; //Original 0.5
+		private const double OverhangAmplitude = 0.5; //Original 0.5
 
 		private const bool EnableOverhang = true; //Enable overhang?
+
+		public static int WaterLevel = 72;
 
 		private void PopulateChunk(ChunkColumn chunk)
 		{
@@ -219,8 +249,8 @@ namespace SharpMC.Worlds.Standard
 					var cBiome = _biomeManager.GetBiome((int) ox, (int) oz);
 					chunk.BiomeId[x*16 + z] = cBiome.MinecraftBiomeId;
 
-					var bottomHeight = (int) ((bottom.Noise(ox, oz, 0.5, 0.5)*BottomsMagnitude) + BottomOffset);
-					var maxHeight = (int) ((overhang.Noise(ox, oz, 0.5, 0.5)*OverhangsMagnitude) + bottomHeight + OverhangOffset);
+					var bottomHeight = (int) ((bottom.Noise(ox, oz, BottomsFrequency, BottomsAmplitude)*BottomsMagnitude) + BottomOffset);
+					var maxHeight = (int) ((overhang.Noise(ox, oz, OverhangFrequency, OverhangAmplitude)*OverhangsMagnitude) + bottomHeight + OverhangOffset);
 
 					maxHeight = Math.Max(1, maxHeight);
 
@@ -237,7 +267,7 @@ namespace SharpMC.Worlds.Standard
 							//part where we do the overhangs
 							if (EnableOverhang)
 							{
-								var density = overhang.Noise(ox, y, oz, 0.5, 0.5);
+								var density = overhang.Noise(ox, y, oz, OverhangFrequency, OverhangAmplitude);
 								if (density > Threshold) chunk.SetBlock(x, y, z, BlockFactory.GetBlockById(1));
 							}
 						}
@@ -293,6 +323,14 @@ namespace SharpMC.Worlds.Standard
 		public override Vector3 GetSpawnPoint()
 		{
 			return new Vector3(0, 82, 0);
+		}
+
+		public override void ClearCache()
+		{
+			lock (ChunkCache)
+			{
+				ChunkCache.Clear();
+			}
 		}
 	}
 }

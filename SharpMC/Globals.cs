@@ -1,14 +1,40 @@
-﻿using System;
+﻿// Distrubuted under the MIT license
+// ===================================================
+// SharpMC uses the permissive MIT license.
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the “Software”), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software
+// 
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+// 
+// ©Copyright Kenny van Vulpen - 2015
+using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
+using SharpMC.API;
+using SharpMC.Utils;
 using SharpMC.Worlds;
 
 namespace SharpMC
 {
-	public class Globals
+	internal class Globals
 	{
 		public static int ProtocolVersion = 47;
 		public static bool UseCompression = false; //Please note, this is not working yet! (not planning on adding any where soon)
@@ -20,6 +46,10 @@ namespace SharpMC
 		public static string ProtocolName = "SharpMC 1.8";
 		public static string MCProtocolName = "Minecraft 1.8";
 		public static string Motd = "";
+
+		public static bool Offlinemode = true; //Not finished, stuck xd
+		public static PluginManager PluginManager;
+
 		#region ServerStatus
 
 		public static int MaxPlayers { get; set; }
@@ -91,6 +121,64 @@ namespace SharpMC
 					return bytes.ToArray();
 				}
 			}
+		}
+
+		public static string CleanForJson(string s)
+		{
+			if (string.IsNullOrEmpty(s))
+			{
+				return "";
+			}
+
+			char c = '\0';
+			int i;
+			int len = s.Length;
+			StringBuilder sb = new StringBuilder(len + 4);
+			String t;
+
+			for (i = 0; i < len; i += 1)
+			{
+				c = s[i];
+				switch (c)
+				{
+					case '\\':
+					case '"':
+						sb.Append('\\');
+						sb.Append(c);
+						break;
+					case '/':
+						sb.Append('\\');
+						sb.Append(c);
+						break;
+					case '\b':
+						sb.Append("\\b");
+						break;
+					case '\t':
+						sb.Append("\\t");
+						break;
+					case '\n':
+						sb.Append("\\n");
+						break;
+					case '\f':
+						sb.Append("\\f");
+						break;
+					case '\r':
+						sb.Append("\\r");
+						break;
+					default:
+						if (c < ' ')
+						{
+							t = "000" + String.Format("X", c);
+							sb.Append("\\u" + t.Substring(t.Length - 4));
+						}
+						else
+						{
+							sb.Append(c);
+						}
+						break;
+				}
+			}
+			return sb.ToString();
 		}
 
 		#endregion

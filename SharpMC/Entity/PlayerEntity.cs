@@ -1,4 +1,27 @@
-﻿using System;
+﻿// Distrubuted under the MIT license
+// ===================================================
+// SharpMC uses the permissive MIT license.
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the “Software”), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software
+// 
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+// 
+// ©Copyright Kenny van Vulpen - 2015
+using System;
 using System.Collections.Generic;
 using System.Runtime.CompilerServices;
 using System.Threading;
@@ -22,6 +45,7 @@ namespace SharpMC.Entity
 			Width = 0.6;
 			Height = 1.62;
 			Length = 0.6;
+			IsOperator = false;
 		}
 
 		private readonly Dictionary<Tuple<int, int>, ChunkColumn> _chunksUsed;
@@ -45,6 +69,8 @@ namespace SharpMC.Entity
 
 		//Not Sure Why Stuff
 		public EntityAction LastEntityAction { get; set; }
+
+		public bool IsOperator { get; set; }
 
 		public void AddToList()
 		{
@@ -178,6 +204,7 @@ namespace SharpMC.Entity
 				new PlayerListHeaderFooter(Wrapper) {Header = "§6§l" + Globals.ProtocolName, Footer = "§eC# Powered!"}.Write();
 			}
 			BroadcastEquipment();
+			Globals.PluginManager.HandlePlayerJoin(this);
 		}
 
 		public void SendChunksForKnownPosition(bool force = false)
@@ -210,6 +237,11 @@ namespace SharpMC.Entity
 					counted++;
 				}
 			}).Start();
+		}
+
+		public void SendChat(string message)
+		{
+			new ChatMessage(Wrapper) {Message = message}.Write();
 		}
 	}
 }

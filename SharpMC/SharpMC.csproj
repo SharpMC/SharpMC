@@ -16,9 +16,11 @@
     <OutputPath>bin\Debug</OutputPath>
     <DefineConstants>DEBUG;</DefineConstants>
     <ErrorReport>prompt</ErrorReport>
-    <WarningLevel>4</WarningLevel>
+    <WarningLevel>0</WarningLevel>
     <Externalconsole>true</Externalconsole>
-    <PlatformTarget>x86</PlatformTarget>
+    <PlatformTarget>AnyCPU</PlatformTarget>
+    <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
+    <Prefer32Bit>false</Prefer32Bit>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|x86' ">
     <DebugType>full</DebugType>
@@ -36,8 +38,13 @@
     <Reference Include="System" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="API\Plugin.cs" />
+    <Compile Include="API\CommandAttribute.cs" />
+    <Compile Include="API\IPlugin.cs" />
+    <Compile Include="API\OnPlayerJoinAttribute.cs" />
+    <Compile Include="API\PermissionAttribute.cs" />
+    <Compile Include="API\PluginAtrribute.cs" />
     <Compile Include="API\PluginExternals.cs" />
+    <Compile Include="API\PluginManager.cs" />
     <Compile Include="Blocks\BlockAir.cs" />
     <Compile Include="Blocks\BlockBedrock.cs" />
     <Compile Include="Blocks\Block.cs" />
@@ -59,8 +66,11 @@
     <Compile Include="Blocks\BlockTallGrass.cs" />
     <Compile Include="Blocks\BlockTNT.cs" />
     <Compile Include="Blocks\Flowing.cs" />
+    <Compile Include="Blocks\OakWoodPlank.cs" />
     <Compile Include="Blocks\Stationairy.cs" />
     <Compile Include="Blocks\BlockStationaryLava.cs" />
+    <Compile Include="Crafting\RecipeFactory.cs" />
+    <Compile Include="Crafting\RecipeStick.cs" />
     <Compile Include="Enums\DamageCause.cs" />
     <Compile Include="Enums\EntityAction.cs" />
     <Compile Include="Items\ItemBucket.cs" />
@@ -78,14 +88,21 @@
     <Compile Include="Items\ItemIronSword.cs" />
     <Compile Include="Items\ItemLapisLazuli.cs" />
     <Compile Include="Items\ItemLavaBucket.cs" />
+    <Compile Include="Items\ItemStick.cs" />
     <Compile Include="Items\ItemWaterBucket.cs" />
     <Compile Include="Networking\Packages\ClickWindow.cs" />
+    <Compile Include="Networking\Packages\EncryptionRequest.cs" />
+    <Compile Include="Networking\Packages\EncryptionResponse.cs" />
     <Compile Include="Networking\Packages\EntityEquipment.cs" />
+    <Compile Include="Networking\Packages\StevenBug.cs" />
     <Compile Include="Utils\BlockCoordinates.cs" />
+    <Compile Include="Utils\CraftingRecipe.cs" />
     <Compile Include="Utils\HealthManager.cs" />
     <Compile Include="Enums\LVLType.cs" />
+    <Compile Include="Utils\JavaHexDigest.cs" />
     <Compile Include="Utils\MyThreadPool.cs" />
     <Compile Include="Networking\Package.cs" />
+    <Compile Include="Utils\PermissionManager.cs" />
     <Compile Include="Utils\PlayerLocation.cs" />
     <Compile Include="Utils\ReadOnlyNibbleArray.cs" />
     <Compile Include="Utils\Records.cs" />
@@ -156,6 +173,7 @@
     <Compile Include="Entity\PlayerEntity.cs" />
     <Compile Include="Utils\MSGBuffer.cs" />
     <Compile Include="Enums\Gamemode.cs" />
+    <Compile Include="Utils\SecurityUtils.cs" />
     <Compile Include="Utils\Vector3.cs" />
     <Compile Include="Utils\Vector2.cs" />
     <Compile Include="Utils\Config.cs" />

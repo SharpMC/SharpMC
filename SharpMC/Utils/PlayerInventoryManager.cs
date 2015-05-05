@@ -1,7 +1,31 @@
-﻿using System;
+﻿// Distrubuted under the MIT license
+// ===================================================
+// SharpMC uses the permissive MIT license.
+// 
+// Permission is hereby granted, free of charge, to any person obtaining a copy
+// of this software and associated documentation files (the “Software”), to deal
+// in the Software without restriction, including without limitation the rights
+// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+// copies of the Software, and to permit persons to whom the Software is
+// furnished to do so, subject to the following conditions:
+// 
+// The above copyright notice and this permission notice shall be included in
+// all copies or substantial portions of the Software
+// 
+// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+// THE SOFTWARE.
+// 
+// ©Copyright Kenny van Vulpen - 2015
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using SharpMC.Entity;
+using SharpMC.Items;
 using SharpMC.Networking.Packages;
 
 namespace SharpMC.Utils
@@ -31,7 +55,7 @@ namespace SharpMC.Utils
 			SetSlot(38, 278, 0, 1); //Diamond pickaxe
 			SetSlot(39, 279, 0, 1); //Diamond axe
 
-			SetSlot(43, 5, 2, 64);
+			SetSlot(43, 5, 0, 64);
 			SetSlot(44, 20, 0, 12);
 
 			SetSlot(41, 327, 0, 1);
@@ -39,9 +63,10 @@ namespace SharpMC.Utils
 			SetSlot(40, 325, 0, 1);
 		}
 
+
 		public void SetSlot(int slot, short itemId, byte metadata, byte itemcount)
 		{
-			if (slot <= 44 && slot > 0)
+			if (slot <= 44 && slot >= 0)
 			{
 				_slots[slot] = new ItemStack(itemId, itemcount, metadata);
 				if (_player != null && _player.IsSpawned)
@@ -99,7 +124,7 @@ namespace SharpMC.Utils
 
 		public ItemStack GetSlot(int slot)
 		{
-			if (slot <= 44 && slot > 0)
+			if (slot <= 44 && slot >= 0)
 			{
 				return _slots[slot];
 			}
@@ -129,8 +154,17 @@ namespace SharpMC.Utils
 
 		public void DropCurrentItemStack()
 		{
-			//Drop current hold item stack
-			ConsoleFunctions.WriteDebugLine("Unimplemented feature called!");
+			/*int slottarget = 36 + CurrentSlot;
+			var slot = GetSlot(slottarget);
+			if (slot.ItemId != -1)
+			{
+				for (int i = 0; i <= slot.ItemCount; i++)
+				{
+					new ItemEntity(_player.Level, new ItemStack(slot.ItemId, 1, slot.MetaData)) {KnownPosition = _player.KnownPosition}
+						.SpawnEntity();
+				}
+				SetSlot(slottarget, -1, 0, 0);
+			}*/
 		}
 
 		public bool HasItem(int itemId)
