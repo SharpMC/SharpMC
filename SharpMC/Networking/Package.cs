@@ -24,6 +24,7 @@
 using System.Net.Sockets;
 using SharpMC.Entity;
 using SharpMC.Utils;
+using SharpMC.Worlds;
 
 namespace SharpMC.Networking
 {
@@ -59,9 +60,9 @@ namespace SharpMC.Networking
 		{
 		}
 
-		public void Broadcast(bool self = true, Player source = null)
+		public void Broadcast(Level level, bool self = true, Player source = null)
 		{
-			foreach (var i in Globals.Level.OnlinePlayers)
+			foreach (var i in level.OnlinePlayers)
 			{
 				if (!self && i == source)
 				{

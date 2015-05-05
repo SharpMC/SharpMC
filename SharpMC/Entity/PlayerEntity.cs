@@ -55,7 +55,7 @@ namespace SharpMC.Entity
 		public string Uuid { get; set; } // The player's UUID
 		public ClientWrapper Wrapper { get; set; } //The player's associated ClientWrapper
 		public Gamemode Gamemode { get; set; } //The player's gamemode
-		public bool IsSpawned { get; private set; }  //Is the player spawned?
+		public bool IsSpawned { get; set; }  //Is the player spawned?
 		public bool Digging { get; set; } // Is the player digging?
 		private bool CanFly { get; set; } //Can the player fly?
 
@@ -88,10 +88,15 @@ namespace SharpMC.Entity
 			KnownPosition.OnGround = onGround;
 
 			SendChunksForKnownPosition();
-			new EntityTeleport(Wrapper) {UniqueServerID = EntityId, Coordinates = location, OnGround = onGround, Pitch = (byte)pitch, Yaw = (byte)yaw}.Broadcast(false, this);
+			new EntityTeleport(Wrapper) { UniqueServerID = EntityId, Coordinates = location, OnGround = onGround, Pitch = (byte)pitch, Yaw = (byte)yaw }.Broadcast(Level, false, this);
 			//We teleport for now, Entityrelativemove will be used later on when i know what is wrong with it? :(
 
 			//new EntityRelativeMove(Client) {Player = Client.Player, Movement = movement}.Broadcast(false, Client.Player);
+		}
+
+		public void SendPosition()
+		{
+			new PlayerPositionAndLook(Wrapper) {X = (int) this.KnownPosition.X, Y = (int) this.KnownPosition.Y, Z = (int) this.KnownPosition.Z}.Write();
 		}
 
 		public void HeldItemChanged(int slot)
@@ -109,7 +114,7 @@ namespace SharpMC.Entity
 				Slot = EquipmentSlot.Held,
 				Item = slotdata,
 				EntityId = EntityId
-			}.Broadcast(false, this);
+			}.Broadcast(Level, false, this);
 
 			//Helmet
 			slotdata = Inventory.GetSlot(5);
@@ -118,7 +123,7 @@ namespace SharpMC.Entity
 				Slot = EquipmentSlot.Helmet,
 				Item = slotdata,
 				EntityId = EntityId
-			}.Broadcast(false, this);
+			}.Broadcast(Level, false, this);
 
 			//Chestplate
 			slotdata = Inventory.GetSlot(6);
@@ -127,7 +132,7 @@ namespace SharpMC.Entity
 				Slot = EquipmentSlot.Chestplate,
 				Item = slotdata,
 				EntityId = EntityId
-			}.Broadcast(false, this);
+			}.Broadcast(Level, false, this);
 
 			//Leggings
 			slotdata = Inventory.GetSlot(7);
@@ -136,7 +141,7 @@ namespace SharpMC.Entity
 				Slot = EquipmentSlot.Leggings,
 				Item = slotdata,
 				EntityId = EntityId
-			}.Broadcast(false, this);
+			}.Broadcast(Level, false, this);
 
 			//Boots
 			slotdata = Inventory.GetSlot(8);
@@ -145,7 +150,7 @@ namespace SharpMC.Entity
 				Slot = EquipmentSlot.Boots,
 				Item = slotdata,
 				EntityId = EntityId
-			}.Broadcast(false, this);
+			}.Broadcast(Level, false, this);
 		}
 
 		public override void OnTick()
@@ -178,7 +183,7 @@ namespace SharpMC.Entity
 
 		public void BroadcastEntityAnimation(Animations action)
 		{
-			new Animation(Wrapper){AnimationId = (byte)action, TargetPlayer = this}.Broadcast();
+			new Animation(Wrapper){AnimationId = (byte)action, TargetPlayer = this}.Broadcast(Level);
 		}
 
 		public void SendChunksFromPosition()
@@ -224,13 +229,13 @@ namespace SharpMC.Entity
 				foreach (
 					var chunk in
 						Level.Generator.GenerateChunks((ViewDistance * 16), KnownPosition.X, KnownPosition.Z,
-							_chunksUsed, this))
+						force ? new Dictionary<Tuple<int, int>, ChunkColumn>() : _chunksUsed, this))
 				{
 					if (Wrapper != null && Wrapper.TcpClient.Client.Connected)
 						new ChunkData(Wrapper, new MSGBuffer(Wrapper)) {Chunk = chunk}.Write();
 					Thread.Yield();
 
-					if (counted >= 5 && !IsSpawned)
+					if (counted >= 10 && !IsSpawned)
 					{
 						InitializePlayer();
 					}

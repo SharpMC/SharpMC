@@ -133,7 +133,7 @@ namespace SharpMC.API
 		}
 
 
-		internal void EnablePlugins(List<Level> levels)
+		internal void EnablePlugins(LevelManager levelman)
 		{
 			foreach (object plugin in _plugins)
 			{
@@ -142,7 +142,7 @@ namespace SharpMC.API
 
 				try
 				{
-					enablingPlugin.OnEnable(new PluginContext(this, levels));
+					enablingPlugin.OnEnable(new PluginContext(this));
 				}
 				catch (Exception ex)
 				{

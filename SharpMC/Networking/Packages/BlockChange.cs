@@ -24,6 +24,7 @@
 using SharpMC.Blocks;
 using SharpMC.Entity;
 using SharpMC.Utils;
+using SharpMC.Worlds;
 
 namespace SharpMC.Networking.Packages
 {
@@ -56,11 +57,11 @@ namespace SharpMC.Networking.Packages
 			}
 		}
 
-		public static void Broadcast(Block block, bool self = true, Player source = null)
+		public static void Broadcast(Block block, Level level, bool self = true, Player source = null)
 		{
-			lock (Globals.Level.OnlinePlayers)
+			lock (level.OnlinePlayers)
 			{
-				foreach (var i in Globals.Level.OnlinePlayers.ToArray())
+				foreach (var i in level.OnlinePlayers.ToArray())
 				{
 					if (!self && i == source)
 					{

@@ -17,10 +17,29 @@ namespace TestPlugin
 			
 		}
 
+		[Command(Command = "world")]
+		public void WorldCommand(Player player, string world)
+		{
+			switch (world)
+			{
+				case "overworld":
+					player.SendChat("Teleporting you to the Overworld!");
+					Context.LevelManager.TeleportToMain(player);
+					break;
+				case "flatland":
+					player.SendChat("Teleporting you to the Flatlands!");
+					Context.LevelManager.TeleportToLevel(player, "flatland");
+					break;
+				default:
+					player.SendChat("Unknown world! Choices: overworld, flatland");
+					break;
+			}
+		}
+
 		[Command(Command = "TPS")]
 		public void TpsCommand(Player player)
 		{
-			Context.Levels[0].CalculateTPS(player);
+			Context.LevelManager.MainLevel.CalculateTPS(player);
 		}
 
 		[Command]

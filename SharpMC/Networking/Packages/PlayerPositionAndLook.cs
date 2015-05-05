@@ -27,6 +27,10 @@ namespace SharpMC.Networking.Packages
 {
 	internal class PlayerPositionAndLook : Package<PlayerPositionAndLook>
 	{
+		public int X = (int)Globals.LevelManager.MainLevel.Generator.GetSpawnPoint().X;
+		public int Y = (int)Globals.LevelManager.MainLevel.Generator.GetSpawnPoint().Y;
+		public int Z = (int)Globals.LevelManager.MainLevel.Generator.GetSpawnPoint().Z;
+
 		public PlayerPositionAndLook(ClientWrapper client) : base(client)
 		{
 			SendId = 0x08;
@@ -44,9 +48,9 @@ namespace SharpMC.Networking.Packages
 			if (Buffer != null)
 			{
 				Buffer.WriteVarInt(SendId);
-				Buffer.WriteDouble(Globals.Level.Generator.GetSpawnPoint().X);
-				Buffer.WriteDouble(Globals.Level.Generator.GetSpawnPoint().Y);
-				Buffer.WriteDouble(Globals.Level.Generator.GetSpawnPoint().Z);
+				Buffer.WriteDouble(X);
+				Buffer.WriteDouble(Y);
+				Buffer.WriteDouble(Z);
 				Buffer.WriteFloat(0f);
 				Buffer.WriteFloat(0f);
 				Buffer.WriteByte(111);

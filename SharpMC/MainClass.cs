@@ -22,14 +22,12 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 using System;
-using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Security.Permissions;
 using System.Threading;
 using SharpMC.API;
-using SharpMC.Crafting;
 using SharpMC.Networking;
 using SharpMC.Networking.Packages;
 using SharpMC.Utils;
@@ -71,27 +69,31 @@ namespace SharpMC
 				ConsoleFunctions.WriteInfoLine("Disabling plugins...");
 				Globals.PluginManager.DisablePlugins();
 				ConsoleFunctions.WriteInfoLine("Saving chunks...");
-				Globals.Level.SaveChunks();
+				Globals.LevelManager.MainLevel.SaveChunks();
 			};
 
 			ConsoleFunctions.WriteInfoLine("Loading config file...");
 			Globals.MaxPlayers = Config.GetProperty("MaxPlayers", 10);
 			var Lvltype = Config.GetProperty("LevelType", "Experimental");
+			Level lvl;
 			switch (Lvltype.ToLower())
 			{
 				case "flatland":
-					Globals.Level = new FlatLandLevel(Config.GetProperty("WorldName", "world"));
+					lvl = new FlatLandLevel(Config.GetProperty("WorldName", "world"));
 					break;
 				case "standard":
-					Globals.Level = new StandardLevel(Config.GetProperty("WorldName", "world"));
+					lvl = new StandardLevel(Config.GetProperty("WorldName", "world"));
 					break;
 				case "anvil":
-					Globals.Level = new AnvilLevel(Config.GetProperty("WorldName", "world"));
+					lvl = new AnvilLevel(Config.GetProperty("WorldName", "world"));
 					break;
 				default:
-					Globals.Level = new StandardLevel(Config.GetProperty("WorldName", "world"));
+					lvl = new StandardLevel(Config.GetProperty("WorldName", "world"));
 					break;
 			}
+			Globals.LevelManager = new LevelManager(lvl);
+			Globals.LevelManager.AddLevel("flatland", new FlatLandLevel("flatland"));
+
 			Globals.Seed = Config.GetProperty("Seed", "SharpieCraft");
 
 			Globals.Motd = Config.GetProperty("motd", "");
@@ -103,8 +105,8 @@ namespace SharpMC
 
 			ConsoleFunctions.WriteInfoLine("Checking files...");
 
-			if (!Directory.Exists(Globals.Level.LvlName))
-				Directory.CreateDirectory(Globals.Level.LvlName);
+			if (!Directory.Exists(Globals.LevelManager.MainLevel.LvlName))
+				Directory.CreateDirectory(Globals.LevelManager.MainLevel.LvlName);
 
 			ConsoleFunctions.WriteInfoLine("Setting up some variables...");
 
@@ -116,7 +118,7 @@ namespace SharpMC
 			Globals.PluginManager.LoadPlugins();
 
 			ConsoleFunctions.WriteInfoLine("Enabling plugins...");
-			Globals.PluginManager.EnablePlugins(new List<Level>() { Globals.Level });
+			Globals.PluginManager.EnablePlugins(Globals.LevelManager);
 
 			var ClientListener = new Thread(() => new BasicListener().ListenForClients());
 			ClientListener.Start();

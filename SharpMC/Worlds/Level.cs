@@ -45,7 +45,7 @@ namespace SharpMC.Worlds
 			CurrentWorldTime = 1200;
 			Day = 1;
 			OnlinePlayers = new List<Player>();
-			DefaultGamemode = Gamemode.Surival;
+			DefaultGamemode = Gamemode.Creative;
 			BlockWithTicks = new ConcurrentDictionary<Vector3, int>();
 			StartTimeOfDayTimer();
 			Entities = new List<Entity.Entity>();
@@ -84,7 +84,7 @@ namespace SharpMC.Worlds
 				Gamemode = player.Gamemode,
 				Username = player.Username,
 				UUID = player.Uuid
-			}.Broadcast(); //Send playerlist item to old players & player him self
+			}.Broadcast(this); //Send playerlist item to old players & player him self
 
 			BroadcastExistingPlayers(player.Wrapper);
 		}
@@ -122,7 +122,7 @@ namespace SharpMC.Worlds
 				Gamemode = caller.Player.Gamemode,
 				Username = caller.Player.Username,
 				UUID = caller.Player.Uuid
-			}.Broadcast(false, caller.Player);
+			}.Broadcast(this);
 		}
 
 		public void SaveChunks()
@@ -160,7 +160,7 @@ namespace SharpMC.Worlds
 			if (applyPhysics) ApplyPhysics((int) block.Coordinates.X, (int) block.Coordinates.Y, (int) block.Coordinates.Z);
 
 			if (!broadcast) return;
-			BlockChange.Broadcast(block);
+			BlockChange.Broadcast(block, this);
 		}
 
 		internal void ApplyPhysics(int x, int y, int z)
@@ -195,6 +195,12 @@ namespace SharpMC.Worlds
 			if (Entities.Contains(entity)) Entities.Remove(entity);
 		}
 
+		public PlayerLocation GetSpawnPoint()
+		{
+			var spawn = Generator.GetSpawnPoint();
+			return new PlayerLocation(spawn.X, spawn.Y, spawn.Z);
+		}
+
 		#region TickTimer
 
 		private Thread GameTickThread;
@@ -219,7 +225,7 @@ namespace SharpMC.Worlds
 		{
 			if (CurrentWorldTime < 24000)
 			{
-				CurrentWorldTime += 20;
+				CurrentWorldTime += 1;
 			}
 			else
 			{
@@ -270,11 +276,7 @@ namespace SharpMC.Worlds
 		{
 			_sw.Start();
 
-			if (ClockTick >= 20)
-			{
-				ClockTick = 0;
-				DayTick();
-			}
+			DayTick();
 
 			foreach (KeyValuePair<Vector3, int> blockEvent in BlockWithTicks.ToArray())
 			{
@@ -308,7 +310,7 @@ namespace SharpMC.Worlds
 
 				ConsoleFunctions.WriteInfoLine("Clearing chunk cache...");
 				Generator.ClearCache(); //Clear chunk cache
-				GC.Collect(); //Collect garbage
+				//GC.Collect(); //Collect garbage
 			}
 			else
 			{

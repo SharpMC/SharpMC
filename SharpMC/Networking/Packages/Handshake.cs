@@ -73,7 +73,7 @@ namespace SharpMC.Networking.Packages
 				Buffer.WriteVarInt(SendId);
 				Buffer.WriteString("{\"version\": {\"name\": \"" + Globals.ProtocolName + "\",\"protocol\": " +
 				                   Globals.ProtocolVersion + "},\"players\": {\"max\": " + Globals.MaxPlayers + ",\"online\": " +
-								   Globals.Level.OnlinePlayers.Count + "},\"description\": {\"text\":\"" + Globals.CleanForJson(Globals.RandomMOTD) +
+								   Globals.GetOnlineCount() + "},\"description\": {\"text\":\"" + Globals.CleanForJson(Globals.RandomMOTD) +
 				                   "\"}}");
 				Buffer.FlushData();
 			}
@@ -122,12 +122,12 @@ namespace SharpMC.Networking.Packages
 					return;
 				}
 
-				Client.Player = new Player(Globals.Level)
+				Client.Player = new Player(Globals.LevelManager.MainLevel)
 				{
 					Uuid = uuid,
 					Username = username,
 					Wrapper = Client,
-					Gamemode = Globals.Level.DefaultGamemode
+					Gamemode = Globals.LevelManager.MainLevel.DefaultGamemode
 				};
 			//	Client.PlayMode = true;
 				Client.PacketMode = PacketMode.Play;

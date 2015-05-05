@@ -52,7 +52,7 @@ namespace SharpMC.Networking.Packages
 				return;
 			}
 
-			Globals.Level.BroadcastChat("<" + Client.Player.Username + "> " +
+			Globals.BroadcastChat("<" + Client.Player.Username + "> " +
 			                            Message.RemoveLineBreaks().Replace("\\", "\\\\").Replace("\"", "\'\'"));
 
 			ConsoleFunctions.WriteInfoLine("<" + Client.Player.Username + "> " +

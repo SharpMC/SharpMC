@@ -317,7 +317,7 @@ namespace SharpMC.Worlds.Standard
 				block);
 			if (!broadcast) return;
 
-			BlockChange.Broadcast(block);
+			BlockChange.Broadcast(block, level);
 		}
 
 		public override Vector3 GetSpawnPoint()

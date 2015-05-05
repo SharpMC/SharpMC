@@ -48,9 +48,9 @@ namespace SharpMC.Networking.Packages
 				Buffer.WriteInt(Player.EntityId);
 				Buffer.WriteByte((byte) Player.Gamemode);
 				Buffer.WriteByte(Player.Dimension);
-				Buffer.WriteByte((byte) Globals.Level.Difficulty);
+				Buffer.WriteByte((byte) Client.Player.Level.Difficulty);
 				Buffer.WriteByte((byte) Globals.MaxPlayers);
-				Buffer.WriteString(Globals.Level.LevelType.ToString());
+				Buffer.WriteString(Client.Player.Level.LevelType.ToString());
 				Buffer.WriteBool(false);
 				Buffer.FlushData();
 			}

@@ -30,11 +30,10 @@ namespace SharpMC.API
 	public class PluginContext
 	{
 		public PluginManager PluginManager { get; private set; }
-		public List<Level> Levels { get; private set; }
-		public PluginContext(PluginManager pluginManager, List<Level> levels)
+		public LevelManager LevelManager { get { return Globals.LevelManager; } }
+		public PluginContext(PluginManager pluginManager)
 		{
 			PluginManager = pluginManager;
-			Levels = levels;
 		}
 	}
 }

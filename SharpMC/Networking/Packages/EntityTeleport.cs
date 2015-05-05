@@ -23,6 +23,7 @@
 // ©Copyright Kenny van Vulpen - 2015
 using SharpMC.Entity;
 using SharpMC.Utils;
+using SharpMC.Worlds;
 
 namespace SharpMC.Networking.Packages
 {
@@ -60,9 +61,9 @@ namespace SharpMC.Networking.Packages
 			}
 		}
 
-		public static void Broadcast(Player player)
+		public static void Broadcast(Player player, Level level)
 		{
-			foreach (var i in Globals.Level.OnlinePlayers)
+			foreach (var i in level.OnlinePlayers)
 			{
 				if (i != player)
 					new EntityTeleport(i.Wrapper)

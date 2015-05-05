@@ -23,6 +23,7 @@
 // ©Copyright Kenny van Vulpen - 2015
 using SharpMC.Entity;
 using SharpMC.Utils;
+using SharpMC.Worlds;
 
 namespace SharpMC.Networking.Packages
 {
@@ -50,19 +51,53 @@ namespace SharpMC.Networking.Packages
 			}
 		}
 
-		public static void Broadcast(string reason, bool self = true, Player source = null)
+		public static void Broadcast(string reason, Level level = null, bool self = true, Player source = null)
 		{
-			foreach (var i in Globals.Level.OnlinePlayers)
+			if (level == null)
 			{
-				if (!self && i == source)
+				foreach (Level lvl in Globals.LevelManager.GetLevels())
 				{
-					continue;
+					foreach (var i in lvl.OnlinePlayers)
+					{
+						if (!self && i == source)
+						{
+							continue;
+						}
+						//Client = i.Wrapper;
+						//Buffer = new MSGBuffer(i.Wrapper);
+						//_stream = i.Wrapper.TCPClient.GetStream();
+						//Write();
+						new Disconnect(i.Wrapper, new MSGBuffer(i.Wrapper)) {Reason = reason}.Write();
+					}
 				}
-				//Client = i.Wrapper;
-				//Buffer = new MSGBuffer(i.Wrapper);
-				//_stream = i.Wrapper.TCPClient.GetStream();
-				//Write();
-				new Disconnect(i.Wrapper, new MSGBuffer(i.Wrapper)) {Reason = reason}.Write();
+
+				foreach (var i in Globals.LevelManager.MainLevel.OnlinePlayers)
+				{
+					if (!self && i == source)
+					{
+						continue;
+					}
+					//Client = i.Wrapper;
+					//Buffer = new MSGBuffer(i.Wrapper);
+					//_stream = i.Wrapper.TCPClient.GetStream();
+					//Write();
+					new Disconnect(i.Wrapper, new MSGBuffer(i.Wrapper)) { Reason = reason }.Write();
+				}
+			}
+			else
+			{
+				foreach (var i in level.OnlinePlayers)
+				{
+					if (!self && i == source)
+					{
+						continue;
+					}
+					//Client = i.Wrapper;
+					//Buffer = new MSGBuffer(i.Wrapper);
+					//_stream = i.Wrapper.TCPClient.GetStream();
+					//Write();
+					new Disconnect(i.Wrapper, new MSGBuffer(i.Wrapper)) { Reason = reason }.Write();
+				}
 			}
 		}
 	}

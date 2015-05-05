@@ -39,7 +39,8 @@ namespace SharpMC
 		public static int ProtocolVersion = 47;
 		public static bool UseCompression = false; //Please note, this is not working yet! (not planning on adding any where soon)
 		public static TcpListener ServerListener = new TcpListener(IPAddress.Any, 25565);
-		public static Level Level;
+		//public static Level Level;
+		public static LevelManager LevelManager;
 		public static string Seed = "default";
 		public static bool SupportSharpMC = false; //Enable for player list ads xD
 		public static bool Debug = false;
@@ -49,6 +50,26 @@ namespace SharpMC
 
 		public static bool Offlinemode = true; //Not finished, stuck xd
 		public static PluginManager PluginManager;
+
+		public static void BroadcastChat(string message)
+		{
+			foreach (Level lvl in LevelManager.GetLevels())
+			{
+				lvl.BroadcastChat(message);
+			}
+			LevelManager.MainLevel.BroadcastChat(message);
+		}
+
+		public static int GetOnlineCount()
+		{
+			int count = 0;
+			foreach (Level lvl in LevelManager.GetLevels())
+			{
+				count += lvl.OnlinePlayers.Count;
+			}
+			count += LevelManager.MainLevel.OnlinePlayers.Count;
+			return count;
+		}
 
 		#region ServerStatus
 

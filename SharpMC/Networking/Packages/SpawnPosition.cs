@@ -41,7 +41,7 @@ namespace SharpMC.Networking.Packages
 		{
 			if (Buffer != null)
 			{
-				var D = Globals.Level.Generator.GetSpawnPoint();
+				var D = Globals.LevelManager.MainLevel.Generator.GetSpawnPoint();
 				var Data = (((long) D.X & 0x3FFFFFF) << 38) | (((long) D.Y & 0xFFF) << 26) | ((long) D.Z & 0x3FFFFFF);
 				Buffer.WriteVarInt(SendId);
 				Buffer.WriteLong(Data);

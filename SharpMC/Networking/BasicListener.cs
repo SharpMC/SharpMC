@@ -93,8 +93,8 @@ namespace SharpMC.Networking
 
 			if (Client.Player != null)
 			{
-				Globals.Level.RemovePlayer(Client.Player);
-				Globals.Level.BroadcastPlayerRemoval(Client);
+				Client.Player.Level.RemovePlayer(Client.Player);
+				Client.Player.Level.BroadcastPlayerRemoval(Client);
 			}
 			Client.TcpClient.Close();
 			Thread.CurrentThread.Abort();

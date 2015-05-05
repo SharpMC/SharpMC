@@ -43,6 +43,8 @@ namespace SharpMC.Worlds.Flatland
 		{
 			Folder = folder;
 			IsCaching = true;
+
+			if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
 		}
 
 		public override bool IsCaching { get; set; }
@@ -93,10 +95,12 @@ namespace SharpMC.Worlds.Flatland
 				{
 					if (!newOrders.ContainsKey(chunkKey))
 					{
-						// new Networking.Packages.ChunkData(wrapper, new MSGBuffer(wrapper))
-						// {
-						//     Chunk = new ChunkColumn() {X = chunkKey.Item1, Z = chunkKey.Item2}
-						// }.Write(); //Unload the chunk client on the client side.
+						new ChunkData(player.Wrapper)
+						{
+							Queee = false,
+							Unloader = true,
+							Chunk = new ChunkColumn { X = chunkKey.Item1, Z = chunkKey.Item2 }
+						}.Write();
 
 						chunksUsed.Remove(chunkKey);
 					}
@@ -162,6 +166,7 @@ namespace SharpMC.Worlds.Flatland
 			chunk.SetBlock(3, h + 1, 0, new Block(41));
 			chunk.SetBlock(3, h + 1, 0, new Block(41));
 
+			if (!_chunkCache.ContainsKey(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z)))
 			_chunkCache.Add(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z), chunk);
 
 			return chunk;
@@ -200,7 +205,7 @@ namespace SharpMC.Worlds.Flatland
 						{
 							if (y == 1 || y == 2 || y == 3)
 							{
-								chunk.SetBlock(x, y, z, new Block(8));
+								chunk.SetBlock(x, y, z, new BlockFlowingLava());
 							}
 						}
 
@@ -208,7 +213,7 @@ namespace SharpMC.Worlds.Flatland
 						{
 							if (y == 3)
 							{
-								chunk.SetBlock(x, y, z, new Block(10));
+								chunk.SetBlock(x, y, z, new BlockFlowingWater());
 							}
 						}
 					}
@@ -222,9 +227,9 @@ namespace SharpMC.Worlds.Flatland
 		{
 			lock (_chunkCache)
 			{
-				foreach (var i in _chunkCache)
+				foreach (var i in _chunkCache.Values.ToArray())
 				{
-					File.WriteAllBytes(Folder + "/" + i.Value.X + "." + i.Value.Z + ".cfile", Globals.Compress(i.Value.Export()));
+					File.WriteAllBytes(Folder + "/" + i.X + "." + i.Z + ".cfile", Globals.Compress(i.Export()));
 				}
 			}
 		}
