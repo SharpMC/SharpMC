@@ -21,13 +21,16 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+using SharpMC.Items;
+using SharpMC.Utils;
+
 namespace SharpMC.Blocks
 {
 	public class BlockGrass : Block
 	{
 		internal BlockGrass() : base(2)
 		{
-			Drops = new BlockDirt();
+			Drops = new ItemStack[] { new ItemStack(new BlockDirt(), 1), };
 		}
 	}
 }

@@ -92,8 +92,6 @@ namespace SharpMC.Items
 				case BlockFace.PositiveX:
 					target.X++;
 					break;
-				default:
-					break;
 			}
 			return target;
 		}

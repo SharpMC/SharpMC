@@ -68,5 +68,45 @@ namespace SharpMC.Entity
 		public virtual void OnTick()
 		{
 		}
+
+		public virtual void DespawnEntity()
+		{
+			
+		}
+
+		public virtual void SpawnEntity()
+		{
+			
+		}
+
+		public byte GetDirection()
+		{
+			return DirectionByRotationFlat(KnownPosition.Yaw);
+		}
+
+		public static byte DirectionByRotationFlat(float yaw)
+		{
+			byte direction = (byte)((int)Math.Floor((yaw * 4F) / 360F + 0.5D) & 0x03);
+			switch (direction)
+			{
+				case 0:
+					return 1; // West
+				case 1:
+					return 2; // North
+				case 2:
+					return 3; // East
+				case 3:
+					return 0; // South 
+			}
+			return 0;
+		}
+
+		public BoundingBox GetBoundingBox()
+		{
+			var pos = KnownPosition;
+			double halfWidth = Width / 2;
+
+			return new BoundingBox(new Vector3(pos.X - halfWidth, pos.Y, pos.Z - halfWidth), new Vector3(pos.X + halfWidth, pos.Y + Height, pos.Z + halfWidth));
+		}
 	}
 }

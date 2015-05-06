@@ -67,9 +67,19 @@ namespace SharpMC.Networking.Packages
 					var block = Client.Player.Level.GetBlock(position);
 					block.BreakBlock(Client.Player.Level);
 					Client.Player.Digging = false;
-					
-					if (Client.Player.Gamemode != Gamemode.Creative) new ItemEntity(Client.Player.Level, new ItemStack((short) block.Drops.Id, 1, block.Drops.Metadata)) {KnownPosition = new PlayerLocation(position.X, position.Y, position.Z)}.SpawnEntity();	
+
+					if (Client.Player.Gamemode != Gamemode.Creative)
+					{
+						foreach (ItemStack its in block.Drops)
+						{
+							new ItemEntity(Client.Player.Level, its)
+							{
+								KnownPosition = new PlayerLocation(position.X, position.Y, position.Z)
+							}.SpawnEntity();
+						}
+					}
 				}
+
 				else if (status == 0)
 				{
 					Client.Player.Digging = true;

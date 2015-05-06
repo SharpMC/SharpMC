@@ -308,14 +308,16 @@ namespace SharpMC.Worlds
 				sw.Stop();
 				ConsoleFunctions.WriteInfoLine("Saving chunks took: " + sw.ElapsedMilliseconds + "MS");
 
-				ConsoleFunctions.WriteInfoLine("Clearing chunk cache...");
-				Generator.ClearCache(); //Clear chunk cache
+			//	ConsoleFunctions.WriteInfoLine("Clearing chunk cache...");
+			//	Generator.ClearCache(); //Clear chunk cache
 				//GC.Collect(); //Collect garbage
 			}
 			else
 			{
 				SaveTick++;
 			}
+
+			if (SaveTick == 750) GC.Collect();
 
 			_sw.Stop();
 			lastCalc = _sw.ElapsedMilliseconds;

@@ -68,7 +68,7 @@ namespace SharpMC.Networking.Packages
 				if (i != player)
 					new EntityTeleport(i.Wrapper)
 					{
-						Coordinates = player.KnownPosition,
+						Coordinates = player.KnownPosition.ToVector3(),
 						OnGround = player.KnownPosition.OnGround,
 						UniqueServerID = player.EntityId,
 						Pitch = (byte)player.KnownPosition.Pitch,

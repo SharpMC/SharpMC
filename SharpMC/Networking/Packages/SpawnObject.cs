@@ -66,6 +66,10 @@ namespace SharpMC.Networking.Packages
 				{
 					Buffer.WriteInt(0);
 				}
+				if (Type == ObjectType.ActivatedTNT)
+				{
+					Buffer.WriteInt(0);
+				}
 				Buffer.FlushData();
 			}
 		}

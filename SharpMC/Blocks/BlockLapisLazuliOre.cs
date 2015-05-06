@@ -22,6 +22,7 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 using SharpMC.Items;
+using SharpMC.Utils;
 
 namespace SharpMC.Blocks
 {
@@ -29,7 +30,7 @@ namespace SharpMC.Blocks
 	{
 		internal BlockLapisLazuliOre() : base(21)
 		{
-			Drops = new ItemLapisLazuli();
+			Drops = new ItemStack[] {new ItemStack(new ItemLapisLazuli(), 1), };
 		}
 	}
 }

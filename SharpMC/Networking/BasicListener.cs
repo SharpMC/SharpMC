@@ -68,6 +68,8 @@ namespace SharpMC.Networking
 						{
 							ConsoleFunctions.WriteWarningLine("Unknown packet received! \"0x" + packid.ToString("X2") + "\"");
 						}
+						buf.Dispose();
+						buf = new MSGBuffer(Client);
 					}
 					else
 					{

@@ -27,6 +27,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using SharpMC.Items;
+using SharpMC.Utils;
 
 namespace SharpMC.Blocks
 {
@@ -34,7 +35,7 @@ namespace SharpMC.Blocks
 	{
 		internal BlockCoalOre() : base(16)
 		{
-			Drops = new ItemCoal();
+			Drops = new ItemStack[] {new ItemStack(new ItemCoal(), 1), };;
 		}
 	}
 }

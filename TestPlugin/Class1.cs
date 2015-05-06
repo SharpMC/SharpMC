@@ -1,5 +1,7 @@
-﻿using SharpMC.API;
+﻿using System;
+using SharpMC.API;
 using SharpMC.Entity;
+using SharpMC.Utils;
 
 namespace TestPlugin
 {
@@ -34,6 +36,17 @@ namespace TestPlugin
 					player.SendChat("Unknown world! Choices: overworld, flatland");
 					break;
 			}
+		}
+
+		[Command(Command = "tnt")]
+		public void TntCommand(Player player)
+		{
+			var rand = new Random();
+			new ActivatedTNTEntity(player.Level)
+			{
+				KnownPosition = player.KnownPosition,
+				Fuse = (rand.Next(0, 20) + 10)
+			}.SpawnEntity();
 		}
 
 		[Command(Command = "TPS")]

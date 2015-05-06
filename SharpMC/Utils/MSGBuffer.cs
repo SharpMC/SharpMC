@@ -53,6 +53,12 @@ namespace SharpMC.Utils
 			BufferedData = data;
 		}
 
+		public void Dispose()
+		{
+			BufferedData = null;
+			LastByte = 0;
+		}
+
 		#region Reader
 
 		public int ReadByte()

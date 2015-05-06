@@ -156,7 +156,7 @@ namespace SharpMC.Blocks
 			{
 				if (this is BlockFlowingLava && (world.GetBlock(new Vector3( x, y - 1, z)) is BlockFlowingWater || world.GetBlock(new Vector3( x, y - 1, z)) is BlockStationaryWater))
 				{
-					world.SetBlock(new BlockCobbleStone { Coordinates = new BlockCoordinates(x, y - 1, z) });
+					world.SetBlock(new BlockCobbleStone { Coordinates = new Vector3(x, y - 1, z) });
 					return;
 				}
 
@@ -341,7 +341,7 @@ namespace SharpMC.Blocks
 				//}
 
 				Block newBlock = BlockFactory.GetBlockById(Id);
-				newBlock.Coordinates = new BlockCoordinates(x, y, z);
+				newBlock.Coordinates = new Vector3(x, y, z);
 				newBlock.Metadata = (byte)decay;
 				world.SetBlock(newBlock, applyPhysics: true);
 				world.ScheduleBlockTick(newBlock, TickRate());
@@ -376,7 +376,7 @@ namespace SharpMC.Blocks
 
 			Block stillBlock = BlockFactory.GetBlockById((byte)(Id + 1));
 			stillBlock.Metadata = meta;
-			stillBlock.Coordinates = new BlockCoordinates(x, y, z);
+			stillBlock.Coordinates = new Vector3(x, y, z);
 			world.SetBlock(stillBlock, applyPhysics: false);
 		}
 
@@ -459,11 +459,11 @@ namespace SharpMC.Blocks
 
 						if (meta == 0)
 						{
-							world.SetBlock(new BlockObsidian { Coordinates = new BlockCoordinates(x, y, z) });
+							world.SetBlock(new BlockObsidian { Coordinates = new Vector3(x, y, z) });
 						}
 						else if (meta <= 4)
 						{
-							world.SetBlock(new BlockCobbleStone() { Coordinates = new BlockCoordinates(x, y, z) });
+							world.SetBlock(new BlockCobbleStone() { Coordinates = new Vector3(x, y, z) });
 						}
 					}
 				}

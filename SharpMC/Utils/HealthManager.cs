@@ -221,7 +221,7 @@ namespace SharpMC.Utils
 				}
 
 
-				if (IsInWater(player.KnownPosition))
+				if (IsInWater(player.KnownPosition.ToVector3()))
 				{
 					Air--;
 					if (Air <= 0)
@@ -243,7 +243,7 @@ namespace SharpMC.Utils
 					Air = 300;
 				}
 
-				if (!IsOnFire && IsInLava(player.KnownPosition))
+				if (!IsOnFire && IsInLava(player.KnownPosition.ToVector3()))
 				{
 					FireTick = 300;
 					IsOnFire = true;

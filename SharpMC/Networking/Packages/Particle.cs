@@ -21,34 +21,60 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-namespace SharpMC.Blocks
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
+using SharpMC.Utils;
+
+namespace SharpMC.Networking.Packages
 {
-	internal class BlockFactory
+	public class Particle : Package<Particle>
 	{
-		public static Block GetBlockById(ushort id, short metadata)
+		public int ParticleId = 0;
+		public bool LongDistance = false;
+		public float X = 0f;
+		public float Y = 0f;
+		public float Z = 0f;
+		public float OffsetX = 0f;
+		public float OffsetY = 0f;
+		public float OffsetZ = 0f;
+		public float ParticleData = 0f;
+		public int ParticleCount = 1;
+		public int[] Data;
+
+		public Particle(ClientWrapper client) : base(client)
 		{
-			if (id == 46) return new BlockTNT();
-			if (id == 0) return new BlockAir();
-			if (id == 51) return new BlockFire();
-			if (id == 7) return new BlockBedrock();
-			if (id == 3) return new BlockDirt();
-			if (id == 2) return new BlockGrass();
-			if (id == 16) return new BlockCoalOre();
-			if (id == 21) return new BlockLapisLazuliOre();
-			if (id == 56) return new BlockDiamondOre();
-			if (id == 10) return new BlockFlowingLava();
-			if (id == 8) return new BlockFlowingWater();
-			if (id == 11) return new BlockStationaryLava();
-			if (id == 9) return new BlockStationaryWater();
-			if (id == 31 && metadata == 1) return new BlockTallGrass();
-			if (id == 5 && metadata == 0) return new OakWoodPlank();
-			if (id == 64) return new BlockOakDoor();
-			return new Block(id);
+			SendId = 0x2A;
 		}
 
-		public static Block GetBlockById(ushort id)
+		public Particle(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
 		{
-			return GetBlockById(id, 0);
+			SendId = 0x2A;
+		}
+
+		public override void Write()
+		{
+			if (Buffer != null)
+			{
+				Buffer.WriteVarInt(SendId);
+				Buffer.WriteInt(ParticleId);
+				Buffer.WriteBool(LongDistance);
+				Buffer.WriteFloat(X);
+				Buffer.WriteFloat(Y);
+				Buffer.WriteFloat(Z);
+				Buffer.WriteFloat(OffsetX);
+				Buffer.WriteFloat(OffsetY);
+				Buffer.WriteFloat(OffsetZ);
+				Buffer.WriteFloat(ParticleData);
+				Buffer.WriteInt(ParticleCount);
+				foreach (int i in Data)
+				{
+					Buffer.WriteVarInt(i);
+				}
+				Buffer.FlushData();
+			}
 		}
 	}
 }

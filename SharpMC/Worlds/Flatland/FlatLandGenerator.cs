@@ -245,11 +245,12 @@ namespace SharpMC.Worlds.Flatland
 			var metalength = reader.ReadInt();
 			var blockmeta = reader.ReadUShortLocal(metalength);
 
-			var blockies = new Block[block.Length];
-			for (var i = 0; i < block.Length; i++)
-			{
-				blockies[i] = new Block(block[i]) { Metadata = (byte) blockmeta[i] };
-			}
+			//var blockies = new Block[block.Length];
+			//for (var i = 0; i < block.Length; i++)
+			//{
+			//	blockies[i] = new Block(block[i]) { Metadata = (byte) blockmeta[i] };
+			//}
+
 			var skyLength = reader.ReadInt();
 			var skylight = reader.Read(skyLength);
 
@@ -261,7 +262,8 @@ namespace SharpMC.Worlds.Flatland
 
 			var cc = new ChunkColumn
 			{
-				Blocks = blockies,
+				Blocks = block,
+				Metadata = blockmeta,
 				Blocklight = { Data = blocklight },
 				Skylight = { Data = skylight },
 				BiomeId = biomeId,

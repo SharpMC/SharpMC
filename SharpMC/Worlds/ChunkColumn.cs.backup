@@ -36,9 +36,7 @@ namespace SharpMC.Worlds
 		public int[] BiomeColor = ArrayOf<int>.Create(256, 1);
 		public byte[] BiomeId = ArrayOf<byte>.Create(256, 1);
 		public NibbleArray Blocklight = new NibbleArray(16*16*256);
-		//public Block[] Blocks = new Block[16*16*256];
-		public ushort[] Blocks = new ushort[16*16*256];
-		public ushort[] Metadata = new ushort[16*16*256];
+		public Block[] Blocks = new Block[16*16*256];
 		public bool IsDirty = false;
 		public NibbleArray Skylight = new NibbleArray(16*16*256);
 
@@ -58,7 +56,7 @@ namespace SharpMC.Worlds
 			var index = x + 16*z + 16*16*y;
 			if (index >= 0 && index < Blocks.Length)
 			{
-				if (Blocks[index] != null) return (Blocks[index]);
+				if (Blocks[index] != null) return (Blocks[index].Id);
 				return 0;
 			}
 			return 900;
@@ -69,10 +67,7 @@ namespace SharpMC.Worlds
 			var index = x + 16*z + 16*16*y;
 			if (index >= 0 && index < Blocks.Length)
 			{
-				//if (Blocks[index] != null) return (Blocks[index]);
-				var id = Blocks[index];
-				var meta = Metadata[index];
-				return BlockFactory.GetBlockById(id, (short) meta);
+				if (Blocks[index] != null) return (Blocks[index]);
 				return new BlockAir();
 			}
 			return new Block(0);
@@ -87,11 +82,8 @@ namespace SharpMC.Worlds
 		{
 			var index = x + 16*z + 16*16*y;
 			if (index >= 0 && index < Blocks.Length)
-			{
 				//Blocks[index] = Convert.ToUInt16((block.Id << 4) | block.Metadata);
-				Blocks[index] = block.Id;
-				Metadata[index] = block.Metadata;
-			}
+				Blocks[index] = block;
 		}
 
 		public void SetBlocklight(int x, int y, int z, byte data)
@@ -142,8 +134,8 @@ namespace SharpMC.Worlds
 				{
 					writer.WriteVarInt((Blocks.Length*2) + Skylight.Data.Length + Blocklight.Data.Length + BiomeId.Length);
 
-					for(int i = 0; i < Blocks.Length; i++)
-						writer.Write((ushort) ((Blocks[i] << 4) | Metadata[i]));
+					foreach (var i in Blocks)
+						writer.Write((ushort) ((i.Id << 4) | i.Metadata));
 
 					writer.Write(Blocklight.Data);
 					writer.Write(Skylight.Data);
@@ -168,10 +160,10 @@ namespace SharpMC.Worlds
 				writer.WriteUShort(0xffff); // bitmap
 				writer.WriteVarInt((Blocks.Length*2) + Skylight.Data.Length + Blocklight.Data.Length + BiomeId.Length);
 
-				for (int i = 0; i < Blocks.Length; i++)
+				foreach (var i in Blocks)
 				{
-					//if (i == null) writer.WriteUShort((0 << 4) | 0);
-					writer.WriteUShort((ushort) ((Blocks[i] << 4) | Metadata[i]));
+					if (i == null) writer.WriteUShort((0 << 4) | 0);
+					else writer.WriteUShort((ushort) ((i.Id << 4) | i.Metadata));
 				}
 
 				writer.Write(Blocklight.Data);
@@ -195,13 +187,12 @@ namespace SharpMC.Worlds
 			var buffer = new MSGBuffer(new byte[0]);
 
 			buffer.WriteInt(Blocks.Length);
-
-			for (int i = 0; i < Blocks.Length; i++)
-				buffer.WriteUShort(i != null ? (ushort) Blocks[i] : (ushort) 0);
+			foreach (var i in Blocks)
+				buffer.WriteUShort(i != null ? (ushort) i.Id : (ushort) 0);
 
 			buffer.WriteInt(Blocks.Length);
-			for (int i = 0; i < Blocks.Length; i++)
-				buffer.WriteUShort(i != null ? Metadata[i] : (ushort) 0);
+			foreach (var i in Blocks)
+				buffer.WriteUShort(i != null ? i.Metadata : (ushort) 0);
 
 			buffer.WriteInt(Blocklight.Data.Length);
 			buffer.Write(Blocklight.Data);

@@ -97,11 +97,11 @@ namespace SharpMC.Blocks
 
 						if (meta == 0)
 						{
-							world.SetBlock(new BlockObsidian { Coordinates = new BlockCoordinates(x, y, z) });
+							world.SetBlock(new BlockObsidian { Coordinates = new Vector3(x, y, z) });
 						}
 						else if (meta <= 4)
 						{
-							world.SetBlock(new BlockCobbleStone { Coordinates = new BlockCoordinates(x, y, z) });
+							world.SetBlock(new BlockCobbleStone { Coordinates = new Vector3(x, y, z) });
 						}
 					}
 				}

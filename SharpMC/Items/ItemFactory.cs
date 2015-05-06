@@ -48,6 +48,7 @@ namespace SharpMC.Items
 			if (id == 327) return new ItemLavaBucket();
 			if (id == 325) return new ItemBucket();
 			if (id == 280) return new ItemStick();
+			if (id == 332) return new ItemSnowball();
 
 			return new Item((ushort) id, metadata);
 		}

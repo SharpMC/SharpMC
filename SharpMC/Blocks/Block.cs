@@ -36,7 +36,7 @@ namespace SharpMC.Blocks
 			Id = id;
 			Durability = 0.5f;
 			Metadata = 0;
-			Drops = this;
+			Drops = new ItemStack[] { new ItemStack(this, 1), }; ;
 
 			IsSolid = true;
 			IsBuildable = true;
@@ -51,7 +51,7 @@ namespace SharpMC.Blocks
 		public bool IsSolid { get; set; }
 		public bool IsTransparent { get; set; }
 		public float Durability { get; set; }
-		public Item Drops { get; set; }
+		public ItemStack[] Drops { get; set; }
 		public bool IsBuildable { get; set; }
 
 		public bool CanPlace(Level world)
@@ -81,35 +81,6 @@ namespace SharpMC.Blocks
 			return false;
 		}
 
-		public static Vector3 GetNewCoordinatesFromFace(Vector3 target, BlockFace face)
-		{
-			var intVector = new Vector3(target.X, target.Y, target.Z);
-			switch (face)
-			{
-				case BlockFace.NegativeY:
-					intVector.Y--;
-					break;
-				case BlockFace.PositiveY:
-					intVector.Y++;
-					break;
-				case BlockFace.NegativeZ:
-					intVector.Z--;
-					break;
-				case BlockFace.PositiveZ:
-					intVector.Z++;
-					break;
-				case BlockFace.NegativeX:
-					intVector.X--;
-					break;
-				case BlockFace.PositiveX:
-					intVector.X++;
-					break;
-				default:
-					break;
-			}
-			return intVector;
-		}
-
 		public float GetHardness()
 		{
 			return Durability/5.0F;
@@ -121,6 +92,13 @@ namespace SharpMC.Blocks
 
 		public virtual void DoPhysics(Level level)
 		{
+		}
+
+		public BoundingBox GetBoundingBox()
+		{
+			return new BoundingBox(
+				new Vector3(Coordinates.X, Coordinates.Y, Coordinates.Z),
+				new Vector3(Coordinates.X + 1, Coordinates.Y + 1, Coordinates.Z + 1));
 		}
 	}
 }

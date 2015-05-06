@@ -21,18 +21,40 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SharpMC.Enums;
+using SharpMC.Networking.Packages;
+using SharpMC.Worlds;
 
-namespace SharpMC.Utils
+namespace SharpMC.Entity
 {
-	public class BlockCoordinates : Vector3
+	public class SnowballEntity : Throwable
 	{
-		public BlockCoordinates(double _X, double _Y, double _Z) : base(_X, _Y, _Z)
+		public SnowballEntity(Player shooter, Level level) : base(shooter, 61, level)
 		{
+			Width = 0.25;
+			Length = 0.25;
+			Height = 0.25;
+
+			Gravity = 0.03;
+			Drag = 0.01;
+		}
+
+		public override void SpawnEntity()
+		{
+			Level.AddEntity(this);
+			foreach (Player i in Level.OnlinePlayers)
+			{
+				var SpawnedBy = i.Wrapper;
+				new SpawnObject(SpawnedBy)
+				{
+					EntityId = EntityId,
+					X = KnownPosition.X,
+					Y = KnownPosition.Y,
+					Z = KnownPosition.Z,
+					Type = ObjectType.Snowball,
+					Data = 0
+				}.Write();
+			}
 		}
 	}
 }
