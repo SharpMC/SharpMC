@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Enums;
 using SharpMC.Networking.Packages;
 using SharpMC.Utils;
@@ -31,6 +32,7 @@ namespace SharpMC.Entity
 	public class ActivatedTNTEntity : Entity
 	{
 		public int Fuse = 30;
+
 		public ActivatedTNTEntity(Level level)
 			: base(50, level)
 		{
@@ -41,13 +43,13 @@ namespace SharpMC.Entity
 
 		private void DespawnEntity()
 		{
-			foreach (Player i in Level.OnlinePlayers)
+			foreach (var i in Level.OnlinePlayers)
 			{
 				var SpawnedBy = i.Wrapper;
 
 				new DestroyEntities(SpawnedBy)
 				{
-					EntityIds = new int[] {EntityId}
+					EntityIds = new[] {EntityId}
 				}.Write();
 			}
 			Level.RemoveEntity(this);
@@ -56,7 +58,7 @@ namespace SharpMC.Entity
 		public override void SpawnEntity()
 		{
 			Level.AddEntity(this);
-			foreach (Player i in Level.OnlinePlayers)
+			foreach (var i in Level.OnlinePlayers)
 			{
 				var SpawnedBy = i.Wrapper;
 				new SpawnObject(SpawnedBy)

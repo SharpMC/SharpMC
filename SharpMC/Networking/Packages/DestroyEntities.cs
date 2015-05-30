@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
@@ -28,6 +29,7 @@ namespace SharpMC.Networking.Packages
 	public class DestroyEntities : Package<DestroyEntities>
 	{
 		public int[] EntityIds;
+
 		public DestroyEntities(ClientWrapper client) : base(client)
 		{
 			SendId = 0x13;
@@ -44,7 +46,7 @@ namespace SharpMC.Networking.Packages
 			{
 				Buffer.WriteVarInt(SendId);
 				Buffer.WriteVarInt(EntityIds.Length);
-				foreach (int i in EntityIds)
+				foreach (var i in EntityIds)
 				{
 					Buffer.WriteVarInt(i);
 				}

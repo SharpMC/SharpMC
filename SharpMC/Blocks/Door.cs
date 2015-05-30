@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Entity;
 using SharpMC.Enums;
 using SharpMC.Utils;
@@ -36,30 +37,34 @@ namespace SharpMC.Blocks
 
 		public override bool PlaceBlock(Level world, Player player, Vector3 blockCoordinates, BlockFace face)
 		{
-			byte direction = player.GetDirection();
+			var direction = player.GetDirection();
 			var coordinates = GetNewCoordinatesFromFace(blockCoordinates, face);
 
 			Block block = new Door(Id);
 			block.Coordinates = coordinates;
 			block.Metadata = direction;
 
-			int x = (int) blockCoordinates.X;
-			int y = (int) blockCoordinates.Y;
-			int z = (int) blockCoordinates.Z;
+			var x = (int) blockCoordinates.X;
+			var y = (int) blockCoordinates.Y;
+			var z = (int) blockCoordinates.Z;
 
-			int xd = 0;
-			int zd = 0;
+			var xd = 0;
+			var zd = 0;
 
 			if (direction == 0) zd = 1;
 			if (direction == 1) xd = -1;
 			if (direction == 2) zd = -1;
 			if (direction == 3) xd = 1;
 
-			int i1 = (world.GetBlock(new Vector3(x - xd, y, z - zd)).IsSolid ? 1 : 0) + (world.GetBlock(new Vector3(x - xd, y + 1, z - zd)).IsSolid ? 1 : 0);
-			int j1 = (world.GetBlock(new Vector3(x + xd, y, z + zd)).IsSolid ? 1 : 0) + (world.GetBlock(new Vector3(x + xd, y + 1, z + zd)).IsSolid ? 1 : 0);
-			bool flag = world.GetBlock(new Vector3(x - xd, y, z - zd)).Id == block.Id || world.GetBlock(new Vector3(x - xd, y + 1, z - zd)).Id == block.Id;
-			bool flag1 = world.GetBlock(new Vector3(x + xd, y, z + zd)).Id == block.Id || world.GetBlock(new Vector3(x + xd, y + 1, z + zd)).Id == block.Id;
-			bool flag2 = false;
+			var i1 = (world.GetBlock(new Vector3(x - xd, y, z - zd)).IsSolid ? 1 : 0) +
+			         (world.GetBlock(new Vector3(x - xd, y + 1, z - zd)).IsSolid ? 1 : 0);
+			var j1 = (world.GetBlock(new Vector3(x + xd, y, z + zd)).IsSolid ? 1 : 0) +
+			         (world.GetBlock(new Vector3(x + xd, y + 1, z + zd)).IsSolid ? 1 : 0);
+			var flag = world.GetBlock(new Vector3(x - xd, y, z - zd)).Id == block.Id ||
+			           world.GetBlock(new Vector3(x - xd, y + 1, z - zd)).Id == block.Id;
+			var flag1 = world.GetBlock(new Vector3(x + xd, y, z + zd)).Id == block.Id ||
+			            world.GetBlock(new Vector3(x + xd, y + 1, z + zd)).Id == block.Id;
+			var flag2 = false;
 
 			if (flag && !flag1)
 			{
@@ -75,7 +80,7 @@ namespace SharpMC.Blocks
 
 			Block blockUpper = new Door(Id);
 			blockUpper.Coordinates = c2;
-			blockUpper.Metadata = (byte)(0x08 | (flag2 ? 1 : 0));
+			blockUpper.Metadata = (byte) (0x08 | (flag2 ? 1 : 0));
 
 			world.SetBlock(block);
 			world.SetBlock(blockUpper);

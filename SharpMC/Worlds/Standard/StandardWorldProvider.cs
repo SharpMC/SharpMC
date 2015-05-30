@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -38,8 +39,24 @@ namespace SharpMC.Worlds.Standard
 {
 	internal class StandardWorldProvider : IWorldProvider
 	{
+		//World Tweaking settings
+		//These settings can be tweaked to changed the look of the terrain.
+
+		private const double OverhangOffset = 32.0; //Old value: 32.0 || Changes the offset from the bottom ground.
+		private const double BottomOffset = 42.0; //Old value: 96.0  || Changes the offset from y level 0
+		private const double OverhangsMagnitude = 16.0; //Old value: 16.0
+		private const double BottomsMagnitude = 32.0; //Old value: 32.0
+		private const double OverhangScale = 128.0; //Old value: 128.0 || Changes the scale of the overhang.
+		private const double Groundscale = 256.0; //Old value: 256.0   || Changes the scale of the ground.
+		private const double Threshold = 0.1; //Old value: 0.0 || Cool value: -0.3 hehehe
+		private const double BottomsFrequency = 0.5; //Original 0.5
+		private const double BottomsAmplitude = 0.5; //Original 0.5
+		private const double OverhangFrequency = 0.5; //Original 0.5
+		private const double OverhangAmplitude = 0.5; //Original 0.5
+		private const bool EnableOverhang = true; //Enable overhang?
 		private static readonly Random Getrandom = new Random();
 		private static readonly object SyncLock = new object();
+		public static int WaterLevel = 72;
 		private readonly BiomeManager _biomeManager;
 		private readonly CaveGenerator _cavegen = new CaveGenerator(Globals.Seed.GetHashCode());
 		private readonly string _folder;
@@ -50,11 +67,12 @@ namespace SharpMC.Worlds.Standard
 			_folder = folder;
 			IsCaching = true;
 			_biomeManager = new BiomeManager(Globals.Seed.GetHashCode());
-			_biomeManager.AddBiomeType(new PlainsBiome());
-			_biomeManager.AddBiomeType(new ForestBiome());
-			_biomeManager.AddBiomeType(new DesertBiome());
-			_biomeManager.AddBiomeType(new BirchForestBiome());
+			//	_biomeManager.AddBiomeType(new OceanBiome()); //Not adding until we fixed the transitions :(
 			_biomeManager.AddBiomeType(new FlowerForestBiome());
+			_biomeManager.AddBiomeType(new ForestBiome());
+			_biomeManager.AddBiomeType(new BirchForestBiome());
+			_biomeManager.AddBiomeType(new PlainsBiome());
+			_biomeManager.AddBiomeType(new DesertBiome());
 			_biomeManager.AddBiomeType(new SunFlowerPlainsBiome());
 		}
 
@@ -69,7 +87,7 @@ namespace SharpMC.Worlds.Standard
 			var block = reader.ReadUShortLocal(blockLength);
 
 			var metalength = reader.ReadInt();
-			var blockmeta = reader.ReadUShortLocal(metalength);
+			var blockmeta = reader.ReadShortLocal(metalength);
 
 			//var blockies = new Block[block.Length];
 			//var blocks = new ushort[block.Length];
@@ -77,7 +95,6 @@ namespace SharpMC.Worlds.Standard
 			//{
 			//	blockies[i] = new Block(block[i]) {Metadata = (byte) blockmeta[i]};
 			//}
-
 
 
 			var skyLength = reader.ReadInt();
@@ -212,30 +229,6 @@ namespace SharpMC.Worlds.Standard
 				return Getrandom.Next(min, max);
 			}
 		}
-		
-		//World Tweaking settings
-		//These settings can be tweaked to changed the look of the terrain.
-
-		private const double OverhangOffset = 32.0; //Old value: 32.0 || Changes the offset from the bottom ground.
-		private const double BottomOffset = 96.0; //Old value: 96.0  || Changes the offset from y level 0
-
-		private const double OverhangsMagnitude = 16.0; //Old value: 16.0
-		private const double BottomsMagnitude = 32.0; //Old value: 32.0
-
-		private const double OverhangScale = 128.0; //Old value: 128.0 || Changes the scale of the overhang.
-		private const double Groundscale = 256.0; //Old value: 256.0   || Changes the scale of the ground.
-
-		private const double Threshold = 0.1; //Old value: 0.0 || Cool value: -0.3 hehehe
-
-		private const double BottomsFrequency = 0.5; //Original 0.5
-		private const double BottomsAmplitude = 0.5; //Original 0.5
-
-		private const double OverhangFrequency = 0.5; //Original 0.5
-		private const double OverhangAmplitude = 0.5; //Original 0.5
-
-		private const bool EnableOverhang = true; //Enable overhang?
-
-		public static int WaterLevel = 72;
 
 		private void PopulateChunk(ChunkColumn chunk)
 		{
@@ -243,6 +236,7 @@ namespace SharpMC.Worlds.Standard
 			var overhang = new SimplexOctaveGenerator(Globals.Seed.GetHashCode(), 8);
 			overhang.SetScale(1/OverhangScale);
 			bottom.SetScale(1/Groundscale);
+
 
 			for (var x = 0; x < 16; x++)
 			{
@@ -254,9 +248,14 @@ namespace SharpMC.Worlds.Standard
 					var cBiome = _biomeManager.GetBiome((int) ox, (int) oz);
 					chunk.BiomeId[x*16 + z] = cBiome.MinecraftBiomeId;
 
-					var bottomHeight = (int) ((bottom.Noise(ox, oz, BottomsFrequency, BottomsAmplitude)*BottomsMagnitude) + BottomOffset);
-					var maxHeight = (int) ((overhang.Noise(ox, oz, OverhangFrequency, OverhangAmplitude)*OverhangsMagnitude) + bottomHeight + OverhangOffset);
+					var bottomHeight =
+						(int)
+							((bottom.Noise(ox, oz, BottomsFrequency, BottomsAmplitude)*BottomsMagnitude) + BottomOffset + cBiome.BaseHeight);
 
+					var maxHeight =
+						(int)
+							((overhang.Noise(ox, oz, OverhangFrequency, OverhangAmplitude)*OverhangsMagnitude) + bottomHeight +
+							 OverhangOffset);
 					maxHeight = Math.Max(1, maxHeight);
 
 					for (var y = 0; y < maxHeight && y < 256; y++)
@@ -283,9 +282,9 @@ namespace SharpMC.Worlds.Standard
 					}
 
 					//Turn the blocks ontop into the correct material
-					for (int y = bottomHeight; y < 256; y++)
+					for (var y = 0; y < 256; y++)
 					{
-						if (chunk.GetBlock(x, y + 1, z) == 0 && chunk.GetBlock(x,y,z) == 1)
+						if (chunk.GetBlock(x, y + 1, z) == 0 && chunk.GetBlock(x, y, z) == 1)
 						{
 							chunk.SetBlock(x, y, z, cBiome.TopBlock);
 
@@ -298,7 +297,7 @@ namespace SharpMC.Worlds.Standard
 					{
 						decorator.Decorate(chunk, cBiome, x, z);
 					}
-					new OreDecorator().Decorate(chunk, cBiome, x, z);//Ores :)
+					new OreDecorator().Decorate(chunk, cBiome, x, z); //Ores :)
 					new BedrockDecorator().Decorate(chunk, cBiome, x, z); //Random bedrock :)
 				}
 			}

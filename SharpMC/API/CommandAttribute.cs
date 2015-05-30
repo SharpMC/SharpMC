@@ -21,15 +21,16 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 
 namespace SharpMC.API
 {
-	[AttributeUsage(AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
+	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 	public class CommandAttribute : Attribute
 	{
 		public string Command;
-		public string Usage;
 		public string Description;
+		public string Usage;
 	}
 }

@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 using System.Collections.Generic;
 using SharpMC.Entity;
@@ -29,7 +30,8 @@ namespace SharpMC.Utils
 {
 	public class PermissionManager
 	{
-		internal static List<Tuple<string, string>> Permissions = new List<Tuple<string, string>>(); 
+		internal static List<Tuple<string, string>> Permissions = new List<Tuple<string, string>>();
+
 		public static bool HasPermission(Player player, string permission)
 		{
 			if (player.IsOperator) return true; //Operators (OP) have all permissions.
@@ -61,7 +63,7 @@ namespace SharpMC.Utils
 
 		public static string[] GetPermissions(Player player)
 		{
-			List<string> list = new List<string>();
+			var list = new List<string>();
 			foreach (var val in Permissions)
 			{
 				if (val.Item1 == player.Username) list.Add(val.Item2);

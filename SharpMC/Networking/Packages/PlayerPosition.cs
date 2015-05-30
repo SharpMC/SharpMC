@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
@@ -47,13 +48,13 @@ namespace SharpMC.Networking.Packages
 				var FeetY = Buffer.ReadDouble();
 				var Z = Buffer.ReadDouble();
 				var OnGround = Buffer.ReadBool();
-			//	Client.Player.KnownPosition = new PlayerLocation(X, FeetY, Z);
-			//	Client.Player.KnownPosition.OnGround = OnGround;
-			//	Client.Player.SendChunksFromPosition();
+				//	Client.Player.KnownPosition = new PlayerLocation(X, FeetY, Z);
+				//	Client.Player.KnownPosition.OnGround = OnGround;
+				//	Client.Player.SendChunksFromPosition();
 
 				//var movement = Client.Player.KnownPosition - originalCoordinates;
 				//new EntityRelativeMove(Client) {Player = Client.Player, Movement = movement}.Broadcast(false, Client.Player);
-				Client.Player.PositionChanged(new Vector3(X, FeetY, Z), 0.0f, 0.0f, OnGround);	
+				Client.Player.PositionChanged(new Vector3(X, FeetY, Z), 0.0f, 0.0f, OnGround);
 			}
 		}
 	}

@@ -21,9 +21,10 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 namespace SharpMC.Items
 {
-	class ItemIronChestplate : Item
+	internal class ItemIronChestplate : Item
 	{
 		internal ItemIronChestplate() : base(307, 0)
 		{

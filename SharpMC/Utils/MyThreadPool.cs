@@ -21,6 +21,8 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading;
@@ -29,7 +31,6 @@ namespace SharpMC.Utils
 {
 	public class MyThreadPool
 	{
-		private const int MaxThreads = 500;
 		private readonly IList<Thread> _threads;
 
 		public MyThreadPool()
@@ -45,21 +46,27 @@ namespace SharpMC.Utils
 			thread.Start();
 		}
 
-		public void KillAllThreads()
+		public void LaunchThread(Action action)
 		{
-		    foreach (var thread in _threads.Where(thread => thread.IsAlive))
-		    {
-		        thread.Abort();
-		    }
+			var t = new Thread(obj => action());
+			LaunchThread(t);
 		}
 
-	    public void KillThread(int index)
-	    {
-	        var id = string.Concat("Thread", index.ToString());
-	        foreach (var thread in _threads.Where(thread => thread.Name == id))
-	        {
-	            thread.Abort();
-	        }
-	    }
+		public void KillAllThreads()
+		{
+			foreach (var thread in _threads.Where(thread => thread.IsAlive))
+			{
+				thread.Abort();
+			}
+		}
+
+		public void KillThread(int index)
+		{
+			var id = string.Concat("Thread", index.ToString());
+			foreach (var thread in _threads.Where(thread => thread.Name == id))
+			{
+				thread.Abort();
+			}
+		}
 	}
 }

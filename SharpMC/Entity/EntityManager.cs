@@ -21,11 +21,12 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 namespace SharpMC.Entity
 {
 	public class EntityManager
 	{
-		private static int LastEntityId = 0;
+		private static int LastEntityId;
 
 		public static int GetEntityId()
 		{

@@ -21,11 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
@@ -42,8 +38,8 @@ namespace SharpMC.Networking.Packages
 	public class EntityEquipment : Package<EntityEquipment>
 	{
 		public int EntityId = 0;
-		public EquipmentSlot Slot = EquipmentSlot.Held;
 		public ItemStack Item;
+		public EquipmentSlot Slot = EquipmentSlot.Held;
 
 		public EntityEquipment(ClientWrapper client) : base(client)
 		{
@@ -61,7 +57,7 @@ namespace SharpMC.Networking.Packages
 			{
 				Buffer.WriteVarInt(SendId);
 				Buffer.WriteVarInt(EntityId);
-				Buffer.WriteShort((short)Slot);
+				Buffer.WriteShort((short) Slot);
 				Buffer.WriteShort(Item.ItemId);
 				if (Item.ItemId != -1)
 				{

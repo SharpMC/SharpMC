@@ -1,17 +1,16 @@
 ﻿using System;
 using SharpMC.API;
 using SharpMC.Entity;
-using SharpMC.Utils;
 
 namespace TestPlugin
 {
 	[Plugin]
     public class TestPlugin : IPlugin
 	{
-		private PluginContext Context;
+		private PluginContext _context;
 		public void OnEnable(PluginContext context)
 		{
-			Context = context;
+			_context = context;
 		}
 
 		public void OnDisable()
@@ -26,14 +25,14 @@ namespace TestPlugin
 			{
 				case "overworld":
 					player.SendChat("Teleporting you to the Overworld!");
-					Context.LevelManager.TeleportToMain(player);
+					_context.LevelManager.TeleportToMain(player);
 					break;
-				case "flatland":
-					player.SendChat("Teleporting you to the Flatlands!");
-					Context.LevelManager.TeleportToLevel(player, "flatland");
+				case "nether":
+					player.SendChat("Teleporting you to the Nether!");
+					_context.LevelManager.TeleportToLevel(player, "nether");
 					break;
 				default:
-					player.SendChat("Unknown world! Choices: overworld, flatland");
+					player.SendChat("Unknown world! Choices: overworld, nether");
 					break;
 			}
 		}
@@ -52,13 +51,23 @@ namespace TestPlugin
 		[Command(Command = "TPS")]
 		public void TpsCommand(Player player)
 		{
-			Context.LevelManager.MainLevel.CalculateTPS(player);
+			_context.LevelManager.MainLevel.CalculateTps(player);
 		}
 
 		[Command]
 		public void Hello(Player player)
 		{
-			player.SendChat("Hello there!");
+			player.SendChat("Hello there!"); 
+		}
+
+		[Command(Command = "save-all")]
+		public void SaveAllCommand(Player player)
+		{
+			foreach (var lvl in _context.LevelManager.GetLevels())
+			{
+				lvl.SaveChunks();
+			}
+			_context.LevelManager.MainLevel.SaveChunks();
 		}
     }
 }

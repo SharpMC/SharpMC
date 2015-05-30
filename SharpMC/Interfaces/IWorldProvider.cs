@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 using System.Collections.Generic;
 using SharpMC.Blocks;
@@ -71,7 +72,6 @@ namespace SharpMC.Interfaces
 
 		public virtual void ClearCache()
 		{
-			
 		}
 	}
 }

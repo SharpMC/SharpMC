@@ -21,26 +21,27 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 
 namespace SharpMC.Utils
 {
 	public struct Ray : IEquatable<Ray>
 	{
-		#region Public Fields
-
-		public readonly Vector3 Direction;
-		public readonly Vector3 Position;
-
-		#endregion
-
 		#region Public Constructors
 
 		public Ray(Vector3 position, Vector3 direction)
 		{
-			this.Position = position;
-			this.Direction = direction;
+			Position = position;
+			Direction = direction;
 		}
+
+		#endregion
+
+		#region Public Fields
+
+		public readonly Vector3 Direction;
+		public readonly Vector3 Position;
 
 		#endregion
 
@@ -75,7 +76,7 @@ namespace SharpMC.Utils
 				return 0.0f; // here we concidere cube is full and origine is in cube so intersect at origine
 
 			//Second we check each face
-			Vector3 maxT = new Vector3(-1.0f);
+			var maxT = new Vector3(-1.0f);
 			//Vector3 minT = new Vector3(-1.0f);
 			//calcul intersection with each faces
 			if (Position.X < box.Min.X && Direction.X != 0.0f)
@@ -97,7 +98,7 @@ namespace SharpMC.Utils
 				if (maxT.X < 0.0f)
 					return null; // ray go on opposite of face
 				//coordonate of hit point of face of cube
-				double coord = Position.Z + maxT.X*Direction.Z;
+				var coord = Position.Z + maxT.X*Direction.Z;
 				// if hit point coord ( intersect face with ray) is out of other plane coord it miss
 				if (coord < box.Min.Z || coord > box.Max.Z)
 					return null;
@@ -111,7 +112,7 @@ namespace SharpMC.Utils
 				if (maxT.Y < 0.0f)
 					return null; // ray go on opposite of face
 				//coordonate of hit point of face of cube
-				double coord = Position.Z + maxT.Y*Direction.Z;
+				var coord = Position.Z + maxT.Y*Direction.Z;
 				// if hit point coord ( intersect face with ray) is out of other plane coord it miss
 				if (coord < box.Min.Z || coord > box.Max.Z)
 					return null;
@@ -125,7 +126,7 @@ namespace SharpMC.Utils
 				if (maxT.Z < 0.0f)
 					return null; // ray go on opposite of face
 				//coordonate of hit point of face of cube
-				double coord = Position.X + maxT.Z*Direction.X;
+				var coord = Position.X + maxT.Z*Direction.X;
 				// if hit point coord ( intersect face with ray) is out of other plane coord it miss
 				if (coord < box.Min.X || coord > box.Max.X)
 					return null;
@@ -148,7 +149,7 @@ namespace SharpMC.Utils
 
 		public override string ToString()
 		{
-			return string.Format("{{Position:{0} Direction:{1}}}", Position.ToString(), Direction.ToString());
+			return string.Format("{{Position:{0} Direction:{1}}}", Position, Direction);
 		}
 
 		#endregion

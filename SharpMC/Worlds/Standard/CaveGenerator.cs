@@ -21,20 +21,19 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Blocks;
 
 namespace SharpMC.Worlds.Standard
 {
 	internal class CaveGenerator
 	{
-		private readonly SimplexOctaveGenerator caveNoise;
+		private readonly int seedi;
 		private GCRandom gcRandom;
-		private int seedi;
 
 		public CaveGenerator(int seed)
 		{
-			caveNoise = new SimplexOctaveGenerator(seed + 22, 3);
-			caveNoise.SetScale(1.0/100);
+			seedi = seed;
 		}
 
 		public void GenerateCave(ChunkColumn chunk)
@@ -44,9 +43,6 @@ namespace SharpMC.Worlds.Standard
 			{
 				for (var z = 0; z < 16; z++)
 				{
-					float ox = x + chunk.X*16;
-					float oz = z + chunk.Z*16;
-
 					for (var y = 50; y >= 6; y--)
 					{
 						if (gcRandom.IsInCave(x, y, z))

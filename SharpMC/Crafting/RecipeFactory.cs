@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System.Collections.Generic;
 using System.Linq;
 using SharpMC.Utils;
@@ -29,9 +30,9 @@ namespace SharpMC.Crafting
 {
 	public class RecipeFactory
 	{
-		private static readonly List<CraftingRecipe> CraftingRecipes = new List<CraftingRecipe>()
+		private static readonly List<CraftingRecipe> CraftingRecipes = new List<CraftingRecipe>
 		{
-			new RecipeStick(),
+			new RecipeStick()
 		};
 
 		public static void AddRecipe(CraftingRecipe recipe)

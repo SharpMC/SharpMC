@@ -21,22 +21,19 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SharpMC.API
 {
-	[AttributeUsage(AttributeTargets.Method, Inherited = true, AllowMultiple = true)]
+	[AttributeUsage(AttributeTargets.Method, AllowMultiple = true)]
 	public class PermissionAttribute : Attribute
 	{
-		public string Permission { get; set; }
-
 		public PermissionAttribute()
 		{
 			Permission = "";
 		}
+
+		public string Permission { get; set; }
 	}
 }

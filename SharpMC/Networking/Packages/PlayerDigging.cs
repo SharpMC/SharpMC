@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Entity;
 using SharpMC.Enums;
 using SharpMC.Utils;
@@ -70,7 +71,7 @@ namespace SharpMC.Networking.Packages
 
 					if (Client.Player.Gamemode != Gamemode.Creative)
 					{
-						foreach (ItemStack its in block.Drops)
+						foreach (var its in block.Drops)
 						{
 							new ItemEntity(Client.Player.Level, its)
 							{

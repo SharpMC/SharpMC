@@ -21,24 +21,24 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.IO.Compression;
-using System.Net;
-using System.Net.Sockets;
+using System.Security.Cryptography;
 using System.Text;
 using SharpMC.API;
-using SharpMC.Utils;
-using SharpMC.Worlds;
 
 namespace SharpMC
 {
 	internal class Globals
 	{
 		public static int ProtocolVersion = 47;
-		public static bool UseCompression = false; //Please note, this is not working yet! (not planning on adding any where soon)
-		public static TcpListener ServerListener = new TcpListener(IPAddress.Any, 25565);
+
+		public static bool UseCompression = false;
+			//Please note, this is not working yet! (not planning on adding any where soon)
+
 		//public static Level Level;
 		public static LevelManager LevelManager;
 		public static string Seed = "default";
@@ -47,13 +47,17 @@ namespace SharpMC
 		public static string ProtocolName = "SharpMC 1.8";
 		public static string MCProtocolName = "Minecraft 1.8";
 		public static string Motd = "";
-
 		public static bool Offlinemode = true; //Not finished, stuck xd
+		public static bool EncryptionEnabled = true; //Only applies if offlinemode is disabled :p
+		//public static bool CompressionEnabled = false;
+
 		public static PluginManager PluginManager;
+		public static RSAParameters ServerKey;
+		public static Random Rand;
 
 		public static void BroadcastChat(string message)
 		{
-			foreach (Level lvl in LevelManager.GetLevels())
+			foreach (var lvl in LevelManager.GetLevels())
 			{
 				lvl.BroadcastChat(message);
 			}
@@ -62,8 +66,8 @@ namespace SharpMC
 
 		public static int GetOnlineCount()
 		{
-			int count = 0;
-			foreach (Level lvl in LevelManager.GetLevels())
+			var count = 0;
+			foreach (var lvl in LevelManager.GetLevels())
 			{
 				count += lvl.OnlinePlayers.Count;
 			}
@@ -97,16 +101,13 @@ namespace SharpMC
 		{
 			get
 			{
-				if (String.IsNullOrEmpty(Motd) || Motd == "empty")
+				if (string.IsNullOrEmpty(Motd) || Motd == "empty")
 				{
 					var i = new Random();
 					var chosen = i.Next(0, ServerMotd.Length);
 					return ServerMotd[chosen];
 				}
-				else
-				{
-					return Motd;
-				}
+				return Motd;
 			}
 		}
 
@@ -151,11 +152,11 @@ namespace SharpMC
 				return "";
 			}
 
-			char c = '\0';
+			var c = '\0';
 			int i;
-			int len = s.Length;
-			StringBuilder sb = new StringBuilder(len + 4);
-			String t;
+			var len = s.Length;
+			var sb = new StringBuilder(len + 4);
+			string t;
 
 			for (i = 0; i < len; i += 1)
 			{
@@ -189,7 +190,7 @@ namespace SharpMC
 					default:
 						if (c < ' ')
 						{
-							t = "000" + String.Format("X", c);
+							t = "000" + string.Format("X", c);
 							sb.Append("\\u" + t.Substring(t.Length - 4));
 						}
 						else

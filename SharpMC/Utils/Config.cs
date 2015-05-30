@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 using System.IO;
 using SharpMC.Enums;
@@ -54,7 +55,7 @@ namespace SharpMC.Utils
 			return ReadGamemode(Property, DefaultValue);
 		}
 
-		public static Boolean GetProperty(string Property, Boolean DefaultValue)
+		public static bool GetProperty(string Property, bool DefaultValue)
 		{
 			return ReadBoolean(Property, DefaultValue);
 		}
@@ -109,7 +110,7 @@ namespace SharpMC.Utils
 			}
 		}
 
-		private static bool ReadBoolean(string Rule, Boolean Default)
+		private static bool ReadBoolean(string Rule, bool Default)
 		{
 			try
 			{

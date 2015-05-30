@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 using System.Collections.Generic;
 using System.Threading.Tasks;
@@ -36,9 +37,9 @@ namespace SharpMC.Utils
 		private readonly IDictionary<Vector3, Block> _afectedBlocks = new Dictionary<Vector3, Block>();
 		private readonly float _size;
 		private readonly Level _world;
+		private readonly bool CoordsSet;
+		private readonly bool Fire;
 		private Vector3 _centerCoordinates;
-		private bool CoordsSet = false;
-		private bool Fire = false;
 
 		/// <summary>
 		///     Use this for Explosion an explosion only!
@@ -64,7 +65,6 @@ namespace SharpMC.Utils
 			CoordsSet = false;
 		}
 
-
 		public bool Explode()
 		{
 			if (PrimaryExplosion())
@@ -80,49 +80,50 @@ namespace SharpMC.Utils
 			if (!CoordsSet) throw new Exception("Please intiate using Explosion(Level, coordinates, size)");
 			if (_size < 0.1) return false;
 
-			for (int i = 0; i < Ray; i++)
+			for (var i = 0; i < Ray; i++)
 			{
-				for (int j = 0; j < Ray; j++)
+				for (var j = 0; j < Ray; j++)
 				{
-					for (int k = 0; k < Ray; k++)
+					for (var k = 0; k < Ray; k++)
 					{
 						if (i == 0 || i == Ray - 1 || j == 0 || j == Ray - 1 || k == 0 || k == Ray - 1)
 						{
-							double x = i / (Ray - 1.0F) * 2.0F - 1.0F;
-							double y = j / (Ray - 1.0F) * 2.0F - 1.0F;
-							double z = k / (Ray - 1.0F) * 2.0F - 1.0F;
-							double d6 = Math.Sqrt(x * x + y * y + z * z);
+							double x = i/(Ray - 1.0F)*2.0F - 1.0F;
+							double y = j/(Ray - 1.0F)*2.0F - 1.0F;
+							double z = k/(Ray - 1.0F)*2.0F - 1.0F;
+							var d6 = Math.Sqrt(x*x + y*y + z*z);
 
 							x /= d6;
 							y /= d6;
 							z /= d6;
-							var blastForce1 = (float)(_size * (0.7F + new Random().NextDouble() * 0.6F));
+							var blastForce1 = (float) (_size*(0.7F + new Random().NextDouble()*0.6F));
 
-							double cX = _centerCoordinates.X;
-							double cY = _centerCoordinates.Y;
-							double cZ = _centerCoordinates.Z;
+							var cX = _centerCoordinates.X;
+							var cY = _centerCoordinates.Y;
+							var cZ = _centerCoordinates.Z;
 
-							for (float blastForce2 = 0.3F; blastForce1 > 0.0F; blastForce1 -= blastForce2 * 0.75F)
+							for (var blastForce2 = 0.3F; blastForce1 > 0.0F; blastForce1 -= blastForce2*0.75F)
 							{
-								var bx = (int)Math.Floor(cX);
-								var by = (int)Math.Floor(cY);
-								var bz = (int)Math.Floor(cZ);
-								Block block = _world.GetBlock(new Vector3(bx, by, bz));
+								var bx = (int) Math.Floor(cX);
+								var by = (int) Math.Floor(cY);
+								var bz = (int) Math.Floor(cZ);
+								var block = _world.GetBlock(new Vector3(bx, by, bz));
 
 								if (block.Id != 0)
 								{
-									float blastForce3 = block.GetHardness();
-									blastForce1 -= (blastForce3 + 0.3F) * blastForce2;
+									var blastForce3 = block.GetHardness();
+									blastForce1 -= (blastForce3 + 0.3F)*blastForce2;
 								}
 
 								if (blastForce1 > 0.0F)
 								{
-									if (!_afectedBlocks.ContainsKey(block.Coordinates) && block.Id != 0) _afectedBlocks.Add(block.Coordinates, block);
+									if (!_afectedBlocks.ContainsKey(block.Coordinates) && block.Id != 0)
+										_afectedBlocks.Add(block.Coordinates, block);
 								}
 
-								cX += x * blastForce2;
-								cY += y * blastForce2;
-								cZ += z * blastForce2;
+								cX += x*blastForce2;
+								cY += y*blastForce2;
+								cZ += z*blastForce2;
 							}
 						}
 					}
@@ -147,16 +148,16 @@ namespace SharpMC.Utils
 			//var explosionBB = new BoundingBox(new Vector3(minX, minY, minZ), new Vector3(maxX, maxY, maxZ));
 
 			var records = new Records();
-			foreach (Block block in _afectedBlocks.Values)
+			foreach (var block in _afectedBlocks.Values)
 			{
 				records.Add(block.Coordinates - _centerCoordinates);
 			}
 
 
-			foreach (Block block in _afectedBlocks.Values)
+			foreach (var block in _afectedBlocks.Values)
 			{
-				Block block1 = block;
-				_world.SetBlock(new BlockAir { Coordinates = block1.Coordinates });
+				var block1 = block;
+				_world.SetBlock(new BlockAir {Coordinates = block1.Coordinates});
 
 				if (block is BlockTNT)
 				{
@@ -167,7 +168,7 @@ namespace SharpMC.Utils
 			// Set stuff on fire
 			if (Fire)
 			{
-				Random random = new Random();
+				var random = new Random();
 				foreach (var coord in _afectedBlocks.Keys)
 				{
 					var block = _world.GetBlock(new Vector3(coord.X, coord.Y, coord.Z));
@@ -176,7 +177,7 @@ namespace SharpMC.Utils
 						var blockDown = _world.GetBlock(new Vector3(coord.X, coord.Y - 1, coord.Z));
 						if (!(blockDown is BlockAir) && random.Next(3) == 0)
 						{
-							_world.SetBlock(new BlockFire { Coordinates = block.Coordinates });
+							_world.SetBlock(new BlockFire {Coordinates = block.Coordinates});
 						}
 					}
 				}

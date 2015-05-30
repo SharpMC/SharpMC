@@ -21,11 +21,11 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
-using System.Collections.Generic;
 using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.Net;
+using SharpMC.Entity;
 using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
@@ -46,11 +46,75 @@ namespace SharpMC.Networking.Packages
 		{
 			if (Buffer != null)
 			{
-				int length = Buffer.ReadVarInt();
-				byte[] sharedsecret = Buffer.Read(length);
+				var length = Buffer.ReadVarInt();
+				var sharedsecret = Buffer.Read(length);
 
 				length = Buffer.ReadVarInt();
-				byte[] verifytoken = Buffer.Read(length);
+				var verifytoken = Buffer.Read(length);
+
+				Client.SharedKey = PacketCryptography.Decrypt(sharedsecret);
+
+				var recv = PacketCryptography.GenerateAES((byte[]) Client.SharedKey.Clone());
+				var send = PacketCryptography.GenerateAES((byte[]) Client.SharedKey.Clone());
+
+				var packetToken = PacketCryptography.Decrypt(verifytoken);
+
+				if (!packetToken.SequenceEqual(PacketCryptography.VerifyToken))
+				{
+					//Wrong token! :(
+					ConsoleFunctions.WriteWarningLine("Wrong token!");
+					return;
+				}
+
+				Client.Decrypter = recv.CreateDecryptor();
+				Client.Encrypter = send.CreateEncryptor();
+
+				Client.EncryptionEnabled = true;
+				Client.Player = new Player(Globals.LevelManager.MainLevel)
+				{
+					Uuid = getUUID(Client.Username),
+					Username = Client.Username,
+					Wrapper = Client,
+					Gamemode = Globals.LevelManager.MainLevel.DefaultGamemode
+				};
+
+				if (Client.Player.IsAuthenticated())
+				{
+					new LoginSucces(Client) {Username = Client.Username, UUID = Client.Player.Uuid}.Write();
+					Client.PacketMode = PacketMode.Play;
+
+					new SetCompression(Client).Write();
+
+					new JoinGame(Client) {Player = Client.Player}.Write();
+					new SpawnPosition(Client).Write();
+					Client.StartKeepAliveTimer();
+					Client.Player.SendChunksFromPosition();
+				}
+				else
+				{
+					new LoginSucces(Client) {Username = Client.Username, UUID = Client.Player.Uuid}.Write();
+					new Disconnect(Client) {Reason = "Authentication failed! Try restarting your client."}.Write();
+				}
+			}
+		}
+
+		private string getUUID(string username)
+		{
+			try
+			{
+				var wc = new WebClient();
+				var result = wc.DownloadString("https://api.mojang.com/users/profiles/minecraft/" + username);
+				var _result = result.Split('"');
+				if (_result.Length > 1)
+				{
+					var UUID = _result[3];
+					return new Guid(UUID).ToString();
+				}
+				return Guid.NewGuid().ToString();
+			}
+			catch
+			{
+				return Guid.NewGuid().ToString();
 			}
 		}
 	}

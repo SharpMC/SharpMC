@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 using System.Collections.Generic;
 
@@ -30,6 +31,8 @@ namespace SharpMC.Worlds.Standard.BiomeSystem
 	{
 		private static readonly List<BiomeBase> _biomes = new List<BiomeBase>();
 		private readonly SimplexOctaveGenerator _octaveGeneratorb;
+		private readonly double BiomeHeigth = 14.5;
+		private readonly double BiomeWidth = 12.3;
 
 		public BiomeManager(int seed)
 		{
@@ -39,11 +42,11 @@ namespace SharpMC.Worlds.Standard.BiomeSystem
 
 		public BiomeBase GetBiome(int x, int z)
 		{
-			x = (int) Math.Floor((decimal) (x/12.3));
-			z = (int) Math.Floor((decimal) (z/12.8));
+			x = (int) Math.Floor((decimal) (x/BiomeWidth));
+			z = (int) Math.Floor((decimal) (z/BiomeHeigth));
+
 			var b = (int) Math.Abs(_octaveGeneratorb.Noise(x, z, 0.5, 0.5)*(_biomes.Count + 1));
 			if (b >= _biomes.Count) b = _biomes.Count - 1;
-
 			return _biomes[b];
 		}
 

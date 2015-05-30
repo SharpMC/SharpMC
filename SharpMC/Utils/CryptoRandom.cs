@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 using System.Security.Cryptography;
 
@@ -55,7 +56,7 @@ namespace SharpMC.Utils
 		{
 			var b = new byte[4];
 			r.GetBytes(b);
-			return (double) BitConverter.ToUInt32(b, 0)/UInt32.MaxValue;
+			return (double) BitConverter.ToUInt32(b, 0)/uint.MaxValue;
 		}
 
 		/// <summary>
@@ -76,7 +77,7 @@ namespace SharpMC.Utils
 		/// </summary>
 		public int Next()
 		{
-			return Next(0, Int32.MaxValue);
+			return Next(0, int.MaxValue);
 		}
 
 		/// <summary>

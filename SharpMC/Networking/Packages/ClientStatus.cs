@@ -21,11 +21,12 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
 {
-	class ClientStatus : Package<ClientStatus>
+	internal class ClientStatus : Package<ClientStatus>
 	{
 		public ClientStatus(ClientWrapper client)
 			: base(client)

@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Entity;
 using SharpMC.Enums;
 using SharpMC.Items;
@@ -36,7 +37,8 @@ namespace SharpMC.Blocks
 			Id = id;
 			Durability = 0.5f;
 			Metadata = 0;
-			Drops = new ItemStack[] { new ItemStack(this, 1), }; ;
+			Drops = new[] {new ItemStack(this, 1)};
+			;
 
 			IsSolid = true;
 			IsBuildable = true;

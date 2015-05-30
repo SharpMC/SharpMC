@@ -21,15 +21,16 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
 {
 	internal class PlayerPositionAndLook : Package<PlayerPositionAndLook>
 	{
-		public int X = (int)Globals.LevelManager.MainLevel.Generator.GetSpawnPoint().X;
-		public int Y = (int)Globals.LevelManager.MainLevel.Generator.GetSpawnPoint().Y;
-		public int Z = (int)Globals.LevelManager.MainLevel.Generator.GetSpawnPoint().Z;
+		public int X = (int) Globals.LevelManager.MainLevel.Generator.GetSpawnPoint().X;
+		public int Y = (int) Globals.LevelManager.MainLevel.Generator.GetSpawnPoint().Y;
+		public int Z = (int) Globals.LevelManager.MainLevel.Generator.GetSpawnPoint().Z;
 
 		public PlayerPositionAndLook(ClientWrapper client) : base(client)
 		{

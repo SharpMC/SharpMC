@@ -1,0 +1,164 @@
+﻿using System;
+using System.Collections;
+using System.Collections.Generic;
+using System.Linq;
+using System.Linq.Expressions;
+using System.Reflection;
+using System.Text;
+using System.Threading.Tasks;
+
+namespace SharpMC.Worlds.Better.biomes
+{
+	public class Type
+	{
+		public static readonly Type HOT = new Type();
+		public static readonly Type COLD = new Type();
+		public static readonly Type SPARSE = new Type();
+		public static readonly Type DENSE = new Type();
+		public static readonly Type WET = new Type();
+		public static readonly Type DRY = new Type();
+		public static readonly Type SAVANNA = new Type();
+		public static readonly Type CONIFEROUS = new Type();
+		public static readonly Type JUNGLE = new Type();
+		public static readonly Type SPOOKY = new Type();
+		public static readonly Type DEAD = new Type();
+		public static readonly Type LUSH = new Type();
+		public static readonly Type NETHER = new Type();
+		public static readonly Type END = new Type();
+		public static readonly Type MUSHROOM = new Type();
+		public static readonly Type MAGICAL = new Type();
+		public static readonly Type OCEAN = new Type();
+		public static readonly Type RIVER = new Type();
+		public static readonly Type WATER = new Type(OCEAN, RIVER);
+		public static readonly Type MESA = new Type();
+		public static readonly Type FOREST = new Type();
+		public static readonly Type PLAINS = new Type();
+		public static readonly Type MOUNTAIN = new Type();
+		public static readonly Type HILLS = new Type();
+		public static readonly Type SWAMP = new Type();
+		public static readonly Type SANDY = new Type();
+		public static readonly Type SNOWY = new Type();
+		public static readonly Type WASTELAND = new Type();
+		public static readonly Type BEACH = new Type();
+
+		[Obsolete("Replaced by SANDY")]
+		public static readonly Type DESERT = new Type(SANDY);
+		[Obsolete("Replaced by SNOWY")]
+		public static readonly Type FROZEN = new Type(SNOWY);
+
+		public List<Type> SubTags;
+		public Type(params Type[] subTags)
+		{
+			SubTags = subTags.ToList();
+		}
+		public bool HasSubTags()
+		{
+			if (SubTags != null)
+			{
+				return SubTags.Count > 0;
+			}
+			return false;
+		}
+
+		public static IEnumerable<Type> Values
+		{
+			get
+			{
+				yield return HOT;
+				yield return COLD;
+				yield return SPARSE;
+				yield return DENSE;
+				yield return WET;
+				yield return DRY;
+				yield return SAVANNA;
+				yield return CONIFEROUS;
+				yield return JUNGLE;
+				yield return SPOOKY;
+				yield return DEAD;
+				yield return LUSH;
+				yield return NETHER;
+				yield return END;
+				yield return MUSHROOM;
+				yield return MAGICAL;
+				yield return OCEAN;
+				yield return RIVER;
+				yield return WATER;
+				yield return MESA;
+				yield return FOREST;
+				yield return PLAINS;
+				yield return MOUNTAIN;
+				yield return HILLS;
+				yield return SWAMP;
+				yield return SANDY;
+				yield return SNOWY;
+				yield return WASTELAND;
+				yield return BEACH;
+				yield return DESERT;
+				yield return FROZEN;
+			}
+		}
+
+		public static Type GetType(string name, params Type[] subTypes)
+		{
+			name = name.ToUpper();
+			foreach (var t in Values)
+			{
+				var t1 = t;
+				if (Check(() => t1) == name)
+				{
+					return t;
+				}
+			}
+			return new Type();
+		}
+
+		private static string Check<T>(Expression<Func<T>> expr)
+		{
+			var body = ((MemberExpression)expr.Body);
+			return body.Member.Name;
+		}
+	}
+
+	public class BiomeDictionary
+	{
+		private static int BIOME_LIST_SIZE = BiomeGenBase.getBiomeGenArray().length;
+		private static BiomeInfo[] biomeList = new BiomeInfo[BIOME_LIST_SIZE];
+		private static ArrayList<BiomeGenBase>[] typeInfoList = new ArrayList[Type.Values.Count()];
+
+		private class BiomeInfo
+		{
+			public List<Type> typeList;
+
+			public BiomeInfo(Type[] types)
+			{
+				typeList = new List<Type>();
+				foreach(Type t in types)
+				{
+					typeList.Add(t);
+				}
+			}
+		}
+
+		public static bool RegisterBiomeType(BiomeGenBase biome, params Type[] types)
+		{
+			types = ListSubTags(types);
+			if (BiomeGenBase.GetBiomeGenArray()[biome.biomeID] != null)
+			{
+				
+			}
+		}
+
+		private static Type[] ListSubTags(params Type[] types)
+		{
+			List<Type> subTags = new List<Type>();
+
+			foreach (Type type in types)
+			{
+				if (type.HasSubTags()) subTags.AddRange(type.SubTags);
+				else subTags.Add(type);
+			}
+
+			return subTags.ToArray();
+		}
+	}
+}

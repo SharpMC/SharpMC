@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Entity;
 using SharpMC.Utils;
 using SharpMC.Worlds;
@@ -55,7 +56,7 @@ namespace SharpMC.Networking.Packages
 		{
 			if (level == null)
 			{
-				foreach (Level lvl in Globals.LevelManager.GetLevels())
+				foreach (var lvl in Globals.LevelManager.GetLevels())
 				{
 					foreach (var i in lvl.OnlinePlayers)
 					{
@@ -81,7 +82,7 @@ namespace SharpMC.Networking.Packages
 					//Buffer = new MSGBuffer(i.Wrapper);
 					//_stream = i.Wrapper.TCPClient.GetStream();
 					//Write();
-					new Disconnect(i.Wrapper, new MSGBuffer(i.Wrapper)) { Reason = reason }.Write();
+					new Disconnect(i.Wrapper, new MSGBuffer(i.Wrapper)) {Reason = reason}.Write();
 				}
 			}
 			else
@@ -96,7 +97,7 @@ namespace SharpMC.Networking.Packages
 					//Buffer = new MSGBuffer(i.Wrapper);
 					//_stream = i.Wrapper.TCPClient.GetStream();
 					//Write();
-					new Disconnect(i.Wrapper, new MSGBuffer(i.Wrapper)) { Reason = reason }.Write();
+					new Disconnect(i.Wrapper, new MSGBuffer(i.Wrapper)) {Reason = reason}.Write();
 				}
 			}
 		}

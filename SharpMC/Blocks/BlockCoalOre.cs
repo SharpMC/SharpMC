@@ -21,11 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using SharpMC.Items;
 using SharpMC.Utils;
 
@@ -35,7 +31,8 @@ namespace SharpMC.Blocks
 	{
 		internal BlockCoalOre() : base(16)
 		{
-			Drops = new ItemStack[] {new ItemStack(new ItemCoal(), 1), };;
+			Drops = new[] {new ItemStack(new ItemCoal(), 1)};
+			;
 		}
 	}
 }

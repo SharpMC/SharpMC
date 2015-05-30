@@ -21,28 +21,24 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
 {
 	public class Particle : Package<Particle>
 	{
-		public int ParticleId = 0;
+		public int[] Data;
 		public bool LongDistance = false;
-		public float X = 0f;
-		public float Y = 0f;
-		public float Z = 0f;
 		public float OffsetX = 0f;
 		public float OffsetY = 0f;
 		public float OffsetZ = 0f;
-		public float ParticleData = 0f;
 		public int ParticleCount = 1;
-		public int[] Data;
+		public float ParticleData = 0f;
+		public int ParticleId = 0;
+		public float X = 0f;
+		public float Y = 0f;
+		public float Z = 0f;
 
 		public Particle(ClientWrapper client) : base(client)
 		{
@@ -69,7 +65,7 @@ namespace SharpMC.Networking.Packages
 				Buffer.WriteFloat(OffsetZ);
 				Buffer.WriteFloat(ParticleData);
 				Buffer.WriteInt(ParticleCount);
-				foreach (int i in Data)
+				foreach (var i in Data)
 				{
 					Buffer.WriteVarInt(i);
 				}

@@ -21,9 +21,12 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
+using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 using SharpMC.Networking.Packages;
 using SharpMC.Utils;
 
@@ -31,18 +34,25 @@ namespace SharpMC.Networking
 {
 	public class BasicListener
 	{
+		private TcpListener _serverListener = new TcpListener(IPAddress.Any, 25565);
+
 		public void ListenForClients()
 		{
-			Globals.ServerListener.Start();
+			var port = Config.GetProperty("port", 25565);
+			if (port != 25565) _serverListener = new TcpListener(IPAddress.Any, port);
+
+			_serverListener.Start();
 			ConsoleFunctions.WriteServerLine("Ready for connections...");
 			ConsoleFunctions.WriteInfoLine("To shutdown the server safely press CTRL+C");
 			while (true)
 			{
-				var client = Globals.ServerListener.AcceptTcpClient();
+				var client = _serverListener.AcceptTcpClient();
 				ConsoleFunctions.WriteDebugLine("A new connection has been made!");
 
-				var clientThread = new Thread(HandleClientCommNew);
-				clientThread.Start(client);
+				//var clientThread = new Thread(HandleClientCommNew);
+				//clientThread.Start(client);
+
+				new Task((() => { HandleClientCommNew(client); })).Start(); //Task instead of Thread
 			}
 		}
 
@@ -56,10 +66,27 @@ namespace SharpMC.Networking
 			{
 				try
 				{
-					var buf = new MSGBuffer(Client);
-					var receivedData = clientStream.Read(buf.BufferedData, 0, buf.BufferedData.Length);
+					var buffie = new byte[4096];
+					int receivedData;
+					receivedData = clientStream.Read(buffie, 0, buffie.Length);
+
 					if (receivedData > 0)
 					{
+						var buf = new MSGBuffer(Client);
+
+						if (Client.Decrypter != null)
+						{
+							var date = new byte[4096];
+							Client.Decrypter.TransformBlock(buffie, 0, buffie.Length, date, 0);
+							buf.BufferedData = date;
+						}
+						else
+						{
+							buf.BufferedData = buffie;
+						}
+
+						buf.BufferedData = buffie;
+
 						var length = buf.ReadVarInt();
 						buf.Size = length;
 						var packid = buf.ReadVarInt();
@@ -69,7 +96,6 @@ namespace SharpMC.Networking
 							ConsoleFunctions.WriteWarningLine("Unknown packet received! \"0x" + packid.ToString("X2") + "\"");
 						}
 						buf.Dispose();
-						buf = new MSGBuffer(Client);
 					}
 					else
 					{

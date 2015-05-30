@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 using System.Timers;
 using SharpMC.Utils;
@@ -30,24 +31,6 @@ namespace SharpMC.Entity
 {
 	public class Entity
 	{
-		public Level Level { get; set; }
-
-		public int EntityTypeId { get; private set; }
-		public int EntityId { get; set; }
-		public byte Dimension { get; set; }
-		public DateTime LastUpdatedTime { get; set; }
-		public PlayerLocation KnownPosition { get; set; }
-		public Vector3 Velocity { get; set; }
-
-		public HealthManager HealthManager { get; private set; }
-
-		public double Height { get; set; }
-		public double Width { get; set; }
-		public double Length { get; set; }
-		public double Drag { get; set; }
-		public double Gravity { get; set; }
-		public int Data { get; set; }
-
 		public readonly Timer TickTimer = new Timer();
 
 		public Entity(int entityTypeId, Level level)
@@ -61,9 +44,24 @@ namespace SharpMC.Entity
 			EntityId = EntityManager.GetEntityId();
 			Level = level;
 			EntityTypeId = entityTypeId;
-			KnownPosition = new PlayerLocation(0,0,0);
+			KnownPosition = new PlayerLocation(0, 0, 0);
 			HealthManager = new HealthManager(this);
 		}
+
+		public Level Level { get; set; }
+		public int EntityTypeId { get; private set; }
+		public int EntityId { get; set; }
+		public byte Dimension { get; set; }
+		public DateTime LastUpdatedTime { get; set; }
+		public PlayerLocation KnownPosition { get; set; }
+		public Vector3 Velocity { get; set; }
+		public HealthManager HealthManager { get; private set; }
+		public double Height { get; set; }
+		public double Width { get; set; }
+		public double Length { get; set; }
+		public double Drag { get; set; }
+		public double Gravity { get; set; }
+		public int Data { get; set; }
 
 		public virtual void OnTick()
 		{
@@ -71,12 +69,10 @@ namespace SharpMC.Entity
 
 		public virtual void DespawnEntity()
 		{
-			
 		}
 
 		public virtual void SpawnEntity()
 		{
-			
 		}
 
 		public byte GetDirection()
@@ -86,7 +82,7 @@ namespace SharpMC.Entity
 
 		public static byte DirectionByRotationFlat(float yaw)
 		{
-			byte direction = (byte)((int)Math.Floor((yaw * 4F) / 360F + 0.5D) & 0x03);
+			var direction = (byte) ((int) Math.Floor((yaw*4F)/360F + 0.5D) & 0x03);
 			switch (direction)
 			{
 				case 0:
@@ -104,9 +100,10 @@ namespace SharpMC.Entity
 		public BoundingBox GetBoundingBox()
 		{
 			var pos = KnownPosition;
-			double halfWidth = Width / 2;
+			var halfWidth = Width/2;
 
-			return new BoundingBox(new Vector3(pos.X - halfWidth, pos.Y, pos.Z - halfWidth), new Vector3(pos.X + halfWidth, pos.Y + Height, pos.Z + halfWidth));
+			return new BoundingBox(new Vector3(pos.X - halfWidth, pos.Y, pos.Z - halfWidth),
+				new Vector3(pos.X + halfWidth, pos.Y + Height, pos.Z + halfWidth));
 		}
 	}
 }

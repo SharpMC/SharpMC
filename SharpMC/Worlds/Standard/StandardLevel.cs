@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Enums;
 
 namespace SharpMC.Worlds.Standard
@@ -34,6 +35,7 @@ namespace SharpMC.Worlds.Standard
 			LevelType = LVLType.Default;
 			Generator = new StandardWorldProvider(worldname);
 			ConsoleFunctions.WriteInfoLine("Level Type: Standard");
+			DefaultGamemode = Gamemode.Creative;
 		}
 	}
 }

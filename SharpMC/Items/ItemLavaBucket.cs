@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Blocks;
 using SharpMC.Entity;
 using SharpMC.Enums;
@@ -39,9 +40,9 @@ namespace SharpMC.Items
 
 		public override void UseItem(Level world, Player player, Vector3 blockCoordinates, BlockFace face)
 		{
-			int slot = player.Inventory.CurrentSlot + 36;
+			var slot = player.Inventory.CurrentSlot + 36;
 			player.Inventory.SetSlot(slot, 325, 0, 1); //'Empty' the bucket.
-			world.SetBlock(new BlockFlowingLava() { Coordinates = blockCoordinates }, true, true); //Place the lava
+			world.SetBlock(new BlockFlowingLava {Coordinates = blockCoordinates}, true, true); //Place the lava
 			world.GetBlock(blockCoordinates).OnTick(world); //Update the lava
 		}
 	}

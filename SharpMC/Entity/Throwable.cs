@@ -21,11 +21,13 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using SharpMC.Blocks;
 using SharpMC.Enums;
+using SharpMC.Networking.Packages;
 using SharpMC.Utils;
 using SharpMC.Worlds;
 
@@ -33,10 +35,6 @@ namespace SharpMC.Entity
 {
 	public class Throwable : Entity
 	{
-		public Player Shooter { get; set; }
-		public int Ttl { get; set; }
-		public bool DespawnOnImpact { get; set; }
-
 		protected Throwable(Player shooter, int entityTypeId, Level level) : base(entityTypeId, level)
 		{
 			Shooter = shooter;
@@ -45,6 +43,10 @@ namespace SharpMC.Entity
 
 			KnownPosition = shooter.KnownPosition;
 		}
+
+		public Player Shooter { get; set; }
+		public int Ttl { get; set; }
+		public bool DespawnOnImpact { get; set; }
 
 		public override void OnTick()
 		{
@@ -75,7 +77,7 @@ namespace SharpMC.Entity
 
 			var bbox = GetBoundingBox();
 
-			Player playerHitted = CheckEntityCollide(bbox);
+			var playerHitted = CheckEntityCollide(bbox);
 
 			bool collided;
 			if (playerHitted != null)
@@ -98,7 +100,7 @@ namespace SharpMC.Entity
 
 		private Player CheckEntityCollide(BoundingBox bbox)
 		{
-			Player[] players = Level.GetOnlinePlayers;
+			var players = Level.GetOnlinePlayers;
 			foreach (var player in players)
 			{
 				if (player == Shooter) continue;
@@ -122,18 +124,18 @@ namespace SharpMC.Entity
 				(int) Math.Floor((bbox.Max.Y + bbox.Min.Y)/2.0),
 				(int) Math.Floor(KnownPosition.Z));
 
-			Dictionary<double, Block> blocks = new Dictionary<double, Block>();
+			var blocks = new Dictionary<double, Block>();
 
-			for (int x = -1; x < 2; x++)
+			for (var x = -1; x < 2; x++)
 			{
-				for (int z = -1; z < 2; z++)
+				for (var z = -1; z < 2; z++)
 				{
-					for (int y = -1; y < 2; y++)
+					for (var y = -1; y < 2; y++)
 					{
-						Block block = Level.GetBlock(new Vector3(coords.X + x, coords.Y + y, coords.Z + z));
+						var block = Level.GetBlock(new Vector3(coords.X + x, coords.Y + y, coords.Z + z));
 						if (block is BlockAir) continue;
 
-						BoundingBox blockbox = block.GetBoundingBox() + 0.3;
+						var blockbox = block.GetBoundingBox() + 0.3;
 						if (blockbox.Intersects(GetBoundingBox()))
 						{
 							//if (!blockbox.Contains(KnownPosition.ToVector3())) continue;
@@ -160,7 +162,7 @@ namespace SharpMC.Entity
 
 			var firstBlock = blocks.OrderBy(pair => pair.Key).First().Value;
 
-			BoundingBox boundingBox = firstBlock.GetBoundingBox();
+			var boundingBox = firstBlock.GetBoundingBox();
 			if (!SetIntersectLocation(boundingBox, KnownPosition))
 			{
 				// No real hit
@@ -178,12 +180,12 @@ namespace SharpMC.Entity
 
 		public bool SetIntersectLocation(BoundingBox bbox, PlayerLocation location)
 		{
-			Ray ray = new Ray(location.ToVector3() - Velocity, Velocity.Normalize());
-			double? distance = ray.Intersects(bbox);
+			var ray = new Ray(location.ToVector3() - Velocity, Velocity.Normalize());
+			var distance = ray.Intersects(bbox);
 			if (distance != null)
 			{
-				double dist = (double) distance - 0.1;
-				Vector3 pos = ray.Position + (ray.Direction*dist);
+				var dist = (double) distance - 0.1;
+				var pos = ray.Position + (ray.Direction*dist);
 				KnownPosition.X = (float) pos.X;
 				KnownPosition.Y = (float) pos.Y;
 				KnownPosition.Z = (float) pos.Z;
@@ -195,7 +197,17 @@ namespace SharpMC.Entity
 
 		private void BroadcastMoveAndMotion()
 		{
-			
+			foreach (var i in Level.OnlinePlayers)
+			{
+				new EntityTeleport(i.Wrapper)
+				{
+					UniqueServerID = EntityId,
+					Coordinates = KnownPosition.ToVector3(),
+					Yaw = (byte) KnownPosition.Yaw,
+					Pitch = (byte) KnownPosition.Pitch,
+					OnGround = true
+				}.Write();
+			}
 		}
 	}
 }

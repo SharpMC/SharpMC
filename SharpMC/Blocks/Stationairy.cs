@@ -21,11 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using SharpMC.Utils;
 using SharpMC.Worlds;
 
@@ -52,7 +48,7 @@ namespace SharpMC.Blocks
 
 		private void SetToFlowing(Level world)
 		{
-			Block flowingBlock = BlockFactory.GetBlockById((byte)(Id - 1));
+			var flowingBlock = BlockFactory.GetBlockById((byte) (Id - 1));
 			flowingBlock.Metadata = Metadata;
 			flowingBlock.Coordinates = Coordinates;
 			world.SetBlock(flowingBlock, applyPhysics: false);
@@ -61,9 +57,9 @@ namespace SharpMC.Blocks
 
 		private void CheckForHarden(Level world, int x, int y, int z)
 		{
-			Block block = world.GetBlock(new Vector3(x, y, z));
+			var block = world.GetBlock(new Vector3(x, y, z));
 			{
-				bool harden = false;
+				var harden = false;
 				if (block is BlockFlowingLava || block is BlockStationaryLava)
 				{
 					if (IsWater(world, x, y, z))
@@ -97,11 +93,11 @@ namespace SharpMC.Blocks
 
 						if (meta == 0)
 						{
-							world.SetBlock(new BlockObsidian { Coordinates = new Vector3(x, y, z) });
+							world.SetBlock(new BlockObsidian {Coordinates = new Vector3(x, y, z)});
 						}
 						else if (meta <= 4)
 						{
-							world.SetBlock(new BlockCobbleStone { Coordinates = new Vector3(x, y, z) });
+							world.SetBlock(new BlockCobbleStone {Coordinates = new Vector3(x, y, z)});
 						}
 					}
 				}
@@ -110,7 +106,7 @@ namespace SharpMC.Blocks
 
 		private bool IsWater(Level world, int x, int y, int z)
 		{
-			Block block = world.GetBlock(new Vector3(x, y, z - 1));
+			var block = world.GetBlock(new Vector3(x, y, z - 1));
 			return block is BlockFlowingWater || block is BlockStationaryWater;
 		}
 	}

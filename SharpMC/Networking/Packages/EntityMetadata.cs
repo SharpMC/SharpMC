@@ -21,11 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using SharpMC.Enums;
 using SharpMC.Utils;
 
@@ -33,9 +29,9 @@ namespace SharpMC.Networking.Packages
 {
 	public class EntityMetadata : Package<EntityMetadata>
 	{
+		public object data;
 		public int EntityId = 0;
 		public ObjectType type;
-		public object data;
 
 		public EntityMetadata(ClientWrapper client) : base(client)
 		{

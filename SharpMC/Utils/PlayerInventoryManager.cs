@@ -21,11 +21,11 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 using System.Collections.Generic;
 using System.Linq;
 using SharpMC.Entity;
-using SharpMC.Items;
 using SharpMC.Networking.Packages;
 
 namespace SharpMC.Utils
@@ -34,8 +34,6 @@ namespace SharpMC.Utils
 	{
 		private readonly Player _player;
 		private readonly List<ItemStack> _slots = new List<ItemStack>();
-		public ItemStack ClickedItem { get; set; }
-		public int CurrentSlot { get; set; }
 
 		public PlayerInventoryManager(Player player)
 		{
@@ -44,7 +42,7 @@ namespace SharpMC.Utils
 			{
 				_slots.Add(new ItemStack(-1, 0, 0));
 			}
-			
+
 			SetSlot(5, 310, 0, 1); //Diamond helmet
 			SetSlot(6, 311, 0, 1); //Diamond chestplate
 			SetSlot(7, 312, 0, 1); //Diamond leggings
@@ -56,13 +54,15 @@ namespace SharpMC.Utils
 			SetSlot(39, 279, 0, 1); //Diamond axe
 
 			SetSlot(43, 5, 0, 64);
-			SetSlot(44, 20, 0, 12);
+			SetSlot(44, 332, 0, 64);
 
 			SetSlot(41, 327, 0, 1);
 			SetSlot(42, 326, 0, 1);
 			SetSlot(40, 325, 0, 1);
 		}
 
+		public ItemStack ClickedItem { get; set; }
+		public int CurrentSlot { get; set; }
 
 		public void SetSlot(int slot, short itemId, byte metadata, byte itemcount)
 		{
@@ -91,7 +91,6 @@ namespace SharpMC.Utils
 
 		public bool AddItem(short itemId, byte metadata, byte itemcount = 1)
 		{
-
 			for (var i = 9; i <= 44; i++)
 			{
 				if (_slots[i].ItemId == itemId && _slots[i].MetaData == metadata && _slots[i].ItemCount < 64)
@@ -102,12 +101,9 @@ namespace SharpMC.Utils
 						SetSlot(i, itemId, metadata, (byte) (oldslot.ItemCount + itemcount));
 						return true;
 					}
-					else
-					{
-						SetSlot(i, itemId, metadata, 64);
-						int remaining = (oldslot.ItemCount + itemcount) - 64;
-						return AddItem(itemId, metadata, (byte) remaining);
-					}
+					SetSlot(i, itemId, metadata, 64);
+					var remaining = (oldslot.ItemCount + itemcount) - 64;
+					return AddItem(itemId, metadata, (byte) remaining);
 				}
 			}
 
@@ -134,11 +130,11 @@ namespace SharpMC.Utils
 		public void DropCurrentItem()
 		{
 			//Drop the current hold item
-			int slottarget = 36 + CurrentSlot;
+			var slottarget = 36 + CurrentSlot;
 			var slot = GetSlot(slottarget);
 			if (slot.ItemCount > 1)
 			{
-				SetSlot(slottarget, slot.ItemId, slot.MetaData, (byte) (slot.ItemCount -1));
+				SetSlot(slottarget, slot.ItemId, slot.MetaData, (byte) (slot.ItemCount - 1));
 			}
 			else
 			{
@@ -178,9 +174,9 @@ namespace SharpMC.Utils
 
 		public bool RemoveItem(short itemId, short metaData, short count)
 		{
-			for (int index = 0; index < _slots.Count; index++)
+			for (var index = 0; index < _slots.Count; index++)
 			{
-				ItemStack itemStack = _slots[index];
+				var itemStack = _slots[index];
 				if (itemStack.ItemId == itemId && itemStack.MetaData == metaData && itemStack.ItemCount >= count)
 				{
 					if ((itemStack.ItemCount - count) > 0)
@@ -188,11 +184,8 @@ namespace SharpMC.Utils
 						SetSlot(index, itemStack.ItemId, itemStack.MetaData, (byte) (itemStack.ItemCount - count));
 						return true;
 					}
-					else
-					{
-						SetSlot(index, -1, 0, 0);
-						return true;
-					}
+					SetSlot(index, -1, 0, 0);
+					return true;
 				}
 			}
 			return false;

@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.ExtentionMethods;
 using SharpMC.Utils;
 
@@ -53,7 +54,7 @@ namespace SharpMC.Networking.Packages
 			}
 
 			Globals.BroadcastChat("<" + Client.Player.Username + "> " +
-			                            Message.RemoveLineBreaks().Replace("\\", "\\\\").Replace("\"", "\'\'"));
+			                      Message.RemoveLineBreaks().Replace("\\", "\\\\").Replace("\"", "\'\'"));
 
 			ConsoleFunctions.WriteInfoLine("<" + Client.Player.Username + "> " +
 			                               Message.RemoveLineBreaks().Replace("\\", "\\\\").Replace("\"", "\'\'"));

@@ -21,16 +21,16 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
 {
 	/// <summary>
-	/// BUG: This bypasses a 'bug' in the 'Steven' client from ThinkOfDeath.
-	/// Not completely sure if it is a mistake on their side or mine.
-	/// This does however fix it for now.
-	/// 
-	/// Steven: https://github.com/thinkofdeath/steven
+	///     BUG: This bypasses a 'bug' in the 'Steven' client from ThinkOfDeath.
+	///     Not completely sure if it is a mistake on their side or mine.
+	///     This does however fix it for now.
+	///     Steven: https://github.com/thinkofdeath/steven
 	/// </summary>
 	public class StevenBug : Handshake
 	{

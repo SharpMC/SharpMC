@@ -21,12 +21,12 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
-using System.Linq;
-using System.Threading;
+using System.Threading.Tasks;
 using System.Timers;
 using SharpMC.Blocks;
 using SharpMC.Entity;
@@ -34,7 +34,6 @@ using SharpMC.Enums;
 using SharpMC.Interfaces;
 using SharpMC.Networking.Packages;
 using SharpMC.Utils;
-using Timer = System.Timers.Timer;
 
 namespace SharpMC.Worlds
 {
@@ -49,8 +48,10 @@ namespace SharpMC.Worlds
 			BlockWithTicks = new ConcurrentDictionary<Vector3, int>();
 			StartTimeOfDayTimer();
 			Entities = new List<Entity.Entity>();
+			Dimension = 0;
 		}
 
+		internal int Dimension { get; set; }
 		internal string LvlName { get; set; }
 		internal int Difficulty { get; set; }
 		internal Gamemode DefaultGamemode { get; set; }
@@ -61,6 +62,16 @@ namespace SharpMC.Worlds
 		public IWorldProvider Generator { get; set; }
 		internal List<Entity.Entity> Entities { get; private set; }
 		internal ConcurrentDictionary<Vector3, int> BlockWithTicks { get; private set; }
+
+		#region APISpecific
+
+		public Player[] GetOnlinePlayers
+		{
+			get { return OnlinePlayers.ToArray(); }
+		}
+
+		#endregion
+
 		public void RemovePlayer(Player player)
 		{
 			lock (OnlinePlayers)
@@ -71,7 +82,11 @@ namespace SharpMC.Worlds
 
 		public Player GetPlayer(int entityId)
 		{
-			return OnlinePlayers.FirstOrDefault(p => p.EntityId == entityId);
+			foreach (var p in OnlinePlayers)
+			{
+				if (p.EntityId == entityId) return p;
+			}
+			return null;
 		}
 
 		public void AddPlayer(Player player)
@@ -89,28 +104,31 @@ namespace SharpMC.Worlds
 			BroadcastExistingPlayers(player.Wrapper);
 		}
 
-		public void BroadcastChat(string Message)
+		public void BroadcastChat(string message)
 		{
 			foreach (var i in OnlinePlayers)
 			{
-				new ChatMessage(i.Wrapper) {Message = @Message}.Write();
+				new ChatMessage(i.Wrapper) {Message = @message}.Write();
 			}
 		}
 
 		internal void BroadcastExistingPlayers(ClientWrapper caller)
 		{
-			foreach (var i in OnlinePlayers.Where(i => i.Wrapper != caller))
+			foreach (var i in OnlinePlayers)
 			{
-				new PlayerListItem(caller)
+				if (i.Wrapper != caller)
 				{
-					Action = 0,
-					Gamemode = i.Gamemode,
-					Username = i.Username,
-					UUID = i.Uuid
-				}.Write(); //Send TAB Item
-				new SpawnPlayer(caller) {Player = i}.Write(); //Spawn the old player to new player
-				new SpawnPlayer(i.Wrapper) {Player = caller.Player}.Write(); //Spawn the new player to old player
-				i.BroadcastEquipment();
+					new PlayerListItem(caller)
+					{
+						Action = 0,
+						Gamemode = i.Gamemode,
+						Username = i.Username,
+						UUID = i.Uuid
+					}.Write(); //Send TAB Item
+					new SpawnPlayer(caller) {Player = i}.Write(); //Spawn the old player to new player
+					new SpawnPlayer(i.Wrapper) {Player = caller.Player}.Write(); //Spawn the new player to old player
+					i.BroadcastEquipment();
+				}
 			}
 		}
 
@@ -132,7 +150,7 @@ namespace SharpMC.Worlds
 
 		public Block GetBlock(Vector3 blockCoordinates)
 		{
-			var chunk = Generator.GenerateChunkColumn(new Vector2((int)blockCoordinates.X >> 4, (int)blockCoordinates.Z >> 4));
+			var chunk = Generator.GenerateChunkColumn(new Vector2((int) blockCoordinates.X >> 4, (int) blockCoordinates.Z >> 4));
 
 			var bid = chunk.GetBlock((int) blockCoordinates.X & 0x0f, (int) blockCoordinates.Y & 0x7f,
 				(int) blockCoordinates.Z & 0x0f);
@@ -147,6 +165,12 @@ namespace SharpMC.Worlds
 			block.Metadata = metadata;
 
 			return block;
+		}
+
+		public void SetBlock(Vector3 coordinates, Block block)
+		{
+			block.Coordinates = coordinates;
+			SetBlock(block);
 		}
 
 		public void SetBlock(Block block, bool broadcast = true, bool applyPhysics = true)
@@ -175,7 +199,7 @@ namespace SharpMC.Worlds
 
 		private void DoPhysics(int x, int y, int z)
 		{
-			Block block = GetBlock(new Vector3(x,y,z));
+			var block = GetBlock(new Vector3(x, y, z));
 			if (block is BlockAir) return;
 			block.DoPhysics(this);
 		}
@@ -203,22 +227,22 @@ namespace SharpMC.Worlds
 
 		#region TickTimer
 
-		private Thread GameTickThread;
+		private Task _gameTickThread;
 
 		internal void StartTimeOfDayTimer()
 		{
-			GameTickThread = new Thread(() => StartTickTimer());
-			GameTickThread.Start();
+			_gameTickThread = new Task(StartTickTimer);
+			_gameTickThread.Start();
 		}
 
 
-		private static readonly Timer kTTimer = new Timer();
+		private static readonly Timer KtTimer = new Timer();
 
 		private void StartTickTimer()
 		{
-			kTTimer.Elapsed += GameTick;
-			kTTimer.Interval = 50;
-			kTTimer.Start();
+			KtTimer.Elapsed += GameTick;
+			KtTimer.Interval = 50;
+			KtTimer.Start();
 		}
 
 		private void DayTick()
@@ -242,24 +266,21 @@ namespace SharpMC.Worlds
 			}
 		}
 
-		private Stopwatch _sw = new Stopwatch();
-		private long lastCalc = 0;
+		private readonly Stopwatch _sw = new Stopwatch();
+		private long _lastCalc;
 
-		public int CalculateTPS(Player player = null)
+		public int CalculateTps(Player player = null)
 		{
-			long exact = 0;
-			long average = 0;
+			var average = _lastCalc;
 
-			average = lastCalc;
-
-			var d = 1000 - lastCalc;
+			var d = 1000 - _lastCalc;
 			d = d/50;
-			exact = d;
+			var exact = d;
 
-			string color = "a";
+			var color = "a";
 			if (exact <= 10) color = "c";
-			if (exact <= 15 && exact > 10) color = "e"; 
-			
+			if (exact <= 15 && exact > 10) color = "e";
+
 
 			if (player != null)
 			{
@@ -267,18 +288,19 @@ namespace SharpMC.Worlds
 				player.SendChat("Miliseconds in Tick: " + average + "ms");
 			}
 
-			return (int)exact;
+			return (int) exact;
 		}
 
-		private int ClockTick = 0;
-		private int SaveTick = 0;
+		private int _clockTick = 0;
+		private int _saveTick;
+
 		private void GameTick(object source, ElapsedEventArgs e)
 		{
 			_sw.Start();
 
 			DayTick();
 
-			foreach (KeyValuePair<Vector3, int> blockEvent in BlockWithTicks.ToArray())
+			foreach (var blockEvent in BlockWithTicks.ToArray())
 			{
 				if (blockEvent.Value <= CurrentWorldTime)
 				{
@@ -288,49 +310,40 @@ namespace SharpMC.Worlds
 				}
 			}
 
-			foreach (Player player in OnlinePlayers.ToArray())
+			foreach (var player in OnlinePlayers.ToArray())
 			{
 				player.OnTick();
 			}
 
-			foreach (Entity.Entity entity in Entities.ToArray())
+			foreach (var entity in Entities.ToArray())
 			{
 				entity.OnTick();
 			}
 
-			if (SaveTick == 1500)
+			if (_saveTick == 1500)
 			{
-				SaveTick = 0;
+				_saveTick = 0;
 				ConsoleFunctions.WriteInfoLine("Saving chunks");
-				Stopwatch sw = new Stopwatch();
+				var sw = new Stopwatch();
 				sw.Start();
 				SaveChunks();
 				sw.Stop();
 				ConsoleFunctions.WriteInfoLine("Saving chunks took: " + sw.ElapsedMilliseconds + "MS");
 
-			//	ConsoleFunctions.WriteInfoLine("Clearing chunk cache...");
-			//	Generator.ClearCache(); //Clear chunk cache
-				//GC.Collect(); //Collect garbage
+				ConsoleFunctions.WriteInfoLine("Clearing chunk cache...");
+				Generator.ClearCache(); //Clear chunk cache
+				GC.Collect(); //Collect garbage
 			}
 			else
 			{
-				SaveTick++;
+				_saveTick++;
 			}
 
-			if (SaveTick == 750) GC.Collect();
+			if (_saveTick == 750) GC.Collect();
 
 			_sw.Stop();
-			lastCalc = _sw.ElapsedMilliseconds;
+			_lastCalc = _sw.ElapsedMilliseconds;
 			_sw.Reset();
-		}
-
-		#endregion
-
-		#region APISpecific
-
-		public Player[] GetOnlinePlayers
-		{
-			get { return OnlinePlayers.ToArray(); }
 		}
 
 		#endregion

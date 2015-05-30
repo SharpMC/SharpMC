@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Entity;
 using SharpMC.Enums;
 using SharpMC.Utils;
@@ -61,6 +62,7 @@ namespace SharpMC.Items
 		public byte Metadata { get; set; }
 		public bool IsUsable { get; set; }
 		public int MaxStackSize { get; set; }
+
 		protected short FuelEfficiency
 		{
 			set { _fuelEfficiency = value; }

@@ -21,9 +21,10 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 namespace SharpMC.Items
 {
-	class ItemDiamondSword : Item
+	internal class ItemDiamondSword : Item
 	{
 		internal ItemDiamondSword() : base(276, 0)
 		{

@@ -21,14 +21,15 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
 {
 	public class CollectItem : Package<CollectItem>
 	{
-		public int EntityId;
 		public int CollectorEntityId;
+		public int EntityId;
 
 		public CollectItem(ClientWrapper client) : base(client)
 		{

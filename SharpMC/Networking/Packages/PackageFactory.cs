@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System.Collections.Generic;
 using SharpMC.Utils;
 
@@ -30,9 +31,9 @@ namespace SharpMC.Networking.Packages
 	{
 		private readonly ClientWrapper _client;
 		private MSGBuffer _buffer;
+		public List<Package> LoginPackages = new List<Package>();
 		public List<Package> PingPackages = new List<Package>();
 		public List<Package> PlayPackages = new List<Package>();
-		public List<Package> LoginPackages = new List<Package>(); 
 
 		public PackageFactory(ClientWrapper client, MSGBuffer buffer)
 		{
@@ -74,7 +75,6 @@ namespace SharpMC.Networking.Packages
 
 		public bool Handle(int packetId)
 		{
-		//	return _client.PlayMode ? HPlay(packetId) : HPing(packetId);
 			switch (_client.PacketMode)
 			{
 				case PacketMode.Ping:

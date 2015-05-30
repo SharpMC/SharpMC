@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Entity;
 using SharpMC.Utils;
 
@@ -46,8 +47,8 @@ namespace SharpMC.Networking.Packages
 			{
 				Buffer.WriteVarInt(SendId);
 				Buffer.WriteVarInt(Player.EntityId);
-				Buffer.WriteByte((byte)Player.KnownPosition.Yaw);
-				Buffer.WriteByte((byte)Player.KnownPosition.Pitch);
+				Buffer.WriteByte((byte) Player.KnownPosition.Yaw);
+				Buffer.WriteByte((byte) Player.KnownPosition.Pitch);
 				Buffer.WriteBool(Player.KnownPosition.OnGround);
 				Buffer.FlushData();
 			}

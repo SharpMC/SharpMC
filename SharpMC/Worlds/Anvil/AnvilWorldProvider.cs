@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
@@ -365,7 +366,6 @@ namespace SharpMC.Worlds.Anvil
 				return chunk;
 			}
 		}
-
 
 		public override Vector3 GetSpawnPoint()
 		{

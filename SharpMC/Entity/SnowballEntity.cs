@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Enums;
 using SharpMC.Networking.Packages;
 using SharpMC.Worlds;
@@ -42,7 +43,7 @@ namespace SharpMC.Entity
 		public override void SpawnEntity()
 		{
 			Level.AddEntity(this);
-			foreach (Player i in Level.OnlinePlayers)
+			foreach (var i in Level.OnlinePlayers)
 			{
 				var SpawnedBy = i.Wrapper;
 				new SpawnObject(SpawnedBy)
@@ -52,7 +53,9 @@ namespace SharpMC.Entity
 					Y = KnownPosition.Y,
 					Z = KnownPosition.Z,
 					Type = ObjectType.Snowball,
-					Data = 0
+					Data = Shooter.EntityId,
+					Pitch = (byte) KnownPosition.Pitch,
+					Yaw = (byte) KnownPosition.Yaw
 				}.Write();
 			}
 		}

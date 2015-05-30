@@ -21,19 +21,21 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-using System.Collections.Generic;
-using SharpMC.Utils;
-using SharpMC.Worlds;
 
 namespace SharpMC.API
 {
 	public class PluginContext
 	{
-		public PluginManager PluginManager { get; private set; }
-		public LevelManager LevelManager { get { return Globals.LevelManager; } }
 		public PluginContext(PluginManager pluginManager)
 		{
 			PluginManager = pluginManager;
+		}
+
+		public PluginManager PluginManager { get; private set; }
+
+		public LevelManager LevelManager
+		{
+			get { return Globals.LevelManager; }
 		}
 	}
 }

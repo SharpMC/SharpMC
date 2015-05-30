@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Blocks;
 using SharpMC.Entity;
 using SharpMC.Utils;
@@ -77,7 +78,6 @@ namespace SharpMC.Networking.Packages
 						MetaData = block.Metadata,
 						Location = block.Coordinates
 					}.Write();
-
 				}
 			}
 		}

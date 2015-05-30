@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 
 namespace SharpMC
@@ -82,13 +83,13 @@ namespace SharpMC
 
 		public static void WriteDebugLine(string Text)
 		{
-			 if (Globals.Debug)
-			 {
+			if (Globals.Debug)
+			{
 				Console.ForegroundColor = ConsoleColor.Yellow;
 				Console.Write("[DEBUG] ");
 				Console.ResetColor();
 				Console.Write(Text + "\n");
-			 }
+			}
 		}
 	}
 }

@@ -21,27 +21,20 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
 using System.Security.Cryptography;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SharpMC.Utils
 {
 	public class SecurityUtils
 	{
-		private Random random = new Random();
-		private RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(1024);
-		public SecurityUtils()
-		{
-			
-		}
+		private readonly Random random = new Random();
+		private readonly RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(1024);
 
 		public string GeneratePublicKey(bool privateparameters)
 		{
-			string publicKeyXml = rsa.ToXmlString(false);
+			var publicKeyXml = rsa.ToXmlString(false);
 			Console.WriteLine(publicKeyXml);
 
 			return publicKeyXml;
@@ -49,11 +42,9 @@ namespace SharpMC.Utils
 
 		public byte[] GenerateVerifyToken()
 		{
-			byte[] token = new byte[4];
+			var token = new byte[4];
 			random.NextBytes(token);
 			return token;
 		}
-
-		
 	}
 }

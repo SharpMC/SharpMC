@@ -21,22 +21,23 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Blocks;
 using SharpMC.Worlds.Standard.BiomeSystem;
 
 namespace SharpMC.Worlds.Standard.Decorators
 {
-    public class BedrockDecorator : ChunkDecorator
-    {
-	    public override void Decorate(ChunkColumn chunk, BiomeBase biome, int x, int z)
-	    {
-		    for (int y = 1; y < 6; y++)
-		    {
+	public class BedrockDecorator : ChunkDecorator
+	{
+		public override void Decorate(ChunkColumn chunk, BiomeBase biome, int x, int z)
+		{
+			for (var y = 1; y < 6; y++)
+			{
 				if (StandardWorldProvider.GetRandomNumber(0, 5) == 1)
 				{
 					chunk.SetBlock(x, y, z, BlockFactory.GetBlockById(7));
 				}
-		    }
-	    }
-    }
+			}
+		}
+	}
 }

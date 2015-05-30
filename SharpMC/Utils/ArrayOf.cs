@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 namespace SharpMC.Utils
 {
 	public static class ArrayOf<T> where T : new()

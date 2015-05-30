@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 using System.Collections.Generic;
 
@@ -35,9 +36,9 @@ namespace SharpMC.Utils
 
 	public struct BoundingBox : IEquatable<BoundingBox>
 	{
-		public Vector3 Min;
-		public Vector3 Max;
 		public const int CornerCount = 8;
+		public Vector3 Max;
+		public Vector3 Min;
 
 		public BoundingBox(Vector3 min, Vector3 max)
 		{
@@ -49,6 +50,26 @@ namespace SharpMC.Utils
 		{
 			Min = new Vector3(box.Min);
 			Max = new Vector3(box.Max);
+		}
+
+		public double Height
+		{
+			get { return Max.Y - Min.Y; }
+		}
+
+		public double Width
+		{
+			get { return Max.X - Min.X; }
+		}
+
+		public double Depth
+		{
+			get { return Max.Z - Min.Z; }
+		}
+
+		public bool Equals(BoundingBox other)
+		{
+			return (Min == other.Min) && (Max == other.Max);
 		}
 
 		public ContainmentType Contains(BoundingBox box)
@@ -86,10 +107,10 @@ namespace SharpMC.Utils
 			if (points == null)
 				throw new ArgumentNullException();
 
-			bool empty = true;
-			Vector3 vector2 = new Vector3(float.MaxValue);
-			Vector3 vector1 = new Vector3(float.MinValue);
-			foreach (Vector3 vector3 in points)
+			var empty = true;
+			var vector2 = new Vector3(float.MaxValue);
+			var vector1 = new Vector3(float.MinValue);
+			foreach (var vector3 in points)
 			{
 				vector2 = Vector3.Min(vector2, vector3);
 				vector1 = Vector3.Max(vector1, vector3);
@@ -119,11 +140,6 @@ namespace SharpMC.Utils
 				new Vector3(Max.X, Min.Y, Min.Z),
 				new Vector3(Min.X, Min.Y, Min.Z)
 			};
-		}
-
-		public bool Equals(BoundingBox other)
-		{
-			return (Min == other.Min) && (Max == other.Max);
 		}
 
 		public override bool Equals(object obj)
@@ -177,22 +193,7 @@ namespace SharpMC.Utils
 
 		public override string ToString()
 		{
-			return string.Format("{{Min:{0} Max:{1}}}", Min.ToString(), Max.ToString());
-		}
-
-		public double Height
-		{
-			get { return Max.Y - Min.Y; }
-		}
-
-		public double Width
-		{
-			get { return Max.X - Min.X; }
-		}
-
-		public double Depth
-		{
-			get { return Max.Z - Min.Z; }
+			return string.Format("{{Min:{0} Max:{1}}}", Min, Max);
 		}
 	}
 }

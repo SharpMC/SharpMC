@@ -21,21 +21,17 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
 {
 	public class EncryptionRequest : Package<EncryptionRequest>
 	{
-		public string ServerId = "";
 		public byte[] PublicKey;
+		public string ServerId = "";
 		public byte[] VerificationToken;
-		
+
 		public EncryptionRequest(ClientWrapper client) : base(client)
 		{
 			SendId = 0x01;
@@ -48,7 +44,6 @@ namespace SharpMC.Networking.Packages
 
 		public override void Write()
 		{
-			JavaHex jh = new JavaHex();
 			if (Buffer != null)
 			{
 				Buffer.WriteVarInt(SendId);

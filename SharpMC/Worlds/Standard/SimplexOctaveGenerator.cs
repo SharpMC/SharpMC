@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using LibNoise;
 using LibNoise.Primitive;
 
@@ -29,7 +30,7 @@ namespace SharpMC.Worlds.Standard
 	public class SimplexOctaveGenerator
 	{
 		private readonly SimplexPerlin[] _generators;
-
+		//private readonly OpenSimplexNoise[] _generators;
 		public SimplexOctaveGenerator(int seed, int octaves)
 		{
 			Seed = seed;
@@ -38,7 +39,7 @@ namespace SharpMC.Worlds.Standard
 			_generators = new SimplexPerlin[octaves];
 			for (var i = 0; i < _generators.Length; i++)
 			{
-				_generators[i] = new SimplexPerlin(seed, NoiseQuality.Best);
+				_generators[i] = new SimplexPerlin(seed, NoiseQuality.Fast);
 			}
 		}
 
@@ -51,7 +52,23 @@ namespace SharpMC.Worlds.Standard
 
 		public double Noise(double x, double y, double frequency, double amplitude)
 		{
-			return Noise(x, y, 0, 0, frequency, amplitude, false);
+			double result = 0;
+			double amp = 1;
+			double freq = 1;
+			double max = 0;
+
+			x *= XScale;
+			y *= YScale;
+
+			foreach (var octave in _generators)
+			{
+				result += octave.GetValue((float) (x*freq), (float) (y*freq))*amp;
+				max += amp;
+				freq *= frequency;
+				amp *= amplitude;
+			}
+
+			return result;
 		}
 
 		public double Noise(double x, double y, double z, double frequency, double amplitude)

@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System.IO;
 using System.Net;
 using SharpMC.Blocks;
@@ -36,10 +37,9 @@ namespace SharpMC.Worlds
 		public int[] BiomeColor = ArrayOf<int>.Create(256, 1);
 		public byte[] BiomeId = ArrayOf<byte>.Create(256, 1);
 		public NibbleArray Blocklight = new NibbleArray(16*16*256);
-		//public Block[] Blocks = new Block[16*16*256];
 		public ushort[] Blocks = new ushort[16*16*256];
-		public ushort[] Metadata = new ushort[16*16*256];
 		public bool IsDirty = false;
+		public short[] Metadata = new short[16*16*256];
 		public NibbleArray Skylight = new NibbleArray(16*16*256);
 
 		public ChunkColumn()
@@ -48,8 +48,11 @@ namespace SharpMC.Worlds
 				Skylight[i] = 0xff;
 			for (var i = 0; i < BiomeColor.Length; i++)
 				BiomeColor[i] = 8761930;
+			for (var i = 0; i < Metadata.Length; i++)
+				Metadata[i] = 0;
 		}
 
+		public Level Level { get; set; }
 		public int X { get; set; }
 		public int Z { get; set; }
 
@@ -58,29 +61,28 @@ namespace SharpMC.Worlds
 			var index = x + 16*z + 16*16*y;
 			if (index >= 0 && index < Blocks.Length)
 			{
-				if (Blocks[index] != null) return (Blocks[index]);
-				return 0;
+				return (Blocks[index]);
 			}
-			return 900;
-		}
-
-		public Block GetABlock(int x, int y, int z)
-		{
-			var index = x + 16*z + 16*16*y;
-			if (index >= 0 && index < Blocks.Length)
-			{
-				//if (Blocks[index] != null) return (Blocks[index]);
-				var id = Blocks[index];
-				var meta = Metadata[index];
-				return BlockFactory.GetBlockById(id, (short) meta);
-				return new BlockAir();
-			}
-			return new Block(0);
+			return 0x0;
 		}
 
 		public byte GetMetadata(int x, int y, int z)
 		{
-			return (byte) (GetABlock(x, y, z).Metadata);
+			var index = x + 16*z + 16*16*y;
+			if (index >= 0 && index < Metadata.Length)
+			{
+				return (byte) (Metadata[index]);
+			}
+			return 0x0;
+		}
+
+		public void SetMetadata(int x, int y, int z, byte metadata)
+		{
+			var index = x + 16*z + 16*16*y;
+			if (index >= 0 && index < Metadata.Length)
+			{
+				Metadata[index] = metadata;
+			}
 		}
 
 		public void SetBlock(int x, int y, int z, Block block)
@@ -88,7 +90,6 @@ namespace SharpMC.Worlds
 			var index = x + 16*z + 16*16*y;
 			if (index >= 0 && index < Blocks.Length)
 			{
-				//Blocks[index] = Convert.ToUInt16((block.Id << 4) | block.Metadata);
 				Blocks[index] = block.Id;
 				Metadata[index] = block.Metadata;
 			}
@@ -124,7 +125,7 @@ namespace SharpMC.Worlds
 				{
 					writer.Write(IPAddress.HostToNetworkOrder(X));
 					writer.Write(IPAddress.HostToNetworkOrder(Z));
-					writer.Write(true);
+					//	writer.Write(true);
 					writer.Write((ushort) 0xffff); // bitmap
 
 					writer.Flush();
@@ -142,7 +143,7 @@ namespace SharpMC.Worlds
 				{
 					writer.WriteVarInt((Blocks.Length*2) + Skylight.Data.Length + Blocklight.Data.Length + BiomeId.Length);
 
-					for(int i = 0; i < Blocks.Length; i++)
+					for (var i = 0; i < Blocks.Length; i++)
 						writer.Write((ushort) ((Blocks[i] << 4) | Metadata[i]));
 
 					writer.Write(Blocklight.Data);
@@ -168,7 +169,7 @@ namespace SharpMC.Worlds
 				writer.WriteUShort(0xffff); // bitmap
 				writer.WriteVarInt((Blocks.Length*2) + Skylight.Data.Length + Blocklight.Data.Length + BiomeId.Length);
 
-				for (int i = 0; i < Blocks.Length; i++)
+				for (var i = 0; i < Blocks.Length; i++)
 				{
 					//if (i == null) writer.WriteUShort((0 << 4) | 0);
 					writer.WriteUShort((ushort) ((Blocks[i] << 4) | Metadata[i]));
@@ -196,12 +197,12 @@ namespace SharpMC.Worlds
 
 			buffer.WriteInt(Blocks.Length);
 
-			for (int i = 0; i < Blocks.Length; i++)
-				buffer.WriteUShort(i != null ? (ushort) Blocks[i] : (ushort) 0);
+			for (var i = 0; i < Blocks.Length; i++)
+				buffer.WriteUShort(Blocks[i]);
 
 			buffer.WriteInt(Blocks.Length);
-			for (int i = 0; i < Blocks.Length; i++)
-				buffer.WriteUShort(i != null ? Metadata[i] : (ushort) 0);
+			for (var i = 0; i < Blocks.Length; i++)
+				buffer.WriteUShort((ushort) Metadata[i]);
 
 			buffer.WriteInt(Blocklight.Data.Length);
 			buffer.Write(Blocklight.Data);

@@ -21,8 +21,11 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System.Collections.Generic;
 using System.Net.Sockets;
+using System.Security.Cryptography;
+using System.Text;
 using System.Threading;
 using System.Timers;
 using SharpMC.Entity;
@@ -44,9 +47,10 @@ namespace SharpMC.Utils
 		private readonly Timer _kTimer = new Timer();
 		private readonly AutoResetEvent _resume = new AutoResetEvent(false);
 		private readonly Timer _tickTimer = new Timer();
-		public Player Player;
+		internal bool EncryptionEnabled = false;
 		//public bool PlayMode = false;
-		public PacketMode PacketMode = PacketMode.Ping; 
+		public PacketMode PacketMode = PacketMode.Ping;
+		public Player Player;
 		public TcpClient TcpClient;
 		public MyThreadPool ThreadPool;
 
@@ -54,8 +58,18 @@ namespace SharpMC.Utils
 		{
 			TcpClient = client;
 			ThreadPool = new MyThreadPool();
-			ThreadPool.LaunchThread(new Thread(ThreadRun));
+			ThreadPool.LaunchThread(ThreadRun);
+
+			var bytes = new byte[8];
+			Globals.Rand.NextBytes(bytes);
+			ConnectionId = Encoding.ASCII.GetString(bytes).Replace("-", "");
 		}
+
+		internal byte[] SharedKey { get; set; }
+		internal ICryptoTransform Encrypter { get; set; }
+		internal ICryptoTransform Decrypter { get; set; }
+		internal string ConnectionId { get; set; }
+		internal string Username { get; set; }
 
 		public void AddToQuee(byte[] data, bool quee = false)
 		{
@@ -90,9 +104,28 @@ namespace SharpMC.Utils
 		{
 			try
 			{
-				var a = TcpClient.GetStream();
-				a.Write(data, 0, data.Length);
-				a.Flush();
+				if (Encrypter != null)
+				{
+					var toEncrypt = data;
+					data = new byte[toEncrypt.Length];
+					Encrypter.TransformBlock(toEncrypt, 0, toEncrypt.Length, data, 0);
+
+					var a = TcpClient.GetStream();
+					a.Write(data, 0, data.Length);
+					a.Flush();
+				}
+				/*	if (EncryptionEnabled)
+				{
+					AesStream aes = new AesStream(TcpClient.GetStream(), (byte[])SharedKey.Clone());
+					aes.Write(data, 0, data.Length);
+					aes.Flush();
+				}*/
+				else
+				{
+					var a = TcpClient.GetStream();
+					a.Write(data, 0, data.Length);
+					a.Flush();
+				}
 			}
 			catch
 			{

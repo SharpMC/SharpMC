@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
@@ -53,7 +54,7 @@ namespace SharpMC.Networking.Packages
 		{
 			if (Buffer != null)
 			{
-				Buffer.WriteByte((byte)Client.Player.Inventory.CurrentSlot);
+				Buffer.WriteByte((byte) Client.Player.Inventory.CurrentSlot);
 				Buffer.FlushData();
 			}
 		}

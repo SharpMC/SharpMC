@@ -21,9 +21,10 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 namespace SharpMC.Items
 {
-	class ItemIronBoots: Item
+	internal class ItemIronBoots : Item
 	{
 		internal ItemIronBoots() : base(309, 0)
 		{

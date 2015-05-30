@@ -21,11 +21,8 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SharpMC.Utils
 {
@@ -55,7 +52,20 @@ namespace SharpMC.Utils
 		}
 
 		/// <summary>
-		/// Truncates the decimal component of each part of this Vector3.
+		///     Finds the distance of this vector from Vector3.Zero
+		/// </summary>
+		public double Distance
+		{
+			get { return DistanceTo(Zero); }
+		}
+
+		public bool Equals(Vector3 other)
+		{
+			return other.X.Equals(X) && other.Y.Equals(Y) && other.Z.Equals(Z);
+		}
+
+		/// <summary>
+		///     Truncates the decimal component of each part of this Vector3.
 		/// </summary>
 		public Vector3 Floor()
 		{
@@ -68,7 +78,7 @@ namespace SharpMC.Utils
 		}
 
 		/// <summary>
-		/// Calculates the distance between two Vector3 objects.
+		///     Calculates the distance between two Vector3 objects.
 		/// </summary>
 		public double DistanceTo(Vector3 other)
 		{
@@ -78,19 +88,11 @@ namespace SharpMC.Utils
 		}
 
 		/// <summary>
-		/// Calculates the square of a num.
+		///     Calculates the square of a num.
 		/// </summary>
 		private double Square(double num)
 		{
 			return num*num;
-		}
-
-		/// <summary>
-		/// Finds the distance of this vector from Vector3.Zero
-		/// </summary>
-		public double Distance
-		{
-			get { return DistanceTo(Zero); }
 		}
 
 		public static Vector3 Min(Vector3 value1, Vector3 value2)
@@ -240,6 +242,29 @@ namespace SharpMC.Utils
 			return new Vector3(a%b.X, a%b.Y, a%b.Y);
 		}
 
+		public override bool Equals(object obj)
+		{
+			if (ReferenceEquals(null, obj)) return false;
+			if (obj.GetType() != typeof (Vector3)) return false;
+			return Equals((Vector3) obj);
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked
+			{
+				var result = X.GetHashCode();
+				result = (result*397) ^ Y.GetHashCode();
+				result = (result*397) ^ Z.GetHashCode();
+				return result;
+			}
+		}
+
+		public PlayerLocation ToPlayerLocation()
+		{
+			return new PlayerLocation(X, Y, Z);
+		}
+
 		#region Constants
 
 		public static readonly Vector3 Zero = new Vector3(0);
@@ -258,33 +283,5 @@ namespace SharpMC.Utils
 		public static readonly Vector3 South = new Vector3(0, 0, 1);
 
 		#endregion
-
-		public bool Equals(Vector3 other)
-		{
-			return other.X.Equals(X) && other.Y.Equals(Y) && other.Z.Equals(Z);
-		}
-
-		public override bool Equals(object obj)
-		{
-			if (ReferenceEquals(null, obj)) return false;
-			if (obj.GetType() != typeof (Vector3)) return false;
-			return Equals((Vector3) obj);
-		}
-
-		public override int GetHashCode()
-		{
-			unchecked
-			{
-				int result = X.GetHashCode();
-				result = (result*397) ^ Y.GetHashCode();
-				result = (result*397) ^ Z.GetHashCode();
-				return result;
-			}
-		}
-
-		public PlayerLocation ToPlayerLocation()
-		{
-			return new PlayerLocation(X, Y, Z);
-		}
 	}
 }

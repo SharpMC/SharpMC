@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 namespace SharpMC.Items
 {
 	public enum ItemMaterial
@@ -32,6 +33,6 @@ namespace SharpMC.Items
 		Diamond = 8,
 		Gold = 12,
 		Leather = -2,
-		Chain = -1,
+		Chain = -1
 	}
 }

@@ -21,10 +21,9 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 using System.IO;
-using System.Net;
-using System.Net.Sockets;
 using System.Security.Permissions;
 using System.Threading;
 using SharpMC.API;
@@ -34,6 +33,7 @@ using SharpMC.Utils;
 using SharpMC.Worlds;
 using SharpMC.Worlds.Anvil;
 using SharpMC.Worlds.Flatland;
+using SharpMC.Worlds.Nether;
 using SharpMC.Worlds.Standard;
 
 namespace SharpMC
@@ -58,7 +58,7 @@ namespace SharpMC
 				"WorldName=world",
 				"Debug=false",
 				"Seed=",
-				"Motd=",
+				"Motd="
 			};
 			Config.Check();
 
@@ -74,15 +74,16 @@ namespace SharpMC
 
 			ConsoleFunctions.WriteInfoLine("Loading config file...");
 			Globals.MaxPlayers = Config.GetProperty("MaxPlayers", 10);
-			var Lvltype = Config.GetProperty("LevelType", "Experimental");
+			var lvltype = Config.GetProperty("LevelType", "Experimental");
 			Level lvl;
-			switch (Lvltype.ToLower())
+			switch (lvltype.ToLower())
 			{
 				case "flatland":
 					lvl = new FlatLandLevel(Config.GetProperty("WorldName", "world"));
 					break;
 				case "standard":
 					lvl = new StandardLevel(Config.GetProperty("WorldName", "world"));
+					//lvl = new BetterLevel(Config.GetProperty("worldname", "world"));
 					break;
 				case "anvil":
 					lvl = new AnvilLevel(Config.GetProperty("WorldName", "world"));
@@ -92,14 +93,11 @@ namespace SharpMC
 					break;
 			}
 			Globals.LevelManager = new LevelManager(lvl);
-			Globals.LevelManager.AddLevel("flatland", new FlatLandLevel("flatland"));
+			Globals.LevelManager.AddLevel("nether", new NetherLevel("nether")); //Initiate the 'nether'
 
 			Globals.Seed = Config.GetProperty("Seed", "SharpieCraft");
 
 			Globals.Motd = Config.GetProperty("motd", "");
-
-			int port = Config.GetProperty("port", 25565);
-			if (port != 25565) Globals.ServerListener = new TcpListener(IPAddress.Any, port);
 
 			Globals.Debug = Config.GetProperty("debug", false);
 
@@ -109,9 +107,12 @@ namespace SharpMC
 				Directory.CreateDirectory(Globals.LevelManager.MainLevel.LvlName);
 
 			ConsoleFunctions.WriteInfoLine("Setting up some variables...");
-
+			Globals.ServerKey = PacketCryptography.GenerateKeyPair();
+			Globals.Rand = new Random();
 #if DEBUG
 			Globals.Debug = true;
+#else
+			Globals.Debug = false;
 #endif
 			ConsoleFunctions.WriteInfoLine("Loading plugins...");
 			Globals.PluginManager = new PluginManager();
@@ -120,8 +121,7 @@ namespace SharpMC
 			ConsoleFunctions.WriteInfoLine("Enabling plugins...");
 			Globals.PluginManager.EnablePlugins(Globals.LevelManager);
 
-			var ClientListener = new Thread(() => new BasicListener().ListenForClients());
-			ClientListener.Start();
+			new Thread(() => new BasicListener().ListenForClients()).Start();
 		}
 
 		private static void UnhandledException(object sender, UnhandledExceptionEventArgs args)

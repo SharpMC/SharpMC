@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
@@ -45,7 +46,7 @@ namespace SharpMC.Networking.Packages
 				Client.Player.KnownPosition.Pitch = Buffer.ReadFloat();
 				Client.Player.KnownPosition.OnGround = Buffer.ReadBool();
 
-				new EntityLook(Client) { Player = Client.Player }.Broadcast(Client.Player.Level, false, Client.Player);
+				new EntityLook(Client) {Player = Client.Player}.Broadcast(Client.Player.Level, false, Client.Player);
 			}
 		}
 	}

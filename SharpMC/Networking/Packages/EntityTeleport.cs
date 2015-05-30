@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Entity;
 using SharpMC.Utils;
 using SharpMC.Worlds;
@@ -71,8 +72,8 @@ namespace SharpMC.Networking.Packages
 						Coordinates = player.KnownPosition.ToVector3(),
 						OnGround = player.KnownPosition.OnGround,
 						UniqueServerID = player.EntityId,
-						Pitch = (byte)player.KnownPosition.Pitch,
-						Yaw = (byte)player.KnownPosition.Yaw
+						Pitch = (byte) player.KnownPosition.Pitch,
+						Yaw = (byte) player.KnownPosition.Yaw
 					}.Write();
 			}
 		}

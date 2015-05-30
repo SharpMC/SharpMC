@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Entity;
 using SharpMC.Utils;
 
@@ -45,7 +46,8 @@ namespace SharpMC.Networking.Packages
 
 		public override void Read()
 		{
-			new Animation(Client) {AnimationId = 0, TargetPlayer = Client.Player}.Broadcast(Client.Player.Level, false, Client.Player);
+			new Animation(Client) {AnimationId = 0, TargetPlayer = Client.Player}.Broadcast(Client.Player.Level, false,
+				Client.Player);
 		}
 
 		public override void Write()

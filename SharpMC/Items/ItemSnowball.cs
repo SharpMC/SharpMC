@@ -21,11 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using SharpMC.Entity;
 using SharpMC.Enums;
 using SharpMC.Utils;
@@ -35,14 +31,14 @@ namespace SharpMC.Items
 {
 	public class ItemSnowball : Item
 	{
-		public ItemSnowball() : base(332 ,0)
+		public ItemSnowball() : base(332, 0)
 		{
 			IsUsable = true;
 		}
 
 		public override void UseItem(Level world, Player player, Vector3 blockCoordinates, BlockFace face)
 		{
-			
+			new SnowballEntity(player, world) {KnownPosition = player.KnownPosition}.SpawnEntity();
 		}
 	}
 }

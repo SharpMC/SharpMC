@@ -21,9 +21,10 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 namespace SharpMC.Items
 {
-	class ItemIronLeggings: Item
+	internal class ItemIronLeggings : Item
 	{
 		internal ItemIronLeggings() : base(308, 0)
 		{

@@ -21,13 +21,14 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 namespace SharpMC.Items
 {
 	internal class ItemFactory
 	{
 		public static Item GetItemById(short id)
 		{
-			return GetItemById(id,0);
+			return GetItemById(id, 0);
 		}
 
 		public static Item GetItemById(short id, byte metadata)

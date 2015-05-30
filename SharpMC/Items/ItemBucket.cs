@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Entity;
 using SharpMC.Enums;
 using SharpMC.Utils;
@@ -42,14 +43,14 @@ namespace SharpMC.Items
 			if (bl.Id == 8)
 			{
 				//Water
-				int slot = player.Inventory.CurrentSlot + 36;
+				var slot = player.Inventory.CurrentSlot + 36;
 				player.Inventory.SetSlot(slot, 326, 0, 1);
 				bl.BreakBlock(world);
 			}
 
 			if (bl.Id == 10)
 			{
-				int slot = player.Inventory.CurrentSlot + 36;
+				var slot = player.Inventory.CurrentSlot + 36;
 				player.Inventory.SetSlot(slot, 327, 0, 1);
 				bl.BreakBlock(world);
 			}

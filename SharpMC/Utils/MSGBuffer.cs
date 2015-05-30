@@ -21,12 +21,13 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
-using System.Net.Sockets;
 using System.Text;
+using Ionic.Zlib;
 
 namespace SharpMC.Utils
 {
@@ -40,12 +41,6 @@ namespace SharpMC.Utils
 		public MSGBuffer(ClientWrapper client)
 		{
 			_client = client;
-			if (client.TcpClient.Connected) mStream = client.TcpClient.GetStream();
-		}
-
-		public MSGBuffer(NetworkStream stream)
-		{
-			mStream = stream;
 		}
 
 		public MSGBuffer(byte[] data)
@@ -176,6 +171,19 @@ namespace SharpMC.Utils
 			//return IPAddress.NetworkToHostOrder (D);
 		}
 
+		public short[] ReadShortLocal(int count)
+		{
+			var us = new short[count];
+			for (var i = 0; i < us.Length; i++)
+			{
+				var Da = Read(2);
+				var D = BitConverter.ToInt16(Da, 0);
+				us[i] = D;
+			}
+			return us;
+			//return IPAddress.NetworkToHostOrder (D);
+		}
+
 		public string ReadString()
 		{
 			var Length = ReadVarInt();
@@ -242,7 +250,6 @@ namespace SharpMC.Utils
 		}
 
 		private readonly List<byte> bffr = new List<byte>();
-		private readonly NetworkStream mStream;
 
 		public void Write(byte[] Data, int Offset, int Length)
 		{
@@ -361,40 +368,33 @@ namespace SharpMC.Utils
 				var AllData = bffr.ToArray();
 				bffr.Clear();
 
-				WriteVarInt(AllData.Length);
-				var Buffer = bffr.ToArray();
-
-				var data = new List<byte>();
-				foreach (var i in Buffer)
+				if (Globals.UseCompression && _client.PacketMode == PacketMode.Play)
 				{
-					data.Add(i);
+					var mg = new MSGBuffer(_client); //ToWriteAllData
+					var compressed = ZlibStream.CompressBuffer(AllData);
+
+					mg.WriteVarInt(compressed.Length);
+					mg.WriteVarInt(compressed.Length);
+
+					mg.Write(compressed);
+					_client.AddToQuee(mg.ExportWriter, quee);
 				}
-				foreach (var i in AllData)
+				else
 				{
-					data.Add(i);
+					WriteVarInt(AllData.Length);
+					var Buffer = bffr.ToArray();
+
+					var data = new List<byte>();
+					foreach (var i in Buffer)
+					{
+						data.Add(i);
+					}
+					foreach (var i in AllData)
+					{
+						data.Add(i);
+					}
+					_client.AddToQuee(data.ToArray(), quee);
 				}
-				_client.AddToQuee(data.ToArray(), quee);
-				bffr.Clear();
-			}
-			catch (Exception ex)
-			{
-				ConsoleFunctions.WriteErrorLine("Failed to send a packet!\n" + ex);
-			}
-		}
-
-		public void FlushData(int packetId)
-		{
-			try
-			{
-				var AllData = bffr.ToArray();
-				bffr.Clear();
-
-				WriteVarInt(packetId);
-				WriteVarInt(AllData.Length);
-				var Buffer = bffr.ToArray();
-
-				mStream.Write(Buffer, 0, Buffer.Length);
-				mStream.Write(AllData, 0, AllData.Length);
 				bffr.Clear();
 			}
 			catch (Exception ex)

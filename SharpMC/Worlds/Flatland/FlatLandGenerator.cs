@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
@@ -99,7 +100,7 @@ namespace SharpMC.Worlds.Flatland
 						{
 							Queee = false,
 							Unloader = true,
-							Chunk = new ChunkColumn { X = chunkKey.Item1, Z = chunkKey.Item2 }
+							Chunk = new ChunkColumn {X = chunkKey.Item1, Z = chunkKey.Item2}
 						}.Write();
 
 						chunksUsed.Remove(chunkKey);
@@ -167,7 +168,7 @@ namespace SharpMC.Worlds.Flatland
 			chunk.SetBlock(3, h + 1, 0, new Block(41));
 
 			if (!_chunkCache.ContainsKey(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z)))
-			_chunkCache.Add(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z), chunk);
+				_chunkCache.Add(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z), chunk);
 
 			return chunk;
 		}
@@ -179,18 +180,18 @@ namespace SharpMC.Worlds.Flatland
 
 		public int PopulateChunk(ChunkColumn chunk)
 		{
-			for (int x = 0; x < 16; x++)
+			for (var x = 0; x < 16; x++)
 			{
-				for (int z = 0; z < 16; z++)
+				for (var z = 0; z < 16; z++)
 				{
-					for (int y = 0; y < 4; y++)
+					for (var y = 0; y < 4; y++)
 					{
 						if (y == 0)
 						{
 							chunk.SetBlock(x, y, z, new BlockBedrock());
 						}
 
-						
+
 						if (y == 1 || y == 2)
 						{
 							chunk.SetBlock(x, y, z, new Block(3));
@@ -243,7 +244,7 @@ namespace SharpMC.Worlds.Flatland
 			var block = reader.ReadUShortLocal(blockLength);
 
 			var metalength = reader.ReadInt();
-			var blockmeta = reader.ReadUShortLocal(metalength);
+			var blockmeta = reader.ReadShortLocal(metalength);
 
 			//var blockies = new Block[block.Length];
 			//for (var i = 0; i < block.Length; i++)
@@ -264,8 +265,8 @@ namespace SharpMC.Worlds.Flatland
 			{
 				Blocks = block,
 				Metadata = blockmeta,
-				Blocklight = { Data = blocklight },
-				Skylight = { Data = skylight },
+				Blocklight = {Data = blocklight},
+				Skylight = {Data = skylight},
 				BiomeId = biomeId,
 				X = x,
 				Z = z

@@ -21,11 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using SharpMC.Blocks;
 using SharpMC.Items;
 using SharpMC.Utils;
@@ -35,9 +31,9 @@ namespace SharpMC.Crafting
 	public class RecipeStick : CraftingRecipe
 	{
 		public RecipeStick()
-			: base(new ItemStack(new ItemStick(), 1), new object[] { "W  ", "W  ", "   ", 'W', new ItemStack(new OakWoodPlank(), 1)})
+			: base(
+				new ItemStack(new ItemStick(), 1), new object[] {"W  ", "W  ", "   ", 'W', new ItemStack(new OakWoodPlank(), 1)})
 		{
-			
 		}
 	}
 }

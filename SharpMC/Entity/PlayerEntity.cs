@@ -21,11 +21,12 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 using System.Collections.Generic;
-using System.Runtime.CompilerServices;
-using System.Threading;
-using System.Timers;
+using System.Linq;
+using System.Net;
+using System.Text;
 using SharpMC.Enums;
 using SharpMC.Networking.Packages;
 using SharpMC.Utils;
@@ -36,7 +37,12 @@ namespace SharpMC.Entity
 {
 	public class Player : Entity
 	{
-		public Player(Level level) : base(-1 ,level)
+		private readonly Dictionary<Tuple<int, int>, ChunkColumn> _chunksUsed;
+		private readonly Vector2 _currentChunkPosition = new Vector2(0, 0);
+		public PlayerInventoryManager Inventory; //The player's Inventory
+		public string SkinBlob = "";
+
+		public Player(Level level) : base(-1, level)
 		{
 			_chunksUsed = new Dictionary<Tuple<int, int>, ChunkColumn>();
 			Inventory = new PlayerInventoryManager(this);
@@ -48,17 +54,13 @@ namespace SharpMC.Entity
 			IsOperator = false;
 		}
 
-		private readonly Dictionary<Tuple<int, int>, ChunkColumn> _chunksUsed;
-		private readonly Vector2 _currentChunkPosition = new Vector2(0, 0);
-		public PlayerInventoryManager Inventory; //The player's Inventory
 		public string Username { get; set; } //The player's username
 		public string Uuid { get; set; } // The player's UUID
 		public ClientWrapper Wrapper { get; set; } //The player's associated ClientWrapper
 		public Gamemode Gamemode { get; set; } //The player's gamemode
-		public bool IsSpawned { get; set; }  //Is the player spawned?
+		public bool IsSpawned { get; set; } //Is the player spawned?
 		public bool Digging { get; set; } // Is the player digging?
 		private bool CanFly { get; set; } //Can the player fly?
-
 		//Client settings
 		public string Locale { get; set; }
 		public byte ViewDistance { get; set; }
@@ -66,15 +68,49 @@ namespace SharpMC.Entity
 		public bool ChatColours { get; set; }
 		public byte SkinParts { get; set; }
 		public bool ForceChunkReload { get; set; }
-
 		//Not Sure Why Stuff
 		public EntityAction LastEntityAction { get; set; }
-
 		public bool IsOperator { get; set; }
 
 		public void AddToList()
 		{
 			Level.AddPlayer(this);
+		}
+
+		public bool IsAuthenticated()
+		{
+			if (!Globals.Offlinemode)
+			{
+				try
+				{
+					var uri = new Uri(
+						string.Format(
+							"http://session.minecraft.net/game/checkserver.jsp?user={0}&serverId={1}",
+							Username,
+							PacketCryptography.JavaHexDigest(Encoding.UTF8.GetBytes("")
+								.Concat(Wrapper.SharedKey)
+								.Concat(PacketCryptography.PublicKeyToAsn1(Globals.ServerKey))
+								.ToArray())
+							));
+
+					var authenticated = new WebClient().DownloadString(uri);
+					if (authenticated.Contains("NO"))
+					{
+						ConsoleFunctions.WriteInfoLine("Response: " + authenticated);
+						return false;
+					}
+				}
+				catch (Exception exc)
+				{
+					//client.Kick("Error while authenticating...");
+					//client.Logger.Log(exc);
+					return false;
+				}
+
+				return true;
+			}
+
+			return true;
 		}
 
 		public void PositionChanged(Vector3 location, float yaw = 0.0f, float pitch = 0.0f, bool onGround = false)
@@ -88,7 +124,14 @@ namespace SharpMC.Entity
 			KnownPosition.OnGround = onGround;
 
 			SendChunksForKnownPosition();
-			new EntityTeleport(Wrapper) { UniqueServerID = EntityId, Coordinates = location, OnGround = onGround, Pitch = (byte)pitch, Yaw = (byte)yaw }.Broadcast(Level, false, this);
+			new EntityTeleport(Wrapper)
+			{
+				UniqueServerID = EntityId,
+				Coordinates = location,
+				OnGround = onGround,
+				Pitch = (byte) pitch,
+				Yaw = (byte) yaw
+			}.Broadcast(Level, false, this);
 			//We teleport for now, Entityrelativemove will be used later on when i know what is wrong with it? :(
 
 			//new EntityRelativeMove(Client) {Player = Client.Player, Movement = movement}.Broadcast(false, Client.Player);
@@ -96,7 +139,8 @@ namespace SharpMC.Entity
 
 		public void SendPosition()
 		{
-			new PlayerPositionAndLook(Wrapper) {X = (int) this.KnownPosition.X, Y = (int) this.KnownPosition.Y, Z = (int) this.KnownPosition.Z}.Write();
+			new PlayerPositionAndLook(Wrapper) {X = (int) KnownPosition.X, Y = (int) KnownPosition.Y, Z = (int) KnownPosition.Z}
+				.Write();
 		}
 
 		public void HeldItemChanged(int slot)
@@ -167,13 +211,12 @@ namespace SharpMC.Entity
 		public void SetGamemode(Gamemode target)
 		{
 			Gamemode = target;
-
 		}
 
 		public void Respawn()
 		{
 			HealthManager.ResetHealth();
-			if (Wrapper != null && Wrapper.TcpClient.Connected) new Respawn(Wrapper) {GameMode = (byte)Gamemode}.Write();
+			if (Wrapper != null && Wrapper.TcpClient.Connected) new Respawn(Wrapper) {GameMode = (byte) Gamemode}.Write();
 		}
 
 		public void SendHealth()
@@ -183,7 +226,7 @@ namespace SharpMC.Entity
 
 		public void BroadcastEntityAnimation(Animations action)
 		{
-			new Animation(Wrapper){AnimationId = (byte)action, TargetPlayer = this}.Broadcast(Level);
+			new Animation(Wrapper) {AnimationId = (byte) action, TargetPlayer = this}.Broadcast(Level);
 		}
 
 		public void SendChunksFromPosition()
@@ -197,8 +240,12 @@ namespace SharpMC.Entity
 			SendChunksForKnownPosition();
 		}
 
-		private void InitializePlayer()
+		internal void InitializePlayer()
 		{
+			var chunks = Level.Generator.GenerateChunks((ViewDistance*21), KnownPosition.X, KnownPosition.Z, _chunksUsed, this);
+			new MapChunkBulk(Wrapper) {Chunks = chunks.ToArray()}.Write();
+			//InitializePlayer();
+
 			new PlayerPositionAndLook(Wrapper).Write();
 
 			IsSpawned = true;
@@ -215,33 +262,31 @@ namespace SharpMC.Entity
 		public void SendChunksForKnownPosition(bool force = false)
 		{
 			var centerX = (int) KnownPosition.X >> 4;
-			var centerZ = (int)KnownPosition.Z >> 4;
+			var centerZ = (int) KnownPosition.Z >> 4;
 
 			if (!force && IsSpawned && _currentChunkPosition == new Vector2(centerX, centerZ)) return;
 
 			_currentChunkPosition.X = centerX;
 			_currentChunkPosition.Z = centerZ;
 
-			new Thread(() =>
+			Wrapper.ThreadPool.LaunchThread(() =>
 			{
 				var counted = 0;
-
 				foreach (
 					var chunk in
-						Level.Generator.GenerateChunks((ViewDistance * 16), KnownPosition.X, KnownPosition.Z,
-						force ? new Dictionary<Tuple<int, int>, ChunkColumn>() : _chunksUsed, this))
+						Level.Generator.GenerateChunks((ViewDistance*21), KnownPosition.X, KnownPosition.Z,
+							force ? new Dictionary<Tuple<int, int>, ChunkColumn>() : _chunksUsed, this))
 				{
 					if (Wrapper != null && Wrapper.TcpClient.Client.Connected)
 						new ChunkData(Wrapper, new MSGBuffer(Wrapper)) {Chunk = chunk}.Write();
-					Thread.Yield();
 
-					if (counted >= 10 && !IsSpawned)
+					/*	if (counted >= 10 && !IsSpawned)
 					{
 						InitializePlayer();
-					}
+					}*/
 					counted++;
 				}
-			}).Start();
+			});
 		}
 
 		public void SendChat(string message)

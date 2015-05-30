@@ -21,11 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
@@ -46,18 +42,18 @@ namespace SharpMC.Networking.Packages
 		{
 			if (Buffer != null)
 			{
-				byte WindowId = (byte)Buffer.ReadByte();
-				short Slot = Buffer.ReadShort();
-				byte Button = (byte) Buffer.ReadByte();
-				short ActionNumber = Buffer.ReadShort();
-				byte Mode = (byte) Buffer.ReadByte();
+				var WindowId = (byte) Buffer.ReadByte();
+				var Slot = Buffer.ReadShort();
+				var Button = (byte) Buffer.ReadByte();
+				var ActionNumber = Buffer.ReadShort();
+				var Mode = (byte) Buffer.ReadByte();
 
-				short ItemId = Buffer.ReadShort();
+				var ItemId = Buffer.ReadShort();
 				if (ItemId != -1)
 				{
-					byte ItemCount = (byte) Buffer.ReadByte();
-					short ItemDamage = Buffer.ReadShort();
-					byte Nbt = (byte) Buffer.ReadByte();
+					var ItemCount = (byte) Buffer.ReadByte();
+					var ItemDamage = Buffer.ReadShort();
+					var Nbt = (byte) Buffer.ReadByte();
 					if (Nbt != 0)
 					{
 						//NBT Data found
@@ -65,7 +61,7 @@ namespace SharpMC.Networking.Packages
 
 					if (Client.Player.Inventory.GetSlot(Slot).ItemId == ItemId) //Is the information true?
 					{
-						Client.Player.Inventory.SetSlot(Slot, -1, 0 , 0);
+						Client.Player.Inventory.SetSlot(Slot, -1, 0, 0);
 						Client.Player.Inventory.ClickedItem = new ItemStack(ItemId, ItemCount, (byte) ItemDamage);
 					}
 				}

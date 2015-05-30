@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Blocks;
 using SharpMC.Worlds.Standard.Decorators;
 using SharpMC.Worlds.Standard.Structures;
@@ -29,6 +30,11 @@ namespace SharpMC.Worlds.Standard.BiomeSystem
 {
 	public class BiomeBase : IBiome
 	{
+		public virtual double BaseHeight
+		{
+			get { return 52.0; }
+		}
+
 		public virtual int Id
 		{
 			get { return 0; }

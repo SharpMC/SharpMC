@@ -21,16 +21,17 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 
 namespace SharpMC.API
 {
-	[AttributeUsage(AttributeTargets.Class, Inherited = true)]
+	[AttributeUsage(AttributeTargets.Class)]
 	public class PluginAttribute : Attribute
 	{
-		public string PluginName;
-		public string Description;
-		public string PluginVersion;
 		public string Author;
+		public string Description;
+		public string PluginName;
+		public string PluginVersion;
 	}
 }

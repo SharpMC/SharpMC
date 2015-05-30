@@ -21,7 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-using SharpMC.Items;
+
 using SharpMC.Utils;
 
 namespace SharpMC.Blocks
@@ -30,7 +30,7 @@ namespace SharpMC.Blocks
 	{
 		internal BlockGrass() : base(2)
 		{
-			Drops = new ItemStack[] { new ItemStack(new BlockDirt(), 1), };
+			Drops = new[] {new ItemStack(new BlockDirt(), 1)};
 		}
 	}
 }

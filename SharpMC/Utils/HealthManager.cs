@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 using System.ComponentModel;
 using System.IO;
@@ -107,8 +108,8 @@ namespace SharpMC.Utils
 			//if (Player != null)
 			//{
 			//	//player.SendSetHealth();
-				//player.BroadcastEntityEvent();
-				//player.BroadcastSetEntityData();
+			//player.BroadcastEntityEvent();
+			//player.BroadcastSetEntityData();
 			//	Player.SendHealth();
 			//}
 
@@ -140,7 +141,10 @@ namespace SharpMC.Utils
 				IsDead = true;
 				if (player != null)
 				{
-					Entity.Level.BroadcastChat("§e" + GetDescription(LastDamageCause).Replace("{0}", player.Username).Replace("{1}", LastDamageSource.Username));
+					Entity.Level.BroadcastChat("§e" +
+					                           GetDescription(LastDamageCause)
+						                           .Replace("{0}", player.Username)
+						                           .Replace("{1}", LastDamageSource.Username));
 				}
 				return;
 			}

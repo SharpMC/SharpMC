@@ -21,9 +21,10 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 namespace SharpMC.Items
 {
-	class ItemDiamondLeggings : Item
+	internal class ItemDiamondLeggings : Item
 	{
 		public ItemDiamondLeggings() : base(312, 0)
 		{

@@ -21,7 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-using System;
+
 using SharpMC.Blocks;
 using SharpMC.Enums;
 using SharpMC.Items;
@@ -77,7 +77,7 @@ namespace SharpMC.Networking.Packages
 				}
 
 				var heldItem = Buffer.ReadUShort();
-				if (heldItem <= UInt16.MinValue || heldItem >= UInt16.MaxValue) return;
+				if (heldItem <= ushort.MinValue || heldItem >= ushort.MaxValue) return;
 
 				var itemCount = Buffer.ReadByte();
 				var itemDamage = Buffer.ReadByte();
@@ -87,13 +87,18 @@ namespace SharpMC.Networking.Packages
 				var CursorY = Buffer.ReadByte(); //Unused
 				var CursorZ = Buffer.ReadByte(); //Unused
 
+				//	if (position == new Vector3(-1, 256, -1))
+				//{
+				//	ConsoleFunctions.WriteInfoLine("LOL, Update state <3");
+				//	}
+
 				if (Client.Player.Level.GetBlock(position).Id == 0 || Client.Player.Level.GetBlock(position).IsReplacible)
 				{
 					if (Client.Player.Inventory.HasItem(heldItem) || Client.Player.Gamemode == Gamemode.Creative)
 					{
 						if (ItemFactory.GetItemById((short) heldItem).IsUsable)
 						{
-							ItemFactory.GetItemById((short) heldItem).UseItem(Client.Player.Level, Client.Player, position, (BlockFace)face);
+							ItemFactory.GetItemById((short) heldItem).UseItem(Client.Player.Level, Client.Player, position, (BlockFace) face);
 							return;
 						}
 
@@ -104,7 +109,7 @@ namespace SharpMC.Networking.Packages
 
 						if (Client.Player.Gamemode != Gamemode.Creative)
 						{
-								Client.Player.Inventory.RemoveItem((short) b.Id, itemMeta, 1);
+							Client.Player.Inventory.RemoveItem((short) b.Id, itemMeta, 1);
 						}
 					}
 					else

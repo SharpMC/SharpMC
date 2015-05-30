@@ -21,15 +21,16 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
 {
-	class Respawn : Package<Respawn>
+	internal class Respawn : Package<Respawn>
 	{
+		public byte Difficulty = 0;
 		public int Dimension = 0;
 		public byte GameMode = 1;
-		public byte Difficulty = 0;
 
 		public Respawn(ClientWrapper client)
 			: base(client)

@@ -21,11 +21,6 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SharpMC.Enums
 {
@@ -34,8 +29,8 @@ namespace SharpMC.Enums
 		SwingArm = 0,
 		TakeDamage = 1,
 		LeaveBed = 2,
-		EatFood= 3,
+		EatFood = 3,
 		CriticalEffect = 4,
-		MagicalCriticalEffect = 5,
+		MagicalCriticalEffect = 5
 	}
 }

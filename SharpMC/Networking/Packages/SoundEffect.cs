@@ -21,11 +21,7 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+
 using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
@@ -53,9 +49,9 @@ namespace SharpMC.Networking.Packages
 			{
 				Buffer.WriteVarInt(SendId);
 				Buffer.WriteString(SoundName);
-				Buffer.WriteInt(X * 8);
-				Buffer.WriteInt(Y * 8);
-				Buffer.WriteInt(Z * 8);
+				Buffer.WriteInt(X*8);
+				Buffer.WriteInt(Y*8);
+				Buffer.WriteInt(Z*8);
 				Buffer.WriteFloat(1f);
 				Buffer.WriteByte(63);
 				Buffer.FlushData();

@@ -21,25 +21,26 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
 
 namespace SharpMC.Utils
 {
 	public class PlayerLocation
 	{
-		public float Yaw { get; set; }
-		public float Pitch { get; set; }
-		public bool OnGround { get; set; }
-		public double X { get; set; }
-		public double Y { get; set; }
-		public double Z { get; set; }
-
 		public PlayerLocation(double _X, double _Y, double _Z)
 		{
 			X = _X;
 			Y = _Y;
 			Z = _Z;
 		}
+
+		public float Yaw { get; set; }
+		public float Pitch { get; set; }
+		public bool OnGround { get; set; }
+		public double X { get; set; }
+		public double Y { get; set; }
+		public double Z { get; set; }
 
 		public Vector3 ToVector3()
 		{
@@ -49,13 +50,13 @@ namespace SharpMC.Utils
 		public double DistanceTo(PlayerLocation other)
 		{
 			return Math.Sqrt(Square(other.X - X) +
-							 Square(other.Y - Y) +
-							 Square(other.Z - Z));
+			                 Square(other.Y - Y) +
+			                 Square(other.Z - Z));
 		}
 
 		private double Square(double num)
 		{
-			return num * num;
+			return num*num;
 		}
 	}
 }

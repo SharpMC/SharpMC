@@ -21,11 +21,8 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
 using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using SharpMC.Entity;
 using SharpMC.Enums;
 using SharpMC.Items;
@@ -33,7 +30,7 @@ using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
 {
-	class UseEntity : Package<UseEntity>
+	internal class UseEntity : Package<UseEntity>
 	{
 		public UseEntity(ClientWrapper client)
 			: base(client)
@@ -73,9 +70,6 @@ namespace SharpMC.Networking.Packages
 						targ.HealthManager.TakeHit(Client.Player, CalculateDamage(targ), DamageCause.EntityAttack);
 					}
 				}
-				else
-				{
-				}
 			}
 			else if (type == 0)
 			{
@@ -92,7 +86,7 @@ namespace SharpMC.Networking.Packages
 
 			for (byte i = 5; i <= 8; i++)
 			{
-				ItemStack id = target.Inventory.GetSlot(i);
+				var id = target.Inventory.GetSlot(i);
 				var armorPiece = ItemFactory.GetItemById(id.ItemId);
 
 				if (armorPiece.ItemType == ItemType.Helmet)
@@ -187,9 +181,10 @@ namespace SharpMC.Networking.Packages
 			armorValue *= 0.04;
 
 			var itemInHandSlot = 36 + Client.Player.Inventory.CurrentSlot;
-			int damage = ItemFactory.GetItemById(Client.Player.Inventory.GetSlot(itemInHandSlot).ItemId).GetDamage(); //Item Damage.
+			var damage = ItemFactory.GetItemById(Client.Player.Inventory.GetSlot(itemInHandSlot).ItemId).GetDamage();
+				//Item Damage.
 
-			damage = (int)Math.Floor(damage * (1.0 - armorValue));
+			damage = (int) Math.Floor(damage*(1.0 - armorValue));
 			if (damage <= 0) damage = 1;
 
 			return damage;
