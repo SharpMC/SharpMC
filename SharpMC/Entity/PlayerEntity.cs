@@ -212,6 +212,12 @@ namespace SharpMC.Entity
 		public void SetGamemode(Gamemode target)
 		{
 			Gamemode = target;
+            new PlayerListItem(Wrapper)
+            {
+                Action = 1,
+                Gamemode = Gamemode,
+                UUID = Uuid
+            }.Broadcast(Level);
 		}
 
 		public void Respawn()

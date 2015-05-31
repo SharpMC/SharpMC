@@ -64,6 +64,9 @@ namespace SharpMC.Networking.Packages
 						Buffer.WriteVarInt(0);
 						Buffer.WriteBool(false);
 						break;
+                    case 1:
+                        Buffer.WriteVarInt((byte)Gamemode);
+                        break;
 					case 4:
 						break;
 				}
