@@ -203,7 +203,7 @@ namespace SharpMC.API
 						}
 					}
 
-					if (ExecuteCommand(method, player, arguments)) return;
+					if (ExecuteCommand(method, player, arguments, commandAttribute)) return;
 				}
 			}
 			catch (Exception ex)
@@ -213,7 +213,7 @@ namespace SharpMC.API
 			player.SendChat("\u00A7cUnknown command.");
 		}
 
-		private bool ExecuteCommand(MethodInfo method, Player player, string[] args)
+		private bool ExecuteCommand(MethodInfo method, Player player, string[] args, CommandAttribute commandAttribute)
 		{
 			var parameters = method.GetParameters();
 
@@ -223,7 +223,13 @@ namespace SharpMC.API
 				addLenght = 1;
 			}
 
-			if (parameters.Length != args.Length + addLenght) return false;
+			if (parameters.Length != args.Length + addLenght)
+            {
+                player.SendChat("Invalid parameters specified!");
+                player.SendChat(commandAttribute.Usage);
+                return true;
+            }
+
 
 			var objectArgs = new object[parameters.Length];
 
