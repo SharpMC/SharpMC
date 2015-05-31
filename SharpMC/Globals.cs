@@ -42,7 +42,6 @@ namespace SharpMC
 		//public static Level Level;
 		public static LevelManager LevelManager;
 		public static string Seed = "default";
-		public static bool SupportSharpMC = false; //Enable for player list ads xD
 		public static bool Debug = false;
 		public static string ProtocolName = "SharpMC 1.8";
 		public static string MCProtocolName = "Minecraft 1.8";

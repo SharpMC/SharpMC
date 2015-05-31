@@ -251,10 +251,6 @@ namespace SharpMC.Entity
 			IsSpawned = true;
 			Level.AddPlayer(this);
 			Wrapper.Player.Inventory.SendToPlayer();
-			if (Globals.SupportSharpMC)
-			{
-				new PlayerListHeaderFooter(Wrapper) {Header = "§6§l" + Globals.ProtocolName, Footer = "§eC# Powered!"}.Write();
-			}
 			BroadcastEquipment();
 			Globals.PluginManager.HandlePlayerJoin(this);
 		}
