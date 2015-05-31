@@ -112,9 +112,13 @@ namespace SharpMC.API
 				sb.Append(commandAttribute.Command);
 				var parameters = method.GetParameters();
 				if (parameters.Length > 0) sb.Append(" ");
-				foreach (var parameter in parameters)
+				for (int i = 0; i < parameters.Length; i++)
 				{
-					sb.AppendFormat("<{0}> ", parameter.Name);
+					if (i != 0) //Parameter 0 is source. do not add to the usage!!!
+					{
+						var parameter = parameters[i];
+						sb.AppendFormat("<{0}> ", parameter.Name);
+					}
 				}
 				commandAttribute.Usage = sb.ToString().Trim();
 
