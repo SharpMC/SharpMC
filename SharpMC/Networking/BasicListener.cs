@@ -121,6 +121,7 @@ namespace SharpMC.Networking
 
 			if (Client.Player != null)
 			{
+				Client.Player.SavePlayer();
 				Client.Player.Level.RemovePlayer(Client.Player);
 				Client.Player.Level.BroadcastPlayerRemoval(Client);
 			}

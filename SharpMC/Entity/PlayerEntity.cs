@@ -24,6 +24,7 @@
 
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
@@ -242,6 +243,7 @@ namespace SharpMC.Entity
 
 		internal void InitializePlayer()
 		{
+			LoadPlayer();
 			var chunks = Level.Generator.GenerateChunks((ViewDistance*21), KnownPosition.X, KnownPosition.Z, _chunksUsed, this);
 			new MapChunkBulk(Wrapper) {Chunks = chunks.ToArray()}.Write();
 			//InitializePlayer();
@@ -288,6 +290,42 @@ namespace SharpMC.Entity
 		public void SendChat(string message)
 		{
 			new ChatMessage(Wrapper) {Message = message}.Write();
+		}
+
+		public void SavePlayer()
+		{
+			byte[] health = HealthManager.Export();
+			byte[] inv = Inventory.GetBytes();
+			MSGBuffer buffer = new MSGBuffer(new byte[0]);
+			buffer.WriteVarInt(health.Length);
+			foreach (byte b in health)
+			{
+				buffer.WriteByte(b);
+			}
+			buffer.WriteVarInt(inv.Length);
+			foreach (byte b in inv)
+			{
+				buffer.WriteByte(b);
+			}
+			byte[] data = buffer.ExportWriter;
+			data = Globals.Compress(data);
+			File.WriteAllBytes("Players/" + Username + ".pdata", data);
+		}
+
+		public void LoadPlayer()
+		{
+			if (File.Exists("Players/" + Username + ".pdata"))
+			{
+				byte[] data = File.ReadAllBytes("Players/" + Username + ".pdata");
+				data = Globals.Decompress(data);
+				MSGBuffer reader = new MSGBuffer(data);
+				int healthLength = reader.ReadVarInt();
+				byte[] healthData = reader.Read(healthLength);
+				int inventoryLength = reader.ReadVarInt();
+				byte[] inventoryData = reader.Read(inventoryLength);
+				HealthManager.Import(healthData);
+				Inventory.Import(inventoryData);
+			}
 		}
 	}
 }

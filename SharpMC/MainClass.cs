@@ -106,6 +106,9 @@ namespace SharpMC
 			if (!Directory.Exists(Globals.LevelManager.MainLevel.LvlName))
 				Directory.CreateDirectory(Globals.LevelManager.MainLevel.LvlName);
 
+			if (!Directory.Exists("Players"))
+				Directory.CreateDirectory("Players");
+
 			ConsoleFunctions.WriteInfoLine("Setting up some variables...");
 			Globals.ServerKey = PacketCryptography.GenerateKeyPair();
 			Globals.Rand = new Random();

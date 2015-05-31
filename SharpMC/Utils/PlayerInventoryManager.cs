@@ -23,7 +23,6 @@
 // ©Copyright Kenny van Vulpen - 2015
 
 using System;
-using System.Collections.Generic;
 using System.Linq;
 using SharpMC.Entity;
 using SharpMC.Networking.Packages;
@@ -33,14 +32,14 @@ namespace SharpMC.Utils
 	public class PlayerInventoryManager
 	{
 		private readonly Player _player;
-		private readonly List<ItemStack> _slots = new List<ItemStack>();
+		private readonly ItemStack[] _slots = new ItemStack[45];
 
 		public PlayerInventoryManager(Player player)
 		{
 			_player = player;
 			for (var i = 0; i <= 44; i++)
 			{
-				_slots.Add(new ItemStack(-1, 0, 0));
+				_slots[i] = (new ItemStack(-1, 0, 0));
 			}
 
 			SetSlot(5, 310, 0, 1); //Diamond helmet
@@ -174,7 +173,7 @@ namespace SharpMC.Utils
 
 		public bool RemoveItem(short itemId, short metaData, short count)
 		{
-			for (var index = 0; index < _slots.Count; index++)
+			for (var index = 0; index <= 44; index++)
 			{
 				var itemStack = _slots[index];
 				if (itemStack.ItemId == itemId && itemStack.MetaData == metaData && itemStack.ItemCount >= count)
@@ -207,6 +206,35 @@ namespace SharpMC.Utils
 						Slot = i
 					}.Write();
 				}
+			}
+		}
+
+		public byte[] GetBytes()
+		{
+			MSGBuffer buffer = new MSGBuffer(new byte[0]);
+			for (int i = 0; i <= 44; i++)
+			{
+				var slot = _slots[i];
+				buffer.WriteInt(i); //Write the SlotID
+				buffer.WriteShort(slot.ItemId); //Write the ItemID
+				buffer.WriteByte(slot.MetaData);
+				buffer.WriteByte(slot.ItemCount);
+			}
+			return buffer.ExportWriter;
+		}
+
+		public void Import(byte[] data)
+		{
+			MSGBuffer buffer = new MSGBuffer(data);
+
+			for (int i = 0; i <= 44; i++)
+			{
+				int slotId = buffer.ReadInt();
+				short itemId = buffer.ReadShort();
+				byte metaData = (byte)buffer.ReadByte();
+				byte itemCount = (byte)buffer.ReadByte();
+
+				_slots[slotId] = new ItemStack(itemId, itemCount, metaData);
 			}
 		}
 	}
