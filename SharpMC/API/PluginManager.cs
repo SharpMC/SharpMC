@@ -253,6 +253,7 @@ namespace SharpMC.API
 					objectArgs[k] = args[i];
 					continue;
 				}
+
 				if (parameter.ParameterType == typeof (byte))
 				{
 					byte value;
@@ -260,6 +261,7 @@ namespace SharpMC.API
 					objectArgs[k] = value;
 					continue;
 				}
+
 				if (parameter.ParameterType == typeof (short))
 				{
 					short value;
@@ -267,6 +269,7 @@ namespace SharpMC.API
 					objectArgs[k] = value;
 					continue;
 				}
+
 				if (parameter.ParameterType == typeof (int))
 				{
 					int value;
@@ -274,6 +277,7 @@ namespace SharpMC.API
 					objectArgs[k] = value;
 					continue;
 				}
+
 				if (parameter.ParameterType == typeof (bool))
 				{
 					bool value;
@@ -281,6 +285,7 @@ namespace SharpMC.API
 					objectArgs[k] = value;
 					continue;
 				}
+
 				if (parameter.ParameterType == typeof (float))
 				{
 					float value;
@@ -288,12 +293,20 @@ namespace SharpMC.API
 					objectArgs[k] = value;
 					continue;
 				}
+
 				if (parameter.ParameterType == typeof (double))
 				{
 					double value;
 					if (!double.TryParse(args[i], out value)) return false;
 					objectArgs[k] = value;
 					continue;
+				}
+
+				if (parameter.ParameterType == typeof (Player))
+				{
+					Player value;
+					value = player.Level.OnlinePlayers.Find(player1 => player1.Username == args[i]);
+					objectArgs[k] = value;
 				}
 
 				return false;
