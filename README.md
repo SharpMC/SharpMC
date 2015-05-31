@@ -1,4 +1,6 @@
 # SharpMC
+
+[![Join the chat at https://gitter.im/kennyvv/SharpMC](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/kennyvv/SharpMC?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
 Build state:        ![alt tag](https://ci.appveyor.com/api/projects/status/qlviwrgvaeqa1u06?svg=true)
 
 What is SharpMC?
