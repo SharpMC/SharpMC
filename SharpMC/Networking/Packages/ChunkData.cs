@@ -30,7 +30,7 @@ namespace SharpMC.Networking.Packages
 	internal class ChunkData : Package<ChunkData>
 	{
 		public ChunkColumn Chunk;
-		public bool Queee = true;
+		public bool Queee = false;
 		public bool Unloader = false;
 
 		public ChunkData(ClientWrapper client) : base(client)
