@@ -50,7 +50,7 @@ namespace SharpMC.Worlds.Standard.Decorators
 									chunk.SetBlock(x, y, z, BlockFactory.GetBlockById(82)); //Clay
 								else
 								{
-									chunk.SetBlock(x, y, z, BlockFactory.GetBlockById(12)); //Sand
+									chunk.SetBlock(x, y, z, new BlockSand()); //Sand
 									chunk.BiomeId[x*16 + z] = 16; //Beach
 								}
 							}
@@ -58,7 +58,7 @@ namespace SharpMC.Worlds.Standard.Decorators
 							{
 								if (y < StandardWorldProvider.WaterLevel - 3)
 								{
-									chunk.SetBlock(x, y + 1, z, BlockFactory.GetBlockById(8)); //Water
+									chunk.SetBlock(x, y + 1, z, new BlockFlowingWater()); //Water
 									chunk.BiomeId[x*16 + z] = 0; //Ocean
 								}
 							}

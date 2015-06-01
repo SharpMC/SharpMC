@@ -99,6 +99,7 @@
     <Compile Include="Blocks\Stationairy.cs" />
     <Compile Include="Blocks\BlockStationaryLava.cs" />
     <Compile Include="Crafting\RecipeFactory.cs" />
+    <Compile Include="Crafting\RecipeOakWoodPlank.cs" />
     <Compile Include="Crafting\RecipeStick.cs" />
     <Compile Include="Entity\ActivatedTNTEntity.cs" />
     <Compile Include="Entity\SnowballEntity.cs" />
@@ -126,6 +127,7 @@
     <Compile Include="Items\ItemWaterBucket.cs" />
     <Compile Include="LevelManager.cs" />
     <Compile Include="Networking\Packages\ClickWindow.cs" />
+    <Compile Include="Networking\Packages\CloseWindow.cs" />
     <Compile Include="Networking\Packages\EncryptionRequest.cs" />
     <Compile Include="Networking\Packages\EncryptionResponse.cs" />
     <Compile Include="Networking\Packages\EntityEquipment.cs" />

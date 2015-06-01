@@ -24,6 +24,7 @@
 
 using System.Collections.Generic;
 using System.IO;
+using SharpMC.Items;
 
 namespace SharpMC.Utils
 {
@@ -32,6 +33,15 @@ namespace SharpMC.Utils
 		private readonly string[] _recipe = new string[3];
 		private readonly Dictionary<char, ItemStack> recipeDictionary = new Dictionary<char, ItemStack>();
 		private readonly ItemStack resultItem;
+
+		internal CraftingRecipe(Item[] items)
+		{
+			foreach (var item in items)
+			{
+				ItemStack i = new ItemStack(item, 1);
+				recipeDictionary.Add(' ', i);
+			}
+		}
 
 		public CraftingRecipe(ItemStack result, object[] recipe)
 		{
@@ -73,12 +83,11 @@ namespace SharpMC.Utils
 
 		public override bool Equals(object obj)
 		{
-			/*var recipe = obj as CraftingRecipe;
+			var recipe = obj as CraftingRecipe;
 			if (recipe != null)
 			{
-				CraftingRecipe cr = recipe;
-				return (cr.resultItem == resultItem && cr.itemRecipe == itemRecipe && cr.craftingValues == craftingValues);
-			}*/
+				if (recipe.recipeDictionary.Values == this.recipeDictionary.Values) return true;
+			}
 			return false;
 		}
 	}

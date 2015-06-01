@@ -30,10 +30,13 @@ namespace SharpMC.Crafting
 {
 	public class RecipeFactory
 	{
-		private static readonly List<CraftingRecipe> CraftingRecipes = new List<CraftingRecipe>
+		private static readonly List<CraftingRecipe> CraftingRecipes = new List<CraftingRecipe>();
+
+		public static void Init()
 		{
-			new RecipeStick()
-		};
+			AddRecipe(new RecipeStick());
+			AddRecipe(new RecipeOakWoodPlank());
+		}
 
 		public static void AddRecipe(CraftingRecipe recipe)
 		{

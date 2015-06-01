@@ -22,6 +22,7 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 
+using System;
 using System.Net.Sockets;
 using SharpMC.Entity;
 using SharpMC.Utils;
@@ -65,14 +66,25 @@ namespace SharpMC.Networking
 		{
 			foreach (var i in level.OnlinePlayers)
 			{
-				if (!self && i == source)
+				try
 				{
-					continue;
+					if (i != null && i.Wrapper != null & i.Wrapper.TcpClient != null)
+					{
+						if (!self && i == source)
+						{
+							continue;
+						}
+						Client = i.Wrapper;
+						Buffer = new DataBuffer(i.Wrapper);
+						Stream = i.Wrapper.TcpClient.GetStream(); //Exception here. (sometimes)
+						Write();
+					}
 				}
-				Client = i.Wrapper;
-				Buffer = new DataBuffer(i.Wrapper);
-				Stream = i.Wrapper.TcpClient.GetStream();
-				Write();
+				catch (Exception ex)
+				{
+					//Catch any exception just to be sure the broadcast works.
+					//TODO: Fix the exception.
+				}
 			}
 		}
 	}

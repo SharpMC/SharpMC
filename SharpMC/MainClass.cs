@@ -27,6 +27,7 @@ using System.IO;
 using System.Security.Permissions;
 using System.Threading;
 using SharpMC.API;
+using SharpMC.Crafting;
 using SharpMC.Networking;
 using SharpMC.Networking.Packages;
 using SharpMC.Utils;
@@ -117,9 +118,11 @@ namespace SharpMC
 			Globals.Rand = new Random();
 #if DEBUG
 			Globals.Debug = true;
-#else
-			Globals.Debug = false;
 #endif
+
+			ConsoleFunctions.WriteInfoLine("Loading default crafting recipes...");
+			RecipeFactory.Init();
+
 			ConsoleFunctions.WriteInfoLine("Loading plugins...");
 			Globals.PluginManager = new PluginManager();
 			Globals.PluginManager.LoadPlugins();

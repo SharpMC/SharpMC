@@ -32,7 +32,7 @@ namespace SharpMC.Crafting
 	{
 		public RecipeStick()
 			: base(
-				new ItemStack(new ItemStick(), 1), new object[] {"W  ", "W  ", "   ", 'W', new ItemStack(new OakWoodPlank(), 1)})
+				new ItemStack(new ItemStick(), 4), new object[] {"W  ", "W  ", "   ", 'W', new ItemStack(new OakWoodPlank(), 1)})
 		{
 		}
 	}
