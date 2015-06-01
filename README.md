@@ -1,12 +1,13 @@
 # SharpMC
 
-[![Join the chat at https://gitter.im/kennyvv/SharpMC](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/kennyvv/SharpMC?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-Build state:        ![alt tag](https://ci.appveyor.com/api/projects/status/qlviwrgvaeqa1u06?svg=true)
+[![Join the chat at https://gitter.im/SharpMC/SharpMC](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/SharpMC/SharpMC?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
+![alt tag](https://ci.appveyor.com/api/projects/status/qlviwrgvaeqa1u06?svg=true)
 
 What is SharpMC?
 ----------------
-SharpMC is a Minecraft server written in C# made by Kennyvv
+SharpMC is a Minecraft server written in C# made by Kennyvv.
 It is a hobby project, the goal is to create an alternative to Spigot/Bukkit/Sponge.
+Recently BuddyTex joined me, so please welcome him to the team! :)
 
 Will this be an alternative to Spigot/Bukkit/Sponge?
 -------------------------------------------------------
@@ -16,13 +17,13 @@ However, it is my goal! But you have to understand that i'm on my own working on
 
 Current Specs
 -----------------
-  - Protocol: #47
-  - World Format: Anvil (Supported) | Main: Custom
-  - Multiworld: Planned
+  - Protocol: #47 (1.8.*)
+  - World Format: Custom
+  - Multiworld: Supported
   - Physics: Partial
   - Entities: Partial
-  - Scripting: Planned - C# plugin system (Maybe LUA)
-  - Platforms: Windows. Mac & Linux using Mono.
+  - Scripting: C# Plugins
+  - Platforms: Windows. (Mac & Linux using Mono.)
 
 Made possible by
 ------------------
