@@ -104,6 +104,7 @@
     <Compile Include="Entity\ActivatedTNTEntity.cs" />
     <Compile Include="Entity\SnowballEntity.cs" />
     <Compile Include="Entity\Throwable.cs" />
+    <Compile Include="Enums\ChatColors.cs" />
     <Compile Include="Enums\DamageCause.cs" />
     <Compile Include="Enums\EntityAction.cs" />
     <Compile Include="Enums\GameStateReason.cs" />

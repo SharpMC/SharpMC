@@ -224,6 +224,9 @@ namespace SharpMC.Entity
 				Reason = GameStateReason.ChangeGameMode,
 				Value = (float)target
 			}.Write();
+
+			ConsoleFunctions.WriteInfoLine(Username + "'s gamemode was changed to " + target.ToString("D"));
+			SendChat("Your gamemode was changed to " + target.ToString(), ChatColor.Yellow);
 		}
 
 		public void Respawn()
@@ -304,6 +307,11 @@ namespace SharpMC.Entity
 		public void SendChat(string message)
 		{
 			new ChatMessage(Wrapper) {Message = message}.Write();
+		}
+
+		public void SendChat(string message, ChatColor color)
+		{
+			SendChat("§" + color.Value + message);
 		}
 
 		public void SavePlayer()

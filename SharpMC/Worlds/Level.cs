@@ -284,7 +284,7 @@ namespace SharpMC.Worlds
 
 			if (player != null)
 			{
-				player.SendChat("TPS: \\u00A7" + color + exact);
+				player.SendChat("TPS: §" + color + exact);
 				player.SendChat("Miliseconds in Tick: " + average + "ms");
 			}
 
