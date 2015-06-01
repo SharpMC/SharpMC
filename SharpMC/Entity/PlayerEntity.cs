@@ -255,18 +255,20 @@ namespace SharpMC.Entity
 
 		internal void InitializePlayer()
 		{
-			LoadPlayer();
-			var chunks = Level.Generator.GenerateChunks((ViewDistance*21), KnownPosition.X, KnownPosition.Z, _chunksUsed, this);
-			new MapChunkBulk(Wrapper) {Chunks = chunks.ToArray()}.Write();
-			//InitializePlayer();
+			if (LoadPlayer())
+			{
+				var chunks = Level.Generator.GenerateChunks((ViewDistance*21), KnownPosition.X, KnownPosition.Z, _chunksUsed, this);
+				new MapChunkBulk(Wrapper) {Chunks = chunks.ToArray()}.Write();
 
-			new PlayerPositionAndLook(Wrapper).Write();
+				new PlayerPositionAndLook(Wrapper) {X = KnownPosition.X, Y = KnownPosition.Y, Z = KnownPosition.Z, Yaw = KnownPosition.Yaw, Pitch = KnownPosition.Pitch}.Write();
 
-			IsSpawned = true;
-			Level.AddPlayer(this);
-			Wrapper.Player.Inventory.SendToPlayer();
-			BroadcastEquipment();
-			Globals.PluginManager.HandlePlayerJoin(this);
+				IsSpawned = true;
+				Level.AddPlayer(this);
+				Wrapper.Player.Inventory.SendToPlayer();
+				BroadcastEquipment();
+				SetGamemode(Gamemode);
+				Globals.PluginManager.HandlePlayerJoin(this);
+			}
 		}
 
 		public void SendChunksForKnownPosition(bool force = false)
@@ -309,6 +311,13 @@ namespace SharpMC.Entity
 			byte[] health = HealthManager.Export();
 			byte[] inv = Inventory.GetBytes();
 			MSGBuffer buffer = new MSGBuffer(new byte[0]);
+			buffer.WriteDouble(KnownPosition.X);
+			buffer.WriteDouble(KnownPosition.Y);
+			buffer.WriteDouble(KnownPosition.Z);
+			buffer.WriteFloat(KnownPosition.Yaw);
+			buffer.WriteFloat(KnownPosition.Pitch);
+			buffer.WriteBool(KnownPosition.OnGround);
+			buffer.WriteVarInt((int)Gamemode);
 			buffer.WriteVarInt(health.Length);
 			foreach (byte b in health)
 			{
@@ -324,13 +333,21 @@ namespace SharpMC.Entity
 			File.WriteAllBytes("Players/" + Username + ".pdata", data);
 		}
 
-		public void LoadPlayer()
+		public bool LoadPlayer()
 		{
 			if (File.Exists("Players/" + Username + ".pdata"))
 			{
 				byte[] data = File.ReadAllBytes("Players/" + Username + ".pdata");
 				data = Globals.Decompress(data);
 				MSGBuffer reader = new MSGBuffer(data);
+				double x = reader.ReadDouble();
+				double y = reader.ReadDouble();
+				double z = reader.ReadDouble();
+				float yaw = reader.ReadFloat();
+				float pitch = reader.ReadFloat();
+				bool onGround = reader.ReadBool();
+				KnownPosition = new PlayerLocation(x,y,z) {Yaw = yaw, Pitch = pitch, OnGround = onGround};
+				Gamemode = (Gamemode) reader.ReadVarInt();
 				int healthLength = reader.ReadVarInt();
 				byte[] healthData = reader.Read(healthLength);
 				int inventoryLength = reader.ReadVarInt();
@@ -338,6 +355,7 @@ namespace SharpMC.Entity
 				HealthManager.Import(healthData);
 				Inventory.Import(inventoryData);
 			}
+			return true;
 		}
 	}
 }

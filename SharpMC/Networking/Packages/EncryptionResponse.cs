@@ -87,8 +87,9 @@ namespace SharpMC.Networking.Packages
 
 					new JoinGame(Client) {Player = Client.Player}.Write();
 					new SpawnPosition(Client).Write();
+
 					Client.StartKeepAliveTimer();
-					Client.Player.SendChunksFromPosition();
+					Client.Player.InitializePlayer();
 				}
 				else
 				{

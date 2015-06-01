@@ -57,6 +57,7 @@ namespace SharpMC
 				"LevelType=standard",
 				"WorldName=world",
 				"Debug=false",
+				"Online-mode=false",
 				"Seed=",
 				"Motd="
 			};
@@ -100,6 +101,8 @@ namespace SharpMC
 			Globals.Motd = Config.GetProperty("motd", "");
 
 			Globals.Debug = Config.GetProperty("debug", false);
+
+			Globals.Offlinemode = !Config.GetProperty("Online-mode", false);
 
 			ConsoleFunctions.WriteInfoLine("Checking files...");
 

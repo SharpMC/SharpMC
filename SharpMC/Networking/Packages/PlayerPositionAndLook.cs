@@ -28,9 +28,11 @@ namespace SharpMC.Networking.Packages
 {
 	internal class PlayerPositionAndLook : Package<PlayerPositionAndLook>
 	{
-		public int X = (int) Globals.LevelManager.MainLevel.Generator.GetSpawnPoint().X;
-		public int Y = (int) Globals.LevelManager.MainLevel.Generator.GetSpawnPoint().Y;
-		public int Z = (int) Globals.LevelManager.MainLevel.Generator.GetSpawnPoint().Z;
+		public double X = Globals.LevelManager.MainLevel.Generator.GetSpawnPoint().X;
+		public double Y = Globals.LevelManager.MainLevel.Generator.GetSpawnPoint().Y;
+		public double Z = Globals.LevelManager.MainLevel.Generator.GetSpawnPoint().Z;
+		public float Yaw = 0f;
+		public float Pitch = 0f;
 
 		public PlayerPositionAndLook(ClientWrapper client) : base(client)
 		{
@@ -52,8 +54,8 @@ namespace SharpMC.Networking.Packages
 				Buffer.WriteDouble(X);
 				Buffer.WriteDouble(Y);
 				Buffer.WriteDouble(Z);
-				Buffer.WriteFloat(0f);
-				Buffer.WriteFloat(0f);
+				Buffer.WriteFloat(Yaw);
+				Buffer.WriteFloat(Pitch);
 				Buffer.WriteByte(111);
 				Buffer.FlushData();
 			}
