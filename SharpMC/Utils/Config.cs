@@ -135,7 +135,7 @@ namespace SharpMC.Utils
 						return Gamemode.Creative;
 					case "0":
 					case "survival":
-						return Gamemode.Surival;
+						return Gamemode.Survival;
 					case "2":
 					case "adventure":
 						return Gamemode.Adventure;

@@ -202,7 +202,7 @@ namespace SharpMC.Entity
 		{
 			if (IsSpawned)
 			{
-				if (Gamemode == Gamemode.Surival)
+				if (Gamemode == Gamemode.Survival)
 				{
 					HealthManager.OnTick();
 				}
