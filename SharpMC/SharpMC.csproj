@@ -105,6 +105,7 @@
     <Compile Include="Entity\Throwable.cs" />
     <Compile Include="Enums\DamageCause.cs" />
     <Compile Include="Enums\EntityAction.cs" />
+    <Compile Include="Enums\GameStateReason.cs" />
     <Compile Include="Items\ItemBucket.cs" />
     <Compile Include="Items\ItemCoal.cs" />
     <Compile Include="Items\ItemDiamond.cs" />
@@ -309,5 +310,8 @@
       <ProductName>.NET Framework 3.5 SP1</ProductName>
       <Install>false</Install>
     </BootstrapperPackage>
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="Networking\Packages\ChangeGameState.cs" />
   </ItemGroup>
 </Project>

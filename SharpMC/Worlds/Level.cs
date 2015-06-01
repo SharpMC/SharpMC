@@ -320,7 +320,7 @@ namespace SharpMC.Worlds
 				entity.OnTick();
 			}
 
-			if (_saveTick == 1500)
+			if (_saveTick == 3000)
 			{
 				_saveTick = 0;
 				ConsoleFunctions.WriteInfoLine("Saving chunks");
@@ -330,8 +330,8 @@ namespace SharpMC.Worlds
 				sw.Stop();
 				ConsoleFunctions.WriteInfoLine("Saving chunks took: " + sw.ElapsedMilliseconds + "MS");
 
-				ConsoleFunctions.WriteInfoLine("Clearing chunk cache...");
-				Generator.ClearCache(); //Clear chunk cache
+				//ConsoleFunctions.WriteInfoLine("Clearing chunk cache...");
+				//Generator.ClearCache(); //Clear chunk cache
 				GC.Collect(); //Collect garbage
 			}
 			else

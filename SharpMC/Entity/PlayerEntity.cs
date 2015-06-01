@@ -218,6 +218,12 @@ namespace SharpMC.Entity
                 Gamemode = Gamemode,
                 UUID = Uuid
             }.Broadcast(Level);
+
+			new ChangeGameState(Wrapper)
+			{
+				Reason = GameStateReason.ChangeGameMode,
+				Value = (float)target
+			}.Write();
 		}
 
 		public void Respawn()
