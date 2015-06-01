@@ -66,12 +66,7 @@ namespace SharpMC
 
 			Console.CancelKeyPress += delegate
 			{
-				ConsoleFunctions.WriteInfoLine("Shutting down...");
-				Disconnect.Broadcast("§fServer shutting down...");
-				ConsoleFunctions.WriteInfoLine("Disabling plugins...");
-				Globals.PluginManager.DisablePlugins();
-				ConsoleFunctions.WriteInfoLine("Saving chunks...");
-				Globals.LevelManager.MainLevel.SaveChunks();
+				Globals.StopServer("Server shutting down!");
 			};
 
 			ConsoleFunctions.WriteInfoLine("Loading config file...");

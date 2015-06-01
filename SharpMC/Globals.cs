@@ -29,30 +29,31 @@ using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
 using SharpMC.API;
+using SharpMC.Networking.Packages;
 
 namespace SharpMC
 {
-	internal class Globals
+	public class Globals
 	{
-		public static int ProtocolVersion = 47;
+		internal static int ProtocolVersion = 47;
 
-		public static bool UseCompression = false;
+		internal static bool UseCompression = false;
 			//Please note, this is not working yet! (not planning on adding any where soon)
 
 		//public static Level Level;
-		public static LevelManager LevelManager;
-		public static string Seed = "default";
+		internal static LevelManager LevelManager;
+		internal static string Seed = "default";
 		public static bool Debug = false;
-		public static string ProtocolName = "SharpMC 1.8";
-		public static string MCProtocolName = "Minecraft 1.8";
+		internal static string ProtocolName = "SharpMC 1.8";
+		internal static string MCProtocolName = "Minecraft 1.8";
 		public static string Motd = "";
 		public static bool Offlinemode = true; //Not finished, stuck xd
-		public static bool EncryptionEnabled = true; //Only applies if offlinemode is disabled :p
+		internal static bool EncryptionEnabled = true; //Only applies if offlinemode is disabled :p
 		//public static bool CompressionEnabled = false;
 
-		public static PluginManager PluginManager;
-		public static RSAParameters ServerKey;
-		public static Random Rand;
+		internal static PluginManager PluginManager;
+		internal static RSAParameters ServerKey;
+		internal static Random Rand;
 
 		public static void BroadcastChat(string message)
 		{
@@ -201,6 +202,17 @@ namespace SharpMC
 			}
 			return sb.ToString();
 		}
+
+        public static void StopServer(string stopMsg)
+        {
+            ConsoleFunctions.WriteInfoLine("Shutting down...");
+            Disconnect.Broadcast("§f" + stopMsg);
+            ConsoleFunctions.WriteInfoLine("Disabling plugins...");
+            PluginManager.DisablePlugins();
+            ConsoleFunctions.WriteInfoLine("Saving chunks...");
+            LevelManager.MainLevel.SaveChunks();
+
+        }
 
 		#endregion
 	}
