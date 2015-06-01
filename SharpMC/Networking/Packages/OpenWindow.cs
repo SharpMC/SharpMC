@@ -38,7 +38,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x2D;
 		}
 
-		public OpenWindow(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public OpenWindow(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x2D;
 		}

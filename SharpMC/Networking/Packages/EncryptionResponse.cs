@@ -37,7 +37,7 @@ namespace SharpMC.Networking.Packages
 			ReadId = 0x01;
 		}
 
-		public EncryptionResponse(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public EncryptionResponse(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			ReadId = 0x01;
 		}

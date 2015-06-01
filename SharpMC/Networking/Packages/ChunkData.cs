@@ -38,7 +38,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x21;
 		}
 
-		public ChunkData(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public ChunkData(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x21;
 		}

@@ -38,7 +38,7 @@ namespace SharpMC.Networking.Packages
 			ReadId = 0x02;
 		}
 
-		public UseEntity(ClientWrapper client, MSGBuffer buffer)
+		public UseEntity(ClientWrapper client, DataBuffer buffer)
 			: base(client, buffer)
 		{
 			ReadId = 0x02;

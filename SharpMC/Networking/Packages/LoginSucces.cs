@@ -37,7 +37,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x02;
 		}
 
-		public LoginSucces(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public LoginSucces(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			ReadId = 0x02;
 			SendId = 0x02;

@@ -41,7 +41,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x23;
 		}
 
-		public BlockChange(ClientWrapper client, MSGBuffer buffer)
+		public BlockChange(ClientWrapper client, DataBuffer buffer)
 			: base(client, buffer)
 		{
 			SendId = 0x23;
@@ -69,10 +69,10 @@ namespace SharpMC.Networking.Packages
 						continue;
 					}
 					//Client = i.Wrapper;
-					//Buffer = new MSGBuffer(i.Wrapper);
+					//Buffer = new DataBuffer(i.Wrapper);
 					//_stream = i.Wrapper.TCPClient.GetStream();
 					//Write();
-					new BlockChange(i.Wrapper, new MSGBuffer(i.Wrapper))
+					new BlockChange(i.Wrapper, new DataBuffer(i.Wrapper))
 					{
 						BlockId = block.Id,
 						MetaData = block.Metadata,

@@ -33,7 +33,7 @@ namespace SharpMC.Networking.Packages
 			ReadId = 0x17;
 		}
 
-		public PluginMessage(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public PluginMessage(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			ReadId = 0x17;
 		}

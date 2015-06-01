@@ -38,7 +38,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x39;
 		}
 
-		public PlayerAbilities(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public PlayerAbilities(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			ReadId = 0x13;
 			SendId = 0x39;

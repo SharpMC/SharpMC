@@ -39,7 +39,7 @@ namespace SharpMC.Networking.Packages
 			ReadId = 0x13;
 		}
 
-		public StevenBug(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public StevenBug(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			ReadId = 0x13;
 		}

@@ -37,7 +37,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x26;
 		}
 
-		public MapChunkBulk(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public MapChunkBulk(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x26;
 		}

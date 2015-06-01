@@ -40,7 +40,7 @@ namespace SharpMC.Networking.Packages
 			ReadId = 0x06;
 		}
 
-		public PlayerPositionAndLook(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public PlayerPositionAndLook(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x08;
 			ReadId = 0x06;

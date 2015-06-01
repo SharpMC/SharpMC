@@ -45,7 +45,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x2A;
 		}
 
-		public Particle(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public Particle(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x2A;
 		}

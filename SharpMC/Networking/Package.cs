@@ -36,10 +36,10 @@ namespace SharpMC.Networking
 			if (!client.TcpClient.Connected) return;
 			Client = client;
 			Stream = client.TcpClient.GetStream();
-			Buffer = new MSGBuffer(client);
+			Buffer = new DataBuffer(client);
 		}
 
-		protected Package(ClientWrapper client, MSGBuffer buffer)
+		protected Package(ClientWrapper client, DataBuffer buffer)
 		{
 			if (!client.TcpClient.Connected) return;
 			Client = client;
@@ -48,7 +48,7 @@ namespace SharpMC.Networking
 		}
 
 		public NetworkStream Stream { get; private set; }
-		public MSGBuffer Buffer { get; private set; }
+		public DataBuffer Buffer { get; private set; }
 		public ClientWrapper Client { get; private set; }
 		public int ReadId { get; set; }
 		public int SendId { get; set; }
@@ -70,7 +70,7 @@ namespace SharpMC.Networking
 					continue;
 				}
 				Client = i.Wrapper;
-				Buffer = new MSGBuffer(i.Wrapper);
+				Buffer = new DataBuffer(i.Wrapper);
 				Stream = i.Wrapper.TcpClient.GetStream();
 				Write();
 			}
@@ -83,7 +83,7 @@ namespace SharpMC.Networking
 		{
 		}
 
-		protected Package(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		protected Package(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 		}
 	}

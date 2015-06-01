@@ -33,7 +33,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x47;
 		}
 
-		public PlayerListHeaderFooter(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public PlayerListHeaderFooter(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x47;
 		}

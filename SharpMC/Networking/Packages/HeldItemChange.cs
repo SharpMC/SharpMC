@@ -34,7 +34,7 @@ namespace SharpMC.Networking.Packages
 			ReadId = 0x09;
 		}
 
-		public HeldItemChange(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public HeldItemChange(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x09;
 			ReadId = 0x09;

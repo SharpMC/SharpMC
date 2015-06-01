@@ -33,7 +33,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x05;
 		}
 
-		public SpawnPosition(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public SpawnPosition(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x05;
 		}

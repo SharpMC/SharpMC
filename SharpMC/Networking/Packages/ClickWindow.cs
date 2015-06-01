@@ -33,7 +33,7 @@ namespace SharpMC.Networking.Packages
 			ReadId = 0x0E;
 		}
 
-		public ClickWindow(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public ClickWindow(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			ReadId = 0x0E;
 		}

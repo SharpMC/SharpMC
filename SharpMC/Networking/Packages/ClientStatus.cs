@@ -34,7 +34,7 @@ namespace SharpMC.Networking.Packages
 			ReadId = 0x16;
 		}
 
-		public ClientStatus(ClientWrapper client, MSGBuffer buffer)
+		public ClientStatus(ClientWrapper client, DataBuffer buffer)
 			: base(client, buffer)
 		{
 			ReadId = 0x16;

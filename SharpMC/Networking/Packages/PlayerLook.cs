@@ -33,7 +33,7 @@ namespace SharpMC.Networking.Packages
 			ReadId = 0x05;
 		}
 
-		public PlayerLook(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public PlayerLook(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			ReadId = 0x05;
 		}

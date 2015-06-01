@@ -35,7 +35,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x13;
 		}
 
-		public DestroyEntities(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public DestroyEntities(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x13;
 		}

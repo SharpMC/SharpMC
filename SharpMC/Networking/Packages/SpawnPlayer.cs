@@ -37,7 +37,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x0C;
 		}
 
-		public SpawnPlayer(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public SpawnPlayer(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x0C;
 		}

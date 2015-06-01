@@ -35,7 +35,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x00;
 		}
 
-		public KeepAlive(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public KeepAlive(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			ReadId = 0x00;
 			SendId = 0x00;

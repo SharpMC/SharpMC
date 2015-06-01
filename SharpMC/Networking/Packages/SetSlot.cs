@@ -40,7 +40,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x2F;
 		}
 
-		public SetSlot(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public SetSlot(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x2F;
 		}

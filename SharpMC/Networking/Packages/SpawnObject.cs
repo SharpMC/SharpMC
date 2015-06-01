@@ -46,7 +46,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x0E;
 		}
 
-		public SpawnObject(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public SpawnObject(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x0E;
 		}

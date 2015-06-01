@@ -31,11 +31,11 @@ namespace SharpMC.Networking.Packages
 		public ItemStack[] ItemStacks;
 		public byte WindowId = 0;
 
-		public WindowItems(ClientWrapper client) : this(client, new MSGBuffer(client))
+		public WindowItems(ClientWrapper client) : this(client, new DataBuffer(client))
 		{
 		}
 
-		public WindowItems(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public WindowItems(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x30;
 		}

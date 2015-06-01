@@ -33,7 +33,7 @@ namespace SharpMC.Networking.Packages
 			ReadId = 0x01;
 		}
 
-		public Ping(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public Ping(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			ReadId = 0x01;
 		}

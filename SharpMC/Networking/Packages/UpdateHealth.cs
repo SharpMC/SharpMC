@@ -33,7 +33,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x06;
 		}
 
-		public UpdateHealth(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public UpdateHealth(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x06;
 		}

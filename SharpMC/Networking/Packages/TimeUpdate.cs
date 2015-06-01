@@ -36,7 +36,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x03;
 		}
 
-		public TimeUpdate(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public TimeUpdate(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x03;
 		}

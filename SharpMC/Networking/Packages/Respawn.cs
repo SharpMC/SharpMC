@@ -38,7 +38,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x07;
 		}
 
-		public Respawn(ClientWrapper client, MSGBuffer buffer)
+		public Respawn(ClientWrapper client, DataBuffer buffer)
 			: base(client, buffer)
 		{
 			SendId = 0x07;

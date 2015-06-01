@@ -37,7 +37,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x02;
 		}
 
-		public ChatMessage(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public ChatMessage(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			ReadId = 0x01;
 			SendId = 0x02;

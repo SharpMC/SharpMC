@@ -41,7 +41,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x18;
 		}
 
-		public EntityTeleport(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public EntityTeleport(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x18;
 		}

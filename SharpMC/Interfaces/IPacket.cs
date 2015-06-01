@@ -30,7 +30,7 @@ namespace SharpMC.Interfaces
 	{
 		int PacketID { get; }
 		bool IsPlayePacket { get; }
-		void Read(ClientWrapper state, MSGBuffer buffer, object[] Arguments);
-		void Write(ClientWrapper state, MSGBuffer buffer, object[] Arguments);
+		void Read(ClientWrapper state, DataBuffer buffer, object[] Arguments);
+		void Write(ClientWrapper state, DataBuffer buffer, object[] Arguments);
 	}
 }

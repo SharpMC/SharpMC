@@ -38,7 +38,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x29;
 		}
 
-		public SoundEffect(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public SoundEffect(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x29;
 		}

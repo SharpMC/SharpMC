@@ -37,7 +37,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x40;
 		}
 
-		public Disconnect(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public Disconnect(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x40;
 		}
@@ -65,10 +65,10 @@ namespace SharpMC.Networking.Packages
 							continue;
 						}
 						//Client = i.Wrapper;
-						//Buffer = new MSGBuffer(i.Wrapper);
+						//Buffer = new DataBuffer(i.Wrapper);
 						//_stream = i.Wrapper.TCPClient.GetStream();
 						//Write();
-						new Disconnect(i.Wrapper, new MSGBuffer(i.Wrapper)) {Reason = reason}.Write();
+						new Disconnect(i.Wrapper, new DataBuffer(i.Wrapper)) { Reason = reason }.Write();
 					}
 				}
 
@@ -79,10 +79,10 @@ namespace SharpMC.Networking.Packages
 						continue;
 					}
 					//Client = i.Wrapper;
-					//Buffer = new MSGBuffer(i.Wrapper);
+					//Buffer = new DataBuffer(i.Wrapper);
 					//_stream = i.Wrapper.TCPClient.GetStream();
 					//Write();
-					new Disconnect(i.Wrapper, new MSGBuffer(i.Wrapper)) {Reason = reason}.Write();
+					new Disconnect(i.Wrapper, new DataBuffer(i.Wrapper)) { Reason = reason }.Write();
 				}
 			}
 			else
@@ -94,10 +94,10 @@ namespace SharpMC.Networking.Packages
 						continue;
 					}
 					//Client = i.Wrapper;
-					//Buffer = new MSGBuffer(i.Wrapper);
+					//Buffer = new DataBuffer(i.Wrapper);
 					//_stream = i.Wrapper.TCPClient.GetStream();
 					//Write();
-					new Disconnect(i.Wrapper, new MSGBuffer(i.Wrapper)) {Reason = reason}.Write();
+					new Disconnect(i.Wrapper, new DataBuffer(i.Wrapper)) { Reason = reason }.Write();
 				}
 			}
 		}

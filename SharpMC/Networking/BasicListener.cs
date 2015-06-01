@@ -72,7 +72,7 @@ namespace SharpMC.Networking
 
 					if (receivedData > 0)
 					{
-						var buf = new MSGBuffer(Client);
+						var buf = new DataBuffer(Client);
 
 						if (Client.Decrypter != null)
 						{
@@ -128,5 +128,50 @@ namespace SharpMC.Networking
 			Client.TcpClient.Close();
 			Thread.CurrentThread.Abort();
 		}
+
+	/*	private void HandleClientNetwork(TcpClient client)
+		{
+			var wrapper = new ClientWrapper(client);
+			while (true)
+			{
+				try
+				{
+					DataBuffer stream = new DataBuffer(client.Client);
+					int packetLength = stream.ReadVarInt();
+					stream.TotalDataLength = packetLength;
+
+					int packetId = stream.ReadVarInt();
+					
+					if (!new PackageFactory(wrapper, stream).Handle(packetId))
+					{
+						ConsoleFunctions.WriteWarningLine("Unknown packet received! \"0x" + packetId.ToString("X2") + "\"");
+					}
+					stream.Dispose();
+				}
+				catch(Exception ex)
+				{
+					wrapper.ThreadPool.KillAllThreads();
+					//Exception, disconnect!
+					ConsoleFunctions.WriteDebugLine("Error: \n" + ex);
+					new Disconnect(wrapper)
+					{
+						Reason = "§4SharpMC\n§fServer threw an exception!\n\nFor the nerdy people: \n" + ex.Message
+					}.Write();
+					break;
+				}
+			}
+			//Close the connection with the client. :)
+			wrapper.ThreadPool.KillAllThreads();
+			wrapper.StopKeepAliveTimer();
+
+			if (wrapper.Player != null)
+			{
+				wrapper.Player.SavePlayer();
+				wrapper.Player.Level.RemovePlayer(wrapper.Player);
+				wrapper.Player.Level.BroadcastPlayerRemoval(wrapper);
+			}
+			wrapper.TcpClient.Close();
+			Thread.CurrentThread.Abort();
+		}*/
 	}
 }

@@ -38,7 +38,7 @@ namespace SharpMC.Networking.Packages
 			ReadId = 0x0A;
 		}
 
-		public Animation(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public Animation(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x0B;
 			ReadId = 0x0A;

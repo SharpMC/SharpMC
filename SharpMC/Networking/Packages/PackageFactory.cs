@@ -30,12 +30,12 @@ namespace SharpMC.Networking.Packages
 	public class PackageFactory
 	{
 		private readonly ClientWrapper _client;
-		private MSGBuffer _buffer;
+		private DataBuffer _buffer;
 		public List<Package> LoginPackages = new List<Package>();
 		public List<Package> PingPackages = new List<Package>();
 		public List<Package> PlayPackages = new List<Package>();
 
-		public PackageFactory(ClientWrapper client, MSGBuffer buffer)
+		public PackageFactory(ClientWrapper client, DataBuffer buffer)
 		{
 			#region Ping
 

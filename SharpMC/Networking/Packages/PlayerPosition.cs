@@ -33,7 +33,7 @@ namespace SharpMC.Networking.Packages
 			ReadId = 0x04;
 		}
 
-		public PlayerPosition(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public PlayerPosition(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			ReadId = 0x04;
 		}

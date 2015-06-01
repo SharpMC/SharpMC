@@ -35,7 +35,7 @@ namespace SharpMC.Networking.Packages
 			ReadId = 0x07;
 		}
 
-		public PlayerDigging(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public PlayerDigging(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			ReadId = 0x07;
 		}

@@ -37,7 +37,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x15;
 		}
 
-		public EntityRelativeMove(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public EntityRelativeMove(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x15;
 		}

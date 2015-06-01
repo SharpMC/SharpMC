@@ -35,7 +35,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x46;
 		}
 
-		public SetCompression(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public SetCompression(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x46;
 		}

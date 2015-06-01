@@ -39,7 +39,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x00;
 		}
 
-		public Handshake(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public Handshake(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			ReadId = 0x00;
 			SendId = 0x00;

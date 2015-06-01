@@ -37,7 +37,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x01;
 		}
 
-		public EncryptionRequest(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public EncryptionRequest(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x01;
 		}

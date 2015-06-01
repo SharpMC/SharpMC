@@ -1,89 +1,63 @@
-﻿// Distrubuted under the MIT license
-// ===================================================
-// SharpMC uses the permissive MIT license.
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the “Software”), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software
-// 
-// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-// 
-// ©Copyright Kenny van Vulpen - 2015
-
-using System;
-using System.Collections.Generic;
+﻿using System;
 using System.IO;
 using System.Net;
+using System.Net.Sockets;
 using System.Text;
-using Ionic.Zlib;
 
 namespace SharpMC.Utils
 {
-	public class MSGBuffer
+	/// <summary>
+	/// Currently only used for reading.
+	/// </summary>
+	public class MCStream : NetworkStream
 	{
-		private readonly ClientWrapper _client;
-		public byte[] BufferedData = new byte[4096];
-		private int LastByte;
-		public int Size = 0;
-
-		public MSGBuffer(ClientWrapper client)
+		public int TotalDataLength = 0;
+		public MCStream(Socket socket) : base(socket)
 		{
-			_client = client;
 		}
 
-		public MSGBuffer(byte[] data)
+		public MCStream(Socket socket, bool ownsSocket) : base(socket, ownsSocket)
 		{
-			BufferedData = data;
 		}
 
-		public void Dispose()
+		public MCStream(Socket socket, FileAccess access) : base(socket, access)
 		{
-			BufferedData = null;
-			LastByte = 0;
 		}
 
-		#region Reader
-
-		public int ReadByte()
+		public MCStream(Socket socket, FileAccess access, bool ownsSocket) : base(socket, access, ownsSocket)
 		{
-			var returnData = BufferedData[LastByte];
-			LastByte++;
-			return returnData;
+		
 		}
 
+		public void FlushData(bool quee = false)
+		{
+			Flush();
+		}
+
+		#region Read
 		public byte[] Read(int Length)
 		{
 			var Buffered = new byte[Length];
-			Array.Copy(BufferedData, LastByte, Buffered, 0, Length);
-			LastByte += Length;
+			Read(Buffered, 0, Length);
+			if (BitConverter.IsLittleEndian) Array.Reverse(Buffered);
+
 			return Buffered;
 		}
-
 
 		public int ReadInt()
 		{
 			var Dat = Read(4);
 			var Value = BitConverter.ToInt32(Dat, 0);
-			return IPAddress.NetworkToHostOrder(Value);
+			return Value;
+			//return IPAddress.NetworkToHostOrder(Value);
 		}
 
 		public float ReadFloat()
 		{
 			var Almost = Read(4);
 			var f = BitConverter.ToSingle(Almost, 0);
-			return NetworkToHostOrder(f);
+			//return NetworkToHostOrder(f);
+			return f;
 		}
 
 		public bool ReadBool()
@@ -97,7 +71,8 @@ namespace SharpMC.Utils
 		public double ReadDouble()
 		{
 			var AlmostValue = Read(8);
-			return NetworkToHostOrder(AlmostValue);
+			//return NetworkToHostOrder(AlmostValue);
+			return BitConverter.ToDouble(AlmostValue, 0);
 		}
 
 		public int ReadVarInt()
@@ -107,13 +82,13 @@ namespace SharpMC.Utils
 			int b;
 			while (((b = ReadByte()) & 0x80) == 0x80)
 			{
-				value |= (b & 0x7F) << (size++*7);
+				value |= (b & 0x7F) << (size++ * 7);
 				if (size > 5)
 				{
 					throw new IOException("VarInt too long. Hehe that's punny.");
 				}
 			}
-			return value | ((b & 0x7F) << (size*7));
+			return value | ((b & 0x7F) << (size * 7));
 		}
 
 		public long ReadVarLong()
@@ -123,26 +98,28 @@ namespace SharpMC.Utils
 			int b;
 			while (((b = ReadByte()) & 0x80) == 0x80)
 			{
-				value |= (b & 0x7F) << (size++*7);
+				value |= (b & 0x7F) << (size++ * 7);
 				if (size > 10)
 				{
 					throw new IOException("VarLong too long. That's what she said.");
 				}
 			}
-			return value | ((b & 0x7F) << (size*7));
+			return value | ((b & 0x7F) << (size * 7));
 		}
 
 		public short ReadShort()
 		{
 			var Da = Read(2);
 			var D = BitConverter.ToInt16(Da, 0);
-			return IPAddress.NetworkToHostOrder(D);
+			//return IPAddress.NetworkToHostOrder(D);
+			return D;
 		}
 
 		public ushort ReadUShort()
 		{
 			var Da = Read(2);
-			return NetworkToHostOrder(BitConverter.ToUInt16(Da, 0));
+			//return NetworkToHostOrder(BitConverter.ToUInt16(Da, 0));
+			return BitConverter.ToUInt16(Da, 0);
 		}
 
 		public ushort[] ReadUShort(int count)
@@ -154,7 +131,8 @@ namespace SharpMC.Utils
 				var D = BitConverter.ToUInt16(Da, 0);
 				us[i] = D;
 			}
-			return NetworkToHostOrder(us);
+			//return NetworkToHostOrder(us);
+			return us;
 			//return IPAddress.NetworkToHostOrder (D);
 		}
 
@@ -194,7 +172,8 @@ namespace SharpMC.Utils
 		public long ReadLong()
 		{
 			var l = Read(8);
-			return IPAddress.NetworkToHostOrder(BitConverter.ToInt64(l, 0));
+			//return IPAddress.NetworkToHostOrder(BitConverter.ToInt64(l, 0));
+			return BitConverter.ToInt64(l, 0);
 		}
 
 		public Vector3 ReadPosition()
@@ -239,31 +218,15 @@ namespace SharpMC.Utils
 				Array.Reverse(net);
 			return BitConverter.ToUInt16(net, 0);
 		}
-
 		#endregion
 
-		#region Writer
-
-		public byte[] ExportWriter
-		{
-			get { return bffr.ToArray(); }
-		}
-
-		private readonly List<byte> bffr = new List<byte>();
-
-		public void Write(byte[] Data, int Offset, int Length)
-		{
-			for (var i = 0; i < Length; i++)
-			{
-				bffr.Add(Data[i + Offset]);
-			}
-		}
+		#region Write
 
 		public void Write(byte[] Data)
 		{
 			foreach (var i in Data)
 			{
-				bffr.Add(i);
+				WriteByte(i);
 			}
 		}
 
@@ -280,10 +243,10 @@ namespace SharpMC.Utils
 		{
 			while ((Integer & -128) != 0)
 			{
-				bffr.Add((byte) (Integer & 127 | 128));
-				Integer = (int) (((uint) Integer) >> 7);
+				WriteByte((byte)(Integer & 127 | 128));
+				Integer = (int)(((uint)Integer) >> 7);
 			}
-			bffr.Add((byte) Integer);
+			WriteByte((byte)Integer);
 		}
 
 		public void WriteVarLong(long i)
@@ -291,10 +254,10 @@ namespace SharpMC.Utils
 			var Fuck = i;
 			while ((Fuck & ~0x7F) != 0)
 			{
-				bffr.Add((byte) ((Fuck & 0x7F) | 0x80));
+				WriteByte((byte)((Fuck & 0x7F) | 0x80));
 				Fuck >>= 7;
 			}
-			bffr.Add((byte) Fuck);
+			WriteByte((byte)Fuck);
 		}
 
 		public void WriteInt(int Data)
@@ -320,11 +283,6 @@ namespace SharpMC.Utils
 		{
 			var UShortData = BitConverter.GetBytes(Data);
 			Write(UShortData);
-		}
-
-		public void WriteByte(byte Data)
-		{
-			bffr.Add(Data);
 		}
 
 		public void WriteBool(bool Data)
@@ -356,51 +314,6 @@ namespace SharpMC.Utils
 			Array.Copy(guid, 8, Long2, 0, 8);
 			Write(Long1);
 			Write(Long2);
-		}
-
-		/// <summary>
-		///     Flush all data to the TCPClient NetworkStream.
-		/// </summary>
-		public void FlushData(bool quee = false)
-		{
-			try
-			{
-				var AllData = bffr.ToArray();
-				bffr.Clear();
-
-				if (Globals.UseCompression && _client.PacketMode == PacketMode.Play)
-				{
-					var mg = new MSGBuffer(_client); //ToWriteAllData
-					var compressed = ZlibStream.CompressBuffer(AllData);
-
-					mg.WriteVarInt(compressed.Length);
-					mg.WriteVarInt(compressed.Length);
-
-					mg.Write(compressed);
-					_client.AddToQuee(mg.ExportWriter, quee);
-				}
-				else
-				{
-					WriteVarInt(AllData.Length);
-					var Buffer = bffr.ToArray();
-
-					var data = new List<byte>();
-					foreach (var i in Buffer)
-					{
-						data.Add(i);
-					}
-					foreach (var i in AllData)
-					{
-						data.Add(i);
-					}
-					_client.AddToQuee(data.ToArray(), quee);
-				}
-				bffr.Clear();
-			}
-			catch (Exception ex)
-			{
-				ConsoleFunctions.WriteErrorLine("Failed to send a packet!\n" + ex);
-			}
 		}
 
 		private byte[] HostToNetworkOrder(double d)

@@ -36,7 +36,7 @@ namespace SharpMC.Networking.Packages
 			ReadId = 0x08;
 		}
 
-		public PlayerBlockPlacement(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public PlayerBlockPlacement(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			ReadId = 0x08;
 		}

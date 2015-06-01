@@ -36,7 +36,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x0D;
 		}
 
-		public CollectItem(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public CollectItem(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x0D;
 		}

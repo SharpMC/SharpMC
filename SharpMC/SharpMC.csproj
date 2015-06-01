@@ -138,6 +138,7 @@
     <Compile Include="Utils\HealthManager.cs" />
     <Compile Include="Enums\LVLType.cs" />
     <Compile Include="Utils\JavaHexDigest.cs" />
+    <Compile Include="Utils\MCStream.cs" />
     <Compile Include="Utils\MyThreadPool.cs" />
     <Compile Include="Networking\Package.cs" />
     <Compile Include="Utils\OpenSimplex.cs" />
@@ -212,7 +213,7 @@
     <Compile Include="Globals.cs" />
     <Compile Include="Utils\ClientWrapper.cs" />
     <Compile Include="Entity\PlayerEntity.cs" />
-    <Compile Include="Utils\MSGBuffer.cs" />
+    <Compile Include="Utils\DataBuffer.cs" />
     <Compile Include="Enums\Gamemode.cs" />
     <Compile Include="Utils\SecurityUtils.cs" />
     <Compile Include="Utils\OLDVector3.cs" />

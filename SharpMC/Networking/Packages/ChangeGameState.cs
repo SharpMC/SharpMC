@@ -12,7 +12,7 @@ namespace SharpMC.Networking.Packages
 		    SendId = 0x2B;
 	    }
 
-	    public ChangeGameState(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+	    public ChangeGameState(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 	    {
 			SendId = 0x2B;
 	    }

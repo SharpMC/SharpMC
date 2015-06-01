@@ -38,7 +38,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x1c;
 		}
 
-		public EntityMetadata(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public EntityMetadata(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x1c;
 		}

@@ -46,7 +46,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x04;
 		}
 
-		public EntityEquipment(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public EntityEquipment(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x04;
 		}

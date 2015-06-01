@@ -40,7 +40,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x38;
 		}
 
-		public PlayerListItem(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public PlayerListItem(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x38;
 		}

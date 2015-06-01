@@ -36,7 +36,7 @@ namespace SharpMC.Networking.Packages
 			SendId = 0x01;
 		}
 
-		public JoinGame(ClientWrapper client, MSGBuffer buffer) : base(client, buffer)
+		public JoinGame(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x01;
 		}
