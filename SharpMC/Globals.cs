@@ -29,6 +29,7 @@ using System.IO.Compression;
 using System.Security.Cryptography;
 using System.Text;
 using SharpMC.API;
+using SharpMC.Networking;
 using SharpMC.Networking.Packages;
 
 namespace SharpMC
@@ -41,6 +42,7 @@ namespace SharpMC
 			//Please note, this is not working yet! (not planning on adding any where soon)
 
 		//public static Level Level;
+		internal static BasicListener ServerListener;
 		internal static LevelManager LevelManager;
 		internal static string Seed = "default";
 		public static bool Debug = false;
@@ -203,15 +205,21 @@ namespace SharpMC
 			return sb.ToString();
 		}
 
-        public static void StopServer(string stopMsg)
+        public static void StopServer(string stopMsg = "Shutting down server...")
         {
             ConsoleFunctions.WriteInfoLine("Shutting down...");
             Disconnect.Broadcast("§f" + stopMsg);
+	        ConsoleFunctions.WriteInfoLine("Saving all player data...");
+	        foreach (var player in LevelManager.GetAllPlayers())
+	        {
+		        player.SavePlayer();
+	        }
             ConsoleFunctions.WriteInfoLine("Disabling plugins...");
             PluginManager.DisablePlugins();
             ConsoleFunctions.WriteInfoLine("Saving chunks...");
-            LevelManager.MainLevel.SaveChunks();
-
+	        LevelManager.SaveAllChunks();
+	        ServerListener.StopListenening();
+	        Environment.Exit(0);
         }
 
 		#endregion

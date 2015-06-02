@@ -125,7 +125,9 @@ namespace SharpMC
 			ConsoleFunctions.WriteInfoLine("Enabling plugins...");
 			Globals.PluginManager.EnablePlugins(Globals.LevelManager);
 
-			new Thread(() => new BasicListener().ListenForClients()).Start();
+			Globals.ServerListener = new BasicListener();
+
+			new Thread(() => Globals.ServerListener.ListenForClients()).Start();
 		}
 
 		private static void UnhandledException(object sender, UnhandledExceptionEventArgs args)

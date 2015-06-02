@@ -98,5 +98,24 @@ namespace SharpMC
 			player.KnownPosition = MainLevel.GetSpawnPoint();
 			player.SendChunksForKnownPosition(true);
 		}
+
+		public void SaveAllChunks()
+		{
+			foreach (Level lvl in GetLevels())
+			{
+				lvl.SaveChunks();
+			}
+			MainLevel.SaveChunks();
+		}
+
+		public Player[] GetAllPlayers()
+		{
+			List<Player> players = new List<Player>();
+			foreach (Level lvl in GetLevels())
+			{
+				players.AddRange(lvl.OnlinePlayers);
+			}
+			return players.ToArray();
+		}
 	}
 }

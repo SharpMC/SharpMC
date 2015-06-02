@@ -56,6 +56,11 @@ namespace SharpMC.Networking
 			}
 		}
 
+		public void StopListenening()
+		{
+			_serverListener.Stop();
+		}
+
 		private void HandleClientCommNew(object client)
 		{
 			var tcpClient = (TcpClient) client;
