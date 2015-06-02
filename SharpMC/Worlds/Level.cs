@@ -49,6 +49,7 @@ namespace SharpMC.Worlds
 			StartTimeOfDayTimer();
 			Entities = new List<Entity.Entity>();
 			Dimension = 0;
+            timetorain = Globals.Rand.Next(24000, 96000);
 		}
 
 		internal int Dimension { get; set; }
@@ -62,6 +63,8 @@ namespace SharpMC.Worlds
 		public IWorldProvider Generator { get; set; }
 		internal List<Entity.Entity> Entities { get; private set; }
 		internal ConcurrentDictionary<Vector3, int> BlockWithTicks { get; private set; }
+        public int timetorain { get; set; }
+        public bool Raining { get; set; }
 
 		#region APISpecific
 
@@ -291,6 +294,44 @@ namespace SharpMC.Worlds
 			return (int) exact;
 		}
 
+        private void WeatherTick()
+        {
+            if(timetorain == 0 && !Raining)
+            {
+                Raining = true;
+                foreach (var player in OnlinePlayers.ToArray())
+                {
+                    new ChangeGameState(player.Wrapper)
+                    {
+                        Reason = GameStateReason.BeginRaining,
+                        Value = (float)1
+                    }.Write();
+                }
+                timetorain = Globals.Rand.Next(12000, 36000);
+            }
+            else if(!Raining)
+            {
+                --timetorain;
+            }
+            else if(Raining && timetorain == 0)
+            {
+                Raining = false;
+                foreach (var player in OnlinePlayers.ToArray())
+                {
+                    new ChangeGameState(player.Wrapper)
+                    {
+                        Reason = GameStateReason.EndRaining,
+                        Value = (float)1
+                    }.Write();
+                }
+                timetorain = Globals.Rand.Next(24000, 96000);
+            }
+            else if(Raining)
+            {
+                --timetorain;
+            }
+        }
+
 		private int _clockTick = 0;
 		private int _saveTick;
 
@@ -299,6 +340,8 @@ namespace SharpMC.Worlds
 			_sw.Start();
 
 			DayTick();
+
+            WeatherTick();
 
 			foreach (var blockEvent in BlockWithTicks.ToArray())
 			{

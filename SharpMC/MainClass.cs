@@ -47,6 +47,7 @@ namespace SharpMC
 			var currentDomain = AppDomain.CurrentDomain;
 			currentDomain.UnhandledException += UnhandledException;
 
+			Globals.Rand = new Random();
 			Console.Title = Globals.ProtocolName;
 
 			Config.ConfigFile = "server.properties";
@@ -110,7 +111,6 @@ namespace SharpMC
 
 			ConsoleFunctions.WriteInfoLine("Setting up some variables...");
 			Globals.ServerKey = PacketCryptography.GenerateKeyPair();
-			Globals.Rand = new Random();
 #if DEBUG
 			Globals.Debug = true;
 #endif
