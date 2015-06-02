@@ -347,5 +347,15 @@ namespace SharpMC.Worlds
 		}
 
 		#endregion
+
+        public int GetWorldTime()
+        {
+            return CurrentWorldTime;
+        }
+
+        public void SetWorldTime(int time)
+        {
+            CurrentWorldTime = time;
+        }
 	}
 }
