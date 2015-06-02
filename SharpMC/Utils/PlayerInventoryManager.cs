@@ -79,6 +79,15 @@ namespace SharpMC.Utils
 			_craftingItems = new Item[4];
 		}
 
+		public bool HasItems(ItemStack[] items)
+		{
+			foreach (var item in items)
+			{
+				if (!HasItem(item.ItemId)) return false;
+			}
+			return true;
+		}
+
 		public void SetSlot(int slot, short itemId, byte metadata, byte itemcount)
 		{
 			/*if (slot <= 4 && slot >= 1) //Crafting (Not yet working)

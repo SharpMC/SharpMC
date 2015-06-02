@@ -30,6 +30,7 @@ using System.Linq;
 using System.Reflection;
 using System.Text;
 using SharpMC.Entity;
+using SharpMC.Enums;
 using SharpMC.Utils;
 
 namespace SharpMC.API
@@ -114,11 +115,10 @@ namespace SharpMC.API
 				if (parameters.Length > 0) sb.Append(" ");
 				for (int i = 0; i < parameters.Length; i++)
 				{
-					if (i != 0) //Parameter 0 is source. do not add to the usage!!!
-					{
-						var parameter = parameters[i];
-						sb.AppendFormat("<{0}> ", parameter.Name);
-					}
+					var parameter = parameters[i];
+					if (i == 0 && parameter.ParameterType == typeof (Player)) continue; //source player
+					
+					sb.AppendFormat(parameter.IsOptional ? "[{0}] " : "<{0}> ", parameter.Name);
 				}
 				commandAttribute.Usage = sb.ToString().Trim();
 
@@ -222,22 +222,41 @@ namespace SharpMC.API
 			var parameters = method.GetParameters();
 
 			var addLenght = 0;
+			int requiredParameters = 0;
 			if (parameters.Length > 0 && parameters[0].ParameterType == typeof (Player))
 			{
 				addLenght = 1;
+				requiredParameters = -1;
 			}
 
-			if (parameters.Length != args.Length + addLenght)
+			bool hasRequiredParameters = true;
+
+			foreach (var param in parameters)
+			{
+				if (!param.IsOptional) requiredParameters++;
+			}
+
+			if (args.Length < requiredParameters) hasRequiredParameters = false;
+
+			if (!hasRequiredParameters)
+			{
+				player.SendChat("Invalid command usage!", ChatColor.Red);
+				player.SendChat(commandAttribute.Usage, ChatColor.Red);
+				player.SendChat("Required: " + requiredParameters + " | Given: " +args.Length);
+				return true;
+			}
+
+			/*if (parameters.Length != args.Length + addLenght)
             {
                 player.SendChat("Invalid parameters specified!");
                 player.SendChat(commandAttribute.Usage);
                 return true;
-            }
+            }*/
 
 
 			var objectArgs = new object[parameters.Length];
 
-			for (var k = 0; k < parameters.Length; k++)
+			for (var k = 0; k < args.Length + addLenght; k++)
 			{
 				var parameter = parameters[k];
 				var i = k - addLenght;

@@ -62,6 +62,7 @@ namespace SharpMC.Items
 		public byte Metadata { get; set; }
 		public bool IsUsable { get; set; }
 		public int MaxStackSize { get; set; }
+		public ItemStack[] CraftingItems { get; set; } 
 
 		protected short FuelEfficiency
 		{

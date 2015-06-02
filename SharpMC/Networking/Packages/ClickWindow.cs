@@ -22,6 +22,8 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 
+using SharpMC.Blocks;
+using SharpMC.Items;
 using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
@@ -49,16 +51,51 @@ namespace SharpMC.Networking.Packages
 				var Mode = (byte) Buffer.ReadByte();
 
 				var ItemId = Buffer.ReadShort();
+
+				byte ItemCount = 1;
+				short ItemDamage = 0;
+				byte Nbt = 0;
+
+				if (Slot >= 1 && Slot <= 4) return; //We don't actually use that :)
+
 				if (ItemId != -1)
 				{
-					var ItemCount = (byte) Buffer.ReadByte();
-					var ItemDamage = Buffer.ReadShort();
-					var Nbt = (byte) Buffer.ReadByte();
+					ItemCount = (byte) Buffer.ReadByte();
+					ItemDamage = Buffer.ReadShort();
+					Nbt = (byte) Buffer.ReadByte();
 					if (Nbt != 0)
 					{
 						//NBT Data found
 					}
+				}
 
+				if (Slot == 0) //Crafting output.
+				{
+					var item = ItemFactory.GetItemById(ItemId);
+					if (item.CraftingItems != null) //Valid
+					{
+						if (Client.Player.Inventory.HasItems(item.CraftingItems))
+						{
+							Client.Player.Inventory.AddItem(ItemId, (byte)ItemDamage, ItemCount);
+						}
+					}
+					else
+					{
+						var block = BlockFactory.GetBlockById((ushort)ItemId);
+						if (block.CraftingItems != null) //valid
+						{
+							if (Client.Player.Inventory.HasItems(block.CraftingItems))
+							{
+								Client.Player.Inventory.AddItem(ItemId, (byte)ItemDamage, ItemCount);
+							}
+						}
+					}
+					return;
+				}
+
+				if (ItemId != -1)
+				{
+					
 					if (Client.Player.Inventory.GetSlot(Slot).ItemId == ItemId) //Is the information true?
 					{
 						Client.Player.Inventory.SetSlot(Slot, -1, 0, 0);
