@@ -238,25 +238,17 @@ namespace SharpMC.API
 
 			if (args.Length < requiredParameters) hasRequiredParameters = false;
 
-			if (!hasRequiredParameters)
+			if (!hasRequiredParameters || args.Length > (parameters.Length - addLenght))
 			{
 				player.SendChat("Invalid command usage!", ChatColor.Red);
 				player.SendChat(commandAttribute.Usage, ChatColor.Red);
-				player.SendChat("Required: " + requiredParameters + " | Given: " +args.Length);
 				return true;
 			}
 
-			/*if (parameters.Length != args.Length + addLenght)
-            {
-                player.SendChat("Invalid parameters specified!");
-                player.SendChat(commandAttribute.Usage);
-                return true;
-            }*/
-
-
 			var objectArgs = new object[parameters.Length];
 
-			for (var k = 0; k < args.Length + addLenght; k++)
+			int length = args.Length + addLenght;
+			for (var k = 0; k < length; k++)
 			{
 				var parameter = parameters[k];
 				var i = k - addLenght;

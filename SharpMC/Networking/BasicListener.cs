@@ -35,6 +35,7 @@ namespace SharpMC.Networking
 	public class BasicListener
 	{
 		private TcpListener _serverListener = new TcpListener(IPAddress.Any, 25565);
+		private bool _listening = false;
 
 		public void ListenForClients()
 		{
@@ -42,15 +43,13 @@ namespace SharpMC.Networking
 			if (port != 25565) _serverListener = new TcpListener(IPAddress.Any, port);
 
 			_serverListener.Start();
+			_listening = true;
 			ConsoleFunctions.WriteServerLine("Ready for connections...");
 			ConsoleFunctions.WriteInfoLine("To shutdown the server safely press CTRL+C");
-			while (true)
+			while (_listening)
 			{
 				var client = _serverListener.AcceptTcpClient();
 				ConsoleFunctions.WriteDebugLine("A new connection has been made!");
-
-				//var clientThread = new Thread(HandleClientCommNew);
-				//clientThread.Start(client);
 
 				new Task((() => { HandleClientCommNew(client); })).Start(); //Task instead of Thread
 			}
@@ -58,6 +57,7 @@ namespace SharpMC.Networking
 
 		public void StopListenening()
 		{
+			_listening = false;
 			_serverListener.Stop();
 		}
 

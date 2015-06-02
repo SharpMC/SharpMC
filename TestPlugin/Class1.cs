@@ -21,7 +21,7 @@ namespace TestPlugin
 		[Command(Command = "o")]
 		public void OptionTest(Player player, string test, string test2 = "")
 		{
-			player.SendChat("Huray :)");
+			player.SendChat(String.Format("Test={0}, Test2={1}", test, test2));
 		}
     }
 }
