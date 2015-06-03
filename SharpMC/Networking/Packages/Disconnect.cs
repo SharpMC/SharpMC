@@ -28,7 +28,7 @@ using SharpMC.Worlds;
 
 namespace SharpMC.Networking.Packages
 {
-	internal class Disconnect : Package<Disconnect>
+	public class Disconnect : Package<Disconnect>
 	{
 		public string Reason = "";
 
