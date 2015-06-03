@@ -16,7 +16,7 @@ However, it is my goal! But you have to understand that i'm on my own working on
 
 Where can i find the latest build?
 ----------------------------------
-We provide a direct download link right here! [Download latest build](http://localhost:8080/job/SharpMC/lastSuccessfulBuild/artifact/*zip*/archive.zip)
+We provide a direct download link right here! [Download latest build](http://94.23.50.5:8080/job/SharpMC/lastSuccessfulBuild/artifact/*zip*/archive.zip)
 
 Current Specs
 -----------------
