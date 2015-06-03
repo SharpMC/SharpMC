@@ -31,6 +31,7 @@ using System.Text;
 using SharpMC.API;
 using SharpMC.Networking;
 using SharpMC.Networking.Packages;
+using SharpMC.Entity;
 
 namespace SharpMC
 {
@@ -57,13 +58,13 @@ namespace SharpMC
 		internal static RSAParameters ServerKey;
 		internal static Random Rand;
 
-		public static void BroadcastChat(string message)
+		public static void BroadcastChat(string message, Player sender = null)
 		{
 			foreach (var lvl in LevelManager.GetLevels())
 			{
-				lvl.BroadcastChat(message);
+				lvl.BroadcastChat(message, sender);
 			}
-			LevelManager.MainLevel.BroadcastChat(message);
+			LevelManager.MainLevel.BroadcastChat(message, sender);
 		}
 
 		public static int GetOnlineCount()
