@@ -107,17 +107,24 @@ namespace SharpMC.Worlds
 			BroadcastExistingPlayers(player.Wrapper);
 		}
 
-		public void BroadcastChat(string message, Player sender = null)
+		public void BroadcastChat(string message)
 		{
 			foreach (var i in OnlinePlayers)
 			{
-                if(sender != null && i == sender)
-                {
-                    continue;
-                }
 				new ChatMessage(i.Wrapper) {Message = @message}.Write();
 			}
 		}
+        public void BroadcastChat(string message, Player sender)
+        {
+            foreach (var i in OnlinePlayers)
+            {
+                if (i == sender)
+                {
+                    continue;
+                }
+                new ChatMessage(i.Wrapper) { Message = @message }.Write();
+            }
+        }
 
 		internal void BroadcastExistingPlayers(ClientWrapper caller)
 		{

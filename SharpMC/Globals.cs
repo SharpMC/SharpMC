@@ -58,14 +58,22 @@ namespace SharpMC
 		internal static RSAParameters ServerKey;
 		internal static Random Rand;
 
-		public static void BroadcastChat(string message, Player sender = null)
+		public static void BroadcastChat(string message)
 		{
 			foreach (var lvl in LevelManager.GetLevels())
 			{
-				lvl.BroadcastChat(message, sender);
+				lvl.BroadcastChat(message);
 			}
-			LevelManager.MainLevel.BroadcastChat(message, sender);
+			LevelManager.MainLevel.BroadcastChat(message);
 		}
+        public static void BroadcastChat(string message, Player sender)
+        {
+            foreach (var lvl in LevelManager.GetLevels())
+            {
+                lvl.BroadcastChat(message, sender);
+            }
+            LevelManager.MainLevel.BroadcastChat(message, sender);
+        }
 
 		public static int GetOnlineCount()
 		{
