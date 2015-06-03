@@ -322,6 +322,7 @@ namespace SharpMC.API
 					Player value;
 					value = player.Level.OnlinePlayers.Find(player1 => player1.Username == args[i]);
 					objectArgs[k] = value;
+                    continue;
 				}
 
 				return false;
