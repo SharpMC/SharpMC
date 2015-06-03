@@ -14,6 +14,9 @@ Will this be an alternative to Spigot/Bukkit/Sponge?
 I must honestly say, i doubt it. It is a hobby project, i don't have the time to work on it that much.
 However, it is my goal! But you have to understand that i'm on my own working on this so it might take some time...
 
+Where can i find the latest build?
+----------------------------------
+We provide a direct download link right here! [Download latest build](http://localhost:8080/job/SharpMC/lastSuccessfulBuild/artifact/*zip*/archive.zip)
 
 Current Specs
 -----------------
