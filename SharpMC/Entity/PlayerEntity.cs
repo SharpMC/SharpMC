@@ -21,7 +21,6 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-
 using System;
 using System.Collections.Generic;
 using System.IO;
@@ -312,6 +311,17 @@ namespace SharpMC.Entity
 		public void SendChat(string message, ChatColor color)
 		{
 			SendChat("§" + color.Value + message);
+		}
+
+		public void Kick(string reason)
+		{
+			new Disconnect(Wrapper) {Reason = reason}.Write();
+			SavePlayer();
+		}
+
+		public void Kick()
+		{
+			Kick("Unknown reason.");
 		}
 
 		public void SavePlayer()

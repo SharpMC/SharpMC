@@ -21,7 +21,6 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-
 using SharpMC.Blocks;
 using SharpMC.Worlds.Standard.Decorators;
 using SharpMC.Worlds.Standard.Structures;

@@ -21,7 +21,6 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Security.Cryptography;

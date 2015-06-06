@@ -21,14 +21,13 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-
 using SharpMC.Entity;
 using SharpMC.Utils;
 using SharpMC.Worlds;
 
 namespace SharpMC.Networking.Packages
 {
-	public class Disconnect : Package<Disconnect>
+	internal class Disconnect : Package<Disconnect>
 	{
 		public string Reason = "";
 

@@ -21,7 +21,6 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-
 using SharpMC.Worlds.Standard.Decorators;
 
 namespace SharpMC.Worlds.Standard.BiomeSystem

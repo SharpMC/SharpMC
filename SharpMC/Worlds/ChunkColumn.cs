@@ -21,7 +21,6 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-
 using System.IO;
 using System.Net;
 using SharpMC.Blocks;

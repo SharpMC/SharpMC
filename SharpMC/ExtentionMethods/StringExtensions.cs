@@ -21,7 +21,6 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
-
 namespace SharpMC.ExtentionMethods
 {
 	public static class StringExtensions
