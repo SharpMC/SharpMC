@@ -1,7 +1,7 @@
 # SharpMC
 
 [![Join the chat at https://gitter.im/SharpMC/SharpMC](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/SharpMC/SharpMC?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-![alt tag](https://ci.appveyor.com/api/projects/status/qlviwrgvaeqa1u06?svg=true)
+[![Build Status](http://94.23.50.5:8080/buildStatus/icon?job=SharpMC)](http://94.23.50.5:8080/job/SharpMC/)
 
 What is SharpMC?
 ----------------
