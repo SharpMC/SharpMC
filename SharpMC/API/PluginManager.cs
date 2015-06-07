@@ -1,17 +1,16 @@
-﻿// Distrubuted under the MIT license
+﻿#region Header
+
+// Distrubuted under the MIT license
 // ===================================================
 // SharpMC uses the permissive MIT license.
-// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the “Software”), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software
-// 
 // THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -19,21 +18,23 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-// 
 // ©Copyright Kenny van Vulpen - 2015
-using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.IO;
-using System.Linq;
-using System.Reflection;
-using System.Text;
-using SharpMC.Entity;
-using SharpMC.Enums;
-using SharpMC.Utils;
+#endregion
 
 namespace SharpMC.API
 {
+	using System;
+	using System.Collections.Generic;
+	using System.ComponentModel;
+	using System.IO;
+	using System.Linq;
+	using System.Reflection;
+	using System.Text;
+
+	using SharpMC.Entity;
+	using SharpMC.Enums;
+	using SharpMC.Utils;
+
 	public class PluginManager
 	{
 		private readonly Dictionary<MethodInfo, CommandAttribute> _pluginCommands =
@@ -46,12 +47,19 @@ namespace SharpMC.API
 
 		public List<object> Plugins
 		{
-			get { return _plugins; }
+			get
+			{
+				return this._plugins;
+			}
 		}
 
 		internal void LoadPlugins()
 		{
-			if (Config.GetProperty("PluginDisabled", false)) return;
+			if (Config.GetProperty("PluginDisabled", false))
+			{
+				return;
+			}
+
 			var pluginDirectory = Path.GetDirectoryName(new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath);
 			pluginDirectory = Config.GetProperty("PluginDirectory", pluginDirectory);
 			if (pluginDirectory != null)
@@ -66,22 +74,30 @@ namespace SharpMC.API
 					{
 						try
 						{
-							if (!type.IsDefined(typeof (PluginAttribute), true) && !typeof (IPlugin).IsAssignableFrom(type)) continue;
-							if (type.IsDefined(typeof (PluginAttribute), true))
+							if (!type.IsDefined(typeof(PluginAttribute), true) && !typeof(IPlugin).IsAssignableFrom(type))
 							{
-								var pluginAttribute = Attribute.GetCustomAttribute(type, typeof (PluginAttribute), true) as PluginAttribute;
+								continue;
+							}
+
+							if (type.IsDefined(typeof(PluginAttribute), true))
+							{
+								var pluginAttribute = Attribute.GetCustomAttribute(type, typeof(PluginAttribute), true) as PluginAttribute;
 								if (pluginAttribute != null)
 								{
-									if (!Config.GetProperty(pluginAttribute.PluginName + ".Enabled", true)) continue;
+									if (!Config.GetProperty(pluginAttribute.PluginName + ".Enabled", true))
+									{
+										continue;
+									}
 								}
 							}
+
 							var ctor = type.GetConstructor(Type.EmptyTypes);
 							if (ctor != null)
 							{
 								var plugin = ctor.Invoke(null);
-								_plugins.Add(plugin);
-								LoadCommands(type);
-								LoadOnPlayerJoin(type);
+								this._plugins.Add(plugin);
+								this.LoadCommands(type);
+								this.LoadOnPlayerJoin(type);
 							}
 						}
 						catch (Exception ex)
@@ -99,8 +115,11 @@ namespace SharpMC.API
 			var methods = type.GetMethods();
 			foreach (var method in methods)
 			{
-				var commandAttribute = Attribute.GetCustomAttribute(method, typeof (CommandAttribute), false) as CommandAttribute;
-				if (commandAttribute == null) continue;
+				var commandAttribute = Attribute.GetCustomAttribute(method, typeof(CommandAttribute), false) as CommandAttribute;
+				if (commandAttribute == null)
+				{
+					continue;
+				}
 
 				if (string.IsNullOrEmpty(commandAttribute.Command))
 				{
@@ -111,21 +130,32 @@ namespace SharpMC.API
 				sb.Append("/");
 				sb.Append(commandAttribute.Command);
 				var parameters = method.GetParameters();
-				if (parameters.Length > 0) sb.Append(" ");
-				for (int i = 0; i < parameters.Length; i++)
+				if (parameters.Length > 0)
+				{
+					sb.Append(" ");
+				}
+
+				for (var i = 0; i < parameters.Length; i++)
 				{
 					var parameter = parameters[i];
-					if (i == 0 && parameter.ParameterType == typeof (Player)) continue; //source player
-					
+					if (i == 0 && parameter.ParameterType == typeof(Player))
+					{
+						continue; // source player
+					}
+
 					sb.AppendFormat(parameter.IsOptional ? "[{0}] " : "<{0}> ", parameter.Name);
 				}
+
 				commandAttribute.Usage = sb.ToString().Trim();
 
 				var descriptionAttribute =
-					Attribute.GetCustomAttribute(method, typeof (DescriptionAttribute), false) as DescriptionAttribute;
-				if (descriptionAttribute != null) commandAttribute.Description = descriptionAttribute.Description;
+					Attribute.GetCustomAttribute(method, typeof(DescriptionAttribute), false) as DescriptionAttribute;
+				if (descriptionAttribute != null)
+				{
+					commandAttribute.Description = descriptionAttribute.Description;
+				}
 
-				_pluginCommands.Add(method, commandAttribute);
+				this._pluginCommands.Add(method, commandAttribute);
 			}
 		}
 
@@ -135,19 +165,25 @@ namespace SharpMC.API
 			foreach (var method in methods)
 			{
 				var commandAttribute =
-					Attribute.GetCustomAttribute(method, typeof (OnPlayerJoinAttribute), false) as OnPlayerJoinAttribute;
-				if (commandAttribute == null) continue;
+					Attribute.GetCustomAttribute(method, typeof(OnPlayerJoinAttribute), false) as OnPlayerJoinAttribute;
+				if (commandAttribute == null)
+				{
+					continue;
+				}
 
-				_pluginPlayerJoinEvents.Add(method, commandAttribute);
+				this._pluginPlayerJoinEvents.Add(method, commandAttribute);
 			}
 		}
 
 		internal void EnablePlugins(LevelManager levelman)
 		{
-			foreach (var plugin in _plugins)
+			foreach (var plugin in this._plugins)
 			{
 				var enablingPlugin = plugin as IPlugin;
-				if (enablingPlugin == null) continue;
+				if (enablingPlugin == null)
+				{
+					continue;
+				}
 
 				try
 				{
@@ -162,10 +198,13 @@ namespace SharpMC.API
 
 		internal void DisablePlugins()
 		{
-			foreach (var plugin in _plugins)
+			foreach (var plugin in this._plugins)
 			{
 				var enablingPlugin = plugin as IPlugin;
-				if (enablingPlugin == null) continue;
+				if (enablingPlugin == null)
+				{
+					continue;
+				}
 
 				try
 				{
@@ -183,18 +222,24 @@ namespace SharpMC.API
 			try
 			{
 				var commandText = message.Split(' ')[0];
-				message = message.Replace(commandText, "").Trim();
-				commandText = commandText.Replace("/", "").Replace(".", "");
+				message = message.Replace(commandText, string.Empty).Trim();
+				commandText = commandText.Replace("/", string.Empty).Replace(".", string.Empty);
 
-				var arguments = message.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
+				var arguments = message.Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries);
 
-				foreach (var handlerEntry in _pluginCommands)
+				foreach (var handlerEntry in this._pluginCommands)
 				{
 					var commandAttribute = handlerEntry.Value;
-					if (!commandText.Equals(commandAttribute.Command, StringComparison.InvariantCultureIgnoreCase)) continue;
+					if (!commandText.Equals(commandAttribute.Command, StringComparison.InvariantCultureIgnoreCase))
+					{
+						continue;
+					}
 
 					var method = handlerEntry.Key;
-					if (method == null) return;
+					if (method == null)
+					{
+						return;
+					}
 
 					var authorizationAttributes = method.GetCustomAttributes<PermissionAttribute>(true);
 					foreach (var authorizationAttribute in authorizationAttributes)
@@ -206,13 +251,17 @@ namespace SharpMC.API
 						}
 					}
 
-					if (ExecuteCommand(method, player, arguments, commandAttribute)) return;
+					if (this.ExecuteCommand(method, player, arguments, commandAttribute))
+					{
+						return;
+					}
 				}
 			}
 			catch (Exception ex)
 			{
 				ConsoleFunctions.WriteWarningLine(ex.ToString());
 			}
+
 			player.SendChat("\u00A7cUnknown command.");
 		}
 
@@ -221,21 +270,27 @@ namespace SharpMC.API
 			var parameters = method.GetParameters();
 
 			var addLenght = 0;
-			int requiredParameters = 0;
-			if (parameters.Length > 0 && parameters[0].ParameterType == typeof (Player))
+			var requiredParameters = 0;
+			if (parameters.Length > 0 && parameters[0].ParameterType == typeof(Player))
 			{
 				addLenght = 1;
 				requiredParameters = -1;
 			}
 
-			bool hasRequiredParameters = true;
+			var hasRequiredParameters = true;
 
 			foreach (var param in parameters)
 			{
-				if (!param.IsOptional) requiredParameters++;
+				if (!param.IsOptional)
+				{
+					requiredParameters++;
+				}
 			}
 
-			if (args.Length < requiredParameters) hasRequiredParameters = false;
+			if (args.Length < requiredParameters)
+			{
+				hasRequiredParameters = false;
+			}
 
 			if (!hasRequiredParameters || args.Length > (parameters.Length - addLenght))
 			{
@@ -246,89 +301,117 @@ namespace SharpMC.API
 
 			var objectArgs = new object[parameters.Length];
 
-			int length = args.Length + addLenght;
+			var length = args.Length + addLenght;
 			for (var k = 0; k < length; k++)
 			{
 				var parameter = parameters[k];
 				var i = k - addLenght;
 				if (k == 0 && addLenght == 1)
 				{
-					if (parameter.ParameterType == typeof (Player))
+					if (parameter.ParameterType == typeof(Player))
 					{
 						objectArgs[k] = player;
 						continue;
 					}
+
 					ConsoleFunctions.WriteWarningLine("Command method " + method.Name + " missing Player as first argument.");
 					return false;
 				}
 
-				if (parameter.ParameterType == typeof (string))
+				if (parameter.ParameterType == typeof(string))
 				{
 					objectArgs[k] = args[i];
 					continue;
 				}
 
-				if (parameter.ParameterType == typeof (byte))
+				if (parameter.ParameterType == typeof(byte))
 				{
 					byte value;
-					if (!byte.TryParse(args[i], out value)) return false;
+					if (!byte.TryParse(args[i], out value))
+					{
+						return false;
+					}
+
 					objectArgs[k] = value;
 					continue;
 				}
 
-				if (parameter.ParameterType == typeof (short))
+				if (parameter.ParameterType == typeof(short))
 				{
 					short value;
-					if (!short.TryParse(args[i], out value)) return false;
+					if (!short.TryParse(args[i], out value))
+					{
+						return false;
+					}
+
 					objectArgs[k] = value;
 					continue;
 				}
 
-				if (parameter.ParameterType == typeof (int))
+				if (parameter.ParameterType == typeof(int))
 				{
 					int value;
-					if (!int.TryParse(args[i], out value)) return false;
+					if (!int.TryParse(args[i], out value))
+					{
+						return false;
+					}
+
 					objectArgs[k] = value;
 					continue;
 				}
 
-				if (parameter.ParameterType == typeof (bool))
+				if (parameter.ParameterType == typeof(bool))
 				{
 					bool value;
-					if (!bool.TryParse(args[i], out value)) return false;
+					if (!bool.TryParse(args[i], out value))
+					{
+						return false;
+					}
+
 					objectArgs[k] = value;
 					continue;
 				}
 
-				if (parameter.ParameterType == typeof (float))
+				if (parameter.ParameterType == typeof(float))
 				{
 					float value;
-					if (!float.TryParse(args[i], out value)) return false;
+					if (!float.TryParse(args[i], out value))
+					{
+						return false;
+					}
+
 					objectArgs[k] = value;
 					continue;
 				}
 
-				if (parameter.ParameterType == typeof (double))
+				if (parameter.ParameterType == typeof(double))
 				{
 					double value;
-					if (!double.TryParse(args[i], out value)) return false;
+					if (!double.TryParse(args[i], out value))
+					{
+						return false;
+					}
+
 					objectArgs[k] = value;
 					continue;
 				}
 
-				if (parameter.ParameterType == typeof (Player))
+				if (parameter.ParameterType == typeof(Player))
 				{
 					Player value;
 					value = player.Level.OnlinePlayers.Find(player1 => player1.Username == args[i]);
 					objectArgs[k] = value;
-                    continue;
+					continue;
 				}
 
 				return false;
 			}
 
-			var pluginInstance = _plugins.FirstOrDefault(plugin => plugin.GetType() == method.DeclaringType);
-			if (pluginInstance == null) return false;
+			var pluginInstance = this._plugins.FirstOrDefault(plugin => plugin.GetType() == method.DeclaringType);
+			if (pluginInstance == null)
+			{
+				return false;
+			}
 
 			if (method.IsStatic)
 			{
@@ -336,7 +419,10 @@ namespace SharpMC.API
 			}
 			else
 			{
-				if (method.DeclaringType == null) return false;
+				if (method.DeclaringType == null)
+				{
+					return false;
+				}
 
 				method.Invoke(pluginInstance, objectArgs);
 			}
@@ -348,27 +434,34 @@ namespace SharpMC.API
 		{
 			try
 			{
-				foreach (var handler in _pluginPlayerJoinEvents)
+				foreach (var handler in this._pluginPlayerJoinEvents)
 				{
 					var atrib = handler.Value;
 
 					var method = handler.Key;
-					if (method == null) continue;
+					if (method == null)
+					{
+						continue;
+					}
+
 					if (method.IsStatic)
 					{
-						method.Invoke(null, new object[] {player});
+						method.Invoke(null, new object[] { player });
 					}
 					else
 					{
-						var pluginInstance = _plugins.FirstOrDefault(plugin => plugin.GetType() == method.DeclaringType);
-						if (pluginInstance == null) continue;
+						var pluginInstance = this._plugins.FirstOrDefault(plugin => plugin.GetType() == method.DeclaringType);
+						if (pluginInstance == null)
+						{
+							continue;
+						}
 
-						if (method.ReturnType == typeof (void))
+						if (method.ReturnType == typeof(void))
 						{
 							var parameters = method.GetParameters();
 							if (parameters.Length == 1)
 							{
-								method.Invoke(pluginInstance, new object[] {player});
+								method.Invoke(pluginInstance, new object[] { player });
 							}
 						}
 					}
@@ -376,8 +469,8 @@ namespace SharpMC.API
 			}
 			catch (Exception ex)
 			{
-				//For now we will just ignore this, not to big of a deal.
-				//Will have to think a bit more about this later on.
+				// For now we will just ignore this, not to big of a deal.
+				// Will have to think a bit more about this later on.
 				ConsoleFunctions.WriteWarningLine("Plugin error: " + ex);
 			}
 		}

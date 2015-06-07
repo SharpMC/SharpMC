@@ -1,17 +1,16 @@
+#region Header
+
 // Distrubuted under the MIT license
 // ===================================================
 // SharpMC uses the permissive MIT license.
-// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the “Software”), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software
-// 
 // THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -19,18 +18,20 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-// 
 // ©Copyright Kenny van Vulpen - 2015
-using System;
-using System.Security.Cryptography;
+#endregion
 
 namespace SharpMC.Utils
 {
+	using System;
+	using System.Security.Cryptography;
+
 	public class CryptoRandom : RandomNumberGenerator
 	{
 		private static RandomNumberGenerator r;
 
 		/// <summary>
+		/// Initializes a new instance of the <see cref="CryptoRandom"/> class. 
 		///     Creates an instance of the default implementation of a cryptographic random number generator that can be used to
 		///     generate random data.
 		/// </summary>
@@ -49,13 +50,16 @@ namespace SharpMC.Utils
 		}
 
 		/// <summary>
-		///     Returns a random number between 0.0 and 1.0.
+		/// Returns a random number between 0.0 and 1.0.
 		/// </summary>
+		/// <returns>
+		/// The <see cref="double"/>.
+		/// </returns>
 		public double NextDouble()
 		{
 			var b = new byte[4];
 			r.GetBytes(b);
-			return (double) BitConverter.ToUInt32(b, 0)/uint.MaxValue;
+			return (double)BitConverter.ToUInt32(b, 0) / uint.MaxValue;
 		}
 
 		/// <summary>
@@ -68,15 +72,18 @@ namespace SharpMC.Utils
 		/// </param>
 		public int Next(int minValue, int maxValue)
 		{
-			return (int) Math.Round(NextDouble()*(maxValue - minValue - 1)) + minValue;
+			return (int)Math.Round(this.NextDouble() * (maxValue - minValue - 1)) + minValue;
 		}
 
 		/// <summary>
-		///     Returns a nonnegative random number.
+		/// Returns a nonnegative random number.
 		/// </summary>
+		/// <returns>
+		/// The <see cref="int"/>.
+		/// </returns>
 		public int Next()
 		{
-			return Next(0, int.MaxValue);
+			return this.Next(0, int.MaxValue);
 		}
 
 		/// <summary>
@@ -88,7 +95,7 @@ namespace SharpMC.Utils
 		/// </param>
 		public int Next(int maxValue)
 		{
-			return Next(0, maxValue);
+			return this.Next(0, maxValue);
 		}
 	}
 }

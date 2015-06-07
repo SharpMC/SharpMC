@@ -1,17 +1,16 @@
-﻿// Distrubuted under the MIT license
+﻿#region Header
+
+// Distrubuted under the MIT license
 // ===================================================
 // SharpMC uses the permissive MIT license.
-// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the “Software”), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software
-// 
 // THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -19,13 +18,15 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-// 
 // ©Copyright Kenny van Vulpen - 2015
-using System;
-using SharpMC.Worlds.Standard.BiomeSystem;
+#endregion
 
 namespace SharpMC.Worlds.Standard.Decorators
 {
+	using System;
+
+	using SharpMC.Worlds.Standard.BiomeSystem;
+
 	public class TreeDecorator : ChunkDecorator
 	{
 		private void DecorateTrees(ChunkColumn chunk, BiomeBase biome)
@@ -45,12 +46,12 @@ namespace SharpMC.Worlds.Standard.Decorators
 			{
 				for (var pos = 0; pos < trees; pos++)
 				{
-					if (treeBasePositions[pos, 0] < 14 && treeBasePositions[pos, 0] > 4 && treeBasePositions[pos, 1] < 14 &&
-					    treeBasePositions[pos, 1] > 4)
+					if (treeBasePositions[pos, 0] < 14 && treeBasePositions[pos, 0] > 4 && treeBasePositions[pos, 1] < 14
+					    && treeBasePositions[pos, 1] > 4)
 					{
 						if (chunk.GetBlock(treeBasePositions[pos, 0], y + 1, treeBasePositions[pos, 1]) == biome.TopBlock.Id)
 						{
-							GenerateTree(chunk, treeBasePositions[pos, 0], y + 1, treeBasePositions[pos, 1], biome);
+							this.GenerateTree(chunk, treeBasePositions[pos, 0], y + 1, treeBasePositions[pos, 1], biome);
 						}
 					}
 				}
@@ -68,7 +69,7 @@ namespace SharpMC.Worlds.Standard.Decorators
 
 		public override void Decorate(ChunkColumn chunk, BiomeBase biome)
 		{
-			//DecorateTrees(chunk, biome);
+			// DecorateTrees(chunk, biome);
 		}
 
 		public override void Decorate(ChunkColumn chunk, BiomeBase biome, int x, int z)
@@ -81,7 +82,7 @@ namespace SharpMC.Worlds.Standard.Decorators
 					{
 						if (chunk.GetBlock(x, y + 1, z) == biome.TopBlock.Id)
 						{
-							GenerateTree(chunk, x, y + 1, z, biome);
+							this.GenerateTree(chunk, x, y + 1, z, biome);
 						}
 					}
 				}

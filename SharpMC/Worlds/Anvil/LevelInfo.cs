@@ -1,17 +1,16 @@
+#region Header
+
 // Distrubuted under the MIT license
 // ===================================================
 // SharpMC uses the permissive MIT license.
-// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the “Software”), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
-// 
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software
-// 
 // THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -19,15 +18,17 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
-// 
 // ©Copyright Kenny van Vulpen - 2015
-using System;
-using System.Linq.Expressions;
-using System.Reflection;
-using fNbt;
+#endregion
 
 namespace SharpMC.Worlds.Anvil
 {
+	using System;
+	using System.Linq.Expressions;
+	using System.Reflection;
+
+	using fNbt;
+
 	public class LevelInfo
 	{
 		public LevelInfo()
@@ -36,34 +37,54 @@ namespace SharpMC.Worlds.Anvil
 
 		public LevelInfo(NbtTag dataTag)
 		{
-			LoadFromNbt(dataTag);
+			this.LoadFromNbt(dataTag);
 		}
 
 		public int Version { get; private set; }
+
 		public bool Initialized { get; private set; }
+
 		public string LevelName { get; set; }
+
 		public string GeneratorName { get; set; }
+
 		public int GeneratorVersion { get; set; }
+
 		public string GeneratorOptions { get; set; }
+
 		public long RandomSeed { get; set; }
+
 		public bool MapFeatures { get; set; }
+
 		public long LastPlayed { get; set; }
+
 		public bool AllowCommands { get; set; }
+
 		public bool Hardcore { get; set; }
+
 		private int GameType { get; set; }
+
 		public long Time { get; set; }
+
 		public long DayTime { get; set; }
+
 		public int SpawnX { get; set; }
+
 		public int SpawnY { get; set; }
+
 		public int SpawnZ { get; set; }
+
 		public bool Raining { get; set; }
+
 		public int RainTime { get; set; }
+
 		public bool Thundering { get; set; }
+
 		public int ThunderTime { get; set; }
 
 		public T GetPropertyValue<T>(NbtTag tag, Expression<Func<T>> property)
 		{
-			var propertyInfo = ((MemberExpression) property.Body).Member as PropertyInfo;
+			var propertyInfo = ((MemberExpression)property.Body).Member as PropertyInfo;
 			if (propertyInfo == null)
 			{
 				throw new ArgumentException("The lambda expression 'property' should point to a valid Property");
@@ -75,7 +96,10 @@ namespace SharpMC.Worlds.Anvil
 				nbtTag = tag[LowercaseFirst(propertyInfo.Name)];
 			}
 
-			if (nbtTag == null) return default(T);
+			if (nbtTag == null)
+			{
+				return default(T);
+			}
 
 			var mex = property.Body as MemberExpression;
 			var target = Expression.Lambda(mex.Expression).Compile().DynamicInvoke();
@@ -87,15 +111,29 @@ namespace SharpMC.Worlds.Anvil
 				case NbtTagType.End:
 					break;
 				case NbtTagType.Byte:
-					if (propertyInfo.PropertyType == typeof (bool)) propertyInfo.SetValue(target, nbtTag.ByteValue == 1);
-					else propertyInfo.SetValue(target, nbtTag.ByteValue);
+					if (propertyInfo.PropertyType == typeof(bool))
+					{
+						propertyInfo.SetValue(target, nbtTag.ByteValue == 1);
+					}
+					else
+					{
+						propertyInfo.SetValue(target, nbtTag.ByteValue);
+					}
+
 					break;
 				case NbtTagType.Short:
 					propertyInfo.SetValue(target, nbtTag.ShortValue);
 					break;
 				case NbtTagType.Int:
-					if (propertyInfo.PropertyType == typeof (bool)) propertyInfo.SetValue(target, nbtTag.IntValue == 1);
-					else propertyInfo.SetValue(target, nbtTag.IntValue);
+					if (propertyInfo.PropertyType == typeof(bool))
+					{
+						propertyInfo.SetValue(target, nbtTag.IntValue == 1);
+					}
+					else
+					{
+						propertyInfo.SetValue(target, nbtTag.IntValue);
+					}
+
 					break;
 				case NbtTagType.Long:
 					propertyInfo.SetValue(target, nbtTag.LongValue);
@@ -123,12 +161,12 @@ namespace SharpMC.Worlds.Anvil
 					throw new ArgumentOutOfRangeException();
 			}
 
-			return (T) propertyInfo.GetValue(target);
+			return (T)propertyInfo.GetValue(target);
 		}
 
 		public T SetPropertyValue<T>(NbtTag tag, Expression<Func<T>> property, bool upperFirst = true)
 		{
-			var propertyInfo = ((MemberExpression) property.Body).Member as PropertyInfo;
+			var propertyInfo = ((MemberExpression)property.Body).Member as PropertyInfo;
 			if (propertyInfo == null)
 			{
 				throw new ArgumentException("The lambda expression 'property' should point to a valid Property");
@@ -140,7 +178,10 @@ namespace SharpMC.Worlds.Anvil
 				nbtTag = tag[LowercaseFirst(propertyInfo.Name)];
 			}
 
-			if (nbtTag == null) return default(T);
+			if (nbtTag == null)
+			{
+				return default(T);
+			}
 
 			var mex = property.Body as MemberExpression;
 			var target = Expression.Lambda(mex.Expression).Compile().DynamicInvoke();
@@ -152,47 +193,57 @@ namespace SharpMC.Worlds.Anvil
 				case NbtTagType.End:
 					break;
 				case NbtTagType.Byte:
-					if (propertyInfo.PropertyType == typeof (bool))
-						tag[nbtTag.Name] = new NbtByte((byte) ((bool) propertyInfo.GetValue(target) ? 1 : 0));
+					if (propertyInfo.PropertyType == typeof(bool))
+					{
+						tag[nbtTag.Name] = new NbtByte((byte)((bool)propertyInfo.GetValue(target) ? 1 : 0));
+					}
 					else
-						tag[nbtTag.Name] = new NbtByte((byte) propertyInfo.GetValue(target));
+					{
+						tag[nbtTag.Name] = new NbtByte((byte)propertyInfo.GetValue(target));
+					}
+
 					break;
 				case NbtTagType.Short:
-					tag[nbtTag.Name] = new NbtShort((short) propertyInfo.GetValue(target));
+					tag[nbtTag.Name] = new NbtShort((short)propertyInfo.GetValue(target));
 					break;
 				case NbtTagType.Int:
-					if (propertyInfo.PropertyType == typeof (bool))
-						tag[nbtTag.Name] = new NbtInt((bool) propertyInfo.GetValue(target) ? 1 : 0);
+					if (propertyInfo.PropertyType == typeof(bool))
+					{
+						tag[nbtTag.Name] = new NbtInt((bool)propertyInfo.GetValue(target) ? 1 : 0);
+					}
 					else
-						tag[nbtTag.Name] = new NbtInt((int) propertyInfo.GetValue(target));
+					{
+						tag[nbtTag.Name] = new NbtInt((int)propertyInfo.GetValue(target));
+					}
+
 					break;
 				case NbtTagType.Long:
-					tag[nbtTag.Name] = new NbtLong((long) propertyInfo.GetValue(target));
+					tag[nbtTag.Name] = new NbtLong((long)propertyInfo.GetValue(target));
 					break;
 				case NbtTagType.Float:
-					tag[nbtTag.Name] = new NbtFloat((float) propertyInfo.GetValue(target));
+					tag[nbtTag.Name] = new NbtFloat((float)propertyInfo.GetValue(target));
 					break;
 				case NbtTagType.Double:
-					tag[nbtTag.Name] = new NbtDouble((double) propertyInfo.GetValue(target));
+					tag[nbtTag.Name] = new NbtDouble((double)propertyInfo.GetValue(target));
 					break;
 				case NbtTagType.ByteArray:
-					tag[nbtTag.Name] = new NbtByteArray((byte[]) propertyInfo.GetValue(target));
+					tag[nbtTag.Name] = new NbtByteArray((byte[])propertyInfo.GetValue(target));
 					break;
 				case NbtTagType.String:
-					tag[nbtTag.Name] = new NbtString((string) propertyInfo.GetValue(target));
+					tag[nbtTag.Name] = new NbtString((string)propertyInfo.GetValue(target));
 					break;
 				case NbtTagType.List:
 					break;
 				case NbtTagType.Compound:
 					break;
 				case NbtTagType.IntArray:
-					tag[nbtTag.Name] = new NbtIntArray((int[]) propertyInfo.GetValue(target));
+					tag[nbtTag.Name] = new NbtIntArray((int[])propertyInfo.GetValue(target));
 					break;
 				default:
 					throw new ArgumentOutOfRangeException();
 			}
 
-			return (T) propertyInfo.GetValue(target);
+			return (T)propertyInfo.GetValue(target);
 		}
 
 		private static string LowercaseFirst(string s)
@@ -202,58 +253,59 @@ namespace SharpMC.Worlds.Anvil
 			{
 				return string.Empty;
 			}
+
 			// Return char and concat substring.
 			return char.ToLower(s[0]) + s.Substring(1);
 		}
 
 		public void LoadFromNbt(NbtTag dataTag)
 		{
-			GetPropertyValue(dataTag, () => Version);
-			GetPropertyValue(dataTag, () => Initialized);
-			GetPropertyValue(dataTag, () => LevelName);
-			GetPropertyValue(dataTag, () => GeneratorName);
-			GetPropertyValue(dataTag, () => GeneratorVersion);
-			GetPropertyValue(dataTag, () => GeneratorOptions);
-			GetPropertyValue(dataTag, () => RandomSeed);
-			GetPropertyValue(dataTag, () => MapFeatures);
-			GetPropertyValue(dataTag, () => LastPlayed);
-			GetPropertyValue(dataTag, () => AllowCommands);
-			GetPropertyValue(dataTag, () => Hardcore);
-			GetPropertyValue(dataTag, () => GameType);
-			GetPropertyValue(dataTag, () => Time);
-			GetPropertyValue(dataTag, () => DayTime);
-			GetPropertyValue(dataTag, () => SpawnX);
-			GetPropertyValue(dataTag, () => SpawnY);
-			GetPropertyValue(dataTag, () => SpawnZ);
-			GetPropertyValue(dataTag, () => Raining);
-			GetPropertyValue(dataTag, () => RainTime);
-			GetPropertyValue(dataTag, () => Thundering);
-			GetPropertyValue(dataTag, () => ThunderTime);
+			this.GetPropertyValue(dataTag, () => this.Version);
+			this.GetPropertyValue(dataTag, () => this.Initialized);
+			this.GetPropertyValue(dataTag, () => this.LevelName);
+			this.GetPropertyValue(dataTag, () => this.GeneratorName);
+			this.GetPropertyValue(dataTag, () => this.GeneratorVersion);
+			this.GetPropertyValue(dataTag, () => this.GeneratorOptions);
+			this.GetPropertyValue(dataTag, () => this.RandomSeed);
+			this.GetPropertyValue(dataTag, () => this.MapFeatures);
+			this.GetPropertyValue(dataTag, () => this.LastPlayed);
+			this.GetPropertyValue(dataTag, () => this.AllowCommands);
+			this.GetPropertyValue(dataTag, () => this.Hardcore);
+			this.GetPropertyValue(dataTag, () => this.GameType);
+			this.GetPropertyValue(dataTag, () => this.Time);
+			this.GetPropertyValue(dataTag, () => this.DayTime);
+			this.GetPropertyValue(dataTag, () => this.SpawnX);
+			this.GetPropertyValue(dataTag, () => this.SpawnY);
+			this.GetPropertyValue(dataTag, () => this.SpawnZ);
+			this.GetPropertyValue(dataTag, () => this.Raining);
+			this.GetPropertyValue(dataTag, () => this.RainTime);
+			this.GetPropertyValue(dataTag, () => this.Thundering);
+			this.GetPropertyValue(dataTag, () => this.ThunderTime);
 		}
 
 		public void SaveToNbt(NbtTag dataTag)
 		{
-			SetPropertyValue(dataTag, () => Version);
-			SetPropertyValue(dataTag, () => Initialized);
-			SetPropertyValue(dataTag, () => LevelName);
-			SetPropertyValue(dataTag, () => GeneratorName);
-			SetPropertyValue(dataTag, () => GeneratorVersion);
-			SetPropertyValue(dataTag, () => GeneratorOptions);
-			SetPropertyValue(dataTag, () => RandomSeed);
-			SetPropertyValue(dataTag, () => MapFeatures);
-			SetPropertyValue(dataTag, () => LastPlayed);
-			SetPropertyValue(dataTag, () => AllowCommands);
-			SetPropertyValue(dataTag, () => Hardcore);
-			SetPropertyValue(dataTag, () => GameType);
-			SetPropertyValue(dataTag, () => Time);
-			SetPropertyValue(dataTag, () => DayTime);
-			SetPropertyValue(dataTag, () => SpawnX);
-			SetPropertyValue(dataTag, () => SpawnY);
-			SetPropertyValue(dataTag, () => SpawnZ);
-			SetPropertyValue(dataTag, () => Raining);
-			SetPropertyValue(dataTag, () => RainTime);
-			SetPropertyValue(dataTag, () => Thundering);
-			SetPropertyValue(dataTag, () => ThunderTime);
+			this.SetPropertyValue(dataTag, () => this.Version);
+			this.SetPropertyValue(dataTag, () => this.Initialized);
+			this.SetPropertyValue(dataTag, () => this.LevelName);
+			this.SetPropertyValue(dataTag, () => this.GeneratorName);
+			this.SetPropertyValue(dataTag, () => this.GeneratorVersion);
+			this.SetPropertyValue(dataTag, () => this.GeneratorOptions);
+			this.SetPropertyValue(dataTag, () => this.RandomSeed);
+			this.SetPropertyValue(dataTag, () => this.MapFeatures);
+			this.SetPropertyValue(dataTag, () => this.LastPlayed);
+			this.SetPropertyValue(dataTag, () => this.AllowCommands);
+			this.SetPropertyValue(dataTag, () => this.Hardcore);
+			this.SetPropertyValue(dataTag, () => this.GameType);
+			this.SetPropertyValue(dataTag, () => this.Time);
+			this.SetPropertyValue(dataTag, () => this.DayTime);
+			this.SetPropertyValue(dataTag, () => this.SpawnX);
+			this.SetPropertyValue(dataTag, () => this.SpawnY);
+			this.SetPropertyValue(dataTag, () => this.SpawnZ);
+			this.SetPropertyValue(dataTag, () => this.Raining);
+			this.SetPropertyValue(dataTag, () => this.RainTime);
+			this.SetPropertyValue(dataTag, () => this.Thundering);
+			this.SetPropertyValue(dataTag, () => this.ThunderTime);
 		}
 	}
 }
