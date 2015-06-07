@@ -219,7 +219,6 @@
     <Compile Include="Utils\DataBuffer.cs" />
     <Compile Include="Enums\Gamemode.cs" />
     <Compile Include="Utils\SecurityUtils.cs" />
-    <Compile Include="Utils\OLDVector3.cs" />
     <Compile Include="Utils\Vector2.cs" />
     <Compile Include="Utils\Config.cs" />
     <Compile Include="Utils\CryptoRandom.cs" />
