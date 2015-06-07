@@ -71,7 +71,7 @@ namespace SharpMC.Entity
 		public bool ForceChunkReload { get; set; }
 		//Not Sure Why Stuff
 		public EntityAction LastEntityAction { get; set; }
-		public bool IsOperator { get; private set; }
+		public bool IsOperator { get; internal set; }
 		private bool Loaded { get; set; }
 		public bool IsAuthenticated()
 		{
@@ -297,6 +297,12 @@ namespace SharpMC.Entity
 
 		public void SendChat(string message)
 		{
+			if (Wrapper.TcpClient == null)
+			{
+				ConsoleFunctions.WriteInfoLine(message);
+				return;
+			}
+
 			new ChatMessage(Wrapper) {Message = message}.Write();
 		}
 

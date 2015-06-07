@@ -98,6 +98,7 @@
     <Compile Include="Blocks\OakWoodPlank.cs" />
     <Compile Include="Blocks\Stationairy.cs" />
     <Compile Include="Blocks\BlockStationaryLava.cs" />
+    <Compile Include="ConsoleCommandHandler.cs" />
     <Compile Include="Crafting\RecipeFactory.cs" />
     <Compile Include="Crafting\RecipeOakWoodPlank.cs" />
     <Compile Include="Crafting\RecipeStick.cs" />

@@ -53,6 +53,8 @@ namespace SharpMC
 		internal static bool EncryptionEnabled = true; //Only applies if offlinemode is disabled :p
 		//public static bool CompressionEnabled = false;
 
+		internal static Player ConsolePlayer;
+
 		internal static PluginManager PluginManager;
 		internal static RSAParameters ServerKey;
 		internal static Random Rand;

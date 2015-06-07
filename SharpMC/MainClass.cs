@@ -27,6 +27,8 @@ using System.Security.Permissions;
 using System.Threading;
 using SharpMC.API;
 using SharpMC.Crafting;
+using SharpMC.Entity;
+using SharpMC.Enums;
 using SharpMC.Networking;
 using SharpMC.Utils;
 using SharpMC.Worlds;
@@ -79,7 +81,6 @@ namespace SharpMC
 					break;
 				case "standard":
 					lvl = new StandardLevel(Config.GetProperty("WorldName", "world"));
-					//lvl = new BetterLevel(Config.GetProperty("worldname", "world"));
 					break;
 				case "anvil":
 					lvl = new AnvilLevel(Config.GetProperty("WorldName", "world"));
@@ -101,6 +102,16 @@ namespace SharpMC
 
 			OperatorLoader.LoadOperators();
 
+			Globals.ConsolePlayer = new Player(Globals.LevelManager.MainLevel)
+			{
+				Username = "Console",
+				Wrapper = new ClientWrapper(null),
+				Uuid = Guid.NewGuid().ToString(),
+				Gamemode = Gamemode.Spectator,
+			};
+			Globals.ConsolePlayer.Wrapper.Player = Globals.ConsolePlayer;
+			Globals.ConsolePlayer.IsOperator = true;
+			
 			ConsoleFunctions.WriteInfoLine("Checking files...");
 
 			if (!Directory.Exists(Globals.LevelManager.MainLevel.LvlName))
@@ -115,8 +126,8 @@ namespace SharpMC
 			Globals.Debug = true;
 #endif
 
-			ConsoleFunctions.WriteInfoLine("Loading default crafting recipes...");
-			RecipeFactory.Init();
+			//ConsoleFunctions.WriteInfoLine("Loading default crafting recipes...");
+			//RecipeFactory.Init();
 
 			ConsoleFunctions.WriteInfoLine("Loading plugins...");
 			Globals.PluginManager = new PluginManager();
@@ -128,6 +139,7 @@ namespace SharpMC
 			Globals.ServerListener = new BasicListener();
 
 			new Thread(() => Globals.ServerListener.ListenForClients()).Start();
+			new Thread(() => new ConsoleCommandHandler().WaitForCommand()).Start();
 		}
 
 		private static void UnhandledException(object sender, UnhandledExceptionEventArgs args)

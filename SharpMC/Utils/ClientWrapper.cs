@@ -47,7 +47,6 @@ namespace SharpMC.Utils
 		private readonly AutoResetEvent _resume = new AutoResetEvent(false);
 		private readonly Timer _tickTimer = new Timer();
 		internal bool EncryptionEnabled = false;
-		//public bool PlayMode = false;
 		public PacketMode PacketMode = PacketMode.Ping;
 		public Player Player;
 		public TcpClient TcpClient;
@@ -56,12 +55,15 @@ namespace SharpMC.Utils
 		public ClientWrapper(TcpClient client)
 		{
 			TcpClient = client;
-			ThreadPool = new MyThreadPool();
-			ThreadPool.LaunchThread(ThreadRun);
+			if (client != null)
+			{
+				ThreadPool = new MyThreadPool();
+				ThreadPool.LaunchThread(ThreadRun);
 
-			var bytes = new byte[8];
-			Globals.Rand.NextBytes(bytes);
-			ConnectionId = Encoding.ASCII.GetString(bytes).Replace("-", "");
+				var bytes = new byte[8];
+				Globals.Rand.NextBytes(bytes);
+				ConnectionId = Encoding.ASCII.GetString(bytes).Replace("-", "");
+			}
 		}
 
 		internal byte[] SharedKey { get; set; }
@@ -72,17 +74,20 @@ namespace SharpMC.Utils
 
 		public void AddToQuee(byte[] data, bool quee = false)
 		{
-			if (quee)
+			if (TcpClient != null)
 			{
-				lock (_commands)
+				if (quee)
 				{
-					_commands.Enqueue(data);
+					lock (_commands)
+					{
+						_commands.Enqueue(data);
+					}
+					_resume.Set();
 				}
-				_resume.Set();
-			}
-			else
-			{
-				SendData(data);
+				else
+				{
+					SendData(data);
+				}
 			}
 		}
 
@@ -101,34 +106,37 @@ namespace SharpMC.Utils
 
 		public void SendData(byte[] data)
 		{
-			try
+			if (TcpClient != null)
 			{
-				if (Encrypter != null)
+				try
 				{
-					var toEncrypt = data;
-					data = new byte[toEncrypt.Length];
-					Encrypter.TransformBlock(toEncrypt, 0, toEncrypt.Length, data, 0);
+					if (Encrypter != null)
+					{
+						var toEncrypt = data;
+						data = new byte[toEncrypt.Length];
+						Encrypter.TransformBlock(toEncrypt, 0, toEncrypt.Length, data, 0);
 
-					var a = TcpClient.GetStream();
-					a.Write(data, 0, data.Length);
-					a.Flush();
-				}
-				/*	if (EncryptionEnabled)
+						var a = TcpClient.GetStream();
+						a.Write(data, 0, data.Length);
+						a.Flush();
+					}
+					/*	if (EncryptionEnabled)
 				{
 					AesStream aes = new AesStream(TcpClient.GetStream(), (byte[])SharedKey.Clone());
 					aes.Write(data, 0, data.Length);
 					aes.Flush();
 				}*/
-				else
-				{
-					var a = TcpClient.GetStream();
-					a.Write(data, 0, data.Length);
-					a.Flush();
+					else
+					{
+						var a = TcpClient.GetStream();
+						a.Write(data, 0, data.Length);
+						a.Flush();
+					}
 				}
-			}
-			catch
-			{
-				ConsoleFunctions.WriteErrorLine("Failed to send a packet!");
+				catch
+				{
+					ConsoleFunctions.WriteErrorLine("Failed to send a packet!");
+				}
 			}
 		}
 
