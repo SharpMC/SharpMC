@@ -52,6 +52,7 @@ namespace SharpMC.Entity
 			Height = 1.62;
 			Length = 0.6;
 			IsOperator = false;
+			Loaded = false;
 		}
 
 		public string Username { get; set; } //The player's username
@@ -70,13 +71,8 @@ namespace SharpMC.Entity
 		public bool ForceChunkReload { get; set; }
 		//Not Sure Why Stuff
 		public EntityAction LastEntityAction { get; set; }
-		public bool IsOperator { get; set; }
-
-		public void AddToList()
-		{
-			Level.AddPlayer(this);
-		}
-
+		public bool IsOperator { get; private set; }
+		private bool Loaded { get; set; }
 		public bool IsAuthenticated()
 		{
 			if (!Globals.Offlinemode)
@@ -124,23 +120,20 @@ namespace SharpMC.Entity
 			KnownPosition.OnGround = onGround;
 
 			SendChunksForKnownPosition();
-			new EntityTeleport(Wrapper)
+			/*new EntityTeleport(Wrapper)
 			{
 				UniqueServerID = EntityId,
 				Coordinates = location,
 				OnGround = onGround,
 				Pitch = (byte) pitch,
 				Yaw = (byte) yaw
+			}.Broadcast(Level, false, this);*/
+
+			new EntityRelativeMove(Wrapper)
+			{
+				Player = this,
+				Movement = originalcoordinates.ToVector3() - location
 			}.Broadcast(Level, false, this);
-			//We teleport for now, Entityrelativemove will be used later on when i know what is wrong with it? :(
-
-			//new EntityRelativeMove(Client) {Player = Client.Player, Movement = movement}.Broadcast(false, Client.Player);
-		}
-
-		public void SendPosition()
-		{
-			new PlayerPositionAndLook(Wrapper) {X = (int) KnownPosition.X, Y = (int) KnownPosition.Y, Z = (int) KnownPosition.Z}
-				.Write();
 		}
 
 		public void HeldItemChanged(int slot)
@@ -228,6 +221,18 @@ namespace SharpMC.Entity
 			SendChat("Your gamemode was changed to " + target.ToString(), ChatColor.Yellow);
 		}
 
+		public void Teleport(PlayerLocation newPosition)
+		{
+			new EntityTeleport(Wrapper)
+			{
+				UniqueServerID = EntityId,
+				Coordinates = newPosition.ToVector3(),
+				OnGround = newPosition.OnGround,
+				Pitch = (byte)newPosition.Pitch,
+				Yaw = (byte)newPosition.Yaw
+			}.Broadcast(Level, true, this);
+		}
+
 		public void Respawn()
 		{
 			HealthManager.ResetHealth();
@@ -244,33 +249,26 @@ namespace SharpMC.Entity
 			new Animation(Wrapper) {AnimationId = (byte) action, TargetPlayer = this}.Broadcast(Level);
 		}
 
-		public void SendChunksFromPosition()
-		{
-			if (KnownPosition == null)
-			{
-				var d = Level.Generator.GetSpawnPoint();
-				KnownPosition = new PlayerLocation(d.X, d.Y, d.Z);
-				ViewDistance = 8;
-			}
-			SendChunksForKnownPosition();
-		}
-
 		internal void InitializePlayer()
 		{
-			if (LoadPlayer())
+			if (!Loaded)
 			{
-				var chunks = Level.Generator.GenerateChunks((ViewDistance*21), KnownPosition.X, KnownPosition.Z, _chunksUsed, this);
-				new MapChunkBulk(Wrapper) {Chunks = chunks.ToArray()}.Write();
-
-				new PlayerPositionAndLook(Wrapper) {X = KnownPosition.X, Y = KnownPosition.Y, Z = KnownPosition.Z, Yaw = KnownPosition.Yaw, Pitch = KnownPosition.Pitch}.Write();
-
-				IsSpawned = true;
-				Level.AddPlayer(this);
-				Wrapper.Player.Inventory.SendToPlayer();
-				BroadcastEquipment();
-				SetGamemode(Gamemode);
-				Globals.PluginManager.HandlePlayerJoin(this);
+				LoadPlayer();
+				string savename = Globals.Offlinemode ? Username : Uuid;
+				IsOperator = OperatorLoader.IsOperator(savename);
 			}
+
+			var chunks = Level.Generator.GenerateChunks((ViewDistance*21), KnownPosition.X, KnownPosition.Z, _chunksUsed, this);
+			new MapChunkBulk(Wrapper) {Chunks = chunks.ToArray()}.Write();
+
+			new PlayerPositionAndLook(Wrapper) {X = KnownPosition.X, Y = KnownPosition.Y, Z = KnownPosition.Z, Yaw = KnownPosition.Yaw, Pitch = KnownPosition.Pitch}.Write();
+
+			IsSpawned = true;
+			Level.AddPlayer(this);
+			Wrapper.Player.Inventory.SendToPlayer();
+			BroadcastEquipment();
+			SetGamemode(Gamemode);
+			Globals.PluginManager.HandlePlayerJoin(this);
 		}
 
 		public void SendChunksForKnownPosition(bool force = false)
@@ -293,12 +291,6 @@ namespace SharpMC.Entity
 				{
 					if (Wrapper != null && Wrapper.TcpClient.Client.Connected)
 						new ChunkData(Wrapper, new DataBuffer(Wrapper)) {Chunk = chunk}.Write();
-
-					/*	if (counted >= 10 && !IsSpawned)
-					{
-						InitializePlayer();
-					}*/
-					counted++;
 				}
 			});
 		}
@@ -322,6 +314,18 @@ namespace SharpMC.Entity
 		public void Kick()
 		{
 			Kick("Unknown reason.");
+		}
+
+		/// <summary>
+		/// Returns true if player became Operator.
+		/// Returns false if player's Operator status was removed.
+		/// </summary>
+		/// <returns></returns>
+		public bool ToggleOperatorStatus()
+		{
+			string savename = Globals.Offlinemode ? Username : Uuid;
+			IsOperator = OperatorLoader.Toggle(savename.ToLower());
+			return IsOperator;
 		}
 
 		public void SavePlayer()
@@ -348,14 +352,16 @@ namespace SharpMC.Entity
 			}
 			byte[] data = buffer.ExportWriter;
 			data = Globals.Compress(data);
-			File.WriteAllBytes("Players/" + Username + ".pdata", data);
+			string savename = Globals.Offlinemode ? Username : Uuid;
+			File.WriteAllBytes("Players/" + savename + ".pdata", data);
 		}
 
-		public bool LoadPlayer()
+		public void LoadPlayer()
 		{
-			if (File.Exists("Players/" + Username + ".pdata"))
+			string savename = Globals.Offlinemode ? Username : Uuid;
+			if (File.Exists("Players/" + savename + ".pdata"))
 			{
-				byte[] data = File.ReadAllBytes("Players/" + Username + ".pdata");
+				byte[] data = File.ReadAllBytes("Players/" + savename + ".pdata");
 				data = Globals.Decompress(data);
 				LocalDataBuffer reader = new LocalDataBuffer(data);
 				double x = reader.ReadDouble();
@@ -373,7 +379,7 @@ namespace SharpMC.Entity
 				HealthManager.Import(healthData);
 				Inventory.Import(inventoryData);
 			}
-			return true;
+			Loaded = true;
 		}
 	}
 }

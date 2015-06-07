@@ -28,7 +28,6 @@ using System.Threading;
 using SharpMC.API;
 using SharpMC.Crafting;
 using SharpMC.Networking;
-using SharpMC.Networking.Packages;
 using SharpMC.Utils;
 using SharpMC.Worlds;
 using SharpMC.Worlds.Anvil;
@@ -99,6 +98,8 @@ namespace SharpMC
 			Globals.Debug = Config.GetProperty("debug", false);
 
 			Globals.Offlinemode = !Config.GetProperty("Online-mode", false);
+
+			OperatorLoader.LoadOperators();
 
 			ConsoleFunctions.WriteInfoLine("Checking files...");
 

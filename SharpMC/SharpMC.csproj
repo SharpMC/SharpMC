@@ -135,6 +135,7 @@
     <Compile Include="Networking\Packages\Particle.cs" />
     <Compile Include="Networking\Packages\SoundEffect.cs" />
     <Compile Include="Networking\Packages\StevenBug.cs" />
+    <Compile Include="OperatorLoader.cs" />
     <Compile Include="Utils\BoundingBox.cs" />
     <Compile Include="Utils\CraftingRecipe.cs" />
     <Compile Include="Utils\Explosion.cs" />

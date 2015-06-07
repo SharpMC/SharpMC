@@ -222,6 +222,7 @@ namespace SharpMC
 	        {
 		        player.SavePlayer();
 	        }
+			OperatorLoader.SaveOperators();
             ConsoleFunctions.WriteInfoLine("Disabling plugins...");
             PluginManager.DisablePlugins();
             ConsoleFunctions.WriteInfoLine("Saving chunks...");
