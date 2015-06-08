@@ -47,6 +47,8 @@ namespace SharpMC.Core
 			ConsoleFunctions.WriteInfoLine("Enabling plugins...");
 			EnablePlugins();
 
+			Console.CancelKeyPress += ConsoleOnCancelKeyPress;
+
 			try
 			{
 				new Thread(() => Globals.ServerListener.ListenForClients()).Start();
@@ -156,6 +158,11 @@ namespace SharpMC.Core
 		{
 			var e = (Exception)args.ExceptionObject;
 			ConsoleFunctions.WriteErrorLine("An unhandled exception occured! Error message: " + e.Message);
+		}
+
+		private void ConsoleOnCancelKeyPress(object sender, ConsoleCancelEventArgs consoleCancelEventArgs)
+		{
+			Globals.StopServer();
 		}
 	}
 }
