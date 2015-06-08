@@ -201,7 +201,7 @@ namespace SharpMC.API
 					{
 						if (!PermissionManager.HasPermission(player, authorizationAttribute.Permission))
 						{
-							player.SendChat("\u00A7cYou are not permitted to use this command!");
+							player.SendChat("cYou are not permitted to use this command!", ChatColor.Red);
 							return;
 						}
 					}
@@ -213,7 +213,7 @@ namespace SharpMC.API
 			{
 				ConsoleFunctions.WriteWarningLine(ex.ToString());
 			}
-			player.SendChat("\u00A7cUnknown command.");
+			player.SendChat("Unknown command.", ChatColor.Red);
 		}
 
 		private bool ExecuteCommand(MethodInfo method, Player player, string[] args, CommandAttribute commandAttribute)
