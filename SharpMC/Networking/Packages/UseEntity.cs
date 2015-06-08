@@ -1,16 +1,17 @@
-﻿#region Header
-
-// Distrubuted under the MIT license
+﻿// Distrubuted under the MIT license
 // ===================================================
 // SharpMC uses the permissive MIT license.
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the “Software”), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
+// 
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software
+// 
 // THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -18,65 +19,63 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+// 
 // ©Copyright Kenny van Vulpen - 2015
-#endregion
+using System;
+using SharpMC.Entity;
+using SharpMC.Enums;
+using SharpMC.Items;
+using SharpMC.Utils;
 
 namespace SharpMC.Networking.Packages
 {
-	using System;
-
-	using SharpMC.Entity;
-	using SharpMC.Enums;
-	using SharpMC.Items;
-	using SharpMC.Utils;
-
 	internal class UseEntity : Package<UseEntity>
 	{
 		public UseEntity(ClientWrapper client)
 			: base(client)
 		{
-			this.ReadId = 0x02;
+			ReadId = 0x02;
 		}
 
 		public UseEntity(ClientWrapper client, DataBuffer buffer)
 			: base(client, buffer)
 		{
-			this.ReadId = 0x02;
+			ReadId = 0x02;
 		}
 
 		public override void Read()
 		{
-			var target = this.Buffer.ReadVarInt();
-			var type = this.Buffer.ReadVarInt();
+			var target = Buffer.ReadVarInt();
+			var type = Buffer.ReadVarInt();
 			float targetX;
 			float targetY;
 			float targetZ;
 
 			if (type == 2)
 			{
-				// Interact at
-				targetX = this.Buffer.ReadFloat();
-				targetY = this.Buffer.ReadFloat();
-				targetZ = this.Buffer.ReadFloat();
+				//Interact at
+				targetX = Buffer.ReadFloat();
+				targetY = Buffer.ReadFloat();
+				targetZ = Buffer.ReadFloat();
 			}
 			else if (type == 1)
 			{
-				// Player hit
-				var targ = this.Client.Player.Level.GetPlayer(target);
+				//Player hit
+				var targ = Client.Player.Level.GetPlayer(target);
 				if (targ != null)
 				{
 					if (!targ.HealthManager.IsInvulnerable)
 					{
-						targ.HealthManager.TakeHit(this.Client.Player, this.CalculateDamage(targ), DamageCause.EntityAttack);
+						targ.HealthManager.TakeHit(Client.Player, CalculateDamage(targ), DamageCause.EntityAttack);
 					}
 				}
 			}
 			else if (type == 0)
 			{
-				// Interact
+				//Interact
 
-				// I guess this is for stuff like villagers & horses for openening inventory's?
-				// Or maybe to get on a horse or somethin
+				//I guess this is for stuff like villagers & horses for openening inventory's?
+				//Or maybe to get on a horse or somethin
 			}
 		}
 
@@ -180,15 +179,12 @@ namespace SharpMC.Networking.Packages
 
 			armorValue *= 0.04;
 
-			var itemInHandSlot = 36 + this.Client.Player.Inventory.CurrentSlot;
-			var damage = ItemFactory.GetItemById(this.Client.Player.Inventory.GetSlot(itemInHandSlot).ItemId).GetDamage();
+			var itemInHandSlot = 36 + Client.Player.Inventory.CurrentSlot;
+			var damage = ItemFactory.GetItemById(Client.Player.Inventory.GetSlot(itemInHandSlot).ItemId).GetDamage();
+				//Item Damage.
 
-			// Item Damage.
-			damage = (int)Math.Floor(damage * (1.0 - armorValue));
-			if (damage <= 0)
-			{
-				damage = 1;
-			}
+			damage = (int) Math.Floor(damage*(1.0 - armorValue));
+			if (damage <= 0) damage = 1;
 
 			return damage;
 		}

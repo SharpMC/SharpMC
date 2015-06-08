@@ -1,16 +1,17 @@
-﻿#region Header
-
-// Distrubuted under the MIT license
+﻿// Distrubuted under the MIT license
 // ===================================================
 // SharpMC uses the permissive MIT license.
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the “Software”), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
+// 
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software
+// 
 // THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -18,138 +19,141 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+// 
 // ©Copyright Kenny van Vulpen - 2015
-#endregion
+using System;
+using System.Linq;
+using SharpMC.Crafting;
+using SharpMC.Entity;
+using SharpMC.Items;
+using SharpMC.Networking.Packages;
 
 namespace SharpMC.Utils
 {
-	using System;
-	using System.Linq;
-
-	using SharpMC.Entity;
-	using SharpMC.Items;
-	using SharpMC.Networking.Packages;
-
 	public class PlayerInventoryManager
 	{
 		private readonly Player _player;
-
 		private readonly ItemStack[] _slots = new ItemStack[45];
-
-		private Item[] _craftingItems = new Item[4];
-
-		private bool _isCrafting;
 
 		public PlayerInventoryManager(Player player)
 		{
-			this._player = player;
+			_player = player;
 			for (var i = 0; i <= 44; i++)
 			{
-				this._slots[i] = new ItemStack(-1, 0, 0);
+				_slots[i] = (new ItemStack(-1, 0, 0));
 			}
 
-			this.SetSlot(5, 310, 0, 1); // Diamond helmet
-			this.SetSlot(6, 311, 0, 1); // Diamond chestplate
-			this.SetSlot(7, 312, 0, 1); // Diamond leggings
-			this.SetSlot(8, 313, 0, 1); // Diamond boots
+			SetSlot(5, 310, 0, 1); //Diamond helmet
+			SetSlot(6, 311, 0, 1); //Diamond chestplate
+			SetSlot(7, 312, 0, 1); //Diamond leggings
+			SetSlot(8, 313, 0, 1); //Diamond boots
 
-			this.SetSlot(36, 276, 0, 1); // Diamond sword
-			this.SetSlot(37, 277, 0, 1); // Diamond shovel
-			this.SetSlot(38, 278, 0, 1); // Diamond pickaxe
-			this.SetSlot(39, 279, 0, 1); // Diamond axe
+			SetSlot(36, 276, 0, 1); //Diamond sword
+			SetSlot(37, 277, 0, 1); //Diamond shovel
+			SetSlot(38, 278, 0, 1); //Diamond pickaxe
+			SetSlot(39, 279, 0, 1); //Diamond axe
 
-			this.SetSlot(43, 5, 0, 64);
-			this.SetSlot(44, 332, 0, 64);
+			SetSlot(43, 5, 0, 64);
+			SetSlot(44, 332, 0, 64);
 
-			this.SetSlot(41, 327, 0, 1);
-			this.SetSlot(42, 326, 0, 1);
-			this.SetSlot(40, 325, 0, 1);
+			SetSlot(41, 327, 0, 1);
+			SetSlot(42, 326, 0, 1);
+			SetSlot(40, 325, 0, 1);
 		}
 
 		public ItemStack ClickedItem { get; set; }
-
 		public int CurrentSlot { get; set; }
-
+		private bool _isCrafting;
+		private Item[] _craftingItems = new Item[4];
 		public void InventoryClosed()
 		{
-			this._isCrafting = false;
-			foreach (var item in this._craftingItems)
+			_isCrafting = false;
+			foreach (var item in _craftingItems)
 			{
 				if (item != null)
 				{
-					this.AddItem((short)item.Id, item.Metadata);
+					AddItem((short) item.Id, item.Metadata);
 				}
 			}
-
-			this._craftingItems = new Item[4];
+			_craftingItems = new Item[4];
 		}
 
 		public bool HasItems(ItemStack[] items)
 		{
 			foreach (var item in items)
 			{
-				if (!this.HasItem(item.ItemId))
-				{
-					return false;
-				}
+				if (!HasItem(item.ItemId)) return false;
 			}
-
 			return true;
 		}
 
 		public void SetSlot(int slot, short itemId, byte metadata, byte itemcount)
 		{
+			/*if (slot <= 4 && slot >= 1) //Crafting (Not yet working)
+			{
+				ConsoleFunctions.WriteDebugLine("Player " + _player.Username + " is crafting! Slot: " + slot);
+				_isCrafting = true;
+				_craftingItems[slot - 1] = new Item((ushort)itemId, metadata);
+				CraftingRecipe recipe = new CraftingRecipe(_craftingItems);
+				var it = RecipeFactory.GetItem(recipe);
+				if (it != null)
+				{
+					ConsoleFunctions.WriteInfoLine("Player " + _player.Username + " found a valid recipe for item id: " + it.ItemId);
+					SetSlot(0,it.ItemId, it.MetaData, it.ItemCount);
+				}
+
+				return;
+			}*/
+
 			if (slot <= 44 && slot >= 5)
 			{
-				this._slots[slot] = new ItemStack(itemId, itemcount, metadata);
-				if (this._player != null && this._player.IsSpawned)
+				_slots[slot] = new ItemStack(itemId, itemcount, metadata);
+				if (_player != null && _player.IsSpawned)
 				{
-					new SetSlot(this._player.Wrapper)
-						{
-							WindowId = 0, 
-							ItemId = itemId, 
-							ItemCount = itemcount, 
-							MetaData = metadata, 
-							ItemDamage = 0, 
-							Slot = (short)slot
-						}.Write();
+					new SetSlot(_player.Wrapper)
+					{
+						WindowId = 0,
+						ItemId = itemId,
+						ItemCount = itemcount,
+						MetaData = metadata,
+						ItemDamage = 0,
+						Slot = (short) slot
+					}.Write();
 				}
 			}
 		}
 
 		public bool AddItem(ItemStack item)
 		{
-			return this.AddItem(item.ItemId, item.MetaData, item.ItemCount);
+			return AddItem(item.ItemId, item.MetaData, item.ItemCount);
 		}
 
 		public bool AddItem(short itemId, byte metadata, byte itemcount = 1)
 		{
 			for (var i = 9; i <= 44; i++)
 			{
-				if (this._slots[i].ItemId == itemId && this._slots[i].MetaData == metadata && this._slots[i].ItemCount < 64)
+				if (_slots[i].ItemId == itemId && _slots[i].MetaData == metadata && _slots[i].ItemCount < 64)
 				{
-					var oldslot = this._slots[i];
+					var oldslot = _slots[i];
 					if (oldslot.ItemCount + itemcount <= 64)
 					{
-						this.SetSlot(i, itemId, metadata, (byte)(oldslot.ItemCount + itemcount));
+						SetSlot(i, itemId, metadata, (byte) (oldslot.ItemCount + itemcount));
 						return true;
 					}
-
-					this.SetSlot(i, itemId, metadata, 64);
+					SetSlot(i, itemId, metadata, 64);
 					var remaining = (oldslot.ItemCount + itemcount) - 64;
-					return this.AddItem(itemId, metadata, (byte)remaining);
+					return AddItem(itemId, metadata, (byte) remaining);
 				}
 			}
 
 			for (var i = 9; i <= 44; i++)
 			{
-				if (this._slots[i].ItemId == -1)
+				if (_slots[i].ItemId == -1)
 				{
-					this.SetSlot(i, itemId, metadata, itemcount);
+					SetSlot(i, itemId, metadata, itemcount);
 					return true;
 				}
 			}
-
 			return false;
 		}
 
@@ -157,33 +161,28 @@ namespace SharpMC.Utils
 		{
 			if (slot <= 44 && slot >= 0)
 			{
-				return this._slots[slot];
+				return _slots[slot];
 			}
-
 			throw new IndexOutOfRangeException("slot");
 		}
 
 		public void DropCurrentItem()
 		{
-			// Drop the current hold item
-			var slottarget = 36 + this.CurrentSlot;
-			var slot = this.GetSlot(slottarget);
+			//Drop the current hold item
+			var slottarget = 36 + CurrentSlot;
+			var slot = GetSlot(slottarget);
 			if (slot.ItemCount > 1)
 			{
-				this.SetSlot(slottarget, slot.ItemId, slot.MetaData, (byte)(slot.ItemCount - 1));
+				SetSlot(slottarget, slot.ItemId, slot.MetaData, (byte) (slot.ItemCount - 1));
 			}
 			else
 			{
-				this.SetSlot(slottarget, -1, 0, 0);
+				SetSlot(slottarget, -1, 0, 0);
 			}
 
 			if (slot.ItemId != -1)
 			{
-				new ItemEntity(this._player.Level, new ItemStack(slot.ItemId, 1, slot.MetaData))
-					{
-						KnownPosition =
-							this._player.KnownPosition
-					}
+				new ItemEntity(_player.Level, new ItemStack(slot.ItemId, 1, slot.MetaData)) {KnownPosition = _player.KnownPosition}
 					.SpawnEntity();
 			}
 		}
@@ -205,11 +204,10 @@ namespace SharpMC.Utils
 
 		public bool HasItem(int itemId)
 		{
-			if (this._slots.Any(itemStack => itemStack.ItemId == itemId))
+			if (_slots.Any(itemStack => itemStack.ItemId == itemId))
 			{
 				return true;
 			}
-
 			return false;
 		}
 
@@ -217,20 +215,18 @@ namespace SharpMC.Utils
 		{
 			for (var index = 0; index <= 44; index++)
 			{
-				var itemStack = this._slots[index];
+				var itemStack = _slots[index];
 				if (itemStack.ItemId == itemId && itemStack.MetaData == metaData && itemStack.ItemCount >= count)
 				{
 					if ((itemStack.ItemCount - count) > 0)
 					{
-						this.SetSlot(index, itemStack.ItemId, itemStack.MetaData, (byte)(itemStack.ItemCount - count));
+						SetSlot(index, itemStack.ItemId, itemStack.MetaData, (byte) (itemStack.ItemCount - count));
 						return true;
 					}
-
-					this.SetSlot(index, -1, 0, 0);
+					SetSlot(index, -1, 0, 0);
 					return true;
 				}
 			}
-
 			return false;
 		}
 
@@ -238,48 +234,47 @@ namespace SharpMC.Utils
 		{
 			for (short i = 0; i <= 44; i++)
 			{
-				var value = this._slots[i];
+				var value = _slots[i];
 				if (value.ItemId != -1)
 				{
-					new SetSlot(this._player.Wrapper)
-						{
-							WindowId = 0, 
-							ItemId = value.ItemId, 
-							ItemCount = value.ItemCount, 
-							MetaData = value.MetaData, 
-							Slot = i
-						}.Write();
+					new SetSlot(_player.Wrapper)
+					{
+						WindowId = 0,
+						ItemId = value.ItemId,
+						ItemCount = value.ItemCount,
+						MetaData = value.MetaData,
+						Slot = i
+					}.Write();
 				}
 			}
 		}
 
 		public byte[] GetBytes()
 		{
-			var buffer = new LocalDataBuffer(new byte[0]);
-			for (var i = 0; i <= 44; i++)
+			LocalDataBuffer buffer = new LocalDataBuffer(new byte[0]);
+			for (int i = 0; i <= 44; i++)
 			{
-				var slot = this._slots[i];
-				buffer.WriteInt(i); // Write the SlotID
-				buffer.WriteShort(slot.ItemId); // Write the ItemID
+				var slot = _slots[i];
+				buffer.WriteInt(i); //Write the SlotID
+				buffer.WriteShort(slot.ItemId); //Write the ItemID
 				buffer.WriteByte(slot.MetaData);
 				buffer.WriteByte(slot.ItemCount);
 			}
-
 			return buffer.ExportWriter;
 		}
 
 		public void Import(byte[] data)
 		{
-			var buffer = new LocalDataBuffer(data);
+			LocalDataBuffer buffer = new LocalDataBuffer(data);
 
-			for (var i = 0; i <= 44; i++)
+			for (int i = 0; i <= 44; i++)
 			{
-				var slotId = buffer.ReadInt();
-				var itemId = buffer.ReadShort();
-				var metaData = (byte)buffer.ReadByte();
-				var itemCount = (byte)buffer.ReadByte();
+				int slotId = buffer.ReadInt();
+				short itemId = buffer.ReadShort();
+				byte metaData = (byte)buffer.ReadByte();
+				byte itemCount = (byte)buffer.ReadByte();
 
-				this._slots[slotId] = new ItemStack(itemId, itemCount, metaData);
+				_slots[slotId] = new ItemStack(itemId, itemCount, metaData);
 			}
 		}
 	}

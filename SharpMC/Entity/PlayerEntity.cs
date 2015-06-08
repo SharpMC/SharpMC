@@ -1,16 +1,17 @@
-﻿#region Header
-
-// Distrubuted under the MIT license
+﻿// Distrubuted under the MIT license
 // ===================================================
 // SharpMC uses the permissive MIT license.
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the “Software”), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
+// 
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software
+// 
 // THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -18,37 +19,30 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+// 
 // ©Copyright Kenny van Vulpen - 2015
-#endregion
+using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Net;
+using System.Text;
+using SharpMC.Enums;
+using SharpMC.Networking.Packages;
+using SharpMC.Utils;
+using SharpMC.Worlds;
+using EntityAction = SharpMC.Enums.EntityAction;
 
 namespace SharpMC.Entity
 {
-	using System;
-	using System.Collections.Generic;
-	using System.IO;
-	using System.Linq;
-	using System.Net;
-	using System.Text;
-
-	using SharpMC.Enums;
-	using SharpMC.Networking.Packages;
-	using SharpMC.Utils;
-	using SharpMC.Worlds;
-
-	using EntityAction = SharpMC.Enums.EntityAction;
-
 	public class Player : Entity
 	{
 		private readonly Dictionary<Tuple<int, int>, ChunkColumn> _chunksUsed;
-
 		private readonly Vector2 _currentChunkPosition = new Vector2(0, 0);
+		public PlayerInventoryManager Inventory; //The player's Inventory
+		public string SkinBlob = "";
 
-		public PlayerInventoryManager Inventory; // The player's Inventory
-
-		public string SkinBlob = string.Empty;
-
-		public Player(Level level)
-			: base(-1, level)
+		public Player(Level level) : base(-1, level)
 		{
 			_chunksUsed = new Dictionary<Tuple<int, int>, ChunkColumn>();
 			Inventory = new PlayerInventoryManager(this);
@@ -61,55 +55,39 @@ namespace SharpMC.Entity
 			Loaded = false;
 		}
 
-		public string Username { get; set; } // The player's username
-
+		public string Username { get; set; } //The player's username
 		public string Uuid { get; set; } // The player's UUID
-
-		public ClientWrapper Wrapper { get; set; } // The player's associated ClientWrapper
-
-		public Gamemode Gamemode { get; set; } // The player's gamemode
-
-		public bool IsSpawned { get; set; } // Is the player spawned?
-
+		public ClientWrapper Wrapper { get; set; } //The player's associated ClientWrapper
+		public Gamemode Gamemode { get; set; } //The player's gamemode
+		public bool IsSpawned { get; set; } //Is the player spawned?
 		public bool Digging { get; set; } // Is the player digging?
-
-		private bool CanFly { get; set; } // Can the player fly?
-		// Client settings
+		private bool CanFly { get; set; } //Can the player fly?
+		//Client settings
 		public string Locale { get; set; }
-
 		public byte ViewDistance { get; set; }
-
 		public byte ChatFlags { get; set; }
-
 		public bool ChatColours { get; set; }
-
 		public byte SkinParts { get; set; }
-
 		public bool ForceChunkReload { get; set; }
-
-		// Not Sure Why Stuff
+		//Not Sure Why Stuff
 		public EntityAction LastEntityAction { get; set; }
-
 		public bool IsOperator { get; internal set; }
-
 		private bool Loaded { get; set; }
-
 		public bool IsAuthenticated()
 		{
 			if (!Globals.Offlinemode)
 			{
 				try
 				{
-					var uri =
-						new Uri(
-							string.Format(
-								"http://session.minecraft.net/game/checkserver.jsp?user={0}&serverId={1}", 
-								Username, 
-								PacketCryptography.JavaHexDigest(
-									Encoding.UTF8.GetBytes(string.Empty)
-										.Concat(Wrapper.SharedKey)
-										.Concat(PacketCryptography.PublicKeyToAsn1(Globals.ServerKey))
-										.ToArray())));
+					var uri = new Uri(
+						string.Format(
+							"http://session.minecraft.net/game/checkserver.jsp?user={0}&serverId={1}",
+							Username,
+							PacketCryptography.JavaHexDigest(Encoding.UTF8.GetBytes("")
+								.Concat(Wrapper.SharedKey)
+								.Concat(PacketCryptography.PublicKeyToAsn1(Globals.ServerKey))
+								.ToArray())
+							));
 
 					var authenticated = new WebClient().DownloadString(uri);
 					if (authenticated.Contains("NO"))
@@ -120,8 +98,8 @@ namespace SharpMC.Entity
 				}
 				catch (Exception exc)
 				{
-					// client.Kick("Error while authenticating...");
-					// client.Logger.Log(exc);
+					//client.Kick("Error while authenticating...");
+					//client.Logger.Log(exc);
 					return false;
 				}
 
@@ -142,7 +120,6 @@ namespace SharpMC.Entity
 			KnownPosition.OnGround = onGround;
 
 			SendChunksForKnownPosition();
-
 			/*new EntityTeleport(Wrapper)
 			{
 				UniqueServerID = EntityId,
@@ -151,10 +128,12 @@ namespace SharpMC.Entity
 				Pitch = (byte) pitch,
 				Yaw = (byte) yaw
 			}.Broadcast(Level, false, this);*/
-			new EntityRelativeMove(Wrapper) { Player = this, Movement = originalcoordinates.ToVector3() - location }.Broadcast(
-				Level, 
-				false, 
-				this);
+
+			new EntityRelativeMove(Wrapper)
+			{
+				Player = this,
+				Movement = originalcoordinates.ToVector3() - location
+			}.Broadcast(Level, false, this);
 		}
 
 		public void HeldItemChanged(int slot)
@@ -165,40 +144,50 @@ namespace SharpMC.Entity
 
 		public void BroadcastEquipment()
 		{
-			// HeldItem
+			//HeldItem
 			var slotdata = Inventory.GetSlot(36 + Inventory.CurrentSlot);
-			new EntityEquipment(Wrapper) { Slot = EquipmentSlot.Held, Item = slotdata, EntityId = EntityId }.Broadcast(
-				Level, 
-				false, 
-				this);
+			new EntityEquipment(Wrapper)
+			{
+				Slot = EquipmentSlot.Held,
+				Item = slotdata,
+				EntityId = EntityId
+			}.Broadcast(Level, false, this);
 
-			// Helmet
+			//Helmet
 			slotdata = Inventory.GetSlot(5);
-			new EntityEquipment(Wrapper) { Slot = EquipmentSlot.Helmet, Item = slotdata, EntityId = EntityId }.Broadcast(
-				Level, 
-				false, 
-				this);
+			new EntityEquipment(Wrapper)
+			{
+				Slot = EquipmentSlot.Helmet,
+				Item = slotdata,
+				EntityId = EntityId
+			}.Broadcast(Level, false, this);
 
-			// Chestplate
+			//Chestplate
 			slotdata = Inventory.GetSlot(6);
-			new EntityEquipment(Wrapper) { Slot = EquipmentSlot.Chestplate, Item = slotdata, EntityId = EntityId }.Broadcast(
-				Level, 
-				false, 
-				this);
+			new EntityEquipment(Wrapper)
+			{
+				Slot = EquipmentSlot.Chestplate,
+				Item = slotdata,
+				EntityId = EntityId
+			}.Broadcast(Level, false, this);
 
-			// Leggings
+			//Leggings
 			slotdata = Inventory.GetSlot(7);
-			new EntityEquipment(Wrapper) { Slot = EquipmentSlot.Leggings, Item = slotdata, EntityId = EntityId }.Broadcast(
-				Level, 
-				false, 
-				this);
+			new EntityEquipment(Wrapper)
+			{
+				Slot = EquipmentSlot.Leggings,
+				Item = slotdata,
+				EntityId = EntityId
+			}.Broadcast(Level, false, this);
 
-			// Boots
+			//Boots
 			slotdata = Inventory.GetSlot(8);
-			new EntityEquipment(Wrapper) { Slot = EquipmentSlot.Boots, Item = slotdata, EntityId = EntityId }.Broadcast(
-				Level, 
-				false, 
-				this);
+			new EntityEquipment(Wrapper)
+			{
+				Slot = EquipmentSlot.Boots,
+				Item = slotdata,
+				EntityId = EntityId
+			}.Broadcast(Level, false, this);
 		}
 
 		public override void OnTick()
@@ -215,33 +204,39 @@ namespace SharpMC.Entity
 		public void SetGamemode(Gamemode target)
 		{
 			Gamemode = target;
-			new PlayerListItem(Wrapper) { Action = 1, Gamemode = Gamemode, UUID = Uuid }.Broadcast(Level);
+            new PlayerListItem(Wrapper)
+            {
+                Action = 1,
+                Gamemode = Gamemode,
+                UUID = Uuid
+            }.Broadcast(Level);
 
-			new ChangeGameState(Wrapper) { Reason = GameStateReason.ChangeGameMode, Value = (float)target }.Write();
+			new ChangeGameState(Wrapper)
+			{
+				Reason = GameStateReason.ChangeGameMode,
+				Value = (float)target
+			}.Write();
 
 			ConsoleFunctions.WriteInfoLine(Username + "'s gamemode was changed to " + target.ToString("D"));
-			SendChat("Your gamemode was changed to " + target, ChatColor.Yellow);
+			SendChat("Your gamemode was changed to " + target.ToString(), ChatColor.Yellow);
 		}
 
 		public void Teleport(PlayerLocation newPosition)
 		{
 			new EntityTeleport(Wrapper)
-				{
-					UniqueServerID = EntityId, 
-					Coordinates = newPosition.ToVector3(), 
-					OnGround = newPosition.OnGround, 
-					Pitch = (byte)newPosition.Pitch, 
-					Yaw = (byte)newPosition.Yaw
-				}.Broadcast(Level, true, this);
+			{
+				UniqueServerID = EntityId,
+				Coordinates = newPosition.ToVector3(),
+				OnGround = newPosition.OnGround,
+				Pitch = (byte)newPosition.Pitch,
+				Yaw = (byte)newPosition.Yaw
+			}.Broadcast(Level, true, this);
 		}
 
 		public void Respawn()
 		{
 			HealthManager.ResetHealth();
-			if (Wrapper != null && Wrapper.TcpClient.Connected)
-			{
-				new Respawn(Wrapper) { GameMode = (byte)Gamemode }.Write();
-			}
+			if (Wrapper != null && Wrapper.TcpClient.Connected) new Respawn(Wrapper) {GameMode = (byte) Gamemode}.Write();
 		}
 
 		public void SendHealth()
@@ -251,7 +246,7 @@ namespace SharpMC.Entity
 
 		public void BroadcastEntityAnimation(Animations action)
 		{
-			new Animation(Wrapper) { AnimationId = (byte)action, TargetPlayer = this }.Broadcast(Level);
+			new Animation(Wrapper) {AnimationId = (byte) action, TargetPlayer = this}.Broadcast(Level);
 		}
 
 		internal void InitializePlayer()
@@ -259,21 +254,14 @@ namespace SharpMC.Entity
 			if (!Loaded)
 			{
 				LoadPlayer();
-				var savename = Globals.Offlinemode ? Username : Uuid;
+				string savename = Globals.Offlinemode ? Username : Uuid;
 				IsOperator = OperatorLoader.IsOperator(savename);
 			}
 
-			var chunks = Level.Generator.GenerateChunks(ViewDistance * 21, KnownPosition.X, KnownPosition.Z, _chunksUsed, this);
-			new MapChunkBulk(Wrapper) { Chunks = chunks.ToArray() }.Write();
+			var chunks = Level.Generator.GenerateChunks((ViewDistance*21), KnownPosition.X, KnownPosition.Z, _chunksUsed, this);
+			new MapChunkBulk(Wrapper) {Chunks = chunks.ToArray()}.Write();
 
-			new PlayerPositionAndLook(Wrapper)
-				{
-					X = KnownPosition.X, 
-					Y = KnownPosition.Y, 
-					Z = KnownPosition.Z, 
-					Yaw = KnownPosition.Yaw, 
-					Pitch = KnownPosition.Pitch
-				}.Write();
+			new PlayerPositionAndLook(Wrapper) {X = KnownPosition.X, Y = KnownPosition.Y, Z = KnownPosition.Z, Yaw = KnownPosition.Yaw, Pitch = KnownPosition.Pitch}.Write();
 
 			IsSpawned = true;
 			Level.AddPlayer(this);
@@ -285,35 +273,26 @@ namespace SharpMC.Entity
 
 		public void SendChunksForKnownPosition(bool force = false)
 		{
-			var centerX = (int)KnownPosition.X >> 4;
-			var centerZ = (int)KnownPosition.Z >> 4;
+			var centerX = (int) KnownPosition.X >> 4;
+			var centerZ = (int) KnownPosition.Z >> 4;
 
-			if (!force && IsSpawned && _currentChunkPosition == new Vector2(centerX, centerZ))
-			{
-				return;
-			}
+			if (!force && IsSpawned && _currentChunkPosition == new Vector2(centerX, centerZ)) return;
 
 			_currentChunkPosition.X = centerX;
 			_currentChunkPosition.Z = centerZ;
 
-			Wrapper.ThreadPool.LaunchThread(
-				() =>
-					{
-						var counted = 0;
-						foreach (var chunk in
-							Level.Generator.GenerateChunks(
-								ViewDistance * 21, 
-								KnownPosition.X, 
-								KnownPosition.Z, 
-								force ? new Dictionary<Tuple<int, int>, ChunkColumn>() : _chunksUsed, 
-								this))
-						{
-							if (Wrapper != null && Wrapper.TcpClient.Client.Connected)
-							{
-								new ChunkData(Wrapper, new DataBuffer(Wrapper)) { Chunk = chunk }.Write();
-							}
-						}
-					});
+			Wrapper.ThreadPool.LaunchThread(() =>
+			{
+				var counted = 0;
+				foreach (
+					var chunk in
+						Level.Generator.GenerateChunks((ViewDistance*21), KnownPosition.X, KnownPosition.Z,
+							force ? new Dictionary<Tuple<int, int>, ChunkColumn>() : _chunksUsed, this))
+				{
+					if (Wrapper != null && Wrapper.TcpClient.Client.Connected)
+						new ChunkData(Wrapper, new DataBuffer(Wrapper)) {Chunk = chunk}.Write();
+				}
+			});
 		}
 
 		public void SendChat(string message)
@@ -324,7 +303,7 @@ namespace SharpMC.Entity
 				return;
 			}
 
-			new ChatMessage(Wrapper) { Message = message }.Write();
+			new ChatMessage(Wrapper) {Message = message}.Write();
 		}
 
 		public void SendChat(string message, ChatColor color)
@@ -334,7 +313,7 @@ namespace SharpMC.Entity
 
 		public void Kick(string reason)
 		{
-			new Disconnect(Wrapper) { Reason = reason }.Write();
+			new Disconnect(Wrapper) {Reason = reason}.Write();
 			SavePlayer();
 		}
 
@@ -345,23 +324,21 @@ namespace SharpMC.Entity
 
 		/// <summary>
 		/// Returns true if player became Operator.
-		///     Returns false if player's Operator status was removed.
+		/// Returns false if player's Operator status was removed.
 		/// </summary>
-		/// <returns>
-		/// The <see cref="bool"/>.
-		/// </returns>
+		/// <returns></returns>
 		public bool ToggleOperatorStatus()
 		{
-			var savename = Globals.Offlinemode ? Username : Uuid;
+			string savename = Globals.Offlinemode ? Username : Uuid;
 			IsOperator = OperatorLoader.Toggle(savename.ToLower());
 			return IsOperator;
 		}
 
 		public void SavePlayer()
 		{
-			var health = HealthManager.Export();
-			var inv = Inventory.GetBytes();
-			var buffer = new LocalDataBuffer(new byte[0]);
+			byte[] health = HealthManager.Export();
+			byte[] inv = Inventory.GetBytes();
+			LocalDataBuffer buffer = new LocalDataBuffer(new byte[0]);
 			buffer.WriteDouble(KnownPosition.X);
 			buffer.WriteDouble(KnownPosition.Y);
 			buffer.WriteDouble(KnownPosition.Z);
@@ -370,47 +347,44 @@ namespace SharpMC.Entity
 			buffer.WriteBool(KnownPosition.OnGround);
 			buffer.WriteVarInt((int)Gamemode);
 			buffer.WriteVarInt(health.Length);
-			foreach (var b in health)
+			foreach (byte b in health)
 			{
 				buffer.WriteByte(b);
 			}
-
 			buffer.WriteVarInt(inv.Length);
-			foreach (var b in inv)
+			foreach (byte b in inv)
 			{
 				buffer.WriteByte(b);
 			}
-
-			var data = buffer.ExportWriter;
+			byte[] data = buffer.ExportWriter;
 			data = Globals.Compress(data);
-			var savename = Globals.Offlinemode ? Username : Uuid;
+			string savename = Globals.Offlinemode ? Username : Uuid;
 			File.WriteAllBytes("Players/" + savename + ".pdata", data);
 		}
 
 		public void LoadPlayer()
 		{
-			var savename = Globals.Offlinemode ? Username : Uuid;
+			string savename = Globals.Offlinemode ? Username : Uuid;
 			if (File.Exists("Players/" + savename + ".pdata"))
 			{
-				var data = File.ReadAllBytes("Players/" + savename + ".pdata");
+				byte[] data = File.ReadAllBytes("Players/" + savename + ".pdata");
 				data = Globals.Decompress(data);
-				var reader = new LocalDataBuffer(data);
-				var x = reader.ReadDouble();
-				var y = reader.ReadDouble();
-				var z = reader.ReadDouble();
-				var yaw = reader.ReadFloat();
-				var pitch = reader.ReadFloat();
-				var onGround = reader.ReadBool();
-				KnownPosition = new PlayerLocation(x, y, z) { Yaw = yaw, Pitch = pitch, OnGround = onGround };
-				Gamemode = (Gamemode)reader.ReadVarInt();
-				var healthLength = reader.ReadVarInt();
-				var healthData = reader.Read(healthLength);
-				var inventoryLength = reader.ReadVarInt();
-				var inventoryData = reader.Read(inventoryLength);
+				LocalDataBuffer reader = new LocalDataBuffer(data);
+				double x = reader.ReadDouble();
+				double y = reader.ReadDouble();
+				double z = reader.ReadDouble();
+				float yaw = reader.ReadFloat();
+				float pitch = reader.ReadFloat();
+				bool onGround = reader.ReadBool();
+				KnownPosition = new PlayerLocation(x,y,z) {Yaw = yaw, Pitch = pitch, OnGround = onGround};
+				Gamemode = (Gamemode) reader.ReadVarInt();
+				int healthLength = reader.ReadVarInt();
+				byte[] healthData = reader.Read(healthLength);
+				int inventoryLength = reader.ReadVarInt();
+				byte[] inventoryData = reader.Read(inventoryLength);
 				HealthManager.Import(healthData);
 				Inventory.Import(inventoryData);
 			}
-
 			Loaded = true;
 		}
 	}

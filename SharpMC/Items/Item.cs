@@ -1,16 +1,17 @@
-﻿#region Header
-
-// Distrubuted under the MIT license
+﻿// Distrubuted under the MIT license
 // ===================================================
 // SharpMC uses the permissive MIT license.
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the “Software”), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
+// 
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software
+// 
 // THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -18,16 +19,15 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+// 
 // ©Copyright Kenny van Vulpen - 2015
-#endregion
+using SharpMC.Entity;
+using SharpMC.Enums;
+using SharpMC.Utils;
+using SharpMC.Worlds;
 
 namespace SharpMC.Items
 {
-	using SharpMC.Entity;
-	using SharpMC.Enums;
-	using SharpMC.Utils;
-	using SharpMC.Worlds;
-
 	/// <summary>
 	///     Items are objects which only exist within the player's inventory and hands - which means, they cannot be placed in
 	///     the game world. Some items simply place blocks or entities into the game world when used. They are thus an item
@@ -41,41 +41,31 @@ namespace SharpMC.Items
 
 		internal Item(ushort id, byte metadata)
 		{
-			this.Id = id;
-			this.Metadata = metadata;
+			Id = id;
+			Metadata = metadata;
 
-			this.ItemMaterial = ItemMaterial.None;
-			this.ItemType = ItemType.Item;
-			this.IsUsable = false;
-			this.MaxStackSize = 64;
+			ItemMaterial = ItemMaterial.None;
+			ItemType = ItemType.Item;
+			IsUsable = false;
+			MaxStackSize = 64;
 		}
 
-		protected Item(ushort id, byte metadata, short fuelEfficiency)
-			: this(id, metadata)
+		protected Item(ushort id, byte metadata, short fuelEfficiency) : this(id, metadata)
 		{
-			this.FuelEfficiency = fuelEfficiency;
+			FuelEfficiency = fuelEfficiency;
 		}
 
 		public ushort Id { get; set; }
-
 		public ItemMaterial ItemMaterial { get; set; }
-
 		public ItemType ItemType { get; set; }
-
 		public byte Metadata { get; set; }
-
 		public bool IsUsable { get; set; }
-
 		public int MaxStackSize { get; set; }
-
-		public ItemStack[] CraftingItems { get; set; }
+		public ItemStack[] CraftingItems { get; set; } 
 
 		protected short FuelEfficiency
 		{
-			set
-			{
-				this._fuelEfficiency = value;
-			}
+			set { _fuelEfficiency = value; }
 		}
 
 		public virtual void UseItem(Level world, Player player, Vector3 blockCoordinates, BlockFace face)
@@ -105,24 +95,23 @@ namespace SharpMC.Items
 					target.X++;
 					break;
 			}
-
 			return target;
 		}
 
 		public int GetDamage()
 		{
-			switch (this.ItemType)
+			switch (ItemType)
 			{
 				case ItemType.Sword:
-					return this.GetSwordDamage(this.ItemMaterial);
+					return GetSwordDamage(ItemMaterial);
 				case ItemType.Item:
 					return 1;
 				case ItemType.Axe:
-					return this.GetAxeDamage(this.ItemMaterial);
+					return GetAxeDamage(ItemMaterial);
 				case ItemType.PickAxe:
-					return this.GetPickAxeDamage(this.ItemMaterial);
+					return GetPickAxeDamage(ItemMaterial);
 				case ItemType.Shovel:
-					return this.GetShovelDamage(this.ItemMaterial);
+					return GetShovelDamage(ItemMaterial);
 				default:
 					return 1;
 			}
@@ -150,22 +139,22 @@ namespace SharpMC.Items
 
 		private int GetAxeDamage(ItemMaterial itemMaterial)
 		{
-			return this.GetSwordDamage(itemMaterial) - 1;
+			return GetSwordDamage(itemMaterial) - 1;
 		}
 
 		private int GetPickAxeDamage(ItemMaterial itemMaterial)
 		{
-			return this.GetSwordDamage(itemMaterial) - 2;
+			return GetSwordDamage(itemMaterial) - 2;
 		}
 
 		private int GetShovelDamage(ItemMaterial itemMaterial)
 		{
-			return this.GetSwordDamage(itemMaterial) - 3;
+			return GetSwordDamage(itemMaterial) - 3;
 		}
 
 		public virtual short GetFuelEfficiency()
 		{
-			return this._fuelEfficiency;
+			return _fuelEfficiency;
 		}
 
 		public virtual Item GetSmelt()

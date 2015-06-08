@@ -48,6 +48,9 @@
     <PlatformTarget>x86</PlatformTarget>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="BouncyCastle.Crypto">
+      <HintPath>..\packages\BouncyCastle.1.7.0\lib\Net40-Client\BouncyCastle.Crypto.dll</HintPath>
+    </Reference>
     <Reference Include="Ionic.Zip">
       <HintPath>..\packages\DotNetZip.1.9.3\lib\net20\Ionic.Zip.dll</HintPath>
     </Reference>
@@ -55,7 +58,9 @@
       <HintPath>..\packages\LibNoise.0.2\lib\NET45\LibNoise.dll</HintPath>
     </Reference>
     <Reference Include="PresentationCore" />
+    <Reference Include="PresentationFramework" />
     <Reference Include="System" />
+    <Reference Include="System.Drawing" />
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
@@ -63,8 +68,8 @@
     <Compile Include="API\IPlugin.cs" />
     <Compile Include="API\OnPlayerJoinAttribute.cs" />
     <Compile Include="API\PermissionAttribute.cs" />
-    <Compile Include="API\PluginAttribute.cs" />
-    <Compile Include="API\PluginContext.cs" />
+    <Compile Include="API\PluginAtrribute.cs" />
+    <Compile Include="API\PluginExternals.cs" />
     <Compile Include="API\PluginManager.cs" />
     <Compile Include="Blocks\BlockAir.cs" />
     <Compile Include="Blocks\BlockBedrock.cs" />
@@ -87,15 +92,20 @@
     <Compile Include="Blocks\BlockStone.cs" />
     <Compile Include="Blocks\BlockTallGrass.cs" />
     <Compile Include="Blocks\BlockTNT.cs" />
-    <Compile Include="Blocks\BlockOakDoor.cs" />
+    <Compile Include="Blocks\BlockWoodenDoor.cs" />
     <Compile Include="Blocks\Door.cs" />
     <Compile Include="Blocks\Flowing.cs" />
     <Compile Include="Blocks\OakWoodPlank.cs" />
     <Compile Include="Blocks\Stationairy.cs" />
     <Compile Include="Blocks\BlockStationaryLava.cs" />
     <Compile Include="ConsoleCommandHandler.cs" />
+    <Compile Include="Crafting\RecipeFactory.cs" />
+    <Compile Include="Crafting\RecipeOakWoodPlank.cs" />
+    <Compile Include="Crafting\RecipeStick.cs" />
     <Compile Include="Entity\ActivatedTNTEntity.cs" />
-    <Compile Include="Enums\ChatColor.cs" />
+    <Compile Include="Entity\SnowballEntity.cs" />
+    <Compile Include="Entity\Throwable.cs" />
+    <Compile Include="Enums\ChatColors.cs" />
     <Compile Include="Enums\DamageCause.cs" />
     <Compile Include="Enums\EntityAction.cs" />
     <Compile Include="Enums\GameStateReason.cs" />
@@ -123,25 +133,21 @@
     <Compile Include="Networking\Packages\EncryptionRequest.cs" />
     <Compile Include="Networking\Packages\EncryptionResponse.cs" />
     <Compile Include="Networking\Packages\EntityEquipment.cs" />
-    <Compile Include="Networking\Packages\EquipmentSlot.cs" />
     <Compile Include="Networking\Packages\Particle.cs" />
     <Compile Include="Networking\Packages\SoundEffect.cs" />
     <Compile Include="Networking\Packages\StevenBug.cs" />
     <Compile Include="OperatorLoader.cs" />
     <Compile Include="Utils\BoundingBox.cs" />
-    <Compile Include="Enums\ContainmentType.cs" />
     <Compile Include="Utils\CraftingRecipe.cs" />
     <Compile Include="Utils\Explosion.cs" />
     <Compile Include="Utils\HealthManager.cs" />
     <Compile Include="Enums\LVLType.cs" />
-    <Compile Include="Utils\JavaHex.cs" />
-    <Compile Include="Utils\LocalDataBuffer.cs" />
+    <Compile Include="Utils\JavaHexDigest.cs" />
     <Compile Include="Utils\MCStream.cs" />
     <Compile Include="Utils\MyThreadPool.cs" />
     <Compile Include="Networking\Package.cs" />
-    <Compile Include="Utils\OpenSimplexNoise.cs" />
+    <Compile Include="Utils\OpenSimplex.cs" />
     <Compile Include="Utils\PacketCryptography.cs" />
-    <Compile Include="Enums\PacketMode.cs" />
     <Compile Include="Utils\PermissionManager.cs" />
     <Compile Include="Utils\PlayerLocation.cs" />
     <Compile Include="Utils\Ray.cs" />
@@ -211,7 +217,7 @@
     <Compile Include="Interfaces\IPacket.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="Utils\ClientWrapper.cs" />
-    <Compile Include="Entity\Player.cs" />
+    <Compile Include="Entity\PlayerEntity.cs" />
     <Compile Include="Utils\DataBuffer.cs" />
     <Compile Include="Enums\Gamemode.cs" />
     <Compile Include="Utils\SecurityUtils.cs" />

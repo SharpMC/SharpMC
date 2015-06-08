@@ -1,16 +1,17 @@
-﻿#region Header
-
-// Distrubuted under the MIT license
+﻿// Distrubuted under the MIT license
 // ===================================================
 // SharpMC uses the permissive MIT license.
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the “Software”), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
+// 
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software
+// 
 // THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -18,77 +19,59 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+// 
 // ©Copyright Kenny van Vulpen - 2015
-#endregion
+using System;
+using System.Collections.Generic;
+using System.Diagnostics;
+using System.IO;
+using System.Linq;
+using SharpMC.Blocks;
+using SharpMC.Entity;
+using SharpMC.Interfaces;
+using SharpMC.Networking.Packages;
+using SharpMC.Utils;
+using SharpMC.Worlds.Standard;
+using SharpMC.Worlds.Standard.BiomeSystem;
+using SharpMC.Worlds.Standard.Decorators;
 
 namespace SharpMC.Worlds.Nether
 {
-	using System;
-	using System.Collections.Generic;
-	using System.Diagnostics;
-	using System.IO;
-	using System.Linq;
-
-	using SharpMC.Blocks;
-	using SharpMC.Entity;
-	using SharpMC.Interfaces;
-	using SharpMC.Networking.Packages;
-	using SharpMC.Utils;
-	using SharpMC.Worlds.Standard;
-	using SharpMC.Worlds.Standard.BiomeSystem;
-
 	internal class NetherWorldProvider : IWorldProvider
 	{
-		// World Tweaking settings
-		// These settings can be tweaked to changed the look of the terrain.
-		private const double BottomOffset = 96.0; // Old value: 96.0  || Changes the offset from y level 0
+		//World Tweaking settings
+		//These settings can be tweaked to changed the look of the terrain.
 
-		private const double BottomsMagnitude = 32.0; // Old value: 32.0
-
-		private const double Groundscale = 256.0; // Old value: 256.0   || Changes the scale of the ground.
-
-		private const double BottomsFrequency = 2.2; // Original 0.5
-
-		private const double BottomsAmplitude = 0.5; // Original 0.5
-
+		private const double BottomOffset = 96.0; //Old value: 96.0  || Changes the offset from y level 0
+		private const double BottomsMagnitude = 32.0; //Old value: 32.0
+		private const double Groundscale = 256.0; //Old value: 256.0   || Changes the scale of the ground.
+		private const double BottomsFrequency = 2.2; //Original 0.5
+		private const double BottomsAmplitude = 0.5; //Original 0.5
 		private const double TopOffset = 32.0;
-
-		private const double TopMagnitude = 32.0; // Old value: 32.0
-
-		private const double Topscale = 256.0; // Old value: 256.0   || Changes the scale of the ground.
-
-		private const double TopFrequency = 2.2; // Original 0.5
-
-		private const double TopAmplitude = 0.5; // Original 0.5
-
+		private const double TopMagnitude = 32.0; //Old value: 32.0
+		private const double Topscale = 256.0; //Old value: 256.0   || Changes the scale of the ground.
+		private const double TopFrequency = 2.2; //Original 0.5
+		private const double TopAmplitude = 0.5; //Original 0.5
 		private static readonly Random Getrandom = new Random();
-
 		private static readonly object SyncLock = new object();
-
 		public static int WaterLevel = 82;
-
 		private readonly CaveGenerator _cavegen = new CaveGenerator(Globals.Seed.GetHashCode());
-
 		private readonly string _folder;
-
 		public Dictionary<Tuple<int, int>, ChunkColumn> ChunkCache = new Dictionary<Tuple<int, int>, ChunkColumn>();
 
 		public NetherWorldProvider(string folder)
 		{
-			this._folder = folder;
-			this.IsCaching = true;
+			_folder = folder;
+			IsCaching = true;
 
-			if (!Directory.Exists(folder))
-			{
-				Directory.CreateDirectory(folder);
-			}
+			if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
 		}
 
 		public override sealed bool IsCaching { get; set; }
 
 		public override ChunkColumn LoadChunk(int x, int z)
 		{
-			var u = Globals.Decompress(File.ReadAllBytes(this._folder + "/" + x + "." + z + ".cfile"));
+			var u = Globals.Decompress(File.ReadAllBytes(_folder + "/" + x + "." + z + ".cfile"));
 			var reader = new LocalDataBuffer(u);
 
 			var blockLength = reader.ReadInt();
@@ -97,12 +80,14 @@ namespace SharpMC.Worlds.Nether
 			var metalength = reader.ReadInt();
 			var blockmeta = reader.ReadShortLocal(metalength);
 
-			// var blockies = new Block[block.Length];
-			// var blocks = new ushort[block.Length];
-			// for (var i = 0; i < block.Length; i++)
-			// {
-			// 	blockies[i] = new Block(block[i]) {Metadata = (byte) blockmeta[i]};
-			// }
+			//var blockies = new Block[block.Length];
+			//var blocks = new ushort[block.Length];
+			//for (var i = 0; i < block.Length; i++)
+			//{
+			//	blockies[i] = new Block(block[i]) {Metadata = (byte) blockmeta[i]};
+			//}
+
+
 			var skyLength = reader.ReadInt();
 			var skylight = reader.Read(skyLength);
 
@@ -113,32 +98,27 @@ namespace SharpMC.Worlds.Nether
 			var biomeId = reader.Read(biomeIdLength);
 
 			var cc = new ChunkColumn
-				         {
-					         Blocks = block, 
-					         Metadata = blockmeta, 
-					         Blocklight = {
-                              Data = blocklight 
-                           }, 
-					         Skylight = {
-                            Data = skylight 
-                         }, 
-					         BiomeId = biomeId, 
-					         X = x, 
-					         Z = z
-				         };
+			{
+				Blocks = block,
+				Metadata = blockmeta,
+				Blocklight = {Data = blocklight},
+				Skylight = {Data = skylight},
+				BiomeId = biomeId,
+				X = x,
+				Z = z
+			};
 			Debug.WriteLine("We should have loaded " + x + ", " + z);
 			return cc;
-
-			// throw new NotImplementedException();
+			//throw new NotImplementedException();
 		}
 
 		public override void SaveChunks(string folder)
 		{
-			lock (this.ChunkCache)
+			lock (ChunkCache)
 			{
-				foreach (var i in this.ChunkCache.Values.ToArray())
+				foreach (var i in ChunkCache.Values.ToArray())
 				{
-					File.WriteAllBytes(this._folder + "/" + i.X + "." + i.Z + ".cfile", Globals.Compress(i.Export()));
+					File.WriteAllBytes(_folder + "/" + i.X + "." + i.Z + ".cfile", Globals.Compress(i.Export()));
 				}
 			}
 		}
@@ -146,64 +126,50 @@ namespace SharpMC.Worlds.Nether
 		public override ChunkColumn GenerateChunkColumn(Vector2 chunkCoordinates)
 		{
 			ChunkColumn c;
-			if (this.ChunkCache.TryGetValue(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z), out c))
-			{
-				return c;
-			}
+			if (ChunkCache.TryGetValue(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z), out c)) return c;
 
-			if (File.Exists(this._folder + "/" + chunkCoordinates.X + "." + chunkCoordinates.Z + ".cfile"))
+			if (File.Exists((_folder + "/" + chunkCoordinates.X + "." + chunkCoordinates.Z + ".cfile")))
 			{
-				var cd = this.LoadChunk(chunkCoordinates.X, chunkCoordinates.Z);
-				lock (this.ChunkCache)
+				var cd = LoadChunk(chunkCoordinates.X, chunkCoordinates.Z);
+				lock (ChunkCache)
 				{
-					if (!this.ChunkCache.ContainsKey(new Tuple<int, int>(cd.X, cd.Z)))
-					{
-						this.ChunkCache.Add(new Tuple<int, int>(cd.X, cd.Z), cd);
-					}
+					if (!ChunkCache.ContainsKey(new Tuple<int, int>(cd.X, cd.Z)))
+						ChunkCache.Add(new Tuple<int, int>(cd.X, cd.Z), cd);
 				}
-
 				return cd;
 			}
 
-			var chunk = new ChunkColumn { X = chunkCoordinates.X, Z = chunkCoordinates.Z };
-			this.PopulateChunk(chunk);
+			var chunk = new ChunkColumn {X = chunkCoordinates.X, Z = chunkCoordinates.Z};
+			PopulateChunk(chunk);
 
-			if (!this.ChunkCache.ContainsKey(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z)))
-			{
-				this.ChunkCache.Add(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z), chunk);
-			}
+			if (!ChunkCache.ContainsKey(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z)))
+				ChunkCache.Add(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z), chunk);
 
 			return chunk;
 		}
 
-		public override IEnumerable<ChunkColumn> GenerateChunks(
-			int viewDistance, 
-			double playerX, 
-			double playerZ, 
-			Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed, 
-			Player player, 
-			bool output = false)
+		public override IEnumerable<ChunkColumn> GenerateChunks(int viewDistance, double playerX, double playerZ,
+			Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed, Player player, bool output = false)
 		{
 			lock (chunksUsed)
 			{
 				var newOrders = new Dictionary<Tuple<int, int>, double>();
-				var radiusSquared = viewDistance / Math.PI;
+				var radiusSquared = viewDistance/Math.PI;
 				var radius = Math.Ceiling(Math.Sqrt(radiusSquared));
-				var centerX = (int)playerX >> 4;
-				var centerZ = (int)playerZ >> 4;
+				var centerX = (int) (playerX) >> 4;
+				var centerZ = (int) (playerZ) >> 4;
 
 				for (var x = -radius; x <= radius; ++x)
 				{
 					for (var z = -radius; z <= radius; ++z)
 					{
-						var distance = (x * x) + (z * z);
+						var distance = (x*x) + (z*z);
 						if (distance > radiusSquared)
 						{
 							continue;
 						}
-
-						var chunkX = (int)(x + centerX);
-						var chunkZ = (int)(z + centerZ);
+						var chunkX = (int) (x + centerX);
+						var chunkZ = (int) (z + centerZ);
 						var index = new Tuple<int, int>(chunkX, chunkZ);
 						newOrders[index] = distance;
 					}
@@ -213,11 +179,7 @@ namespace SharpMC.Worlds.Nether
 				{
 					foreach (var pair in newOrders.OrderByDescending(pair => pair.Value))
 					{
-						if (newOrders.Count <= viewDistance)
-						{
-							break;
-						}
-
+						if (newOrders.Count <= viewDistance) break;
 						newOrders.Remove(pair.Key);
 					}
 				}
@@ -227,11 +189,11 @@ namespace SharpMC.Worlds.Nether
 					if (!newOrders.ContainsKey(chunkKey))
 					{
 						new ChunkData(player.Wrapper)
-							{
-								Queee = false, 
-								Unloader = true, 
-								Chunk = new ChunkColumn { X = chunkKey.Item1, Z = chunkKey.Item2 }
-							}.Write();
+						{
+							Queee = false,
+							Unloader = true,
+							Chunk = new ChunkColumn {X = chunkKey.Item1, Z = chunkKey.Item2}
+						}.Write();
 
 						chunksUsed.Remove(chunkKey);
 					}
@@ -239,21 +201,15 @@ namespace SharpMC.Worlds.Nether
 
 				foreach (var pair in newOrders.OrderBy(pair => pair.Value))
 				{
-					if (chunksUsed.ContainsKey(pair.Key))
-					{
-						continue;
-					}
+					if (chunksUsed.ContainsKey(pair.Key)) continue;
 
-					var chunk = this.GenerateChunkColumn(new ChunkCoordinates(pair.Key.Item1, pair.Key.Item2));
+					var chunk = GenerateChunkColumn(new ChunkCoordinates(pair.Key.Item1, pair.Key.Item2));
 					chunksUsed.Add(pair.Key, chunk);
 
 					yield return chunk;
 				}
 
-				if (chunksUsed.Count > viewDistance)
-				{
-					Debug.WriteLine("Too many chunks used: {0}", chunksUsed.Count);
-				}
+				if (chunksUsed.Count > viewDistance) Debug.WriteLine("Too many chunks used: {0}", chunksUsed.Count);
 			}
 		}
 
@@ -269,19 +225,19 @@ namespace SharpMC.Worlds.Nether
 		{
 			var bottom = new SimplexOctaveGenerator(Globals.Seed.GetHashCode(), 8);
 			var top = new SimplexOctaveGenerator(Globals.Seed.GetHashCode(), 8);
-			bottom.SetScale(1 / Groundscale);
-			top.SetScale(1 / Topscale);
+			bottom.SetScale(1/Groundscale);
+			top.SetScale(1/Topscale);
 
 			for (var x = 0; x < 16; x++)
 			{
 				for (var z = 0; z < 16; z++)
 				{
-					float ox = x + chunk.X * 16;
-					float oz = z + chunk.Z * 16;
+					float ox = x + chunk.X*16;
+					float oz = z + chunk.Z*16;
 
 					var bottomHeight =
-						(int)((bottom.Noise(ox, oz, BottomsFrequency, BottomsAmplitude) * BottomsMagnitude) + BottomOffset);
-					var topHeight = (int)((top.Noise(ox, oz, TopFrequency, TopAmplitude) * TopMagnitude) + TopOffset);
+						(int) ((bottom.Noise(ox, oz, BottomsFrequency, BottomsAmplitude)*BottomsMagnitude) + BottomOffset);
+					var topHeight = (int) ((top.Noise(ox, oz, TopFrequency, TopAmplitude)*TopMagnitude) + TopOffset);
 
 					for (var y = 0; y < 256; y++)
 					{
@@ -306,7 +262,7 @@ namespace SharpMC.Worlds.Nether
 						}
 					}
 
-					// Turn the blocks ontop into the correct material
+					//Turn the blocks ontop into the correct material
 					for (var y = bottomHeight; y < 254; y++)
 					{
 						if (chunk.GetBlock(x, y + 1, z) == 0 && chunk.GetBlock(x, y, z) == 1)
@@ -326,26 +282,16 @@ namespace SharpMC.Worlds.Nether
 		public override void SetBlock(Block block, Level level, bool broadcast)
 		{
 			ChunkColumn c;
-			lock (this.ChunkCache)
+			lock (ChunkCache)
 			{
 				if (
-					!this.ChunkCache.TryGetValue(
-						new Tuple<int, int>((int)block.Coordinates.X >> 4, (int)block.Coordinates.Z >> 4), 
-						out c))
-				{
+					!ChunkCache.TryGetValue(new Tuple<int, int>((int) block.Coordinates.X >> 4, (int) block.Coordinates.Z >> 4), out c))
 					throw new Exception("No chunk found!");
-				}
 			}
 
-			c.SetBlock(
-				(int)block.Coordinates.X & 0x0f, 
-				(int)block.Coordinates.Y & 0x7f, 
-				(int)block.Coordinates.Z & 0x0f, 
+			c.SetBlock(((int) block.Coordinates.X & 0x0f), ((int) block.Coordinates.Y & 0x7f), ((int) block.Coordinates.Z & 0x0f),
 				block);
-			if (!broadcast)
-			{
-				return;
-			}
+			if (!broadcast) return;
 
 			BlockChange.Broadcast(block, level);
 		}
@@ -357,9 +303,9 @@ namespace SharpMC.Worlds.Nether
 
 		public override void ClearCache()
 		{
-			lock (this.ChunkCache)
+			lock (ChunkCache)
 			{
-				this.ChunkCache.Clear();
+				ChunkCache.Clear();
 			}
 		}
 	}

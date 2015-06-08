@@ -1,16 +1,17 @@
-﻿#region Header
-
-// Distrubuted under the MIT license
+﻿// Distrubuted under the MIT license
 // ===================================================
 // SharpMC uses the permissive MIT license.
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the “Software”), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
+// 
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software
+// 
 // THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -18,53 +19,38 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+// 
 // ©Copyright Kenny van Vulpen - 2015
-#endregion
+using System;
+using System.ComponentModel;
+using System.IO;
+using SharpMC.Entity;
+using SharpMC.Enums;
 
 namespace SharpMC.Utils
 {
-	using System;
-	using System.ComponentModel;
-	using System.IO;
-
-	using SharpMC.Entity;
-	using SharpMC.Enums;
-
 	public class HealthManager
 	{
-		public HealthManager(Entity entity)
+		public HealthManager(Entity.Entity entity)
 		{
-			this.Entity = entity;
-			this.ResetHealth();
-			this.IsInvulnerable = false;
+			Entity = entity;
+			ResetHealth();
+			IsInvulnerable = false;
 		}
 
-		public Entity Entity { get; set; }
-
+		public Entity.Entity Entity { get; set; }
 		public int Health { get; set; }
-
 		public short Air { get; set; }
-
 		public short Food { get; set; }
-
 		public short FoodTick { get; set; }
-
 		public bool IsDead { get; set; }
-
 		public int FireTick { get; set; }
-
 		public bool IsOnFire { get; set; }
-
 		public DamageCause LastDamageCause { get; set; }
-
 		public Player LastDamageSource { get; set; }
-
 		private int FallDamage { get; set; }
-
 		private int FallTick { get; set; }
-
 		private int RegenTick { get; set; }
-
 		public bool IsInvulnerable { get; set; }
 
 		public byte[] Export()
@@ -73,13 +59,12 @@ namespace SharpMC.Utils
 			using (var stream = new MemoryStream())
 			{
 				var writer = new NbtBinaryWriter(stream, false);
-				writer.Write(this.Health);
-				writer.Write(this.Air);
-				writer.Write(this.FireTick);
-				writer.Write(this.IsOnFire);
+				writer.Write(Health);
+				writer.Write(Air);
+				writer.Write(FireTick);
+				writer.Write(IsOnFire);
 				buffer = stream.GetBuffer();
 			}
-
 			return buffer;
 		}
 
@@ -88,30 +73,24 @@ namespace SharpMC.Utils
 			using (var stream = new MemoryStream(data))
 			{
 				var reader = new NbtBinaryReader(stream, false);
-				this.Health = reader.ReadInt32();
-				this.Air = reader.ReadInt16();
-				this.FireTick = reader.ReadInt32();
-				this.IsOnFire = reader.ReadBoolean();
+				Health = reader.ReadInt32();
+				Air = reader.ReadInt16();
+				FireTick = reader.ReadInt32();
+				IsOnFire = reader.ReadBoolean();
 			}
 		}
 
 		public void TakeHit(Player source, int damage = 1, DamageCause cause = DamageCause.Unknown)
 		{
-			if (this.LastDamageCause == DamageCause.Unknown)
-			{
-				this.LastDamageCause = cause;
-			}
+			if (LastDamageCause == DamageCause.Unknown) LastDamageCause = cause;
 
-			this.LastDamageSource = source;
+			LastDamageSource = source;
 
-			this.Health -= damage;
+			Health -= damage;
 
-			if (this.Entity == null)
-			{
-				return;
-			}
+			if (Entity == null) return;
 
-			var player = this.Entity as Player;
+			var player = Entity as Player;
 			if (player != null)
 			{
 				player.SendHealth();
@@ -121,109 +100,89 @@ namespace SharpMC.Utils
 
 		public void Kill()
 		{
-			if (this.IsDead)
-			{
-				return;
-			}
+			if (IsDead) return;
 
-			this.IsDead = true;
+			IsDead = true;
+			//Health = 0;
+			//if (Player != null)
+			//{
+			//	//player.SendSetHealth();
+			//player.BroadcastEntityEvent();
+			//player.BroadcastSetEntityData();
+			//	Player.SendHealth();
+			//}
 
-			// Health = 0;
-			// if (Player != null)
-			// {
-			// 	//player.SendSetHealth();
-			// player.BroadcastEntityEvent();
-			// player.BroadcastSetEntityData();
-			// 	Player.SendHealth();
-			// }
-
-			// Entity.DespawnEntity();
+			//Entity.DespawnEntity();
 		}
 
 		public void ResetHealth()
 		{
-			this.Health = 20;
-			this.Air = 300;
-			this.Food = 20;
-			this.FoodTick = 0;
-			this.IsOnFire = false;
-			this.FireTick = 0;
-			this.IsDead = false;
-			this.LastDamageCause = DamageCause.Unknown;
-			this.RegenTick = 0;
+			Health = 20;
+			Air = 300;
+			Food = 20;
+			FoodTick = 0;
+			IsOnFire = false;
+			FireTick = 0;
+			IsDead = false;
+			LastDamageCause = DamageCause.Unknown;
+			RegenTick = 0;
 		}
 
 		public void OnTick()
 		{
-			var player = this.Entity as Player;
-			if (this.IsDead)
-			{
-				return;
-			}
+			var player = Entity as Player;
+			if (IsDead) return;
 
-			if (this.IsInvulnerable)
-			{
-				this.Health = 200;
-			}
+			if (IsInvulnerable) Health = 200;
 
-			if (this.Health <= 0)
+			if (Health <= 0)
 			{
-				this.IsDead = true;
+				IsDead = true;
 				if (player != null)
 				{
-					this.Entity.Level.BroadcastChat(
-						"§e"
-						+ GetDescription(this.LastDamageCause)
-							  .Replace("{0}", player.Username)
-							  .Replace("{1}", this.LastDamageSource.Username));
+					Entity.Level.BroadcastChat("§e" +
+					                           GetDescription(LastDamageCause)
+						                           .Replace("{0}", player.Username)
+						                           .Replace("{1}", LastDamageSource.Username));
 				}
-
 				return;
 			}
 
-			if (this.Food > 16 && this.Health < 20 && !this.IsOnFire)
+			if (Food > 16 && Health < 20 && !IsOnFire)
 			{
-				// Regenerate health.
-				if (this.RegenTick >= 80)
+				//Regenerate health.
+				if (RegenTick >= 80)
 				{
-					this.Health++;
+					Health++;
 					if (player != null)
 					{
 						player.SendHealth();
 					}
-
-					this.RegenTick = 0;
+					RegenTick = 0;
 				}
-				else
-				{
-					this.RegenTick++;
-				}
+				else RegenTick++;
 			}
 
-			if (this.FoodTick == 300)
+			if (FoodTick == 300)
 			{
-				if (this.Food > 0)
+				if (Food > 0)
 				{
-					this.Food--;
+					Food--;
 				}
 				else
 				{
-					this.Health--;
+					Health--;
 				}
-
 				if (player != null)
 				{
 					player.SendHealth();
 				}
-
-				this.FoodTick = 0;
+				FoodTick = 0;
 			}
-			else
-			{
-				this.FoodTick += 1;
-			}
+			else FoodTick += 1;
 
-			// TODO: Fix falldamage code below :P
+
+			//TODO: Fix falldamage code below :P
 
 			/*if (!Player.OnGround)
 			{
@@ -249,59 +208,61 @@ namespace SharpMC.Utils
 				}
 				if (FallTick > 0) FallTick = 0;
 			}*/
-			if (this.Health <= 0)
+
+			if (Health <= 0)
 			{
-				this.Kill();
+				Kill();
 				return;
 			}
 
 			if (player != null)
 			{
-				if (player.KnownPosition.Y < 0 && !this.IsDead)
+				if (player.KnownPosition.Y < 0 && !IsDead)
 				{
-					this.TakeHit(player, 20, DamageCause.Void);
+					TakeHit(player, 20, DamageCause.Void);
 					return;
 				}
 
-				if (this.IsInWater(player.KnownPosition.ToVector3()))
+
+				if (IsInWater(player.KnownPosition.ToVector3()))
 				{
-					this.Air--;
-					if (this.Air <= 0)
+					Air--;
+					if (Air <= 0)
 					{
-						if (Math.Abs(this.Air) % 10 == 0)
+						if (Math.Abs(Air)%10 == 0)
 						{
-							this.TakeHit(player, 1, DamageCause.Drowning);
+							TakeHit(player, 1, DamageCause.Drowning);
 						}
 					}
 
-					if (this.IsOnFire)
+					if (IsOnFire)
 					{
-						this.IsOnFire = false;
-						this.FireTick = 0;
+						IsOnFire = false;
+						FireTick = 0;
 					}
 				}
 				else
 				{
-					this.Air = 300;
+					Air = 300;
 				}
 
-				if (!this.IsOnFire && this.IsInLava(player.KnownPosition.ToVector3()))
+				if (!IsOnFire && IsInLava(player.KnownPosition.ToVector3()))
 				{
-					this.FireTick = 300;
-					this.IsOnFire = true;
+					FireTick = 300;
+					IsOnFire = true;
 				}
 
-				if (this.IsOnFire)
+				if (IsOnFire)
 				{
-					this.FireTick--;
-					if (this.FireTick <= 0)
+					FireTick--;
+					if (FireTick <= 0)
 					{
-						this.IsOnFire = false;
+						IsOnFire = false;
 					}
 
-					if (Math.Abs(this.FireTick) % 20 == 0)
+					if (Math.Abs(FireTick)%20 == 0)
 					{
-						this.TakeHit(player, 1, DamageCause.Fire);
+						TakeHit(player, 1, DamageCause.Fire);
 					}
 				}
 			}
@@ -309,26 +270,23 @@ namespace SharpMC.Utils
 
 		private bool IsInWater(Vector3 playerPosition)
 		{
-			playerPosition.Y ++; // We want to check at 'head' height
-			var block = this.Entity.Level.GetBlock(playerPosition);
+			playerPosition.Y ++; //We want to check at 'head' height
+			var block = Entity.Level.GetBlock(playerPosition);
 			return block.Id == 8 || block.Id == 9;
 		}
 
 		private bool IsInLava(Vector3 playerPosition)
 		{
-			var block = this.Entity.Level.GetBlock(playerPosition);
+			var block = Entity.Level.GetBlock(playerPosition);
 			return block.Id == 10 || block.Id == 11;
 		}
 
 		public static string GetDescription(Enum value)
 		{
 			var fi = value.GetType().GetField(value.ToString());
-			var attributes = (DescriptionAttribute[])fi.GetCustomAttributes(typeof(DescriptionAttribute), false);
+			var attributes = (DescriptionAttribute[]) fi.GetCustomAttributes(typeof (DescriptionAttribute), false);
 			if (attributes.Length > 0)
-			{
 				return attributes[0].Description;
-			}
-
 			return value.ToString();
 		}
 	}

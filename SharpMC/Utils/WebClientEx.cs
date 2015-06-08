@@ -1,16 +1,17 @@
-﻿#region Header
-
-// Distrubuted under the MIT license
+﻿// Distrubuted under the MIT license
 // ===================================================
 // SharpMC uses the permissive MIT license.
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the “Software”), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
+// 
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software
+// 
 // THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -18,14 +19,13 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+// 
 // ©Copyright Kenny van Vulpen - 2015
-#endregion
+using System;
+using System.Net;
 
 namespace SharpMC.Utils
 {
-	using System;
-	using System.Net;
-
 	public class WebClientEx : WebClient
 	{
 		private WebResponse m_Resp;
@@ -34,18 +34,15 @@ namespace SharpMC.Utils
 		{
 			get
 			{
-				if (this.m_Resp != null && this.m_Resp is HttpWebResponse)
-				{
-					return (this.m_Resp as HttpWebResponse).StatusCode;
-				}
-
+				if (m_Resp != null && m_Resp is HttpWebResponse)
+					return (m_Resp as HttpWebResponse).StatusCode;
 				return HttpStatusCode.OK;
 			}
 		}
 
 		protected override WebResponse GetWebResponse(WebRequest Req, IAsyncResult ar)
 		{
-			return this.m_Resp = base.GetWebResponse(Req, ar);
+			return m_Resp = base.GetWebResponse(Req, ar);
 		}
 	}
 }

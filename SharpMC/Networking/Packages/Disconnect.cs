@@ -1,16 +1,17 @@
-﻿#region Header
-
-// Distrubuted under the MIT license
+﻿// Distrubuted under the MIT license
 // ===================================================
 // SharpMC uses the permissive MIT license.
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the “Software”), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
+// 
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software
+// 
 // THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -18,38 +19,35 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+// 
 // ©Copyright Kenny van Vulpen - 2015
-#endregion
+using SharpMC.Entity;
+using SharpMC.Utils;
+using SharpMC.Worlds;
 
 namespace SharpMC.Networking.Packages
 {
-	using SharpMC.Entity;
-	using SharpMC.Utils;
-	using SharpMC.Worlds;
-
 	internal class Disconnect : Package<Disconnect>
 	{
-		public string Reason = string.Empty;
+		public string Reason = "";
 
-		public Disconnect(ClientWrapper client)
-			: base(client)
+		public Disconnect(ClientWrapper client) : base(client)
 		{
-			this.SendId = 0x40;
+			SendId = 0x40;
 		}
 
-		public Disconnect(ClientWrapper client, DataBuffer buffer)
-			: base(client, buffer)
+		public Disconnect(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
-			this.SendId = 0x40;
+			SendId = 0x40;
 		}
 
 		public override void Write()
 		{
-			if (this.Buffer != null)
+			if (Buffer != null)
 			{
-				this.Buffer.WriteVarInt(this.SendId);
-				this.Buffer.WriteString("{ \"text\": \"" + this.Reason + "\" }");
-				this.Buffer.FlushData();
+				Buffer.WriteVarInt(SendId);
+				Buffer.WriteString("{ \"text\": \"" + Reason + "\" }");
+				Buffer.FlushData();
 			}
 		}
 
@@ -65,11 +63,10 @@ namespace SharpMC.Networking.Packages
 						{
 							continue;
 						}
-
-						// Client = i.Wrapper;
-						// Buffer = new DataBuffer(i.Wrapper);
-						// _stream = i.Wrapper.TCPClient.GetStream();
-						// Write();
+						//Client = i.Wrapper;
+						//Buffer = new DataBuffer(i.Wrapper);
+						//_stream = i.Wrapper.TCPClient.GetStream();
+						//Write();
 						new Disconnect(i.Wrapper, new DataBuffer(i.Wrapper)) { Reason = reason }.Write();
 					}
 				}
@@ -80,11 +77,10 @@ namespace SharpMC.Networking.Packages
 					{
 						continue;
 					}
-
-					// Client = i.Wrapper;
-					// Buffer = new DataBuffer(i.Wrapper);
-					// _stream = i.Wrapper.TCPClient.GetStream();
-					// Write();
+					//Client = i.Wrapper;
+					//Buffer = new DataBuffer(i.Wrapper);
+					//_stream = i.Wrapper.TCPClient.GetStream();
+					//Write();
 					new Disconnect(i.Wrapper, new DataBuffer(i.Wrapper)) { Reason = reason }.Write();
 				}
 			}
@@ -96,11 +92,10 @@ namespace SharpMC.Networking.Packages
 					{
 						continue;
 					}
-
-					// Client = i.Wrapper;
-					// Buffer = new DataBuffer(i.Wrapper);
-					// _stream = i.Wrapper.TCPClient.GetStream();
-					// Write();
+					//Client = i.Wrapper;
+					//Buffer = new DataBuffer(i.Wrapper);
+					//_stream = i.Wrapper.TCPClient.GetStream();
+					//Write();
 					new Disconnect(i.Wrapper, new DataBuffer(i.Wrapper)) { Reason = reason }.Write();
 				}
 			}

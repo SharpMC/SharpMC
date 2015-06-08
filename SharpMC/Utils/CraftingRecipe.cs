@@ -1,16 +1,17 @@
-﻿#region Header
-
-// Distrubuted under the MIT license
+﻿// Distrubuted under the MIT license
 // ===================================================
 // SharpMC uses the permissive MIT license.
+// 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the “Software”), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
 // furnished to do so, subject to the following conditions:
+// 
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software
+// 
 // THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
@@ -18,65 +19,54 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
+// 
 // ©Copyright Kenny van Vulpen - 2015
-#endregion
+using System.Collections.Generic;
+using System.IO;
+using SharpMC.Items;
 
 namespace SharpMC.Utils
 {
-	using System.Collections.Generic;
-	using System.IO;
-
-	using SharpMC.Items;
-
 	public class CraftingRecipe
 	{
 		private readonly string[] _recipe = new string[3];
-
 		private readonly Dictionary<char, ItemStack> recipeDictionary = new Dictionary<char, ItemStack>();
-
 		private readonly ItemStack resultItem;
 
 		internal CraftingRecipe(Item[] items)
 		{
 			foreach (var item in items)
 			{
-				var i = new ItemStack(item, 1);
-				this.recipeDictionary.Add(' ', i);
+				ItemStack i = new ItemStack(item, 1);
+				recipeDictionary.Add(' ', i);
 			}
 		}
 
 		public CraftingRecipe(ItemStack result, object[] recipe)
 		{
-			this.resultItem = result;
+			resultItem = result;
 			for (var i = 0; i < 3; i++)
 			{
-				if (recipe[i] is string)
-				{
-					this._recipe[i] = (string)recipe[i];
-				}
-				else
-				{
-					throw new InvalidDataException("recipe invalid");
-				}
+				if (recipe[i] is string) _recipe[i] = (string) recipe[i];
+				else throw new InvalidDataException("recipe invalid");
 			}
 
 			var prevchar = ' ';
-			for (var i = 4; i < recipe.Length; i++)
+			for (var i = 4; i < recipe.Length; i++) //Load dictionairy
 			{
-				// Load dictionairy
 				var val = recipe[i];
 				if (val is char)
 				{
-					var d = (char)val;
+					var d = (char) val;
 					prevchar = d;
 				}
 
 				if (val is ItemStack)
 				{
-					var d = (ItemStack)val;
+					var d = (ItemStack) val;
 					if (prevchar != ' ')
 					{
-						this.recipeDictionary.Add(prevchar, d);
+						recipeDictionary.Add(prevchar, d);
 						prevchar = ' ';
 					}
 				}
@@ -87,7 +77,7 @@ namespace SharpMC.Utils
 
 		public ItemStack GetResult()
 		{
-			return this.resultItem;
+			return resultItem;
 		}
 
 		public override bool Equals(object obj)
@@ -95,12 +85,8 @@ namespace SharpMC.Utils
 			var recipe = obj as CraftingRecipe;
 			if (recipe != null)
 			{
-				if (recipe.recipeDictionary.Values == this.recipeDictionary.Values)
-				{
-					return true;
-				}
+				if (recipe.recipeDictionary.Values == this.recipeDictionary.Values) return true;
 			}
-
 			return false;
 		}
 	}
