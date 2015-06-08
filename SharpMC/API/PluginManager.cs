@@ -316,10 +316,14 @@ namespace SharpMC.API
 					continue;
 				}
 
-				if (parameter.ParameterType == typeof (Player))
+				if (parameter.ParameterType == typeof(Player))
 				{
-					Player value;
-					value = player.Level.OnlinePlayers.Find(player1 => player1.Username == args[i]);
+					Player value = Array.Find(Globals.LevelManager.GetAllPlayers(), player1 => String.Equals(player1.Username, args[i], StringComparison.CurrentCultureIgnoreCase));
+					if (value == null)
+					{
+						player.SendChat(String.Format("Player \"{0}\" is not found!", args[i]), ChatColor.Red);
+						return true;
+					}
 					objectArgs[k] = value;
                     continue;
 				}
