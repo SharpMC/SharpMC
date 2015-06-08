@@ -202,11 +202,10 @@ namespace SharpMC.Core.API
 					{
 						if (!PermissionManager.HasPermission(player, authorizationAttribute.Permission))
 						{
-							player.SendChat("cYou are not permitted to use this command!", ChatColor.Red);
+							player.SendChat("You are not permitted to use this command!", ChatColor.Red);
 							return;
 						}
 					}
-
 					if (ExecuteCommand(method, player, arguments, commandAttribute)) return;
 				}
 			}
@@ -230,15 +229,17 @@ namespace SharpMC.Core.API
 			}
 
 			bool hasRequiredParameters = true;
+			bool hasStringArray = false;
 
 			foreach (var param in parameters)
 			{
 				if (!param.IsOptional) requiredParameters++;
+				if (param.ParameterType == typeof (string[])) hasStringArray = true;
 			}
 
-			if (args.Length < requiredParameters) hasRequiredParameters = false;
+			if (args.Length < requiredParameters && !hasStringArray) hasRequiredParameters = false;
 
-			if (!hasRequiredParameters || args.Length > (parameters.Length - addLenght))
+			if (!hasRequiredParameters || args.Length > (parameters.Length - addLenght) && !hasStringArray)
 			{
 				player.SendChat("Invalid command usage!", ChatColor.Red);
 				player.SendChat(commandAttribute.Usage, ChatColor.Red);
@@ -248,6 +249,9 @@ namespace SharpMC.Core.API
 			var objectArgs = new object[parameters.Length];
 
 			bool stringarrayfound = false;
+			int stringarrayposition = 0;
+			List<string> stringarrayvalues = new List<string>();
+
 			int length = args.Length + addLenght;
 			for (var k = 0; k < length; k++)
 			{
@@ -264,12 +268,14 @@ namespace SharpMC.Core.API
 					return false;
 				}
 
-				if (parameter.ParameterType == typeof (string[]) || stringarrayfound)
+				if (parameter.ParameterType == typeof (string[]))
 				{
-					if (!stringarrayfound) stringarrayfound = true;
-					objectArgs[k] = args[i];
+					stringarrayfound = true;
+					stringarrayposition = k;
+					stringarrayvalues.Add(args[i]);
 
-					continue;
+					objectArgs[stringarrayposition] = stringarrayvalues.ToArray();
+					break;
 				}
 
 				if (parameter.ParameterType == typeof (string))
@@ -328,7 +334,7 @@ namespace SharpMC.Core.API
 
 				if (parameter.ParameterType == typeof(Player))
 				{
-					Player value = Array.Find(Globals.LevelManager.GetAllPlayers(), player1 => String.Equals(player1.Username, args[i], StringComparison.CurrentCultureIgnoreCase));
+					Player value = Globals.LevelManager.GetAllPlayers().FirstOrDefault(p => p.Username.ToLower().Equals(args[i].ToLower()));
 					if (value == null)
 					{
 						player.SendChat(String.Format("Player \"{0}\" is not found!", args[i]), ChatColor.Red);
@@ -341,8 +347,22 @@ namespace SharpMC.Core.API
 				return false;
 			}
 
+			if (stringarrayfound)
+			{
+				for (int k = stringarrayposition + 1; k <= args.Length; k++)
+				{
+					var i = k - addLenght;
+					stringarrayvalues.Add(args[i]);
+					objectArgs[stringarrayposition] = stringarrayvalues.ToArray();
+				}
+			}
+
 			var pluginInstance = _plugins.FirstOrDefault(plugin => plugin.GetType() == method.DeclaringType);
-			if (pluginInstance == null) return false;
+			if (pluginInstance == null)
+			{
+				ConsoleFunctions.WriteDebugLine("Plugin instance is null!");
+				return false;
+			}
 
 			if (method.IsStatic)
 			{
