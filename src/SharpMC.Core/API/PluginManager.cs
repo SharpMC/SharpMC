@@ -247,6 +247,7 @@ namespace SharpMC.Core.API
 
 			var objectArgs = new object[parameters.Length];
 
+			bool stringarrayfound = false;
 			int length = args.Length + addLenght;
 			for (var k = 0; k < length; k++)
 			{
@@ -261,6 +262,14 @@ namespace SharpMC.Core.API
 					}
 					ConsoleFunctions.WriteWarningLine("Command method " + method.Name + " missing Player as first argument.");
 					return false;
+				}
+
+				if (parameter.ParameterType == typeof (string[]) || stringarrayfound)
+				{
+					if (!stringarrayfound) stringarrayfound = true;
+					objectArgs[k] = args[i];
+
+					continue;
 				}
 
 				if (parameter.ParameterType == typeof (string))
