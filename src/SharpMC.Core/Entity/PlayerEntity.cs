@@ -76,7 +76,7 @@ namespace SharpMC.Core.Entity
 		private bool Loaded { get; set; }
 		public bool IsAuthenticated()
 		{
-			if (!Globals.Offlinemode)
+			if (ServerSettings.OnlineMode)
 			{
 				try
 				{
@@ -253,7 +253,7 @@ namespace SharpMC.Core.Entity
 			if (!Loaded)
 			{
 				LoadPlayer();
-				string savename = Globals.Offlinemode ? Username : Uuid;
+				string savename = ServerSettings.OnlineMode ? Uuid : Username;
 				IsOperator = OperatorLoader.IsOperator(savename);
 			}
 
@@ -328,7 +328,7 @@ namespace SharpMC.Core.Entity
 		/// <returns></returns>
 		public bool ToggleOperatorStatus()
 		{
-			string savename = Globals.Offlinemode ? Username : Uuid;
+			string savename = ServerSettings.OnlineMode ? Uuid : Username;
 			IsOperator = OperatorLoader.Toggle(savename.ToLower());
 			return IsOperator;
 		}
@@ -357,13 +357,13 @@ namespace SharpMC.Core.Entity
 			}
 			byte[] data = buffer.ExportWriter;
 			data = Globals.Compress(data);
-			string savename = Globals.Offlinemode ? Username : Uuid;
+			string savename = ServerSettings.OnlineMode ? Uuid : Username;
 			File.WriteAllBytes("Players/" + savename + ".pdata", data);
 		}
 
 		public void LoadPlayer()
 		{
-			string savename = Globals.Offlinemode ? Username : Uuid;
+			string savename = ServerSettings.OnlineMode ? Uuid : Username;
 			if (File.Exists("Players/" + savename + ".pdata"))
 			{
 				byte[] data = File.ReadAllBytes("Players/" + savename + ".pdata");

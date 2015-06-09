@@ -79,7 +79,7 @@ namespace SharpMC.Core
 
 		public static void WriteDebugLine(string Text)
 		{
-			if (Globals.Debug)
+			if (ServerSettings.Debug)
 			{
 				Console.ForegroundColor = ConsoleColor.Yellow;
 				Console.Write("[DEBUG] ");

@@ -55,7 +55,7 @@ namespace SharpMC.Core.Worlds.Nether
 		private static readonly Random Getrandom = new Random();
 		private static readonly object SyncLock = new object();
 		public static int WaterLevel = 82;
-		private readonly CaveGenerator _cavegen = new CaveGenerator(Globals.Seed.GetHashCode());
+		private readonly CaveGenerator _cavegen = new CaveGenerator(ServerSettings.Seed.GetHashCode());
 		private readonly string _folder;
 		public Dictionary<Tuple<int, int>, ChunkColumn> ChunkCache = new Dictionary<Tuple<int, int>, ChunkColumn>();
 
@@ -214,8 +214,8 @@ namespace SharpMC.Core.Worlds.Nether
 
 		private void PopulateChunk(ChunkColumn chunk)
 		{
-			var bottom = new SimplexOctaveGenerator(Globals.Seed.GetHashCode(), 8);
-			var top = new SimplexOctaveGenerator(Globals.Seed.GetHashCode(), 8);
+			var bottom = new SimplexOctaveGenerator(ServerSettings.Seed.GetHashCode(), 8);
+			var top = new SimplexOctaveGenerator(ServerSettings.Seed.GetHashCode(), 8);
 			bottom.SetScale(1/Groundscale);
 			top.SetScale(1/Topscale);
 

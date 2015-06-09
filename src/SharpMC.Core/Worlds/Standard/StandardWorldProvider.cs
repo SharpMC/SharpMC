@@ -58,7 +58,7 @@ namespace SharpMC.Core.Worlds.Standard
 		private static readonly object SyncLock = new object();
 		public static int WaterLevel = 72;
 		private readonly BiomeManager _biomeManager;
-		private readonly CaveGenerator _cavegen = new CaveGenerator(Globals.Seed.GetHashCode());
+		private readonly CaveGenerator _cavegen = new CaveGenerator(ServerSettings.Seed.GetHashCode());
 		private readonly string _folder;
 		public Dictionary<Tuple<int, int>, ChunkColumn> ChunkCache = new Dictionary<Tuple<int, int>, ChunkColumn>();
 
@@ -66,7 +66,7 @@ namespace SharpMC.Core.Worlds.Standard
 		{
 			_folder = folder;
 			IsCaching = true;
-			_biomeManager = new BiomeManager(Globals.Seed.GetHashCode());
+			_biomeManager = new BiomeManager(ServerSettings.Seed.GetHashCode());
 			//	_biomeManager.AddBiomeType(new OceanBiome()); //Not adding until we fixed the transitions :(
 			_biomeManager.AddBiomeType(new FlowerForestBiome());
 			_biomeManager.AddBiomeType(new ForestBiome());
@@ -223,8 +223,8 @@ namespace SharpMC.Core.Worlds.Standard
 
 		private void PopulateChunk(ChunkColumn chunk)
 		{
-			var bottom = new SimplexOctaveGenerator(Globals.Seed.GetHashCode(), 8);
-			var overhang = new SimplexOctaveGenerator(Globals.Seed.GetHashCode(), 8);
+			var bottom = new SimplexOctaveGenerator(ServerSettings.Seed.GetHashCode(), 8);
+			var overhang = new SimplexOctaveGenerator(ServerSettings.Seed.GetHashCode(), 8);
 			overhang.SetScale(1/OverhangScale);
 			bottom.SetScale(1/Groundscale);
 

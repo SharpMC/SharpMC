@@ -22,7 +22,6 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 
-using SharpMC.Core.ExtentionMethods;
 using SharpMC.Core.Utils;
 
 namespace SharpMC.Core.Networking.Packages
@@ -47,17 +46,16 @@ namespace SharpMC.Core.Networking.Packages
 		{
 			Message = Buffer.ReadString();
 
-			if (Message.StartsWith("/"))
+			if (Message.StartsWith(Globals.ChatHandler.Value.CommandPrefix.ToString()))
 			{
 				Globals.PluginManager.HandleCommand(Message, Client.Player);
 				return;
 			}
 
-			Globals.BroadcastChat("<" + Client.Player.Username + "> " +
-			                      Message.RemoveLineBreaks().Replace("\\", "\\\\").Replace("\"", "\'\'"));
+			string msg = Globals.CleanForJson(Globals.ChatHandler.Value.PrepareMessage(Client.Player, Message));
 
-			ConsoleFunctions.WriteInfoLine("<" + Client.Player.Username + "> " +
-			                               Message.RemoveLineBreaks().Replace("\\", "\\\\").Replace("\"", "\'\'"));
+			Globals.BroadcastChat(msg);
+			ConsoleFunctions.WriteInfoLine(msg);
 		}
 
 		public override void Write()

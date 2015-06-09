@@ -20,9 +20,9 @@ namespace SharpMC.Core.Networking.Packages
 			{
 				Buffer.WriteVarInt(SendId);
 				Buffer.WriteString("{\"version\": {\"name\": \"" + Globals.ProtocolName + "\",\"protocol\": " +
-								   Globals.ProtocolVersion + "},\"players\": {\"max\": " + Globals.MaxPlayers + ",\"online\": " +
-								   Globals.GetOnlineCount() + "},\"description\": {\"text\":\"" +
-								   Globals.CleanForJson(Globals.RandomMOTD) +
+								   Globals.ProtocolVersion + "},\"players\": {\"max\": " + ServerSettings.MaxPlayers + ",\"online\": " +
+								   Globals.GetOnlinePlayerCount() + "},\"description\": {\"text\":\"" +
+								   Globals.CleanForJson(ServerSettings.Motd) +
 								   "\"}}");
 				Buffer.FlushData();
 			}

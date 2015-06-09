@@ -32,6 +32,7 @@ using SharpMC.Core.API;
 using SharpMC.Core.Entity;
 using SharpMC.Core.Networking;
 using SharpMC.Core.Networking.Packages;
+using SharpMC.Core.Utils;
 
 namespace SharpMC.Core
 {
@@ -42,24 +43,27 @@ namespace SharpMC.Core
 	public class Globals
 	{
 		internal static int ProtocolVersion = 47;
-
-		internal static bool UseCompression = false;
+		internal static string ProtocolName = "SharpMC 1.8";
+		internal static string OfficialProtocolName = "Minecraft 1.8";
 
 		internal static BasicListener ServerListener;
 		internal static LevelManager LevelManager;
-		internal static string Seed = "default";
-		public static bool Debug = false;
-		internal static string ProtocolName = "SharpMC 1.8";
-		internal static string MCProtocolName = "Minecraft 1.8";
-		public static string Motd = "";
-		public static bool Offlinemode = true; //Not finished, stuck xd
-		internal static bool EncryptionEnabled = true; //Only applies if offlinemode is disabled :p
-
 		internal static Player ConsolePlayer;
-
 		internal static PluginManager PluginManager;
 		internal static RSAParameters ServerKey;
 		internal static Random Rand;
+
+		internal static Synchronized<ChatHandler> ChatHandler;
+
+		/// <summary>
+		/// Sets the chat handler.
+		/// Made just for the api, so it can be safely changed to a custom handler.
+		/// </summary>
+		/// <param name="handler">The handler.</param>
+		public void SetChatHandler(ChatHandler handler)
+		{
+			ChatHandler.Value = handler;
+		}
 
 		public static void BroadcastChat(string message)
 		{
@@ -69,6 +73,7 @@ namespace SharpMC.Core
 			}
 			LevelManager.MainLevel.BroadcastChat(message);
 		}
+
         public static void BroadcastChat(string message, Player sender)
         {
             foreach (var lvl in LevelManager.GetLevels())
@@ -78,7 +83,7 @@ namespace SharpMC.Core
             LevelManager.MainLevel.BroadcastChat(message, sender);
         }
 
-		public static int GetOnlineCount()
+		public static int GetOnlinePlayerCount()
 		{
 			var count = 0;
 			foreach (var lvl in LevelManager.GetLevels())
@@ -88,44 +93,6 @@ namespace SharpMC.Core
 			count += LevelManager.MainLevel.OnlinePlayers.Count;
 			return count;
 		}
-
-		#region ServerStatus
-
-		public static int MaxPlayers { get; set; }
-
-		private static readonly string[] ServerMotd =
-		{
-			"§6§l" + ProtocolName + "\n-§eNow with World Generation!",
-			"§6§l" + ProtocolName + "\n-§eThis server is written by Wuppie/Kennyvv!",
-			"§6§l" + ProtocolName + "\n-§eC# Powered!",
-			"§6§l" + ProtocolName + "\n-§eNow supports Minecraft 1.8 (Partially)",
-			"§6§l" + ProtocolName + "\n-§eEven more awesomeness!",
-			"§6§l" + ProtocolName + "\n-§eKennyvv's username is PocketEdition",
-			"§6§l" + ProtocolName + "\n-§eO.M.G Anvil supported!",
-			"§6§l" + ProtocolName + "\n-§eBiome's supported? :o",
-			"§6§l" + ProtocolName + "\n-§ePlay Minecraft, If You’ve Got The Stones",
-			"§6§l" + ProtocolName + "\n-§eI Ain’t Afraid Of No Ghasts",
-			"§6§l" + ProtocolName + "\n-§eYo, F*ck Creepers",
-			"§6§l" + ProtocolName + "\n-§ePunching Trees Gives Me Wood",
-			"§6§l" + ProtocolName + "\n-§eAny computer is a laptop if you're brave enough!",
-			"§6§l" + ProtocolName + "\n-§eNothing to see here, game along..."
-		};
-
-		public static string RandomMOTD
-		{
-			get
-			{
-				if (string.IsNullOrEmpty(Motd) || Motd == "empty")
-				{
-					var i = new Random();
-					var chosen = i.Next(0, ServerMotd.Length);
-					return ServerMotd[chosen];
-				}
-				return Motd;
-			}
-		}
-
-		#endregion
 
 		#region Global Functions
 

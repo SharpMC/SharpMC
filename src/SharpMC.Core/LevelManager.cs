@@ -115,6 +115,7 @@ namespace SharpMC.Core
 			{
 				players.AddRange(lvl.OnlinePlayers);
 			}
+			players.AddRange(MainLevel.OnlinePlayers);
 			return players.ToArray();
 		}
 	}

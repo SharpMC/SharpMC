@@ -67,6 +67,7 @@
     <Reference Include="WindowsBase" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="API\ChatHandler.cs" />
     <Compile Include="API\CommandAttribute.cs" />
     <Compile Include="API\IPlugin.cs" />
     <Compile Include="API\OnPlayerJoinAttribute.cs" />
@@ -139,6 +140,7 @@
     <Compile Include="Networking\Packages\SoundEffect.cs" />
     <Compile Include="Networking\Packages\StevenBug.cs" />
     <Compile Include="OperatorLoader.cs" />
+    <Compile Include="ServerSettings.cs" />
     <Compile Include="SharpMCServer.cs" />
     <Compile Include="Utils\BoundingBox.cs" />
     <Compile Include="Utils\CraftingRecipe.cs" />
@@ -222,6 +224,7 @@
     <Compile Include="Utils\DataBuffer.cs" />
     <Compile Include="Enums\Gamemode.cs" />
     <Compile Include="Utils\SecurityUtils.cs" />
+    <Compile Include="Utils\Synchronized.cs" />
     <Compile Include="Utils\Vector2.cs" />
     <Compile Include="Utils\Config.cs" />
     <Compile Include="Utils\CryptoRandom.cs" />
@@ -284,7 +287,6 @@
     <Compile Include="Worlds\Flatland\FlatLandLevel.cs" />
     <Compile Include="Worlds\Level.cs" />
     <Compile Include="Interfaces\IWorldProvider.cs" />
-    <Compile Include="ExtentionMethods\StringExtensions.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>

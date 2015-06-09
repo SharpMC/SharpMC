@@ -384,7 +384,7 @@ namespace SharpMC.Core.Utils
 				var AllData = bffr.ToArray();
 				bffr.Clear();
 
-				if (Globals.UseCompression && _client.PacketMode == PacketMode.Play)
+				if (ServerSettings.UseCompression && _client.PacketMode == PacketMode.Play)
 				{
 					var mg = new DataBuffer(_client); //ToWriteAllData
 					var compressed = ZlibStream.CompressBuffer(AllData);

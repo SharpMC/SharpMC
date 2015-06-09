@@ -50,7 +50,7 @@ namespace SharpMC.Core.Networking.Packages
 				Buffer.WriteByte((byte) Player.Gamemode);
 				Buffer.WriteByte(Player.Dimension);
 				Buffer.WriteByte((byte) Client.Player.Level.Difficulty);
-				Buffer.WriteByte((byte) Globals.MaxPlayers);
+				Buffer.WriteByte((byte) ServerSettings.MaxPlayers);
 				Buffer.WriteString(Client.Player.Level.LevelType.ToString());
 				Buffer.WriteBool(false);
 				Buffer.FlushData();

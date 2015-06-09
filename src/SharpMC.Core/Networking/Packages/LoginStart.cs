@@ -30,9 +30,9 @@ namespace SharpMC.Core.Networking.Packages
 					new string(usernameRaw.Where(c => char.IsLetter(c) || char.IsPunctuation(c) || char.IsDigit(c)).ToArray());
 				
 				var uuid = getUUID(username);
-				if (!Globals.Offlinemode)
+				if (ServerSettings.OnlineMode)
 				{
-					if (Globals.EncryptionEnabled)
+					if (ServerSettings.EncryptionEnabled)
 					{
 						Client.PacketMode = PacketMode.Login;
 						Client.Username = username;
@@ -73,7 +73,7 @@ namespace SharpMC.Core.Networking.Packages
 					{
 						Reason =
 							"§4SharpMC\n§fThis server is not yet updated for your version of Minecraft!\nIn order to play you have to use " +
-							Globals.MCProtocolName
+							Globals.OfficialProtocolName
 					}.Write();
 					return;
 				}*/

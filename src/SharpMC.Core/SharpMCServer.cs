@@ -70,10 +70,9 @@ namespace SharpMC.Core
 				"MaxPlayers=10",
 				"LevelType=standard",
 				"WorldName=world",
-				"Debug=false",
 				"Online-mode=false",
-				"Seed=",
-				"Motd="
+				"Seed=SharpMC",
+				"Motd=A SharpMC Powered Server"
 			};
 			Config.Check();
 		}
@@ -82,18 +81,19 @@ namespace SharpMC.Core
 		{
 			Globals.Rand = new Random();
 			Console.Title = Globals.ProtocolName;
-			Globals.Debug = Config.GetProperty("debug", false);
+			ServerSettings.Debug = Config.GetProperty("debug", false);
 #if DEBUG
-			Globals.Debug = true;
+			ServerSettings.Debug = true;
 #endif
-			Globals.MaxPlayers = Config.GetProperty("MaxPlayers", 10);
-			Globals.Seed = Config.GetProperty("Seed", "SharpieCraft");
-			Globals.Motd = Config.GetProperty("motd", "");
+			ServerSettings.MaxPlayers = Config.GetProperty("MaxPlayers", 10);
+			ServerSettings.Seed = Config.GetProperty("Seed", "SharpMC");
+			ServerSettings.Motd = Config.GetProperty("motd", "A SharpMC Powered Server");
 
 			Globals.LevelManager = new LevelManager(LoadLevel());
 			Globals.LevelManager.AddLevel("nether", new NetherLevel("nether"));
-			Globals.Offlinemode = !Config.GetProperty("Online-mode", false);
-
+			ServerSettings.OnlineMode = Config.GetProperty("Online-mode", false);
+			Globals.ChatHandler = new Synchronized<ChatHandler>(new ChatHandler());
+			
 			Globals.ServerKey = PacketCryptography.GenerateKeyPair();
 
 			Globals.ConsolePlayer = new Player(Globals.LevelManager.MainLevel)
