@@ -33,7 +33,7 @@ Global
 		{089ABA36-C58C-40C3-8F88-988BEA720974}.Debug|x64.Build.0 = Debug|x86
 		{089ABA36-C58C-40C3-8F88-988BEA720974}.Debug|x86.ActiveCfg = Debug|x86
 		{089ABA36-C58C-40C3-8F88-988BEA720974}.Debug|x86.Build.0 = Debug|x86
-		{089ABA36-C58C-40C3-8F88-988BEA720974}.Release|Any CPU.ActiveCfg = Release|x86
+		{089ABA36-C58C-40C3-8F88-988BEA720974}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{089ABA36-C58C-40C3-8F88-988BEA720974}.Release|Mixed Platforms.ActiveCfg = Release|x86
 		{089ABA36-C58C-40C3-8F88-988BEA720974}.Release|Mixed Platforms.Build.0 = Release|x86
 		{089ABA36-C58C-40C3-8F88-988BEA720974}.Release|x64.ActiveCfg = Release|x86
