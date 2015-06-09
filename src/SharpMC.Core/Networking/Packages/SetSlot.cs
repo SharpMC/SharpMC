@@ -52,7 +52,7 @@ namespace SharpMC.Core.Networking.Packages
 				Buffer.WriteVarInt(SendId);
 				Buffer.WriteByte(WindowId);
 				Buffer.WriteShort(Slot);
-				//Buffer.WriteShort((short) ((ItemId << 4) | MetaData));
+
 				Buffer.WriteShort(ItemId);
 				if (ItemId != -1)
 				{

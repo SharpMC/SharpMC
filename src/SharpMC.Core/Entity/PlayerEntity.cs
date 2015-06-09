@@ -99,8 +99,6 @@ namespace SharpMC.Core.Entity
 				}
 				catch (Exception exc)
 				{
-					//client.Kick("Error while authenticating...");
-					//client.Logger.Log(exc);
 					return false;
 				}
 

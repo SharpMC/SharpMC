@@ -99,15 +99,12 @@ namespace SharpMC.Core.Entity
 		public override void OnTick()
 		{
 			TimeToLive--;
-			//	PickupDelay--;
 
 			if (TimeToLive <= 0)
 			{
 				DespawnEntity(null);
 				return;
 			}
-
-			//	if (PickupDelay > 0) return;
 
 			var players = Level.OnlinePlayers;
 			foreach (var player in players)

@@ -173,7 +173,6 @@ namespace SharpMC.Core.Utils
 				us[i] = D;
 			}
 			return NetworkToHostOrder(us);
-			//return IPAddress.NetworkToHostOrder (D);
 		}
 
 		public ushort[] ReadUShortLocal(int count)
@@ -186,7 +185,6 @@ namespace SharpMC.Core.Utils
 				us[i] = D;
 			}
 			return us;
-			//return IPAddress.NetworkToHostOrder (D);
 		}
 
 		public short[] ReadShortLocal(int count)
@@ -199,7 +197,6 @@ namespace SharpMC.Core.Utils
 				us[i] = D;
 			}
 			return us;
-			//return IPAddress.NetworkToHostOrder (D);
 		}
 
 		public string ReadString()

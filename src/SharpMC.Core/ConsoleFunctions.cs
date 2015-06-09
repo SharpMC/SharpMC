@@ -74,10 +74,6 @@ namespace SharpMC.Core
 
 		public static void WriteServerLine(string Text)
 		{
-			//Console.ForegroundColor = ConsoleColor.Green;
-			//Console.Write("[SERVER] ");
-			//Console.ResetColor();
-			//Console.Write(Text + "\n");
 			WriteInfoLine(Text);
 		}
 

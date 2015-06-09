@@ -47,7 +47,6 @@ namespace SharpMC.Core.Networking.Packages
 			{
 				long d = Buffer.ReadLong();
 				new Ping(Client){Time = d}.Write();
-				//Client.SendData(Buffer.BufferedData);
 			}
 		}
 

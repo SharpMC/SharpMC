@@ -174,7 +174,6 @@ namespace SharpMC.Core.Utils
 			index += mod.Length;
 			Buffer.BlockCopy(exp, 0, message, index, exp.Length);
 
-			//Console.WriteLine(BitConverter.ToString(message));
 			return message;
 		}
 

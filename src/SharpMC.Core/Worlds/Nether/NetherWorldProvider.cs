@@ -80,14 +80,6 @@ namespace SharpMC.Core.Worlds.Nether
 			var metalength = reader.ReadInt();
 			var blockmeta = reader.ReadShortLocal(metalength);
 
-			//var blockies = new Block[block.Length];
-			//var blocks = new ushort[block.Length];
-			//for (var i = 0; i < block.Length; i++)
-			//{
-			//	blockies[i] = new Block(block[i]) {Metadata = (byte) blockmeta[i]};
-			//}
-
-
 			var skyLength = reader.ReadInt();
 			var skylight = reader.Read(skyLength);
 
@@ -109,7 +101,6 @@ namespace SharpMC.Core.Worlds.Nether
 			};
 			Debug.WriteLine("We should have loaded " + x + ", " + z);
 			return cc;
-			//throw new NotImplementedException();
 		}
 
 		public override void SaveChunks(string folder)

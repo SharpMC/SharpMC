@@ -30,7 +30,6 @@ namespace SharpMC.Core.Worlds.Standard
 	public class SimplexOctaveGenerator
 	{
 		private readonly SimplexPerlin[] _generators;
-		//private readonly OpenSimplexNoise[] _generators;
 		public SimplexOctaveGenerator(int seed, int octaves)
 		{
 			Seed = seed;

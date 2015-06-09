@@ -47,7 +47,6 @@ namespace SharpMC.Core.Utils
 		private readonly Queue<byte[]> _commands = new Queue<byte[]>();
 		private readonly Timer _kTimer = new Timer();
 		private readonly AutoResetEvent _resume = new AutoResetEvent(false);
-		private readonly Timer _tickTimer = new Timer();
 		internal bool EncryptionEnabled = false;
 		public PacketMode PacketMode = PacketMode.Ping;
 		public Player Player;
@@ -122,12 +121,6 @@ namespace SharpMC.Core.Utils
 						a.Write(data, 0, data.Length);
 						a.Flush();
 					}
-					/*	if (EncryptionEnabled)
-				{
-					AesStream aes = new AesStream(TcpClient.GetStream(), (byte[])SharedKey.Clone());
-					aes.Write(data, 0, data.Length);
-					aes.Flush();
-				}*/
 					else
 					{
 						var a = TcpClient.GetStream();
@@ -147,10 +140,6 @@ namespace SharpMC.Core.Utils
 			_kTimer.Elapsed += DisplayTimeEvent;
 			_kTimer.Interval = 5000;
 			_kTimer.Start();
-
-			_tickTimer.Elapsed += DoTick;
-			_tickTimer.Interval = 50;
-			//_tickTimer.Start();
 		}
 
 		public void StopKeepAliveTimer()
@@ -165,10 +154,7 @@ namespace SharpMC.Core.Utils
 
 		public void DoTick(object source, ElapsedEventArgs e)
 		{
-			//if (Player != null)
-			//{
-			//	Player.OnTick();
-			//}
+
 		}
 	}
 }

@@ -47,7 +47,6 @@ namespace SharpMC.Core.Worlds.Anvil
 
 		private string _basePath;
 		private LevelInfo _level;
-		//private static readonly ILog Log = LogManager.GetLogger(typeof(AnvilWorldProvider));
 		private byte _waterOffsetY;
 
 		public AnvilWorldProvider()
@@ -161,7 +160,6 @@ namespace SharpMC.Core.Worlds.Anvil
 
 				// Write NBT
 				var nbt = CreateNbtFromChunkColumn(chunk, yoffset);
-				//nbt.SaveToStream(regionFile, NbtCompression.ZLib);
 				var nbtBuf = nbt.SaveToBuffer(NbtCompression.ZLib);
 				regionFile.Write(nbtBuf, 0, nbtBuf.Length);
 

@@ -77,7 +77,7 @@ namespace SharpMC.Core.Utils
 
 			//Second we check each face
 			var maxT = new Vector3(-1.0f);
-			//Vector3 minT = new Vector3(-1.0f);
+
 			//calcul intersection with each faces
 			if (Position.X < box.Min.X && Direction.X != 0.0f)
 				maxT.X = (box.Min.X - Position.X)/Direction.X;

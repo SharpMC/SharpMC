@@ -118,8 +118,6 @@ namespace SharpMC.Core.Blocks
 
 				if (this is BlockFlowingLava && currentDecay < 8 && newDecay < 8 && newDecay > currentDecay && random.Next(4) != 0)
 				{
-					//newDecay = currentDecay;
-					//flag = false;
 					tickRate *= 4;
 				}
 
@@ -135,12 +133,10 @@ namespace SharpMC.Core.Blocks
 					currentDecay = newDecay;
 					if (newDecay < 0)
 					{
-						//world.SetAir(x, y, z);
 						world.SetBlock(new BlockAir {Coordinates = new Vector3(x, y, z)});
 					}
 					else
 					{
-						//world.SetData(x, y, z, (byte)newDecay);
 						world.ApplyPhysics(x, y, z);
 						world.ScheduleBlockTick(this, tickRate); // Schedule tick
 					}
@@ -359,7 +355,6 @@ namespace SharpMC.Core.Blocks
 		private bool BlocksFluid(Block block)
 		{
 			return block.IsSolid;
-			//return block.IsBuildable; // block != Blocks.WOODEN_DOOR && block != Blocks.IRON_DOOR_BLOCK && block != Blocks.SIGN_POST && block != Blocks.LADDER && block != Blocks.SUGAR_CANE_BLOCK ? (block.material == Material.PORTAL ? true : block.material.isSolid()) : true;
 		}
 
 		private void SetToStill(Level world, int x, int y, int z)

@@ -87,10 +87,6 @@ namespace SharpMC.Core.Networking.Packages
 				var CursorY = Buffer.ReadByte(); //Unused
 				var CursorZ = Buffer.ReadByte(); //Unused
 
-				//	if (position == new Vector3(-1, 256, -1))
-				//{
-				//	ConsoleFunctions.WriteInfoLine("LOL, Update state <3");
-				//	}
 
 				if (Client.Player.Level.GetBlock(position).Id == 0 || Client.Player.Level.GetBlock(position).IsReplacible)
 				{

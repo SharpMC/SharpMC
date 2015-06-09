@@ -35,9 +35,6 @@ namespace SharpMC.Core.Worlds.Standard.Decorators
 			{
 				for (var z = 0; z < 16; z++)
 				{
-					//var blockbiome = chunk.BiomeId[x*16 + z];
-					//if (BiomeManager.GetBiomeById(blockbiome).Temperature < 2.0f) //If the temperature is below 2.0F create lakes.
-					//{
 					//Check for temperature.
 					for (var y = 0; y < StandardWorldProvider.WaterLevel; y++)
 					{
@@ -64,21 +61,6 @@ namespace SharpMC.Core.Worlds.Standard.Decorators
 							}
 						}
 					}
-					//}
-					/*else //Fill up with sand
-					{
-						for (var y = 0; y < ExperimentalV2Generator.WaterLevel; y++)
-						{
-							if (y < ExperimentalV2Generator.WaterLevel)
-							{
-								if (chunk.GetBlock(x, y, z) == 2 || chunk.GetBlock(x, y, z) == 3 || chunk.GetBlock(x,y,z) == 0) //Grass or Dirt?
-								{
-										chunk.SetBlock(x, y, z, BlockFactory.GetBlockById(12)); //Sand
-										//chunk.BiomeId[x * 16 + z] = 16; //Beach
-								}
-							}
-						}
-					}*/
 				}
 			}
 		}

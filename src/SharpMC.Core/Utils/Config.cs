@@ -65,11 +65,6 @@ namespace SharpMC.Core.Utils
 			return ReadInt(Property, DefaultValue);
 		}
 
-		//	public static Difficulty GetProperty(string Property, Difficulty DefaultValue)
-		//	{
-		//		return ReadDifficulty(Property, DefaultValue);
-//}
-
 		public static string GetProperty(string Property, string DefaultValue)
 		{
 			try

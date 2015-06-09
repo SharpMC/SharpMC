@@ -68,8 +68,6 @@ namespace SharpMC.Core.Networking
 			var size = 0;
 			int b;
 
-			//value |= (val & 0x7F) << (size++*7);
-
 			while (((b = stream.ReadByte()) & 0x80) == 0x80)
 			{
 				value |= (b & 0x7F) << (size++ * 7);
@@ -116,9 +114,6 @@ namespace SharpMC.Core.Networking
 
 						buf.BufferedData = buffie;
 
-						//var length = buf.ReadVarInt();
-						//buf.Size = length;
-						//buf.SetDataSize(length + buf.GetReadDataLength()); //Resize the array
 						buf.Size = dlength;
 						var packid = buf.ReadVarInt();
 
@@ -159,50 +154,5 @@ namespace SharpMC.Core.Networking
 			Client.TcpClient.Close();
 			Thread.CurrentThread.Abort();
 		}
-		
-	/*	private void HandleClientNetwork(TcpClient client)
-		{
-			var wrapper = new ClientWrapper(client);
-			while (true)
-			{
-				try
-				{
-					DataBuffer stream = new DataBuffer(client.Client);
-					int packetLength = stream.ReadVarInt();
-					stream.TotalDataLength = packetLength;
-
-					int packetId = stream.ReadVarInt();
-					
-					if (!new PackageFactory(wrapper, stream).Handle(packetId))
-					{
-						ConsoleFunctions.WriteWarningLine("Unknown packet received! \"0x" + packetId.ToString("X2") + "\"");
-					}
-					stream.Dispose();
-				}
-				catch(Exception ex)
-				{
-					wrapper.ThreadPool.KillAllThreads();
-					//Exception, disconnect!
-					ConsoleFunctions.WriteDebugLine("Error: \n" + ex);
-					new Disconnect(wrapper)
-					{
-						Reason = "§4SharpMC\n§fServer threw an exception!\n\nFor the nerdy people: \n" + ex.Message
-					}.Write();
-					break;
-				}
-			}
-			//Close the connection with the client. :)
-			wrapper.ThreadPool.KillAllThreads();
-			wrapper.StopKeepAliveTimer();
-
-			if (wrapper.Player != null)
-			{
-				wrapper.Player.SavePlayer();
-				wrapper.Player.Level.RemovePlayer(wrapper.Player);
-				wrapper.Player.Level.BroadcastPlayerRemoval(wrapper);
-			}
-			wrapper.TcpClient.Close();
-			Thread.CurrentThread.Abort();
-		}*/
 	}
 }

@@ -104,16 +104,6 @@ namespace SharpMC.Core.Utils
 			if (IsDead) return;
 
 			IsDead = true;
-			//Health = 0;
-			//if (Player != null)
-			//{
-			//	//player.SendSetHealth();
-			//player.BroadcastEntityEvent();
-			//player.BroadcastSetEntityData();
-			//	Player.SendHealth();
-			//}
-
-			//Entity.DespawnEntity();
 		}
 
 		public void ResetHealth()
@@ -183,32 +173,7 @@ namespace SharpMC.Core.Utils
 			else FoodTick += 1;
 
 
-			//TODO: Fix falldamage code below :P
-
-			/*if (!Player.OnGround)
-			{
-				if (FallTick > 3)
-				{
-					FallDamage++;
-					FallTick = 0;
-				}
-				FallTick++;
-			}
-			else
-			{
-				if (FallDamage > 0)
-				{
-					//Health -= FallDamage;
-					if (FallDamage > 3)
-					{
-						TakeHit(Player, FallDamage - 3, DamageCause.Fall);
-					}
-
-					FallDamage = 0;
-					FallTick = 0;
-				}
-				if (FallTick > 0) FallTick = 0;
-			}*/
+			//TODO: Add Falldamage check
 
 			if (Health <= 0)
 			{

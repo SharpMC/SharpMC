@@ -69,7 +69,7 @@ namespace SharpMC.Core.Worlds.Standard.Decorators
 
 		public override void Decorate(ChunkColumn chunk, BiomeBase biome)
 		{
-			//DecorateTrees(chunk, biome);
+
 		}
 
 		public override void Decorate(ChunkColumn chunk, BiomeBase biome, int x, int z)

@@ -28,7 +28,7 @@ namespace SharpMC.Core.Networking.Packages
 				var usernameRaw = Buffer.ReadString();
 				var username =
 					new string(usernameRaw.Where(c => char.IsLetter(c) || char.IsPunctuation(c) || char.IsDigit(c)).ToArray());
-				//username = Regex.Replace(username, @"[^\u0000-\u007F]", string.Empty);
+				
 				var uuid = getUUID(username);
 				if (!Globals.Offlinemode)
 				{

@@ -36,9 +36,6 @@ namespace SharpMC.Core.Worlds.Nether
 			{
 				for (var z = 0; z < 16; z++)
 				{
-					//var blockbiome = chunk.BiomeId[x*16 + z];
-					//if (BiomeManager.GetBiomeById(blockbiome).Temperature < 2.0f) //If the temperature is below 2.0F create lakes.
-					//{
 					//Check for temperature.
 					for (var y = 0; y < NetherWorldProvider.WaterLevel; y++)
 					{

@@ -172,8 +172,6 @@ namespace SharpMC.Core.Worlds
 			var metadata = chunk.GetMetadata((int) blockCoordinates.X & 0x0f, (int) blockCoordinates.Y & 0x7f,
 				(int) blockCoordinates.Z & 0x0f);
 
-			//bid = (ushort) (bid >> 4);
-
 			var block = BlockFactory.GetBlockById(bid, metadata);
 			block.Coordinates = blockCoordinates;
 			block.Metadata = metadata;
@@ -384,8 +382,6 @@ namespace SharpMC.Core.Worlds
 				sw.Stop();
 				ConsoleFunctions.WriteInfoLine("Saving chunks took: " + sw.ElapsedMilliseconds + "MS");
 
-				//ConsoleFunctions.WriteInfoLine("Clearing chunk cache...");
-				//Generator.ClearCache(); //Clear chunk cache
 				GC.Collect(); //Collect garbage
 			}
 			else

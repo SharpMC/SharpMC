@@ -13,7 +13,6 @@ namespace SharpMC.Core
 				string[] contents = File.ReadAllLines("operators.txt");
 				foreach (string line in contents)
 				{
-					//ConsoleFunctions.WriteInfoLine("Line: \"" + line + "\"");
 					_ops.Add(line.ToLower());
 				}
 			}

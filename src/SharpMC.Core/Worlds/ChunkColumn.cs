@@ -125,7 +125,6 @@ namespace SharpMC.Core.Worlds
 				{
 					writer.Write(IPAddress.HostToNetworkOrder(X));
 					writer.Write(IPAddress.HostToNetworkOrder(Z));
-					//	writer.Write(true);
 					writer.Write((ushort) 0xffff); // bitmap
 
 					writer.Flush();
@@ -171,7 +170,6 @@ namespace SharpMC.Core.Worlds
 
 				for (var i = 0; i < Blocks.Length; i++)
 				{
-					//if (i == null) writer.WriteUShort((0 << 4) | 0);
 					writer.WriteUShort((ushort) ((Blocks[i] << 4) | Metadata[i]));
 				}
 

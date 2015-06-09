@@ -138,12 +138,9 @@ namespace SharpMC.Core.Entity
 						var blockbox = block.GetBoundingBox() + 0.3;
 						if (blockbox.Intersects(GetBoundingBox()))
 						{
-							//if (!blockbox.Contains(KnownPosition.ToVector3())) continue;
-
 							if (block is BlockFlowingLava || block is BlockStationaryLava)
 							{
-								//HealthManager.Ignite(1200);
-								//Unimplemented should be done tho...
+								//TODO: Implement lighting stuff on fire.
 								continue;
 							}
 

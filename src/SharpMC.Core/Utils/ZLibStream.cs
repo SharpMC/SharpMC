@@ -62,7 +62,6 @@ namespace SharpMC.Core.Utils
 
 		public override void Write(byte[] array, int offset, int count)
 		{
-//			UpdateChecksum(array, offset, count);
 			_buffer.Write(array, offset, count);
 			base.Write(array, offset, count);
 		}

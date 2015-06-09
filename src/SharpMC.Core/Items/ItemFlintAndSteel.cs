@@ -55,13 +55,7 @@ namespace SharpMC.Core.Items
 			}
 			else
 			{
-				//world.SetBlock(new BlockAir {Coordinates = block.Coordinates});
-				new Explosion(world, new Vector3(blockCoordinates.X, blockCoordinates.Y, blockCoordinates.Z), 5.0f).Explode();
-				//new PrimedTnt(world)
-				//{
-				//	KnownPosition = new PlayerLocation(blockCoordinates.X, blockCoordinates.Y, blockCoordinates.Z),
-				//	Fuse = (byte)(new Random().Next(0, 20) + 10)
-				//}.SpawnEntity();
+				//TODO: Fix flint & steel on TNT
 			}
 		}
 	}

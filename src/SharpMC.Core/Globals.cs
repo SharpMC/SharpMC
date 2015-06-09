@@ -35,14 +35,16 @@ using SharpMC.Core.Networking.Packages;
 
 namespace SharpMC.Core
 {
+	/* Notes:
+	 * Currently online-mode and compression are not working yet.
+	 * We'll look into it soon.
+	*/
 	public class Globals
 	{
 		internal static int ProtocolVersion = 47;
 
 		internal static bool UseCompression = false;
-			//Please note, this is not working yet! (not planning on adding any where soon)
 
-		//public static Level Level;
 		internal static BasicListener ServerListener;
 		internal static LevelManager LevelManager;
 		internal static string Seed = "default";
@@ -52,7 +54,6 @@ namespace SharpMC.Core
 		public static string Motd = "";
 		public static bool Offlinemode = true; //Not finished, stuck xd
 		internal static bool EncryptionEnabled = true; //Only applies if offlinemode is disabled :p
-		//public static bool CompressionEnabled = false;
 
 		internal static Player ConsolePlayer;
 

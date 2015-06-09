@@ -67,7 +67,6 @@ namespace SharpMC.Core.Interfaces
 
 		public virtual void SetBlock(Block block, Level level, bool broadcast)
 		{
-			//throw new NotImplementedException();
 		}
 
 		public virtual void ClearCache()

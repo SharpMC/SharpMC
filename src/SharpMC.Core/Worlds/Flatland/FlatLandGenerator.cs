@@ -246,12 +246,6 @@ namespace SharpMC.Core.Worlds.Flatland
 			var metalength = reader.ReadInt();
 			var blockmeta = reader.ReadShortLocal(metalength);
 
-			//var blockies = new Block[block.Length];
-			//for (var i = 0; i < block.Length; i++)
-			//{
-			//	blockies[i] = new Block(block[i]) { Metadata = (byte) blockmeta[i] };
-			//}
-
 			var skyLength = reader.ReadInt();
 			var skylight = reader.Read(skyLength);
 

@@ -68,10 +68,7 @@ namespace SharpMC.Core.Networking.Packages
 					{
 						continue;
 					}
-					//Client = i.Wrapper;
-					//Buffer = new DataBuffer(i.Wrapper);
-					//_stream = i.Wrapper.TCPClient.GetStream();
-					//Write();
+
 					new BlockChange(i.Wrapper)
 					{
 						BlockId = block.Id,

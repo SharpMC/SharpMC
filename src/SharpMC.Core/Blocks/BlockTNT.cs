@@ -37,7 +37,6 @@ namespace SharpMC.Core.Blocks
 		public override void BreakBlock(Level world)
 		{
 			world.SetBlock(new BlockAir {Coordinates = Coordinates});
-			//new Explosion(world, Coordinates, 4f).Explode();
 		}
 	}
 }
