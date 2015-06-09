@@ -22,6 +22,7 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 
+using System;
 using System.IO;
 using System.Net;
 using SharpMC.Core.Blocks;
@@ -30,7 +31,7 @@ using SharpMC.Core.Worlds.Standard.BiomeSystem;
 
 namespace SharpMC.Core.Worlds
 {
-	public class ChunkColumn
+	public class ChunkColumn : IDisposable
 	{
 		public BiomeBase Biome;
 		public int[] BiomeColor = ArrayOf<int>.Create(256, 1);
@@ -209,6 +210,33 @@ namespace SharpMC.Core.Worlds
 			buffer.Write(BiomeId);
 
 			return buffer.ExportWriter;
+		}
+
+		private bool disposed = false;
+		protected virtual void Dispose(bool disposing)
+		{
+			if (!disposed)
+			{
+				if (disposing)
+				{
+					Blocks = null;
+					Metadata = null;
+					Blocklight.Data = null;
+					Blocklight = null;
+					BiomeId = null;
+					BiomeColor = null;
+					Skylight.Data = null;
+					Skylight = null;
+				}
+
+				disposed = true;
+			}
+		}
+
+		public void Dispose()
+		{
+			Dispose(true);
+			GC.SuppressFinalize(this);
 		}
 	}
 }

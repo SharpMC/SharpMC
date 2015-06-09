@@ -118,9 +118,18 @@ namespace SharpMC.Core.Worlds.Standard
 			{
 				foreach (var i in ChunkCache.Values.ToArray())
 				{
-					File.WriteAllBytes(_folder + "/" + i.X + "." + i.Z + ".cfile", Globals.Compress(i.Export()));
+					if (i.IsDirty)
+					{
+						SaveChunk(i);
+					}
 				}
 			}
+		}
+
+		private bool SaveChunk(ChunkColumn chunk)
+		{
+			File.WriteAllBytes(_folder + "/" + chunk.X + "." + chunk.Z + ".cfile", Globals.Compress(chunk.Export()));
+			return true;
 		}
 
 		public override ChunkColumn GenerateChunkColumn(Vector2 chunkCoordinates)
@@ -194,7 +203,17 @@ namespace SharpMC.Core.Worlds.Standard
 							Unloader = true,
 							Chunk = new ChunkColumn {X = chunkKey.Item1, Z = chunkKey.Item2}
 						}.Write();
+						var c = chunksUsed[chunkKey];
 
+						if (c.IsDirty)
+						{
+							if (SaveChunk(c))
+							{
+								chunksUsed[chunkKey].Dispose();
+							}
+						}
+
+						chunksUsed[chunkKey] = null;
 						chunksUsed.Remove(chunkKey);
 					}
 				}

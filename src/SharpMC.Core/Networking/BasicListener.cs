@@ -90,13 +90,12 @@ namespace SharpMC.Core.Networking
 				try
 				{
 					while (!clientStream.DataAvailable)
-						Thread.Sleep(1);
+						Thread.Sleep(5);
 
 					int dlength = ReadVarInt(clientStream);
 					var buffie = new byte[dlength];
 					int receivedData;
 					receivedData = clientStream.Read(buffie, 0, buffie.Length);
-
 					if (receivedData > 0)
 					{
 						var buf = new DataBuffer(Client);
@@ -121,13 +120,14 @@ namespace SharpMC.Core.Networking
 						{
 							ConsoleFunctions.WriteWarningLine("Unknown packet received! \"0x" + packid.ToString("X2") + "\"");
 						}
+
 						buf.Dispose();
 					}
 					else
 					{
-						//Stop the while loop. Client disconnected!
 						break;
 					}
+
 				}
 				catch (Exception ex)
 				{

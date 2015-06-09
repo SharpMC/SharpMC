@@ -52,6 +52,7 @@ namespace SharpMC.Core.Utils
 		public Player Player;
 		public TcpClient TcpClient;
 		public MyThreadPool ThreadPool;
+		internal int Protocol = 0;
 
 		public ClientWrapper(TcpClient client)
 		{

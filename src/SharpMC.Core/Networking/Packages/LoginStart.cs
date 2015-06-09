@@ -45,13 +45,10 @@ namespace SharpMC.Core.Networking.Packages
 					}
 					if (!Client.Player.IsAuthenticated())
 					{
-						new LoginSucces(Client) { Username = username, Uuid = uuid }.Write();
 						new Disconnect(Client) { Reason = "§4SharpMC\n§fAuthentication failed!" }.Write();
 						return;
 					}
 				}
-
-				new LoginSucces(Client) { Username = username, Uuid = uuid }.Write();
 
 				if (Encoding.UTF8.GetBytes(username).Length == 0)
 				{
@@ -60,14 +57,14 @@ namespace SharpMC.Core.Networking.Packages
 				}
 
 				//Protocol check!
-				/*if (protocol < Globals.ProtocolVersion) //Protocol to old?
+				if (Client.Protocol < Globals.ProtocolVersion) //Protocol to old?
 				{
 					new Disconnect(Client) { Reason = "§4SharpMC\n§fYour Minecraft version is to old!\nPlease update in order to play!" }
 						.Write();
 					return;
 				}
 
-				if (protocol > Globals.ProtocolVersion) //Protocol to new?
+				if (Client.Protocol > Globals.ProtocolVersion) //Protocol to new?
 				{
 					new Disconnect(Client)
 					{
@@ -76,7 +73,9 @@ namespace SharpMC.Core.Networking.Packages
 							Globals.OfficialProtocolName
 					}.Write();
 					return;
-				}*/
+				}
+
+				new LoginSucces(Client) { Username = username, Uuid = uuid }.Write();
 
 				Client.Player = new Player(Globals.LevelManager.MainLevel)
 				{

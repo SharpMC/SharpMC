@@ -46,7 +46,7 @@ namespace SharpMC.Core.Networking.Packages
 		{
 			if (Buffer != null)
 			{
-				Buffer.WriteVarInt(SendId);
+				Buffer.WriteVarInt(Client.PacketMode == PacketMode.Login ? 0x00 : SendId);
 				Buffer.WriteString("{ \"text\": \"" + Reason + "\" }");
 				Buffer.FlushData();
 			}

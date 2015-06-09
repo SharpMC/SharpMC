@@ -162,15 +162,21 @@ namespace SharpMC.Core.Worlds
 			Generator.SaveChunks(LvlName);
 		}
 
+		private int Mod(double val)
+		{
+			return (int)(((val%16) + 16)%16);
+		}
+
 		public Block GetBlock(Vector3 blockCoordinates)
 		{
-			var chunk = Generator.GenerateChunkColumn(new Vector2((int) blockCoordinates.X >> 4, (int) blockCoordinates.Z >> 4));
+			Vector2 chunkcoords = new Vector2((int) blockCoordinates.X >> 4, (int) blockCoordinates.Z >> 4);
+			var chunk = Generator.GenerateChunkColumn(chunkcoords);
 
-			var bid = chunk.GetBlock((int) blockCoordinates.X & 0x0f, (int) blockCoordinates.Y & 0x7f,
-				(int) blockCoordinates.Z & 0x0f);
+			var bid = chunk.GetBlock(Mod(blockCoordinates.X), (int) blockCoordinates.Y,
+				Mod(blockCoordinates.Z));
 
-			var metadata = chunk.GetMetadata((int) blockCoordinates.X & 0x0f, (int) blockCoordinates.Y & 0x7f,
-				(int) blockCoordinates.Z & 0x0f);
+			var metadata = chunk.GetMetadata(Mod(blockCoordinates.X), (int)blockCoordinates.Y,
+				Mod(blockCoordinates.Z));
 
 			var block = BlockFactory.GetBlockById(bid, metadata);
 			block.Coordinates = blockCoordinates;
@@ -189,7 +195,8 @@ namespace SharpMC.Core.Worlds
 		{
 			var chunk =
 				Generator.GenerateChunkColumn(new ChunkCoordinates((int) block.Coordinates.X >> 4, (int) block.Coordinates.Z >> 4));
-			chunk.SetBlock((int) block.Coordinates.X & 0x0f, (int) block.Coordinates.Y & 0x7f, (int) block.Coordinates.Z & 0x0f,
+			chunk.SetBlock(Mod(block.Coordinates.X), (int)block.Coordinates.Y,
+				Mod(block.Coordinates.Z),
 				block);
 			chunk.IsDirty = true;
 
