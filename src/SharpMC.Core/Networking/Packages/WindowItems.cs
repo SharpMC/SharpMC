@@ -31,7 +31,7 @@ namespace SharpMC.Core.Networking.Packages
 		public ItemStack[] ItemStacks;
 		public byte WindowId = 0;
 
-		public WindowItems(ClientWrapper client) : this(client, new DataBuffer(client))
+		public WindowItems(ClientWrapper client) : base(client)
 		{
 		}
 

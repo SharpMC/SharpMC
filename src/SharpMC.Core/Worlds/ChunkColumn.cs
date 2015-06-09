@@ -160,7 +160,7 @@ namespace SharpMC.Core.Worlds
 
 		public byte[] GetBytes(bool unloader = false)
 		{
-			var writer = new LocalDataBuffer(new byte[0]);
+			var writer = new DataBuffer(new byte[0]);
 			if (!unloader)
 			{
 				writer.WriteInt(X);
@@ -193,7 +193,7 @@ namespace SharpMC.Core.Worlds
 
 		public byte[] Export()
 		{
-			var buffer = new LocalDataBuffer(new byte[0]);
+			var buffer = new DataBuffer(new byte[0]);
 
 			buffer.WriteInt(Blocks.Length);
 

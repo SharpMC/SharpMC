@@ -33,22 +33,22 @@ namespace SharpMC.Core.Utils
 	/// <summary>
 	/// Currently only used for reading.
 	/// </summary>
-	public class MCStream : NetworkStream
+/*	public class DataBuffer : NetworkStream
 	{
 		public int TotalDataLength = 0;
-		public MCStream(Socket socket) : base(socket)
+		public DataBuffer(Socket socket) : base(socket)
 		{
 		}
 
-		public MCStream(Socket socket, bool ownsSocket) : base(socket, ownsSocket)
+		public DataBuffer(Socket socket, bool ownsSocket) : base(socket, ownsSocket)
 		{
 		}
 
-		public MCStream(Socket socket, FileAccess access) : base(socket, access)
+		public DataBuffer(Socket socket, FileAccess access) : base(socket, access)
 		{
 		}
 
-		public MCStream(Socket socket, FileAccess access, bool ownsSocket) : base(socket, access, ownsSocket)
+		public DataBuffer(Socket socket, FileAccess access, bool ownsSocket) : base(socket, access, ownsSocket)
 		{
 		
 		}
@@ -56,6 +56,25 @@ namespace SharpMC.Core.Utils
 		public void FlushData(bool quee = false)
 		{
 			Flush();
+		}
+
+		public static byte ReverseByte(byte originalByte)
+		{
+			int result = 0;
+			for (int i = 0; i < 8; i++)
+			{
+				result = result << 1;
+				result += originalByte & 1;
+				originalByte = (byte)(originalByte >> 1);
+			}
+
+			return (byte)result;
+		}
+
+		public byte ReadByte()
+		{
+			if (BitConverter.IsLittleEndian) return ReverseByte((byte)base.ReadByte());
+			return (byte) base.ReadByte();
 		}
 
 		#region Read
@@ -361,5 +380,5 @@ namespace SharpMC.Core.Utils
 		}
 
 		#endregion
-	}
+	}*/
 }

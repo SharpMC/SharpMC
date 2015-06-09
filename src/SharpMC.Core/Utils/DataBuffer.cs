@@ -42,6 +42,7 @@ namespace SharpMC.Core.Utils
 		}
 	}
 
+	
 	public class DataBuffer
 	{
 		private readonly ClientWrapper _client;
@@ -57,6 +58,12 @@ namespace SharpMC.Core.Utils
 		public DataBuffer(byte[] data)
 		{
 			BufferedData = data;
+		}
+
+		public void SetDataSize(int size)
+		{
+			Array.Resize(ref BufferedData, size);
+			Size = size;
 		}
 
 		public void Dispose()
@@ -199,6 +206,7 @@ namespace SharpMC.Core.Utils
 		{
 			var Length = ReadVarInt();
 			var StringValue = Read(Length);
+
 			return Encoding.UTF8.GetString(StringValue);
 		}
 

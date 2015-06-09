@@ -34,18 +34,31 @@ namespace SharpMC.Core.Networking.Packages
 		public List<Package> LoginPackages = new List<Package>();
 		public List<Package> PingPackages = new List<Package>();
 		public List<Package> PlayPackages = new List<Package>();
-
+		public List<Package> StatusPackages = new List<Package>();
+ 
 		public PackageFactory(ClientWrapper client, DataBuffer buffer)
 		{
 			#region Ping
 
 			PingPackages.Add(new Handshake(client, buffer));
-			PingPackages.Add(new Ping(client, buffer));
+			//PingPackages.Add(new Ping(client, buffer));
 			PingPackages.Add(new StevenBug(client, buffer));
 
 			#endregion
 
+			#region Login
+
 			LoginPackages.Add(new EncryptionResponse(client, buffer));
+			LoginPackages.Add(new LoginStart(client, buffer));
+
+			#endregion
+
+			#region Status
+
+			StatusPackages.Add(new Request(client, buffer));
+			StatusPackages.Add(new Ping(client, buffer));
+
+			#endregion
 
 			#region Play
 
@@ -84,6 +97,21 @@ namespace SharpMC.Core.Networking.Packages
 					return HPlay(packetId);
 				case PacketMode.Login:
 					return HLogin(packetId);
+				case PacketMode.Status:
+					return HStatus(packetId);
+			}
+			return false;
+		}
+
+		private bool HStatus(int packetid)
+		{
+			foreach (var package in StatusPackages)
+			{
+				if (package.ReadId == packetid)
+				{
+					package.Read();
+					return true;
+				}
 			}
 			return false;
 		}

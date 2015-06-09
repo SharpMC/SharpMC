@@ -57,10 +57,10 @@ namespace SharpMC.Core.Networking.Packages
 				switch (@state)
 				{
 					case 1:
-						HandleStatusRequest();
-						break;
+						Client.PacketMode = PacketMode.Status;
+						return;
 					case 2:
-						HandleLogin(protocol);
+						Client.PacketMode = PacketMode.Login;
 						break;
 				}
 			}

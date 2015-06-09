@@ -68,7 +68,7 @@ namespace SharpMC.Core.Networking.Packages
 						//Buffer = new DataBuffer(i.Wrapper);
 						//_stream = i.Wrapper.TCPClient.GetStream();
 						//Write();
-						new Disconnect(i.Wrapper, new DataBuffer(i.Wrapper)) { Reason = reason }.Write();
+						new Disconnect(i.Wrapper) { Reason = reason }.Write();
 					}
 				}
 
@@ -82,7 +82,7 @@ namespace SharpMC.Core.Networking.Packages
 					//Buffer = new DataBuffer(i.Wrapper);
 					//_stream = i.Wrapper.TCPClient.GetStream();
 					//Write();
-					new Disconnect(i.Wrapper, new DataBuffer(i.Wrapper)) { Reason = reason }.Write();
+					new Disconnect(i.Wrapper) { Reason = reason }.Write();
 				}
 			}
 			else
@@ -97,7 +97,7 @@ namespace SharpMC.Core.Networking.Packages
 					//Buffer = new DataBuffer(i.Wrapper);
 					//_stream = i.Wrapper.TCPClient.GetStream();
 					//Write();
-					new Disconnect(i.Wrapper, new DataBuffer(i.Wrapper)) { Reason = reason }.Write();
+					new Disconnect(i.Wrapper) { Reason = reason }.Write();
 				}
 			}
 		}

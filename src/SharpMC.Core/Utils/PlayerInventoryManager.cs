@@ -251,7 +251,7 @@ namespace SharpMC.Core.Utils
 
 		public byte[] GetBytes()
 		{
-			LocalDataBuffer buffer = new LocalDataBuffer(new byte[0]);
+			DataBuffer buffer = new DataBuffer(new byte[0]);
 			for (int i = 0; i <= 44; i++)
 			{
 				var slot = _slots[i];
@@ -265,7 +265,7 @@ namespace SharpMC.Core.Utils
 
 		public void Import(byte[] data)
 		{
-			LocalDataBuffer buffer = new LocalDataBuffer(data);
+			DataBuffer buffer = new DataBuffer(data);
 
 			for (int i = 0; i <= 44; i++)
 			{

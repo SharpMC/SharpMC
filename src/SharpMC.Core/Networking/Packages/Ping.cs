@@ -28,21 +28,36 @@ namespace SharpMC.Core.Networking.Packages
 {
 	internal class Ping : Package<Ping>
 	{
+		public long Time = 0;
 		public Ping(ClientWrapper client) : base(client)
 		{
 			ReadId = 0x01;
+			SendId = 0x01;
 		}
 
 		public Ping(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			ReadId = 0x01;
+			SendId = 0x01;
 		}
 
 		public override void Read()
 		{
 			if (Buffer != null)
 			{
-				Client.SendData(Buffer.BufferedData);
+				long d = Buffer.ReadLong();
+				new Ping(Client){Time = d}.Write();
+				//Client.SendData(Buffer.BufferedData);
+			}
+		}
+
+		public override void Write()
+		{
+			if (Buffer != null)
+			{
+				Buffer.WriteVarInt(SendId);
+				Buffer.WriteLong(Time);
+				Buffer.FlushData();
 			}
 		}
 	}

@@ -23,6 +23,7 @@
 // ©Copyright Kenny van Vulpen - 2015
 
 using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
@@ -61,6 +62,25 @@ namespace SharpMC.Core.Networking
 			_serverListener.Stop();
 		}
 
+		private int ReadVarInt(NetworkStream stream)
+		{
+			var value = 0;
+			var size = 0;
+			int b;
+
+			//value |= (val & 0x7F) << (size++*7);
+
+			while (((b = stream.ReadByte()) & 0x80) == 0x80)
+			{
+				value |= (b & 0x7F) << (size++ * 7);
+				if (size > 5)
+				{
+					throw new IOException("VarInt too long. Hehe that's punny.");
+				}
+			}
+			return value | ((b & 0x7F) << (size * 7));
+		}
+
 		private void HandleClientCommNew(object client)
 		{
 			var tcpClient = (TcpClient) client;
@@ -71,7 +91,11 @@ namespace SharpMC.Core.Networking
 			{
 				try
 				{
-					var buffie = new byte[4096];
+					while (!clientStream.DataAvailable)
+						Thread.Sleep(1);
+
+					int dlength = ReadVarInt(clientStream);
+					var buffie = new byte[dlength];
 					int receivedData;
 					receivedData = clientStream.Read(buffie, 0, buffie.Length);
 
@@ -92,8 +116,10 @@ namespace SharpMC.Core.Networking
 
 						buf.BufferedData = buffie;
 
-						var length = buf.ReadVarInt();
-						buf.Size = length;
+						//var length = buf.ReadVarInt();
+						//buf.Size = length;
+						//buf.SetDataSize(length + buf.GetReadDataLength()); //Resize the array
+						buf.Size = dlength;
 						var packid = buf.ReadVarInt();
 
 						if (!new PackageFactory(Client, buf).Handle(packid))
@@ -133,7 +159,7 @@ namespace SharpMC.Core.Networking
 			Client.TcpClient.Close();
 			Thread.CurrentThread.Abort();
 		}
-
+		
 	/*	private void HandleClientNetwork(TcpClient client)
 		{
 			var wrapper = new ClientWrapper(client);

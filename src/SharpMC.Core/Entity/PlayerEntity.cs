@@ -291,7 +291,7 @@ namespace SharpMC.Core.Entity
 							force ? new Dictionary<Tuple<int, int>, ChunkColumn>() : _chunksUsed, this))
 				{
 					if (Wrapper != null && Wrapper.TcpClient.Client.Connected)
-						new ChunkData(Wrapper, new DataBuffer(Wrapper)) {Chunk = chunk}.Write();
+						new ChunkData(Wrapper) {Chunk = chunk}.Write();
 				}
 			});
 		}
@@ -339,7 +339,7 @@ namespace SharpMC.Core.Entity
 		{
 			byte[] health = HealthManager.Export();
 			byte[] inv = Inventory.GetBytes();
-			LocalDataBuffer buffer = new LocalDataBuffer(new byte[0]);
+			DataBuffer buffer = new DataBuffer(new byte[0]);
 			buffer.WriteDouble(KnownPosition.X);
 			buffer.WriteDouble(KnownPosition.Y);
 			buffer.WriteDouble(KnownPosition.Z);
@@ -370,7 +370,7 @@ namespace SharpMC.Core.Entity
 			{
 				byte[] data = File.ReadAllBytes("Players/" + savename + ".pdata");
 				data = Globals.Decompress(data);
-				LocalDataBuffer reader = new LocalDataBuffer(data);
+				DataBuffer reader = new DataBuffer(data);
 				double x = reader.ReadDouble();
 				double y = reader.ReadDouble();
 				double z = reader.ReadDouble();

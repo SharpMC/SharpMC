@@ -133,7 +133,9 @@
     <Compile Include="Networking\Packages\EncryptionRequest.cs" />
     <Compile Include="Networking\Packages\EncryptionResponse.cs" />
     <Compile Include="Networking\Packages\EntityEquipment.cs" />
+    <Compile Include="Networking\Packages\LoginStart.cs" />
     <Compile Include="Networking\Packages\Particle.cs" />
+    <Compile Include="Networking\Packages\Request.cs" />
     <Compile Include="Networking\Packages\SoundEffect.cs" />
     <Compile Include="Networking\Packages\StevenBug.cs" />
     <Compile Include="OperatorLoader.cs" />
@@ -144,7 +146,7 @@
     <Compile Include="Utils\HealthManager.cs" />
     <Compile Include="Enums\LVLType.cs" />
     <Compile Include="Utils\JavaHexDigest.cs" />
-    <Compile Include="Utils\MCStream.cs" />
+    <Compile Include="Utils\Stream.DataBuffer.cs" />
     <Compile Include="Utils\MyThreadPool.cs" />
     <Compile Include="Networking\Package.cs" />
     <Compile Include="Utils\OpenSimplex.cs" />

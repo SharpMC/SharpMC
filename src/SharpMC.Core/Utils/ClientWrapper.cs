@@ -37,6 +37,7 @@ namespace SharpMC.Core.Utils
 	public enum PacketMode
 	{
 		Ping,
+		Status,
 		Login,
 		Play
 	}

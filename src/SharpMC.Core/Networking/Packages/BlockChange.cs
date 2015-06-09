@@ -72,7 +72,7 @@ namespace SharpMC.Core.Networking.Packages
 					//Buffer = new DataBuffer(i.Wrapper);
 					//_stream = i.Wrapper.TCPClient.GetStream();
 					//Write();
-					new BlockChange(i.Wrapper, new DataBuffer(i.Wrapper))
+					new BlockChange(i.Wrapper)
 					{
 						BlockId = block.Id,
 						MetaData = block.Metadata,

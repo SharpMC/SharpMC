@@ -238,7 +238,7 @@ namespace SharpMC.Core.Worlds.Flatland
 		public override ChunkColumn LoadChunk(int x, int z)
 		{
 			var u = Globals.Decompress(File.ReadAllBytes(Folder + "/" + x + "." + z + ".cfile"));
-			var reader = new LocalDataBuffer(u);
+			var reader = new DataBuffer(u);
 
 			var blockLength = reader.ReadInt();
 			var block = reader.ReadUShortLocal(blockLength);
