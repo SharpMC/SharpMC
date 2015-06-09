@@ -80,7 +80,7 @@ namespace SharpMC.Core.Networking
 						Write();
 					}
 				}
-				catch (Exception ex)
+				catch
 				{
 					//Catch any exception just to be sure the broadcast works.
 					//TODO: Fix the exception.

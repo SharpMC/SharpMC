@@ -25,12 +25,12 @@ namespace SharpMC.Core.Entity
 {
 	public class EntityManager
 	{
-		private static int LastEntityId;
+		private static int _lastEntityId;
 
 		public static int GetEntityId()
 		{
-			LastEntityId++;
-			return LastEntityId;
+			_lastEntityId++;
+			return _lastEntityId;
 		}
 	}
 }

@@ -83,9 +83,9 @@ namespace SharpMC.Core.Networking.Packages
 				var itemDamage = Buffer.ReadByte();
 				var itemMeta = (byte) Buffer.ReadByte();
 
-				var CursorX = Buffer.ReadByte(); //Unused
-				var CursorY = Buffer.ReadByte(); //Unused
-				var CursorZ = Buffer.ReadByte(); //Unused
+				var cursorX = Buffer.ReadByte(); //Unused
+				var cursorY = Buffer.ReadByte(); //Unused
+				var cursorZ = Buffer.ReadByte(); //Unused
 
 
 				if (Client.Player.Level.GetBlock(position).Id == 0 || Client.Player.Level.GetBlock(position).IsReplacible)

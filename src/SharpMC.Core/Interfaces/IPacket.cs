@@ -28,9 +28,9 @@ namespace SharpMC.Core.Interfaces
 {
 	public interface IPacket
 	{
-		int PacketID { get; }
+		int PacketId { get; }
 		bool IsPlayePacket { get; }
-		void Read(ClientWrapper state, DataBuffer buffer, object[] Arguments);
-		void Write(ClientWrapper state, DataBuffer buffer, object[] Arguments);
+		void Read(ClientWrapper state, DataBuffer buffer, object[] arguments);
+		void Write(ClientWrapper state, DataBuffer buffer, object[] arguments);
 	}
 }

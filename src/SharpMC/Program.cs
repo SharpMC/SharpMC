@@ -4,10 +4,10 @@ namespace SharpMC
 {
 	class Program
 	{
-		private static SharpMCServer _server;
+		private static SharpMcServer _server;
 		static void Main(string[] args)
 		{
-			_server= new SharpMCServer();
+			_server= new SharpMcServer();
 			_server.StartServer();
 		}
 	}

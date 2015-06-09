@@ -33,7 +33,7 @@ namespace SharpMC.Core.Networking.Packages
 		public Vector3 Coordinates;
 		public bool OnGround;
 		public byte Pitch;
-		public int UniqueServerID;
+		public int UniqueServerId;
 		public byte Yaw;
 
 		public EntityTeleport(ClientWrapper client) : base(client)
@@ -51,7 +51,7 @@ namespace SharpMC.Core.Networking.Packages
 			if (Buffer != null)
 			{
 				Buffer.WriteVarInt(SendId);
-				Buffer.WriteVarInt(UniqueServerID);
+				Buffer.WriteVarInt(UniqueServerId);
 				Buffer.WriteInt((int) Coordinates.X*32);
 				Buffer.WriteInt((int) Coordinates.Y*32);
 				Buffer.WriteInt((int) Coordinates.Z*32);
@@ -71,7 +71,7 @@ namespace SharpMC.Core.Networking.Packages
 					{
 						Coordinates = player.KnownPosition.ToVector3(),
 						OnGround = player.KnownPosition.OnGround,
-						UniqueServerID = player.EntityId,
+						UniqueServerId = player.EntityId,
 						Pitch = (byte) player.KnownPosition.Pitch,
 						Yaw = (byte) player.KnownPosition.Yaw
 					}.Write();

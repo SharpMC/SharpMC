@@ -32,7 +32,7 @@ namespace SharpMC.Core.Worlds.Better
 		{
 			Difficulty = 0;
 			LvlName = worldname;
-			LevelType = LVLType.Default;
+			LevelType = LvlType.Default;
 			Generator = new BetterWorldProvider(worldname);
 			ConsoleFunctions.WriteInfoLine("Level Type: Better (Experimental)");
 			DefaultGamemode = Gamemode.Creative;

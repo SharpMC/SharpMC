@@ -49,21 +49,21 @@ namespace SharpMC.Core.Worlds
 			StartTimeOfDayTimer();
 			Entities = new List<Entity.Entity>();
 			Dimension = 0;
-            timetorain = Globals.Rand.Next(24000, 96000);
+            Timetorain = Globals.Rand.Next(24000, 96000);
 		}
 
 		internal int Dimension { get; set; }
 		internal string LvlName { get; set; }
 		internal int Difficulty { get; set; }
 		internal Gamemode DefaultGamemode { get; set; }
-		internal LVLType LevelType { get; set; }
+		internal LvlType LevelType { get; set; }
 		internal List<Player> OnlinePlayers { get; private set; }
 		internal int CurrentWorldTime { get; set; }
 		internal int Day { get; set; }
-		public IWorldProvider Generator { get; set; }
+		public WorldProvider Generator { get; set; }
 		internal List<Entity.Entity> Entities { get; private set; }
 		internal ConcurrentDictionary<Vector3, int> BlockWithTicks { get; private set; }
-        public int timetorain { get; set; }
+        public int Timetorain { get; set; }
         public bool Raining { get; set; }
 
 		#region APISpecific
@@ -101,7 +101,7 @@ namespace SharpMC.Core.Worlds
 				Action = 0,
 				Gamemode = player.Gamemode,
 				Username = player.Username,
-				UUID = player.Uuid
+				Uuid = player.Uuid
 			}.Broadcast(this); //Send playerlist item to old players & player him self
 
 			BroadcastExistingPlayers(player.Wrapper);
@@ -137,7 +137,7 @@ namespace SharpMC.Core.Worlds
 						Action = 0,
 						Gamemode = i.Gamemode,
 						Username = i.Username,
-						UUID = i.Uuid
+						Uuid = i.Uuid
 					}.Write(); //Send TAB Item
 					new SpawnPlayer(caller) {Player = i}.Write(); //Spawn the old player to new player
 					new SpawnPlayer(i.Wrapper) {Player = caller.Player}.Write(); //Spawn the new player to old player
@@ -153,7 +153,7 @@ namespace SharpMC.Core.Worlds
 				Action = 0,
 				Gamemode = caller.Player.Gamemode,
 				Username = caller.Player.Username,
-				UUID = caller.Player.Uuid
+				Uuid = caller.Player.Uuid
 			}.Broadcast(this);
 		}
 
@@ -305,7 +305,7 @@ namespace SharpMC.Core.Worlds
 
         private void WeatherTick()
         {
-            if(timetorain == 0 && !Raining)
+            if(Timetorain == 0 && !Raining)
             {
                 Raining = true;
                 foreach (var player in OnlinePlayers.ToArray())
@@ -316,13 +316,13 @@ namespace SharpMC.Core.Worlds
                         Value = (float)1
                     }.Write();
                 }
-                timetorain = Globals.Rand.Next(12000, 36000);
+                Timetorain = Globals.Rand.Next(12000, 36000);
             }
             else if(!Raining)
             {
-                --timetorain;
+                --Timetorain;
             }
-            else if(Raining && timetorain == 0)
+            else if(Raining && Timetorain == 0)
             {
                 Raining = false;
                 foreach (var player in OnlinePlayers.ToArray())
@@ -333,15 +333,14 @@ namespace SharpMC.Core.Worlds
                         Value = (float)1
                     }.Write();
                 }
-                timetorain = Globals.Rand.Next(24000, 96000);
+                Timetorain = Globals.Rand.Next(24000, 96000);
             }
             else if(Raining)
             {
-                --timetorain;
+                --Timetorain;
             }
         }
 
-		private int _clockTick = 0;
 		private int _saveTick;
 
 		private void GameTick(object source, ElapsedEventArgs e)

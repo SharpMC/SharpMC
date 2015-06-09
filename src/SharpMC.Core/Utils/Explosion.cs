@@ -37,8 +37,8 @@ namespace SharpMC.Core.Utils
 		private readonly IDictionary<Vector3, Block> _afectedBlocks = new Dictionary<Vector3, Block>();
 		private readonly float _size;
 		private readonly Level _world;
-		private readonly bool CoordsSet;
-		private readonly bool Fire;
+		private readonly bool _coordsSet;
+		private readonly bool _fire;
 		private Vector3 _centerCoordinates;
 
 		/// <summary>
@@ -53,8 +53,8 @@ namespace SharpMC.Core.Utils
 			_size = size;
 			_centerCoordinates = centerCoordinates;
 			_world = world;
-			CoordsSet = true;
-			Fire = fire;
+			_coordsSet = true;
+			_fire = fire;
 		}
 
 		/// <summary>
@@ -62,7 +62,7 @@ namespace SharpMC.Core.Utils
 		/// </summary>
 		public Explosion()
 		{
-			CoordsSet = false;
+			_coordsSet = false;
 		}
 
 		public bool Explode()
@@ -77,7 +77,7 @@ namespace SharpMC.Core.Utils
 
 		private bool PrimaryExplosion()
 		{
-			if (!CoordsSet) throw new Exception("Please intiate using Explosion(Level, coordinates, size)");
+			if (!_coordsSet) throw new Exception("Please intiate using Explosion(Level, coordinates, size)");
 			if (_size < 0.1) return false;
 
 			for (var i = 0; i < Ray; i++)
@@ -146,14 +146,14 @@ namespace SharpMC.Core.Utils
 				var block1 = block;
 				_world.SetBlock(new BlockAir {Coordinates = block1.Coordinates});
 
-				if (block is BlockTNT)
+				if (block is BlockTnt)
 				{
-					new Task(() => SpawnTNT(block1.Coordinates, _world)).Start();
+					new Task(() => SpawnTnt(block1.Coordinates, _world)).Start();
 				}
 			}
 
 			// Set stuff on fire
-			if (Fire)
+			if (_fire)
 			{
 				var random = new Random();
 				foreach (var coord in _afectedBlocks.Keys)
@@ -173,10 +173,10 @@ namespace SharpMC.Core.Utils
 			return true;
 		}
 
-		private void SpawnTNT(Vector3 blockCoordinates, Level world)
+		private void SpawnTnt(Vector3 blockCoordinates, Level world)
 		{
 			var rand = new Random();
-			new ActivatedTNTEntity(world)
+			new ActivatedTntEntity(world)
 			{
 				KnownPosition = blockCoordinates.ToPlayerLocation(),
 				Fuse = (rand.Next(0, 20) + 10)

@@ -27,7 +27,7 @@ namespace SharpMC.Core.Blocks
 	{
 		public static Block GetBlockById(ushort id, short metadata)
 		{
-			if (id == 46) return new BlockTNT();
+			if (id == 46) return new BlockTnt();
 			if (id == 0) return new BlockAir();
 			if (id == 51) return new BlockFire();
 			if (id == 7) return new BlockBedrock();

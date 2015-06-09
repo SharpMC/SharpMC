@@ -53,17 +53,17 @@ namespace SharpMC.Core.Entity
 
 			foreach (var i in Level.OnlinePlayers)
 			{
-				var SpawnedBy = i.Wrapper;
+				var spawnedBy = i.Wrapper;
 				if (source != null)
 				{
-					new CollectItem(SpawnedBy)
+					new CollectItem(spawnedBy)
 					{
 						CollectorEntityId = source.EntityId,
 						EntityId = EntityId
 					}.Write();
 				}
 
-				new DestroyEntities(SpawnedBy)
+				new DestroyEntities(spawnedBy)
 				{
 					EntityIds = new[] {EntityId}
 				}.Write();
@@ -71,13 +71,13 @@ namespace SharpMC.Core.Entity
 			Level.RemoveEntity(this);
 		}
 
-		public void SpawnEntity()
+		public override void SpawnEntity()
 		{
 			Level.AddEntity(this);
 			foreach (var i in Level.OnlinePlayers)
 			{
-				var SpawnedBy = i.Wrapper;
-				new SpawnObject(SpawnedBy)
+				var spawnedBy = i.Wrapper;
+				new SpawnObject(spawnedBy)
 				{
 					EntityId = EntityId,
 					X = KnownPosition.X,
@@ -87,11 +87,11 @@ namespace SharpMC.Core.Entity
 					Data = Item
 				}.Write();
 
-				new EntityMetadata(SpawnedBy)
+				new EntityMetadata(spawnedBy)
 				{
 					EntityId = EntityId,
-					type = ObjectType.ItemStack,
-					data = Item
+					Type = ObjectType.ItemStack,
+					Data = Item
 				}.Write();
 			}
 		}
@@ -111,14 +111,14 @@ namespace SharpMC.Core.Entity
 			{
 				if (KnownPosition.DistanceTo(player.KnownPosition) <= 1.8)
 				{
-					player.Inventory.AddItem(Item.ItemId, Item.MetaData, 1);
+					player.Inventory.AddItem(Item.ItemId, Item.MetaData);
 
 					DespawnEntity(player);
 					break;
 				}
 				new EntityTeleport(player.Wrapper)
 				{
-					UniqueServerID = EntityId,
+					UniqueServerId = EntityId,
 					Coordinates = KnownPosition.ToVector3(),
 					Yaw = (byte) KnownPosition.Yaw,
 					Pitch = (byte) KnownPosition.Pitch,

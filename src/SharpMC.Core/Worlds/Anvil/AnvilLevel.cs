@@ -32,7 +32,7 @@ namespace SharpMC.Core.Worlds.Anvil
 		{
 			Difficulty = 0;
 			LvlName = worldname;
-			LevelType = LVLType.Default;
+			LevelType = LvlType.Default;
 			Generator = new AnvilWorldProvider(worldname);
 			ConsoleFunctions.WriteInfoLine("Level Type: Anvil");
 		}

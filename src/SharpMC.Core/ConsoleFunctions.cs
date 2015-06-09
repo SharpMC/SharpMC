@@ -28,63 +28,63 @@ namespace SharpMC.Core
 {
 	internal class ConsoleFunctions
 	{
-		public static void WriteLine(string Text)
+		public static void WriteLine(string text)
 		{
-			Console.WriteLine(Text);
+			Console.WriteLine(text);
 		}
 
-		public static void WriteLine(string Text, ConsoleColor ForeGroundColor)
+		public static void WriteLine(string text, ConsoleColor foreGroundColor)
 		{
-			Console.ForegroundColor = ForeGroundColor;
-			Console.WriteLine(Text);
+			Console.ForegroundColor = foreGroundColor;
+			Console.WriteLine(text);
 			Console.ResetColor();
 		}
 
-		public static void WriteLine(string Text, ConsoleColor ForeGroundColor, ConsoleColor BackGroundColor)
+		public static void WriteLine(string text, ConsoleColor foreGroundColor, ConsoleColor backGroundColor)
 		{
-			Console.ForegroundColor = ForeGroundColor;
-			Console.BackgroundColor = BackGroundColor;
-			Console.WriteLine(Text);
+			Console.ForegroundColor = foreGroundColor;
+			Console.BackgroundColor = backGroundColor;
+			Console.WriteLine(text);
 			Console.ResetColor();
 		}
 
-		public static void WriteInfoLine(string Text)
+		public static void WriteInfoLine(string text)
 		{
 			Console.ForegroundColor = ConsoleColor.Green;
 			Console.Write("[INFO] ");
 			Console.ResetColor();
-			Console.Write(Text + "\n");
+			Console.Write(text + "\n");
 		}
 
-		public static void WriteErrorLine(string Text)
+		public static void WriteErrorLine(string text)
 		{
 			Console.ForegroundColor = ConsoleColor.Red;
 			Console.Write("[ERROR] ");
 			Console.ResetColor();
-			Console.Write(Text + "\n");
+			Console.Write(text + "\n");
 		}
 
-		public static void WriteWarningLine(string Text)
+		public static void WriteWarningLine(string text)
 		{
 			Console.ForegroundColor = ConsoleColor.DarkRed;
 			Console.Write("[WARNING] ");
 			Console.ResetColor();
-			Console.Write(Text + "\n");
+			Console.Write(text + "\n");
 		}
 
-		public static void WriteServerLine(string Text)
+		public static void WriteServerLine(string text)
 		{
-			WriteInfoLine(Text);
+			WriteInfoLine(text);
 		}
 
-		public static void WriteDebugLine(string Text)
+		public static void WriteDebugLine(string text)
 		{
 			if (ServerSettings.Debug)
 			{
 				Console.ForegroundColor = ConsoleColor.Yellow;
 				Console.Write("[DEBUG] ");
 				Console.ResetColor();
-				Console.Write(Text + "\n");
+				Console.Write(text + "\n");
 			}
 		}
 	}

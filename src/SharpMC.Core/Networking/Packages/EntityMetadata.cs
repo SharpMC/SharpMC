@@ -29,9 +29,9 @@ namespace SharpMC.Core.Networking.Packages
 {
 	public class EntityMetadata : Package<EntityMetadata>
 	{
-		public object data;
+		public object Data;
 		public int EntityId = 0;
-		public ObjectType type;
+		public ObjectType Type;
 
 		public EntityMetadata(ClientWrapper client) : base(client)
 		{
@@ -49,9 +49,9 @@ namespace SharpMC.Core.Networking.Packages
 			{
 				Buffer.WriteVarInt(SendId);
 				Buffer.WriteVarInt(EntityId);
-				if (type == ObjectType.ItemStack)
+				if (Type == ObjectType.ItemStack)
 				{
-					var item = (ItemStack) data;
+					var item = (ItemStack) Data;
 					Buffer.WriteByte((5 << 5 | 10 & 0x1F) & 0xFF);
 					Buffer.WriteShort((short) (item.ItemId != 0 ? item.ItemId : 1));
 					Buffer.WriteByte(1);

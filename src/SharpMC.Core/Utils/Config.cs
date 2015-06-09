@@ -31,7 +31,7 @@ namespace SharpMC.Core.Utils
 	public class Config
 	{
 		public static string ConfigFile = string.Empty;
-		private static string FileContents = string.Empty;
+		private static string _fileContents = string.Empty;
 		public static string[] InitialValue;
 
 		public static bool Check()
@@ -41,8 +41,8 @@ namespace SharpMC.Core.Utils
 				File.WriteAllLines(ConfigFile, InitialValue);
 				return Check();
 			}
-			FileContents = File.ReadAllText(ConfigFile);
-			if (!FileContents.Contains("#DO NOT REMOVE THIS LINE - SharpMC Config"))
+			_fileContents = File.ReadAllText(ConfigFile);
+			if (!_fileContents.Contains("#DO NOT REMOVE THIS LINE - SharpMC Config"))
 			{
 				File.Delete(ConfigFile);
 				return Check();
@@ -50,54 +50,54 @@ namespace SharpMC.Core.Utils
 			return true;
 		}
 
-		public static Gamemode GetProperty(string Property, Gamemode DefaultValue)
+		public static Gamemode GetProperty(string property, Gamemode defaultValue)
 		{
-			return ReadGamemode(Property, DefaultValue);
+			return ReadGamemode(property, defaultValue);
 		}
 
-		public static bool GetProperty(string Property, bool DefaultValue)
+		public static bool GetProperty(string property, bool defaultValue)
 		{
-			return ReadBoolean(Property, DefaultValue);
+			return ReadBoolean(property, defaultValue);
 		}
 
-		public static int GetProperty(string Property, int DefaultValue)
+		public static int GetProperty(string property, int defaultValue)
 		{
-			return ReadInt(Property, DefaultValue);
+			return ReadInt(property, defaultValue);
 		}
 
-		public static string GetProperty(string Property, string DefaultValue)
+		public static string GetProperty(string property, string defaultValue)
 		{
 			try
 			{
-				return ReadString(Property);
+				return ReadString(property);
 			}
 			catch
 			{
-				return DefaultValue;
+				return defaultValue;
 			}
 		}
 
-		private static string ReadString(string Rule)
+		private static string ReadString(string rule)
 		{
-			foreach (var Line in FileContents.Split(new[] {"\r\n", "\n", Environment.NewLine}, StringSplitOptions.None))
+			foreach (var line in _fileContents.Split(new[] {"\r\n", "\n", Environment.NewLine}, StringSplitOptions.None))
 			{
-				if (Line.ToLower().StartsWith(Rule.ToLower() + "="))
+				if (line.ToLower().StartsWith(rule.ToLower() + "="))
 				{
-					var Value = Line.Split('=')[1];
+					var value = line.Split('=')[1];
 
-					if (Rule.ToLower() == "motd") return Value; //Do not lower
+					if (rule.ToLower() == "motd") return value; //Do not lower
 
-					return Value.ToLower();
+					return value.ToLower();
 				}
 			}
 			throw new EntryPointNotFoundException("The specified property was not found.");
 		}
 
-		private static int ReadInt(string Rule, int Default)
+		private static int ReadInt(string rule, int Default)
 		{
 			try
 			{
-				return Convert.ToInt32(ReadString(Rule));
+				return Convert.ToInt32(ReadString(rule));
 			}
 			catch
 			{
@@ -105,12 +105,12 @@ namespace SharpMC.Core.Utils
 			}
 		}
 
-		private static bool ReadBoolean(string Rule, bool Default)
+		private static bool ReadBoolean(string rule, bool Default)
 		{
 			try
 			{
-				var D = ReadString(Rule);
-				return Convert.ToBoolean(D);
+				var d = ReadString(rule);
+				return Convert.ToBoolean(d);
 			}
 			catch
 			{
@@ -118,11 +118,11 @@ namespace SharpMC.Core.Utils
 			}
 		}
 
-		private static Gamemode ReadGamemode(string Rule, Gamemode Default)
+		private static Gamemode ReadGamemode(string rule, Gamemode Default)
 		{
 			try
 			{
-				var gm = ReadString(Rule);
+				var gm = ReadString(rule);
 				switch (gm)
 				{
 					case "1":

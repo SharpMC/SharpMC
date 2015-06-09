@@ -32,7 +32,7 @@ namespace SharpMC.Core.Worlds.Standard
 		{
 			Difficulty = 0;
 			LvlName = worldname;
-			LevelType = LVLType.Default;
+			LevelType = LvlType.Default;
 			Generator = new StandardWorldProvider(worldname);
 			ConsoleFunctions.WriteInfoLine("Level Type: Standard");
 			DefaultGamemode = Gamemode.Creative;

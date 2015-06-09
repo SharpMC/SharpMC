@@ -36,12 +36,12 @@ namespace SharpMC.Core.Utils
 	/// </summary>
 	internal class NbtBinaryWriter : BinaryWriter
 	{
-		private readonly bool bigEndian;
+		private readonly bool _bigEndian;
 
 		public NbtBinaryWriter(Stream input, bool bigEndian)
 			: base(input)
 		{
-			this.bigEndian = bigEndian;
+			this._bigEndian = bigEndian;
 		}
 
 		public void Write(NbtTagType value)
@@ -49,19 +49,19 @@ namespace SharpMC.Core.Utils
 			Write((byte) value);
 		}
 
-		public void WriteVarInt(int Integer)
+		public void WriteVarInt(int integer)
 		{
-			while ((Integer & -128) != 0)
+			while ((integer & -128) != 0)
 			{
-				Write((byte) (Integer & 127 | 128));
-				Integer = (int) (((uint) Integer) >> 7);
+				Write((byte) (integer & 127 | 128));
+				integer = (int) (((uint) integer) >> 7);
 			}
-			Write((byte) Integer);
+			Write((byte) integer);
 		}
 
 		public override void Write(short value)
 		{
-			if (BitConverter.IsLittleEndian == bigEndian)
+			if (BitConverter.IsLittleEndian == _bigEndian)
 			{
 				base.Write(IPAddress.HostToNetworkOrder(value));
 			}
@@ -86,7 +86,7 @@ namespace SharpMC.Core.Utils
 
 		public override void Write(long value)
 		{
-			if (BitConverter.IsLittleEndian == bigEndian)
+			if (BitConverter.IsLittleEndian == _bigEndian)
 			{
 				base.Write(Swap(value));
 			}
@@ -98,7 +98,7 @@ namespace SharpMC.Core.Utils
 
 		public override void Write(float value)
 		{
-			if (BitConverter.IsLittleEndian == bigEndian)
+			if (BitConverter.IsLittleEndian == _bigEndian)
 			{
 				var floatBytes = BitConverter.GetBytes(value);
 				Array.Reverse(floatBytes);
@@ -112,7 +112,7 @@ namespace SharpMC.Core.Utils
 
 		public override void Write(double value)
 		{
-			if (BitConverter.IsLittleEndian == bigEndian)
+			if (BitConverter.IsLittleEndian == _bigEndian)
 			{
 				var doubleBytes = BitConverter.GetBytes(value);
 				Array.Reverse(doubleBytes);

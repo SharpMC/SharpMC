@@ -29,7 +29,7 @@ namespace SharpMC.Core.Networking.Packages
 				var username =
 					new string(usernameRaw.Where(c => char.IsLetter(c) || char.IsPunctuation(c) || char.IsDigit(c)).ToArray());
 				
-				var uuid = getUUID(username);
+				var uuid = GetUuid(username);
 				if (ServerSettings.OnlineMode)
 				{
 					if (ServerSettings.EncryptionEnabled)
@@ -45,13 +45,13 @@ namespace SharpMC.Core.Networking.Packages
 					}
 					if (!Client.Player.IsAuthenticated())
 					{
-						new LoginSucces(Client) { Username = username, UUID = uuid }.Write();
+						new LoginSucces(Client) { Username = username, Uuid = uuid }.Write();
 						new Disconnect(Client) { Reason = "§4SharpMC\n§fAuthentication failed!" }.Write();
 						return;
 					}
 				}
 
-				new LoginSucces(Client) { Username = username, UUID = uuid }.Write();
+				new LoginSucces(Client) { Username = username, Uuid = uuid }.Write();
 
 				if (Encoding.UTF8.GetBytes(username).Length == 0)
 				{
@@ -96,7 +96,7 @@ namespace SharpMC.Core.Networking.Packages
 			}
 		}
 
-		private string getUUID(string username)
+		private string GetUuid(string username)
 		{
 			try
 			{
@@ -105,8 +105,8 @@ namespace SharpMC.Core.Networking.Packages
 				var _result = result.Split('"');
 				if (_result.Length > 1)
 				{
-					var UUID = _result[3];
-					return new Guid(UUID).ToString();
+					var uuid = _result[3];
+					return new Guid(uuid).ToString();
 				}
 				return Guid.NewGuid().ToString();
 			}

@@ -35,14 +35,14 @@ using SharpMC.Core.Utils;
 
 namespace SharpMC.Core.Worlds.Flatland
 {
-	public class FlatLandGenerator : IWorldProvider
+	public class FlatLandGenerator : WorldProvider
 	{
-		private readonly string Folder = "world";
-		public Dictionary<Tuple<int, int>, ChunkColumn> _chunkCache = new Dictionary<Tuple<int, int>, ChunkColumn>();
+		private readonly string _folder = "world";
+		public Dictionary<Tuple<int, int>, ChunkColumn> ChunkCache = new Dictionary<Tuple<int, int>, ChunkColumn>();
 
 		public FlatLandGenerator(string folder)
 		{
-			Folder = folder;
+			_folder = folder;
 			IsCaching = true;
 
 			if (!Directory.Exists(folder)) Directory.CreateDirectory(folder);
@@ -138,21 +138,21 @@ namespace SharpMC.Core.Worlds.Flatland
 
 		public override ChunkColumn GenerateChunkColumn(Vector2 chunkCoordinates)
 		{
-			if (_chunkCache.ContainsKey(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z)))
+			if (ChunkCache.ContainsKey(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z)))
 			{
 				ChunkColumn c;
-				if (_chunkCache.TryGetValue(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z), out c))
+				if (ChunkCache.TryGetValue(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z), out c))
 				{
 					Debug.WriteLine("Chunk " + chunkCoordinates.X + ":" + chunkCoordinates.Z + " was already generated!");
 					return c;
 				}
 			}
 
-			if (File.Exists((Folder + "/" + chunkCoordinates.X + "." + chunkCoordinates.Z + ".cfile")))
+			if (File.Exists((_folder + "/" + chunkCoordinates.X + "." + chunkCoordinates.Z + ".cfile")))
 			{
 				var cd = LoadChunk(chunkCoordinates.X, chunkCoordinates.Z);
-				if (!_chunkCache.ContainsKey(new Tuple<int, int>(cd.X, cd.Z)))
-					_chunkCache.Add(new Tuple<int, int>(cd.X, cd.Z), cd);
+				if (!ChunkCache.ContainsKey(new Tuple<int, int>(cd.X, cd.Z)))
+					ChunkCache.Add(new Tuple<int, int>(cd.X, cd.Z), cd);
 				return cd;
 			}
 
@@ -167,8 +167,8 @@ namespace SharpMC.Core.Worlds.Flatland
 			chunk.SetBlock(3, h + 1, 0, new Block(41));
 			chunk.SetBlock(3, h + 1, 0, new Block(41));
 
-			if (!_chunkCache.ContainsKey(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z)))
-				_chunkCache.Add(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z), chunk);
+			if (!ChunkCache.ContainsKey(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z)))
+				ChunkCache.Add(new Tuple<int, int>(chunkCoordinates.X, chunkCoordinates.Z), chunk);
 
 			return chunk;
 		}
@@ -226,25 +226,25 @@ namespace SharpMC.Core.Worlds.Flatland
 
 		public override void SaveChunks(string folder)
 		{
-			lock (_chunkCache)
+			lock (ChunkCache)
 			{
-				foreach (var i in _chunkCache.Values.ToArray())
+				foreach (var i in ChunkCache.Values.ToArray())
 				{
-					File.WriteAllBytes(Folder + "/" + i.X + "." + i.Z + ".cfile", Globals.Compress(i.Export()));
+					File.WriteAllBytes(_folder + "/" + i.X + "." + i.Z + ".cfile", Globals.Compress(i.Export()));
 				}
 			}
 		}
 
 		public override ChunkColumn LoadChunk(int x, int z)
 		{
-			var u = Globals.Decompress(File.ReadAllBytes(Folder + "/" + x + "." + z + ".cfile"));
+			var u = Globals.Decompress(File.ReadAllBytes(_folder + "/" + x + "." + z + ".cfile"));
 			var reader = new DataBuffer(u);
 
 			var blockLength = reader.ReadInt();
 			var block = reader.ReadUShortLocal(blockLength);
 
 			var metalength = reader.ReadInt();
-			var blockmeta = reader.ReadShortLocal(metalength);
+			var blockmeta = reader.ReadUShortLocal(metalength);
 
 			var skyLength = reader.ReadInt();
 			var skylight = reader.Read(skyLength);

@@ -28,24 +28,24 @@ namespace SharpMC.Core.Worlds.Standard
 {
 	internal class CaveGenerator
 	{
-		private readonly int seedi;
-		private GCRandom gcRandom;
+		private readonly int _seedi;
+		private GcRandom _gcRandom;
 
 		public CaveGenerator(int seed)
 		{
-			seedi = seed;
+			_seedi = seed;
 		}
 
 		public void GenerateCave(ChunkColumn chunk)
 		{
-			gcRandom = new GCRandom(chunk, seedi);
+			_gcRandom = new GcRandom(chunk, _seedi);
 			for (var x = 0; x < 16; x++)
 			{
 				for (var z = 0; z < 16; z++)
 				{
 					for (var y = 50; y >= 6; y--)
 					{
-						if (gcRandom.IsInCave(x, y, z))
+						if (_gcRandom.IsInCave(x, y, z))
 						{
 							chunk.SetBlock(x, y, z, new BlockAir());
 						}

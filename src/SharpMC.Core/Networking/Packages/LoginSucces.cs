@@ -29,7 +29,7 @@ namespace SharpMC.Core.Networking.Packages
 	internal class LoginSucces : Package<LoginSucces>
 	{
 		public string Username;
-		public string UUID;
+		public string Uuid;
 
 		public LoginSucces(ClientWrapper client) : base(client)
 		{
@@ -48,7 +48,7 @@ namespace SharpMC.Core.Networking.Packages
 			if (Buffer != null)
 			{
 				Buffer.WriteVarInt(SendId);
-				Buffer.WriteString(UUID);
+				Buffer.WriteString(Uuid);
 				Buffer.WriteString(Username);
 				Buffer.FlushData();
 			}

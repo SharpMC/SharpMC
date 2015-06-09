@@ -35,7 +35,7 @@ using SharpMC.Core.Utils;
 
 namespace SharpMC.Core.Worlds.Better
 {
-	internal class BetterWorldProvider : IWorldProvider
+	internal class BetterWorldProvider : WorldProvider
 	{
 		private static readonly Random Getrandom = new Random();
 		private static readonly object SyncLock = new object();
@@ -59,7 +59,7 @@ namespace SharpMC.Core.Worlds.Better
 			var block = reader.ReadUShortLocal(blockLength);
 
 			var metalength = reader.ReadInt();
-			var blockmeta = reader.ReadShortLocal(metalength);
+			var blockmeta = reader.ReadUShortLocal(metalength);
 
 
 			var skyLength = reader.ReadInt();

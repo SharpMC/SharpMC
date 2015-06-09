@@ -40,17 +40,17 @@ namespace SharpMC.Core.Networking.Packages
 
 		public override void Read()
 		{
-			var Locale = Buffer.ReadString();
-			var ViewDistance = (byte) Buffer.ReadByte();
-			var ChatFlags = (byte) Buffer.ReadByte();
-			var ChatColours = Buffer.ReadBool();
-			var SkinParts = (byte) Buffer.ReadByte();
+			var locale = Buffer.ReadString();
+			var viewDistance = (byte) Buffer.ReadByte();
+			var chatFlags = (byte) Buffer.ReadByte();
+			var chatColours = Buffer.ReadBool();
+			var skinParts = (byte) Buffer.ReadByte();
 
-			Client.Player.Locale = Locale;
-			Client.Player.ViewDistance = ViewDistance;
-			Client.Player.ChatColours = ChatColours;
-			Client.Player.ChatFlags = ChatFlags;
-			Client.Player.SkinParts = SkinParts;
+			Client.Player.Locale = locale;
+			Client.Player.ViewDistance = viewDistance;
+			Client.Player.ChatColours = chatColours;
+			Client.Player.ChatFlags = chatFlags;
+			Client.Player.SkinParts = skinParts;
 		}
 	}
 }

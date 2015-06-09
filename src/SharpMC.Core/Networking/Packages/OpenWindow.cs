@@ -28,10 +28,10 @@ namespace SharpMC.Core.Networking.Packages
 {
 	internal class OpenWindow : Package<OpenWindow>
 	{
-		public byte NumberOfSlots;
-		public byte WindowId;
-		public string WindowTitle;
-		public string WindowType;
+		public byte NumberOfSlots = 0;
+		public byte WindowId = 0;
+		public string WindowTitle = "";
+		public string WindowType = "";
 
 		public OpenWindow(ClientWrapper client) : base(client)
 		{

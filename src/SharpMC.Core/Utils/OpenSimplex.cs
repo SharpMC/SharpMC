@@ -29,17 +29,17 @@ namespace SharpMC.Core.Utils
 {
 	public class OpenSimplexNoise
 	{
-		private const double STRETCH_2D = -0.211324865405187; //(1/Math.sqrt(2+1)-1)/2;
-		private const double STRETCH_3D = -1.0/6.0; //(1/Math.sqrt(3+1)-1)/3;
-		private const double STRETCH_4D = -0.138196601125011; //(1/Math.sqrt(4+1)-1)/4;
-		private const double SQUISH_2D = 0.366025403784439; //(Math.sqrt(2+1)-1)/2;
-		private const double SQUISH_3D = 1.0/3.0; //(Math.sqrt(3+1)-1)/3;
-		private const double SQUISH_4D = 0.309016994374947; //(Math.sqrt(4+1)-1)/4;
-		private const double NORM_2D = 1.0/47.0;
-		private const double NORM_3D = 1.0/103.0;
-		private const double NORM_4D = 1.0/30.0;
+		private const double Stretch_2D = -0.211324865405187; //(1/Math.sqrt(2+1)-1)/2;
+		private const double Stretch_3D = -1.0/6.0; //(1/Math.sqrt(3+1)-1)/3;
+		private const double Stretch_4D = -0.138196601125011; //(1/Math.sqrt(4+1)-1)/4;
+		private const double Squish_2D = 0.366025403784439; //(Math.sqrt(2+1)-1)/2;
+		private const double Squish_3D = 1.0/3.0; //(Math.sqrt(3+1)-1)/3;
+		private const double Squish_4D = 0.309016994374947; //(Math.sqrt(4+1)-1)/4;
+		private const double Norm_2D = 1.0/47.0;
+		private const double Norm_3D = 1.0/103.0;
+		private const double Norm_4D = 1.0/30.0;
 
-		private static readonly double[] gradients2D =
+		private static readonly double[] Gradients2D =
 		{
 			5, 2, 2, 5,
 			-5, 2, -2, 5,
@@ -47,7 +47,7 @@ namespace SharpMC.Core.Utils
 			-5, -2, -2, -5
 		};
 
-		private static readonly double[] gradients3D =
+		private static readonly double[] Gradients3D =
 		{
 			-11, 4, 4, -4, 11, 4, -4, 4, 11,
 			11, 4, 4, 4, 11, 4, 4, 4, 11,
@@ -59,7 +59,7 @@ namespace SharpMC.Core.Utils
 			11, -4, -4, 4, -11, -4, 4, -4, -11
 		};
 
-		private static readonly double[] gradients4D =
+		private static readonly double[] Gradients4D =
 		{
 			3, 1, 1, 1, 1, 3, 1, 1, 1, 1, 3, 1, 1, 1, 1, 3,
 			-3, 1, 1, 1, -1, 3, 1, 1, -1, 1, 3, 1, -1, 1, 1, 3,
@@ -79,13 +79,13 @@ namespace SharpMC.Core.Utils
 			-3, -1, -1, -1, -1, -3, -1, -1, -1, -1, -3, -1, -1, -1, -1, -3
 		};
 
-		private static readonly Contribution2[] lookup2D;
-		private static readonly Contribution3[] lookup3D;
-		private static readonly Contribution4[] lookup4D;
-		private readonly byte[] perm;
-		private readonly byte[] perm2D;
-		private readonly byte[] perm3D;
-		private readonly byte[] perm4D;
+		private static readonly Contribution2[] Lookup2D;
+		private static readonly Contribution3[] Lookup3D;
+		private static readonly Contribution4[] Lookup4D;
+		private readonly byte[] _perm;
+		private readonly byte[] _perm2D;
+		private readonly byte[] _perm3D;
+		private readonly byte[] _perm4D;
 
 		static OpenSimplexNoise()
 		{
@@ -118,10 +118,10 @@ namespace SharpMC.Core.Utils
 				current.Next = new Contribution2(p2D[i + 1], p2D[i + 2], p2D[i + 3]);
 			}
 
-			lookup2D = new Contribution2[64];
+			Lookup2D = new Contribution2[64];
 			for (var i = 0; i < lookupPairs2D.Length; i += 2)
 			{
-				lookup2D[lookupPairs2D[i]] = contributions2D[lookupPairs2D[i + 1]];
+				Lookup2D[lookupPairs2D[i]] = contributions2D[lookupPairs2D[i + 1]];
 			}
 
 
@@ -172,10 +172,10 @@ namespace SharpMC.Core.Utils
 				current.Next.Next = new Contribution3(p3D[i + 5], p3D[i + 6], p3D[i + 7], p3D[i + 8]);
 			}
 
-			lookup3D = new Contribution3[2048];
+			Lookup3D = new Contribution3[2048];
 			for (var i = 0; i < lookupPairs3D.Length; i += 2)
 			{
-				lookup3D[lookupPairs3D[i]] = contributions3D[lookupPairs3D[i + 1]];
+				Lookup3D[lookupPairs3D[i]] = contributions3D[lookupPairs3D[i + 1]];
 			}
 
 			var base4D = new[]
@@ -312,10 +312,10 @@ namespace SharpMC.Core.Utils
 				current.Next.Next.Next = new Contribution4(p4D[i + 11], p4D[i + 12], p4D[i + 13], p4D[i + 14], p4D[i + 15]);
 			}
 
-			lookup4D = new Contribution4[1048576];
+			Lookup4D = new Contribution4[1048576];
 			for (var i = 0; i < lookupPairs4D.Length; i += 2)
 			{
-				lookup4D[lookupPairs4D[i]] = contributions4D[lookupPairs4D[i + 1]];
+				Lookup4D[lookupPairs4D[i]] = contributions4D[lookupPairs4D[i + 1]];
 			}
 		}
 
@@ -326,10 +326,10 @@ namespace SharpMC.Core.Utils
 
 		public OpenSimplexNoise(long seed)
 		{
-			perm = new byte[256];
-			perm2D = new byte[256];
-			perm3D = new byte[256];
-			perm4D = new byte[256];
+			_perm = new byte[256];
+			_perm2D = new byte[256];
+			_perm3D = new byte[256];
+			_perm4D = new byte[256];
 			var source = new byte[256];
 			for (var i = 0; i < 256; i++)
 			{
@@ -346,10 +346,10 @@ namespace SharpMC.Core.Utils
 				{
 					r += (i + 1);
 				}
-				perm[i] = source[r];
-				perm2D[i] = (byte) (perm[i] & 0x0E);
-				perm3D[i] = (byte) ((perm[i]%24)*3);
-				perm4D[i] = (byte) (perm[i] & 0xFC);
+				_perm[i] = source[r];
+				_perm2D[i] = (byte) (_perm[i] & 0x0E);
+				_perm3D[i] = (byte) ((_perm[i]%24)*3);
+				_perm4D[i] = (byte) (_perm[i] & 0xFC);
 				source[r] = source[i];
 			}
 		}
@@ -363,14 +363,14 @@ namespace SharpMC.Core.Utils
 
 		public double Evaluate(double x, double y)
 		{
-			var stretchOffset = (x + y)*STRETCH_2D;
+			var stretchOffset = (x + y)*Stretch_2D;
 			var xs = x + stretchOffset;
 			var ys = y + stretchOffset;
 
 			var xsb = FastFloor(xs);
 			var ysb = FastFloor(ys);
 
-			var squishOffset = (xsb + ysb)*SQUISH_2D;
+			var squishOffset = (xsb + ysb)*Squish_2D;
 			var dx0 = x - (xsb + squishOffset);
 			var dy0 = y - (ysb + squishOffset);
 
@@ -385,33 +385,33 @@ namespace SharpMC.Core.Utils
 				(int) (inSum + yins) << 2 |
 				(int) (inSum + xins) << 4;
 
-			var c = lookup2D[hash];
+			var c = Lookup2D[hash];
 
 			var value = 0.0;
 			while (c != null)
 			{
-				var dx = dx0 + c.dx;
-				var dy = dy0 + c.dy;
+				var dx = dx0 + c.Dx;
+				var dy = dy0 + c.Dy;
 				var attn = 2 - dx*dx - dy*dy;
 				if (attn > 0)
 				{
-					var px = xsb + c.xsb;
-					var py = ysb + c.ysb;
+					var px = xsb + c.Xsb;
+					var py = ysb + c.Ysb;
 
-					var i = perm2D[(perm[px & 0xFF] + py) & 0xFF];
-					var valuePart = gradients2D[i]*dx + gradients2D[i + 1]*dy;
+					var i = _perm2D[(_perm[px & 0xFF] + py) & 0xFF];
+					var valuePart = Gradients2D[i]*dx + Gradients2D[i + 1]*dy;
 
 					attn *= attn;
 					value += attn*attn*valuePart;
 				}
 				c = c.Next;
 			}
-			return value*NORM_2D;
+			return value*Norm_2D;
 		}
 
 		public double Evaluate(double x, double y, double z)
 		{
-			var stretchOffset = (x + y + z)*STRETCH_3D;
+			var stretchOffset = (x + y + z)*Stretch_3D;
 			var xs = x + stretchOffset;
 			var ys = y + stretchOffset;
 			var zs = z + stretchOffset;
@@ -420,7 +420,7 @@ namespace SharpMC.Core.Utils
 			var ysb = FastFloor(ys);
 			var zsb = FastFloor(zs);
 
-			var squishOffset = (xsb + ysb + zsb)*SQUISH_3D;
+			var squishOffset = (xsb + ysb + zsb)*Squish_3D;
 			var dx0 = x - (xsb + squishOffset);
 			var dy0 = y - (ysb + squishOffset);
 			var dz0 = z - (zsb + squishOffset);
@@ -440,23 +440,23 @@ namespace SharpMC.Core.Utils
 				(int) (inSum + yins) << 7 |
 				(int) (inSum + xins) << 9;
 
-			var c = lookup3D[hash];
+			var c = Lookup3D[hash];
 
 			var value = 0.0;
 			while (c != null)
 			{
-				var dx = dx0 + c.dx;
-				var dy = dy0 + c.dy;
-				var dz = dz0 + c.dz;
+				var dx = dx0 + c.Dx;
+				var dy = dy0 + c.Dy;
+				var dz = dz0 + c.Dz;
 				var attn = 2 - dx*dx - dy*dy - dz*dz;
 				if (attn > 0)
 				{
-					var px = xsb + c.xsb;
-					var py = ysb + c.ysb;
-					var pz = zsb + c.zsb;
+					var px = xsb + c.Xsb;
+					var py = ysb + c.Ysb;
+					var pz = zsb + c.Zsb;
 
-					var i = perm3D[(perm[(perm[px & 0xFF] + py) & 0xFF] + pz) & 0xFF];
-					var valuePart = gradients3D[i]*dx + gradients3D[i + 1]*dy + gradients3D[i + 2]*dz;
+					var i = _perm3D[(_perm[(_perm[px & 0xFF] + py) & 0xFF] + pz) & 0xFF];
+					var valuePart = Gradients3D[i]*dx + Gradients3D[i + 1]*dy + Gradients3D[i + 2]*dz;
 
 					attn *= attn;
 					value += attn*attn*valuePart;
@@ -464,12 +464,12 @@ namespace SharpMC.Core.Utils
 
 				c = c.Next;
 			}
-			return value*NORM_3D;
+			return value*Norm_3D;
 		}
 
 		public double Evaluate(double x, double y, double z, double w)
 		{
-			var stretchOffset = (x + y + z + w)*STRETCH_4D;
+			var stretchOffset = (x + y + z + w)*Stretch_4D;
 			var xs = x + stretchOffset;
 			var ys = y + stretchOffset;
 			var zs = z + stretchOffset;
@@ -480,7 +480,7 @@ namespace SharpMC.Core.Utils
 			var zsb = FastFloor(zs);
 			var wsb = FastFloor(ws);
 
-			var squishOffset = (xsb + ysb + zsb + wsb)*SQUISH_4D;
+			var squishOffset = (xsb + ysb + zsb + wsb)*Squish_4D;
 			var dx0 = x - (xsb + squishOffset);
 			var dy0 = y - (ysb + squishOffset);
 			var dz0 = z - (zsb + squishOffset);
@@ -506,25 +506,25 @@ namespace SharpMC.Core.Utils
 				(int) (inSum + yins) << 14 |
 				(int) (inSum + xins) << 17;
 
-			var c = lookup4D[hash];
+			var c = Lookup4D[hash];
 
 			var value = 0.0;
 			while (c != null)
 			{
-				var dx = dx0 + c.dx;
-				var dy = dy0 + c.dy;
-				var dz = dz0 + c.dz;
-				var dw = dw0 + c.dw;
+				var dx = dx0 + c.Dx;
+				var dy = dy0 + c.Dy;
+				var dz = dz0 + c.Dz;
+				var dw = dw0 + c.Dw;
 				var attn = 2 - dx*dx - dy*dy - dz*dz - dw*dw;
 				if (attn > 0)
 				{
-					var px = xsb + c.xsb;
-					var py = ysb + c.ysb;
-					var pz = zsb + c.zsb;
-					var pw = wsb + c.wsb;
+					var px = xsb + c.Xsb;
+					var py = ysb + c.Ysb;
+					var pz = zsb + c.Zsb;
+					var pw = wsb + c.Wsb;
 
-					var i = perm4D[(perm[(perm[(perm[px & 0xFF] + py) & 0xFF] + pz) & 0xFF] + pw) & 0xFF];
-					var valuePart = gradients4D[i]*dx + gradients4D[i + 1]*dy + gradients4D[i + 2]*dz + gradients4D[i + 3]*dw;
+					var i = _perm4D[(_perm[(_perm[(_perm[px & 0xFF] + py) & 0xFF] + pz) & 0xFF] + pw) & 0xFF];
+					var valuePart = Gradients4D[i]*dx + Gradients4D[i + 1]*dy + Gradients4D[i + 2]*dz + Gradients4D[i + 3]*dw;
 
 					attn *= attn;
 					value += attn*attn*valuePart;
@@ -532,69 +532,69 @@ namespace SharpMC.Core.Utils
 
 				c = c.Next;
 			}
-			return value*NORM_4D;
+			return value*Norm_4D;
 		}
 
 		private class Contribution2
 		{
-			public readonly double dx;
-			public readonly double dy;
-			public readonly int xsb;
-			public readonly int ysb;
+			public readonly double Dx;
+			public readonly double Dy;
+			public readonly int Xsb;
+			public readonly int Ysb;
 			public Contribution2 Next;
 
 			public Contribution2(double multiplier, int xsb, int ysb)
 			{
-				dx = -xsb - multiplier*SQUISH_2D;
-				dy = -ysb - multiplier*SQUISH_2D;
-				this.xsb = xsb;
-				this.ysb = ysb;
+				Dx = -xsb - multiplier*Squish_2D;
+				Dy = -ysb - multiplier*Squish_2D;
+				this.Xsb = xsb;
+				this.Ysb = ysb;
 			}
 		}
 
 		private class Contribution3
 		{
-			public readonly double dx;
-			public readonly double dy;
-			public readonly double dz;
-			public readonly int xsb;
-			public readonly int ysb;
-			public readonly int zsb;
+			public readonly double Dx;
+			public readonly double Dy;
+			public readonly double Dz;
+			public readonly int Xsb;
+			public readonly int Ysb;
+			public readonly int Zsb;
 			public Contribution3 Next;
 
 			public Contribution3(double multiplier, int xsb, int ysb, int zsb)
 			{
-				dx = -xsb - multiplier*SQUISH_3D;
-				dy = -ysb - multiplier*SQUISH_3D;
-				dz = -zsb - multiplier*SQUISH_3D;
-				this.xsb = xsb;
-				this.ysb = ysb;
-				this.zsb = zsb;
+				Dx = -xsb - multiplier*Squish_3D;
+				Dy = -ysb - multiplier*Squish_3D;
+				Dz = -zsb - multiplier*Squish_3D;
+				this.Xsb = xsb;
+				this.Ysb = ysb;
+				this.Zsb = zsb;
 			}
 		}
 
 		private class Contribution4
 		{
-			public readonly double dw;
-			public readonly double dx;
-			public readonly double dy;
-			public readonly double dz;
-			public readonly int wsb;
-			public readonly int xsb;
-			public readonly int ysb;
-			public readonly int zsb;
+			public readonly double Dw;
+			public readonly double Dx;
+			public readonly double Dy;
+			public readonly double Dz;
+			public readonly int Wsb;
+			public readonly int Xsb;
+			public readonly int Ysb;
+			public readonly int Zsb;
 			public Contribution4 Next;
 
 			public Contribution4(double multiplier, int xsb, int ysb, int zsb, int wsb)
 			{
-				dx = -xsb - multiplier*SQUISH_4D;
-				dy = -ysb - multiplier*SQUISH_4D;
-				dz = -zsb - multiplier*SQUISH_4D;
-				dw = -wsb - multiplier*SQUISH_4D;
-				this.xsb = xsb;
-				this.ysb = ysb;
-				this.zsb = zsb;
-				this.wsb = wsb;
+				Dx = -xsb - multiplier*Squish_4D;
+				Dy = -ysb - multiplier*Squish_4D;
+				Dz = -zsb - multiplier*Squish_4D;
+				Dw = -wsb - multiplier*Squish_4D;
+				this.Xsb = xsb;
+				this.Ysb = ysb;
+				this.Zsb = zsb;
+				this.Wsb = wsb;
 			}
 		}
 	}

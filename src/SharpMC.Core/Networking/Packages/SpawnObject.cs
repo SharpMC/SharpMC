@@ -67,7 +67,7 @@ namespace SharpMC.Core.Networking.Packages
 				{
 					Buffer.WriteInt(0);
 				}
-				if (Type == ObjectType.ActivatedTNT)
+				if (Type == ObjectType.ActivatedTnt)
 				{
 					Buffer.WriteInt(0);
 				}

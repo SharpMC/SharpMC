@@ -26,9 +26,9 @@ using SharpMC.Core.Worlds;
 
 namespace SharpMC.Core.Blocks
 {
-	internal class BlockTNT : Block
+	internal class BlockTnt : Block
 	{
-		internal BlockTNT() : base(46)
+		internal BlockTnt() : base(46)
 		{
 			IsSolid = true;
 			IsReplacible = false;

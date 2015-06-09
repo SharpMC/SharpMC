@@ -44,26 +44,26 @@ namespace SharpMC.Core.Networking.Packages
 		{
 			if (Buffer != null)
 			{
-				var WindowId = (byte) Buffer.ReadByte();
+				var windowId = (byte) Buffer.ReadByte();
 				var Slot = Buffer.ReadShort();
-				var Button = (byte) Buffer.ReadByte();
-				var ActionNumber = Buffer.ReadShort();
-				var Mode = (byte) Buffer.ReadByte();
+				var button = (byte) Buffer.ReadByte();
+				var actionNumber = Buffer.ReadShort();
+				var mode = (byte) Buffer.ReadByte();
 
-				var ItemId = Buffer.ReadShort();
+				var itemId = Buffer.ReadShort();
 
-				byte ItemCount = 1;
-				short ItemDamage = 0;
-				byte Nbt = 0;
+				byte itemCount = 1;
+				short itemDamage = 0;
+				byte nbt = 0;
 
 				if (Slot >= 1 && Slot <= 4) return; //We don't actually use that :)
 
-				if (ItemId != -1)
+				if (itemId != -1)
 				{
-					ItemCount = (byte) Buffer.ReadByte();
-					ItemDamage = Buffer.ReadShort();
-					Nbt = (byte) Buffer.ReadByte();
-					if (Nbt != 0)
+					itemCount = (byte) Buffer.ReadByte();
+					itemDamage = Buffer.ReadShort();
+					nbt = (byte) Buffer.ReadByte();
+					if (nbt != 0)
 					{
 						//NBT Data found
 					}
@@ -71,35 +71,35 @@ namespace SharpMC.Core.Networking.Packages
 
 				if (Slot == 0) //Crafting output.
 				{
-					var item = ItemFactory.GetItemById(ItemId);
+					var item = ItemFactory.GetItemById(itemId);
 					if (item.CraftingItems != null) //Valid
 					{
 						if (Client.Player.Inventory.HasItems(item.CraftingItems))
 						{
-							Client.Player.Inventory.AddItem(ItemId, (byte)ItemDamage, ItemCount);
+							Client.Player.Inventory.AddItem(itemId, (byte)itemDamage, itemCount);
 						}
 					}
 					else
 					{
-						var block = BlockFactory.GetBlockById((ushort)ItemId);
+						var block = BlockFactory.GetBlockById((ushort)itemId);
 						if (block.CraftingItems != null) //valid
 						{
 							if (Client.Player.Inventory.HasItems(block.CraftingItems))
 							{
-								Client.Player.Inventory.AddItem(ItemId, (byte)ItemDamage, ItemCount);
+								Client.Player.Inventory.AddItem(itemId, (byte)itemDamage, itemCount);
 							}
 						}
 					}
 					return;
 				}
 
-				if (ItemId != -1)
+				if (itemId != -1)
 				{
 					
-					if (Client.Player.Inventory.GetSlot(Slot).ItemId == ItemId) //Is the information true?
+					if (Client.Player.Inventory.GetSlot(Slot).ItemId == itemId) //Is the information true?
 					{
 						Client.Player.Inventory.SetSlot(Slot, -1, 0, 0);
-						Client.Player.Inventory.ClickedItem = new ItemStack(ItemId, ItemCount, (byte) ItemDamage);
+						Client.Player.Inventory.ClickedItem = new ItemStack(itemId, itemCount, (byte) itemDamage);
 					}
 				}
 				else

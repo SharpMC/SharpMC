@@ -198,7 +198,7 @@ namespace SharpMC.Core.Entity
 			{
 				new EntityTeleport(i.Wrapper)
 				{
-					UniqueServerID = EntityId,
+					UniqueServerId = EntityId,
 					Coordinates = KnownPosition.ToVector3(),
 					Yaw = (byte) KnownPosition.Yaw,
 					Pitch = (byte) KnownPosition.Pitch,

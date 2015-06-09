@@ -151,7 +151,6 @@
     <Compile Include="ServerSettings.cs" />
     <Compile Include="SharpMCServer.cs" />
     <Compile Include="Utils\BoundingBox.cs" />
-    <Compile Include="Utils\CraftingRecipe.cs" />
     <Compile Include="Utils\Explosion.cs" />
     <Compile Include="Utils\HealthManager.cs" />
     <Compile Include="Enums\LVLType.cs" />

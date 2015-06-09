@@ -37,7 +37,7 @@ using SharpMC.Core.Worlds.Standard.BiomeSystem;
 
 namespace SharpMC.Core.Worlds.Nether
 {
-	internal class NetherWorldProvider : IWorldProvider
+	internal class NetherWorldProvider : WorldProvider
 	{
 		//World Tweaking settings
 		//These settings can be tweaked to changed the look of the terrain.
@@ -78,7 +78,7 @@ namespace SharpMC.Core.Worlds.Nether
 			var block = reader.ReadUShortLocal(blockLength);
 
 			var metalength = reader.ReadInt();
-			var blockmeta = reader.ReadShortLocal(metalength);
+			var blockmeta = reader.ReadUShortLocal(metalength);
 
 			var skyLength = reader.ReadInt();
 			var skylight = reader.Read(skyLength);

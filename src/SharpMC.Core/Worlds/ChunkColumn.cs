@@ -32,14 +32,13 @@ namespace SharpMC.Core.Worlds
 {
 	public class ChunkColumn
 	{
-		private byte[] _cache;
 		public BiomeBase Biome;
 		public int[] BiomeColor = ArrayOf<int>.Create(256, 1);
 		public byte[] BiomeId = ArrayOf<byte>.Create(256, 1);
 		public NibbleArray Blocklight = new NibbleArray(16*16*256);
 		public ushort[] Blocks = new ushort[16*16*256];
 		public bool IsDirty = false;
-		public short[] Metadata = new short[16*16*256];
+		public ushort[] Metadata = new ushort[16*16*256];
 		public NibbleArray Skylight = new NibbleArray(16*16*256);
 
 		public ChunkColumn()
@@ -97,7 +96,6 @@ namespace SharpMC.Core.Worlds
 
 		public void SetBlocklight(int x, int y, int z, byte data)
 		{
-			_cache = null;
 			Blocklight[(x*2048) + (z*256) + y] = data;
 		}
 
@@ -113,7 +111,6 @@ namespace SharpMC.Core.Worlds
 
 		public void SetSkylight(int x, int y, int z, byte data)
 		{
-			_cache = null;
 			Skylight[(x*2048) + (z*256) + y] = data;
 		}
 

@@ -33,7 +33,7 @@ namespace SharpMC.Core.Worlds.Flatland
 			Difficulty = 0;
 			LvlName = world;
 			Generator = new FlatLandGenerator(world);
-			LevelType = LVLType.flat;
+			LevelType = LvlType.Flat;
 		}
 	}
 }

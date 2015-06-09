@@ -54,8 +54,8 @@ namespace SharpMC.Core.Networking.Packages
 
 				Client.SharedKey = PacketCryptography.Decrypt(sharedsecret);
 
-				var recv = PacketCryptography.GenerateAES((byte[]) Client.SharedKey.Clone());
-				var send = PacketCryptography.GenerateAES((byte[]) Client.SharedKey.Clone());
+				var recv = PacketCryptography.GenerateAes((byte[]) Client.SharedKey.Clone());
+				var send = PacketCryptography.GenerateAes((byte[]) Client.SharedKey.Clone());
 
 				var packetToken = PacketCryptography.Decrypt(verifytoken);
 
@@ -72,7 +72,7 @@ namespace SharpMC.Core.Networking.Packages
 				Client.EncryptionEnabled = true;
 				Client.Player = new Player(Globals.LevelManager.MainLevel)
 				{
-					Uuid = getUUID(Client.Username),
+					Uuid = GetUuid(Client.Username),
 					Username = Client.Username,
 					Wrapper = Client,
 					Gamemode = Globals.LevelManager.MainLevel.DefaultGamemode
@@ -80,7 +80,7 @@ namespace SharpMC.Core.Networking.Packages
 
 				if (Client.Player.IsAuthenticated())
 				{
-					new LoginSucces(Client) {Username = Client.Username, UUID = Client.Player.Uuid}.Write();
+					new LoginSucces(Client) {Username = Client.Username, Uuid = Client.Player.Uuid}.Write();
 					Client.PacketMode = PacketMode.Play;
 
 					new SetCompression(Client).Write();
@@ -93,13 +93,13 @@ namespace SharpMC.Core.Networking.Packages
 				}
 				else
 				{
-					new LoginSucces(Client) {Username = Client.Username, UUID = Client.Player.Uuid}.Write();
+					new LoginSucces(Client) {Username = Client.Username, Uuid = Client.Player.Uuid}.Write();
 					new Disconnect(Client) {Reason = "Authentication failed! Try restarting your client."}.Write();
 				}
 			}
 		}
 
-		private string getUUID(string username)
+		private string GetUuid(string username)
 		{
 			try
 			{
@@ -108,8 +108,8 @@ namespace SharpMC.Core.Networking.Packages
 				var _result = result.Split('"');
 				if (_result.Length > 1)
 				{
-					var UUID = _result[3];
-					return new Guid(UUID).ToString();
+					var uuid = _result[3];
+					return new Guid(uuid).ToString();
 				}
 				return Guid.NewGuid().ToString();
 			}

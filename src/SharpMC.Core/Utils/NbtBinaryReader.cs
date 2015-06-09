@@ -36,17 +36,17 @@ namespace SharpMC.Core.Utils
 	public class NbtBinaryReader : BinaryReader
 	{
 		private const int SeekBufferSize = 64*1024;
-		private readonly bool bigEndian;
+		private readonly bool _bigEndian;
 
-		private readonly byte[] floatBuffer = new byte[sizeof (float)],
-			doubleBuffer = new byte[sizeof (double)];
+		private readonly byte[] _floatBuffer = new byte[sizeof (float)],
+			_doubleBuffer = new byte[sizeof (double)];
 
-		private byte[] seekBuffer;
+		private byte[] _seekBuffer;
 
 		public NbtBinaryReader(Stream input, bool bigEndian)
 			: base(input)
 		{
-			this.bigEndian = bigEndian;
+			this._bigEndian = bigEndian;
 		}
 
 		public TagSelector Selector { get; set; }
@@ -63,37 +63,37 @@ namespace SharpMC.Core.Utils
 
 		public override short ReadInt16()
 		{
-			return BitConverter.IsLittleEndian == bigEndian ? NbtBinaryWriter.Swap(base.ReadInt16()) : base.ReadInt16();
+			return BitConverter.IsLittleEndian == _bigEndian ? NbtBinaryWriter.Swap(base.ReadInt16()) : base.ReadInt16();
 		}
 
 		public override int ReadInt32()
 		{
-			return BitConverter.IsLittleEndian == bigEndian ? NbtBinaryWriter.Swap(base.ReadInt32()) : base.ReadInt32();
+			return BitConverter.IsLittleEndian == _bigEndian ? NbtBinaryWriter.Swap(base.ReadInt32()) : base.ReadInt32();
 		}
 
 		public override long ReadInt64()
 		{
-			return BitConverter.IsLittleEndian == bigEndian ? NbtBinaryWriter.Swap(base.ReadInt64()) : base.ReadInt64();
+			return BitConverter.IsLittleEndian == _bigEndian ? NbtBinaryWriter.Swap(base.ReadInt64()) : base.ReadInt64();
 		}
 
 		public override float ReadSingle()
 		{
-			if (BitConverter.IsLittleEndian == bigEndian)
+			if (BitConverter.IsLittleEndian == _bigEndian)
 			{
-				BaseStream.Read(floatBuffer, 0, sizeof (float));
-				Array.Reverse(floatBuffer);
-				return BitConverter.ToSingle(floatBuffer, 0);
+				BaseStream.Read(_floatBuffer, 0, sizeof (float));
+				Array.Reverse(_floatBuffer);
+				return BitConverter.ToSingle(_floatBuffer, 0);
 			}
 			return base.ReadSingle();
 		}
 
 		public override double ReadDouble()
 		{
-			if (BitConverter.IsLittleEndian == bigEndian)
+			if (BitConverter.IsLittleEndian == _bigEndian)
 			{
-				BaseStream.Read(doubleBuffer, 0, sizeof (double));
-				Array.Reverse(doubleBuffer);
-				return BitConverter.ToDouble(doubleBuffer, 0);
+				BaseStream.Read(_doubleBuffer, 0, sizeof (double));
+				Array.Reverse(_doubleBuffer);
+				return BitConverter.ToDouble(_doubleBuffer, 0);
 			}
 			return base.ReadDouble();
 		}
@@ -121,12 +121,12 @@ namespace SharpMC.Core.Utils
 			}
 			else if (bytesToSkip != 0)
 			{
-				if (seekBuffer == null)
-					seekBuffer = new byte[SeekBufferSize];
+				if (_seekBuffer == null)
+					_seekBuffer = new byte[SeekBufferSize];
 				var bytesDone = 0;
 				while (bytesDone < bytesToSkip)
 				{
-					var readThisTime = BaseStream.Read(seekBuffer, bytesDone, bytesToSkip - bytesDone);
+					var readThisTime = BaseStream.Read(_seekBuffer, bytesDone, bytesToSkip - bytesDone);
 					if (readThisTime == 0)
 					{
 						throw new EndOfStreamException();

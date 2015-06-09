@@ -33,7 +33,7 @@ namespace SharpMC.Core.Utils
 		/* This is hardcoded since it won't change. 
 		   It's 1 byte Sequence Tag, 1 byte Sequence Length, 1 byte Oid Tag, 1 byte Oid Length, 9 bytes Oid, 1 byte Null Tag, 1 byte Null */
 
-		private static readonly byte[] algorithmId =
+		private static readonly byte[] AlgorithmId =
 		{
 			0x30, 0x0D, 0x06, 0x09, 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01,
 			0x01, 0x05, 0x00
@@ -98,7 +98,7 @@ namespace SharpMC.Core.Utils
 			return _provider.Encrypt(toDecrypt, false);
 		}
 
-		public static RijndaelManaged GenerateAES(byte[] key)
+		public static RijndaelManaged GenerateAes(byte[] key)
 		{
 			var cipher = new RijndaelManaged();
 			cipher.Mode = CipherMode.CFB;
@@ -142,7 +142,7 @@ namespace SharpMC.Core.Utils
 			var keyOctetsLength = sequenceLengthArray.Length + sequenceOctetsLength + 2;
 			var keyLengthArray = LengthToByteArray(keyOctetsLength);
 
-			var publicKeyOctetsLength = keyOctetsLength + keyLengthArray.Length + algorithmId.Length + 1;
+			var publicKeyOctetsLength = keyOctetsLength + keyLengthArray.Length + AlgorithmId.Length + 1;
 			var publicKeyLengthArray = LengthToByteArray(publicKeyOctetsLength);
 
 			var messageLength = publicKeyOctetsLength + publicKeyLengthArray.Length + 1;
@@ -155,9 +155,9 @@ namespace SharpMC.Core.Utils
 			Buffer.BlockCopy(publicKeyLengthArray, 0, message, index, publicKeyLengthArray.Length);
 			index += publicKeyLengthArray.Length;
 
-			Buffer.BlockCopy(algorithmId, 0, message, index, algorithmId.Length);
+			Buffer.BlockCopy(AlgorithmId, 0, message, index, AlgorithmId.Length);
 
-			index += algorithmId.Length;
+			index += AlgorithmId.Length;
 
 			message[index++] = 0x03;
 

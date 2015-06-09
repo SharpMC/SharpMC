@@ -29,10 +29,10 @@ namespace SharpMC.Core.Worlds.Standard.BiomeSystem
 {
 	public class BiomeManager
 	{
-		private static readonly List<BiomeBase> _biomes = new List<BiomeBase>();
+		private static readonly List<BiomeBase> Biomes = new List<BiomeBase>();
 		private readonly SimplexOctaveGenerator _octaveGeneratorb;
-		private readonly double BiomeHeigth = 14.5;
-		private readonly double BiomeWidth = 12.3;
+		private readonly double _biomeHeigth = 14.5;
+		private readonly double _biomeWidth = 12.3;
 
 		public BiomeManager(int seed)
 		{
@@ -42,22 +42,22 @@ namespace SharpMC.Core.Worlds.Standard.BiomeSystem
 
 		public BiomeBase GetBiome(int x, int z)
 		{
-			x = (int) Math.Floor((decimal) (x/BiomeWidth));
-			z = (int) Math.Floor((decimal) (z/BiomeHeigth));
+			x = (int) Math.Floor((decimal) (x/_biomeWidth));
+			z = (int) Math.Floor((decimal) (z/_biomeHeigth));
 
-			var b = (int) Math.Abs(_octaveGeneratorb.Noise(x, z, 0.5, 0.5)*(_biomes.Count + 1));
-			if (b >= _biomes.Count) b = _biomes.Count - 1;
-			return _biomes[b];
+			var b = (int) Math.Abs(_octaveGeneratorb.Noise(x, z, 0.5, 0.5)*(Biomes.Count + 1));
+			if (b >= Biomes.Count) b = Biomes.Count - 1;
+			return Biomes[b];
 		}
 
 		public void AddBiomeType(BiomeBase biome)
 		{
-			_biomes.Add(biome);
+			Biomes.Add(biome);
 		}
 
 		public static BiomeBase GetBiomeById(int id, bool minecraftId = true)
 		{
-			foreach (var b in _biomes)
+			foreach (var b in Biomes)
 			{
 				if (minecraftId)
 				{

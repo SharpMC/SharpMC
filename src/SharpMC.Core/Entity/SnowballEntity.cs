@@ -45,8 +45,8 @@ namespace SharpMC.Core.Entity
 			Level.AddEntity(this);
 			foreach (var i in Level.OnlinePlayers)
 			{
-				var SpawnedBy = i.Wrapper;
-				new SpawnObject(SpawnedBy)
+				var spawnedBy = i.Wrapper;
+				new SpawnObject(spawnedBy)
 				{
 					EntityId = EntityId,
 					X = KnownPosition.X,

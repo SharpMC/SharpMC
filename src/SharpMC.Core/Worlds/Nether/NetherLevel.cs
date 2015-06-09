@@ -32,7 +32,7 @@ namespace SharpMC.Core.Worlds.Nether
 		{
 			Difficulty = 0;
 			LvlName = worldname;
-			LevelType = LVLType.Default;
+			LevelType = LvlType.Default;
 			Generator = new NetherWorldProvider(worldname);
 			ConsoleFunctions.WriteInfoLine("Level Type: Nether");
 			Dimension = -1;

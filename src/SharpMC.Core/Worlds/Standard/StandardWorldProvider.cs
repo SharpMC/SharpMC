@@ -37,7 +37,7 @@ using SharpMC.Core.Worlds.Standard.Decorators;
 
 namespace SharpMC.Core.Worlds.Standard
 {
-	internal class StandardWorldProvider : IWorldProvider
+	internal class StandardWorldProvider : WorldProvider
 	{
 		//World Tweaking settings
 		//These settings can be tweaked to changed the look of the terrain.
@@ -87,7 +87,7 @@ namespace SharpMC.Core.Worlds.Standard
 			var block = reader.ReadUShortLocal(blockLength);
 
 			var metalength = reader.ReadInt();
-			var blockmeta = reader.ReadShortLocal(metalength);
+			var blockmeta = reader.ReadUShortLocal(metalength);
 
 			var skyLength = reader.ReadInt();
 			var skylight = reader.Read(skyLength);

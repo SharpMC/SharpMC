@@ -29,21 +29,21 @@ namespace SharpMC.Core.Utils
 {
 	public class WebClientEx : WebClient
 	{
-		private WebResponse m_Resp;
+		private WebResponse _mResp;
 
 		public HttpStatusCode StatusCode
 		{
 			get
 			{
-				if (m_Resp != null && m_Resp is HttpWebResponse)
-					return (m_Resp as HttpWebResponse).StatusCode;
+				if (_mResp != null && _mResp is HttpWebResponse)
+					return (_mResp as HttpWebResponse).StatusCode;
 				return HttpStatusCode.OK;
 			}
 		}
 
-		protected override WebResponse GetWebResponse(WebRequest Req, IAsyncResult ar)
+		protected override WebResponse GetWebResponse(WebRequest req, IAsyncResult ar)
 		{
-			return m_Resp = base.GetWebResponse(Req, ar);
+			return _mResp = base.GetWebResponse(req, ar);
 		}
 	}
 }

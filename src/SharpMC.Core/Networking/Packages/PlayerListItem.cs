@@ -33,7 +33,7 @@ namespace SharpMC.Core.Networking.Packages
 		public int Action = 0;
 		public Gamemode Gamemode;
 		public string Username;
-		public string UUID;
+		public string Uuid;
 
 		public PlayerListItem(ClientWrapper client) : base(client)
 		{
@@ -54,7 +54,7 @@ namespace SharpMC.Core.Networking.Packages
 				Buffer.WriteVarInt(1);
 				//foreach(Player player in Globals.Level.OnlinePlayers)
 				//{
-				Buffer.WriteUUID(new Guid(UUID));
+				Buffer.WriteUuid(new Guid(Uuid));
 				switch (Action)
 				{
 					case 0:

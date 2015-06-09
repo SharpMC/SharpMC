@@ -42,12 +42,12 @@ namespace SharpMC.Core.Networking.Packages
 		{
 			if (Buffer != null)
 			{
-				var X = Buffer.ReadDouble();
-				var FeetY = Buffer.ReadDouble();
-				var Z = Buffer.ReadDouble();
-				var OnGround = Buffer.ReadBool();
+				var x = Buffer.ReadDouble();
+				var feetY = Buffer.ReadDouble();
+				var z = Buffer.ReadDouble();
+				var onGround = Buffer.ReadBool();
 
-				Client.Player.PositionChanged(new Vector3(X, FeetY, Z), 0.0f, 0.0f, OnGround);
+				Client.Player.PositionChanged(new Vector3(x, feetY, z), 0.0f, 0.0f, onGround);
 			}
 		}
 	}

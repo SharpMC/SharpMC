@@ -63,19 +63,14 @@ namespace SharpMC.Core.Utils
 
 		public ItemStack ClickedItem { get; set; }
 		public int CurrentSlot { get; set; }
-		private bool _isCrafting;
-		private Item[] _craftingItems = new Item[4];
+
 		public void InventoryClosed()
 		{
-			_isCrafting = false;
-			foreach (var item in _craftingItems)
+			if (ClickedItem != null)
 			{
-				if (item != null)
-				{
-					AddItem((short) item.Id, item.Metadata);
-				}
+				AddItem(ClickedItem);
+				ClickedItem = null;
 			}
-			_craftingItems = new Item[4];
 		}
 
 		public bool HasItems(ItemStack[] items)
@@ -89,22 +84,6 @@ namespace SharpMC.Core.Utils
 
 		public void SetSlot(int slot, short itemId, byte metadata, byte itemcount)
 		{
-			/*if (slot <= 4 && slot >= 1) //Crafting (Not yet working)
-			{
-				ConsoleFunctions.WriteDebugLine("Player " + _player.Username + " is crafting! Slot: " + slot);
-				_isCrafting = true;
-				_craftingItems[slot - 1] = new Item((ushort)itemId, metadata);
-				CraftingRecipe recipe = new CraftingRecipe(_craftingItems);
-				var it = RecipeFactory.GetItem(recipe);
-				if (it != null)
-				{
-					ConsoleFunctions.WriteInfoLine("Player " + _player.Username + " found a valid recipe for item id: " + it.ItemId);
-					SetSlot(0,it.ItemId, it.MetaData, it.ItemCount);
-				}
-
-				return;
-			}*/
-
 			if (slot <= 44 && slot >= 5)
 			{
 				_slots[slot] = new ItemStack(itemId, itemcount, metadata);

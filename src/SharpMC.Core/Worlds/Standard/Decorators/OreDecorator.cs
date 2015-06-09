@@ -29,11 +29,11 @@ namespace SharpMC.Core.Worlds.Standard.Decorators
 {
 	public class OreDecorator : ChunkDecorator
 	{
-		private ChunkColumn chunke;
+		private ChunkColumn _chunke;
 
 		public override void Decorate(ChunkColumn chunk, BiomeBase biome, int x, int z)
 		{
-			chunke = chunk;
+			_chunke = chunk;
 			for (var y = 1 /*No need to check first layer :p*/; y < 128 /*Nothing above this*/; y++)
 			{
 				if (chunk.GetBlock(x, y, z) == 1)
@@ -80,7 +80,7 @@ namespace SharpMC.Core.Worlds.Standard.Decorators
 		{
 			if (StandardWorldProvider.GetRandomNumber(0, 35) == 1)
 			{
-				chunke.SetBlock(x, y, z, BlockFactory.GetBlockById(16));
+				_chunke.SetBlock(x, y, z, BlockFactory.GetBlockById(16));
 			}
 		}
 
@@ -88,7 +88,7 @@ namespace SharpMC.Core.Worlds.Standard.Decorators
 		{
 			if (StandardWorldProvider.GetRandomNumber(0, 65) == 1)
 			{
-				chunke.SetBlock(x, y, z, BlockFactory.GetBlockById(15));
+				_chunke.SetBlock(x, y, z, BlockFactory.GetBlockById(15));
 			}
 		}
 
@@ -96,7 +96,7 @@ namespace SharpMC.Core.Worlds.Standard.Decorators
 		{
 			if (StandardWorldProvider.GetRandomNumber(0, 80) == 1)
 			{
-				chunke.SetBlock(x, y, z, BlockFactory.GetBlockById(14));
+				_chunke.SetBlock(x, y, z, BlockFactory.GetBlockById(14));
 			}
 		}
 
@@ -104,7 +104,7 @@ namespace SharpMC.Core.Worlds.Standard.Decorators
 		{
 			if (StandardWorldProvider.GetRandomNumber(0, 130) == 1)
 			{
-				chunke.SetBlock(x, y, z, BlockFactory.GetBlockById(56));
+				_chunke.SetBlock(x, y, z, BlockFactory.GetBlockById(56));
 			}
 		}
 
@@ -112,7 +112,7 @@ namespace SharpMC.Core.Worlds.Standard.Decorators
 		{
 			if (StandardWorldProvider.GetRandomNumber(0, 80) == 1)
 			{
-				chunke.SetBlock(x, y, z, BlockFactory.GetBlockById(21));
+				_chunke.SetBlock(x, y, z, BlockFactory.GetBlockById(21));
 			}
 		}
 	}

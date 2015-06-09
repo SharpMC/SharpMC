@@ -14,10 +14,10 @@ using SharpMC.Core.Worlds.Standard;
 
 namespace SharpMC.Core
 {
-	public class SharpMCServer
+	public class SharpMcServer
 	{
 		private bool _initiated = false;
-		public SharpMCServer()
+		public SharpMcServer()
 		{
 			ConsoleFunctions.WriteInfoLine(string.Format("Initiating {0}", Globals.ProtocolName));
 

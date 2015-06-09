@@ -29,12 +29,12 @@ namespace SharpMC.Core.Utils
 {
 	public class SecurityUtils
 	{
-		private readonly Random random = new Random();
-		private readonly RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(1024);
+		private readonly Random _random = new Random();
+		private readonly RSACryptoServiceProvider _rsa = new RSACryptoServiceProvider(1024);
 
 		public string GeneratePublicKey(bool privateparameters)
 		{
-			var publicKeyXml = rsa.ToXmlString(false);
+			var publicKeyXml = _rsa.ToXmlString(false);
 			Console.WriteLine(publicKeyXml);
 
 			return publicKeyXml;
@@ -43,7 +43,7 @@ namespace SharpMC.Core.Utils
 		public byte[] GenerateVerifyToken()
 		{
 			var token = new byte[4];
-			random.NextBytes(token);
+			_random.NextBytes(token);
 			return token;
 		}
 	}

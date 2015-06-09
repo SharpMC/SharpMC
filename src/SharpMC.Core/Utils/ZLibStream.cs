@@ -35,7 +35,7 @@ namespace SharpMC.Core.Utils
 	{
 		private const int ChecksumModulus = 65521;
 		private readonly MemoryStream _buffer = new MemoryStream();
-		private int adler32A = 1, adler32B;
+		private int _adler32A = 1, _adler32B;
 
 		public ZLibStream(Stream stream, CompressionLevel level, bool leaveOpen)
 			: base(stream, level, leaveOpen)
@@ -47,7 +47,7 @@ namespace SharpMC.Core.Utils
 			get
 			{
 				UpdateChecksum(_buffer.ToArray(), 0, _buffer.Length);
-				return ((adler32B*65536) + adler32A);
+				return ((_adler32B*65536) + _adler32A);
 			}
 		}
 
@@ -55,8 +55,8 @@ namespace SharpMC.Core.Utils
 		{
 			for (long counter = 0; counter < length; ++counter)
 			{
-				adler32A = (adler32A + (data[offset + counter]))%ChecksumModulus;
-				adler32B = (adler32B + adler32A)%ChecksumModulus;
+				_adler32A = (_adler32A + (data[offset + counter]))%ChecksumModulus;
+				_adler32B = (_adler32B + _adler32A)%ChecksumModulus;
 			}
 		}
 

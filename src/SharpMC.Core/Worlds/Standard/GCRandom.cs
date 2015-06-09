@@ -27,63 +27,63 @@ using LibNoise.Primitive;
 
 namespace SharpMC.Core.Worlds.Standard
 {
-	internal class GCRandom
+	internal class GcRandom
 	{
 		// Density
-		private readonly int amplitude1 = 100;
-		private readonly int amplitude2 = 2;
-		private readonly int amplitude3 = 20;
+		private readonly int _amplitude1 = 100;
+		private readonly int _amplitude2 = 2;
+		private readonly int _amplitude3 = 20;
 		// Position
-		private readonly int caveBandBuffer;
-		private readonly int CutOff = 62;
-		private readonly double f1xz;
-		private readonly double f1y;
+		private readonly int _caveBandBuffer;
+		private readonly int _cutOff = 62;
+		private readonly double _f1Xz;
+		private readonly double _f1Y;
 		// Second pass - small noise
-		private readonly double f2xz = 0.25;
-		private readonly double f2y = 0.05;
+		private readonly double _f2Xz = 0.25;
+		private readonly double _f2Y = 0.05;
 		// Third pass - vertical noise
-		private readonly double f3xz = 0.025;
-		private readonly double f3y = 0.005;
-		private readonly int MaxCaveHeight = 50;
-		private readonly int MinCaveHeight = 6;
-		private readonly SimplexPerlin noiseGen1;
-		private readonly SimplexPerlin noiseGen2;
-		private readonly SimplexPerlin noiseGen3;
-		private readonly double subtractForLessThanCutoff;
-		private readonly int sxz = 200;
-		private readonly int sy = 100;
-		public ChunkColumn chunk;
+		private readonly double _f3Xz = 0.025;
+		private readonly double _f3Y = 0.005;
+		private readonly int _maxCaveHeight = 50;
+		private readonly int _minCaveHeight = 6;
+		private readonly SimplexPerlin _noiseGen1;
+		private readonly SimplexPerlin _noiseGen2;
+		private readonly SimplexPerlin _noiseGen3;
+		private readonly double _subtractForLessThanCutoff;
+		private readonly int _sxz = 200;
+		private readonly int _sy = 100;
+		public ChunkColumn Chunk;
 
-		internal GCRandom(ChunkColumn chunki, int seed)
+		internal GcRandom(ChunkColumn chunki, int seed)
 		{
-			chunk = chunki;
-			subtractForLessThanCutoff = amplitude1 - CutOff;
-			f1xz = 1.0/sxz;
-			f1y = 1.0/sy;
+			Chunk = chunki;
+			_subtractForLessThanCutoff = _amplitude1 - _cutOff;
+			_f1Xz = 1.0/_sxz;
+			_f1Y = 1.0/_sy;
 
-			if (MaxCaveHeight - MinCaveHeight > 128)
+			if (_maxCaveHeight - _minCaveHeight > 128)
 			{
-				caveBandBuffer = 32;
+				_caveBandBuffer = 32;
 			}
 			else
 			{
-				caveBandBuffer = 16;
+				_caveBandBuffer = 16;
 			}
 
-			noiseGen1 = new SimplexPerlin(seed, NoiseQuality.Fast);
-			noiseGen2 = new SimplexPerlin((int) noiseGen1.GetValue(chunk.X, chunk.Z), NoiseQuality.Fast);
-			noiseGen3 = new SimplexPerlin((int) noiseGen1.GetValue(chunk.X, chunk.Z), NoiseQuality.Fast);
+			_noiseGen1 = new SimplexPerlin(seed, NoiseQuality.Fast);
+			_noiseGen2 = new SimplexPerlin((int) _noiseGen1.GetValue(Chunk.X, Chunk.Z), NoiseQuality.Fast);
+			_noiseGen3 = new SimplexPerlin((int) _noiseGen1.GetValue(Chunk.X, Chunk.Z), NoiseQuality.Fast);
 		}
 
 		public bool IsInCave(int x, int y, int z)
 		{
-			float xx = (chunk.X << 4) | (x & 0xF);
+			float xx = (Chunk.X << 4) | (x & 0xF);
 			float yy = y;
-			float zz = (chunk.Z << 4) | (z & 0xF);
+			float zz = (Chunk.Z << 4) | (z & 0xF);
 
-			double n1 = (noiseGen1.GetValue((float) (xx*f1xz), (float) (yy*f1y), (float) (zz*f1xz))*amplitude1);
-			double n2 = (noiseGen2.GetValue((float) (xx*f2xz), (float) (yy*f2y), (float) (zz*f2xz))*amplitude2);
-			double n3 = (noiseGen3.GetValue((float) (xx*f3xz), (float) (yy*f3y), (float) (zz*f3xz))*amplitude3);
+			double n1 = (_noiseGen1.GetValue((float) (xx*_f1Xz), (float) (yy*_f1Y), (float) (zz*_f1Xz))*_amplitude1);
+			double n2 = (_noiseGen2.GetValue((float) (xx*_f2Xz), (float) (yy*_f2Y), (float) (zz*_f2Xz))*_amplitude2);
+			double n3 = (_noiseGen3.GetValue((float) (xx*_f3Xz), (float) (yy*_f3Y), (float) (zz*_f3Xz))*_amplitude3);
 			var lc = LinearCutoffCoefficient(y);
 
 			var isInCave = n1 + n2 - n3 - lc > 62;
@@ -93,21 +93,21 @@ namespace SharpMC.Core.Worlds.Standard
 		private double LinearCutoffCoefficient(int y)
 		{
 			// Out of bounds
-			if (y < MinCaveHeight || y > MaxCaveHeight)
+			if (y < _minCaveHeight || y > _maxCaveHeight)
 			{
-				return subtractForLessThanCutoff;
+				return _subtractForLessThanCutoff;
 				// Bottom layer distortion
 			}
-			if (y >= MinCaveHeight && y <= MinCaveHeight + caveBandBuffer)
+			if (y >= _minCaveHeight && y <= _minCaveHeight + _caveBandBuffer)
 			{
-				double yy = y - MinCaveHeight;
-				return (-subtractForLessThanCutoff/caveBandBuffer)*yy + subtractForLessThanCutoff;
+				double yy = y - _minCaveHeight;
+				return (-_subtractForLessThanCutoff/_caveBandBuffer)*yy + _subtractForLessThanCutoff;
 				// Top layer distortion
 			}
-			if (y <= MaxCaveHeight && y >= MaxCaveHeight - caveBandBuffer)
+			if (y <= _maxCaveHeight && y >= _maxCaveHeight - _caveBandBuffer)
 			{
-				double yy = y - MaxCaveHeight + caveBandBuffer;
-				return (subtractForLessThanCutoff/caveBandBuffer)*yy;
+				double yy = y - _maxCaveHeight + _caveBandBuffer;
+				return (_subtractForLessThanCutoff/_caveBandBuffer)*yy;
 				// In bounds, no distortion
 			}
 			return 0;

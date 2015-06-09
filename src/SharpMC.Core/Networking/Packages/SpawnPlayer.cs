@@ -48,7 +48,7 @@ namespace SharpMC.Core.Networking.Packages
 			{
 				Buffer.WriteVarInt(SendId);
 				Buffer.WriteVarInt(Player.EntityId);
-				Buffer.WriteUUID(new Guid(Player.Uuid));
+				Buffer.WriteUuid(new Guid(Player.Uuid));
 				Buffer.WriteInt((int) Player.KnownPosition.X*32);
 				Buffer.WriteInt((int) Player.KnownPosition.Y*32);
 				Buffer.WriteInt((int) Player.KnownPosition.Z*32);

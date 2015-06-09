@@ -25,10 +25,10 @@ namespace SharpMC.Core.Utils
 {
 	public class Vector2
 	{
-		public Vector2(int _X, int _Z)
+		public Vector2(int x, int z)
 		{
-			X = _X;
-			Z = _Z;
+			X = x;
+			Z = z;
 		}
 
 		public int X { get; set; }

@@ -47,7 +47,7 @@ namespace SharpMC.Core.Utils
 	{
 		private readonly ClientWrapper _client;
 		public byte[] BufferedData = new byte[4096];
-		private int LastByte;
+		private int _lastByte;
 		public int Size = 0;
 
 		public DataBuffer(ClientWrapper client)
@@ -69,53 +69,53 @@ namespace SharpMC.Core.Utils
 		public void Dispose()
 		{
 			BufferedData = null;
-			LastByte = 0;
+			_lastByte = 0;
 		}
 
 		#region Reader
 
 		public int ReadByte()
 		{
-			var returnData = BufferedData[LastByte];
-			LastByte++;
+			var returnData = BufferedData[_lastByte];
+			_lastByte++;
 			return returnData;
 		}
 
-		public byte[] Read(int Length)
+		public byte[] Read(int length)
 		{
-			var Buffered = new byte[Length];
-			Array.Copy(BufferedData, LastByte, Buffered, 0, Length);
-			LastByte += Length;
-			return Buffered;
+			var buffered = new byte[length];
+			Array.Copy(BufferedData, _lastByte, buffered, 0, length);
+			_lastByte += length;
+			return buffered;
 		}
 
 
 		public int ReadInt()
 		{
-			var Dat = Read(4);
-			var Value = BitConverter.ToInt32(Dat, 0);
-			return IPAddress.NetworkToHostOrder(Value);
+			var dat = Read(4);
+			var value = BitConverter.ToInt32(dat, 0);
+			return IPAddress.NetworkToHostOrder(value);
 		}
 
 		public float ReadFloat()
 		{
-			var Almost = Read(4);
-			var f = BitConverter.ToSingle(Almost, 0);
+			var almost = Read(4);
+			var f = BitConverter.ToSingle(almost, 0);
 			return NetworkToHostOrder(f);
 		}
 
 		public bool ReadBool()
 		{
-			var Answer = ReadByte();
-			if (Answer == 1)
+			var answer = ReadByte();
+			if (answer == 1)
 				return true;
 			return false;
 		}
 
 		public double ReadDouble()
 		{
-			var AlmostValue = Read(8);
-			return NetworkToHostOrder(AlmostValue);
+			var almostValue = Read(8);
+			return NetworkToHostOrder(almostValue);
 		}
 
 		public int ReadVarInt()
@@ -152,15 +152,15 @@ namespace SharpMC.Core.Utils
 
 		public short ReadShort()
 		{
-			var Da = Read(2);
-			var D = BitConverter.ToInt16(Da, 0);
-			return IPAddress.NetworkToHostOrder(D);
+			var da = Read(2);
+			var d = BitConverter.ToInt16(da, 0);
+			return IPAddress.NetworkToHostOrder(d);
 		}
 
 		public ushort ReadUShort()
 		{
-			var Da = Read(2);
-			return NetworkToHostOrder(BitConverter.ToUInt16(Da, 0));
+			var da = Read(2);
+			return NetworkToHostOrder(BitConverter.ToUInt16(da, 0));
 		}
 
 		public ushort[] ReadUShort(int count)
@@ -168,9 +168,9 @@ namespace SharpMC.Core.Utils
 			var us = new ushort[count];
 			for (var i = 0; i < us.Length; i++)
 			{
-				var Da = Read(2);
-				var D = BitConverter.ToUInt16(Da, 0);
-				us[i] = D;
+				var da = Read(2);
+				var d = BitConverter.ToUInt16(da, 0);
+				us[i] = d;
 			}
 			return NetworkToHostOrder(us);
 		}
@@ -180,9 +180,9 @@ namespace SharpMC.Core.Utils
 			var us = new ushort[count];
 			for (var i = 0; i < us.Length; i++)
 			{
-				var Da = Read(2);
-				var D = BitConverter.ToUInt16(Da, 0);
-				us[i] = D;
+				var da = Read(2);
+				var d = BitConverter.ToUInt16(da, 0);
+				us[i] = d;
 			}
 			return us;
 		}
@@ -192,19 +192,19 @@ namespace SharpMC.Core.Utils
 			var us = new short[count];
 			for (var i = 0; i < us.Length; i++)
 			{
-				var Da = Read(2);
-				var D = BitConverter.ToInt16(Da, 0);
-				us[i] = D;
+				var da = Read(2);
+				var d = BitConverter.ToInt16(da, 0);
+				us[i] = d;
 			}
 			return us;
 		}
 
 		public string ReadString()
 		{
-			var Length = ReadVarInt();
-			var StringValue = Read(Length);
+			var length = ReadVarInt();
+			var stringValue = Read(length);
 
-			return Encoding.UTF8.GetString(StringValue);
+			return Encoding.UTF8.GetString(stringValue);
 		}
 
 		public long ReadLong()
@@ -262,24 +262,24 @@ namespace SharpMC.Core.Utils
 
 		public byte[] ExportWriter
 		{
-			get { return bffr.ToArray(); }
+			get { return _bffr.ToArray(); }
 		}
 
-		private readonly List<byte> bffr = new List<byte>();
+		private readonly List<byte> _bffr = new List<byte>();
 
-		public void Write(byte[] Data, int Offset, int Length)
+		public void Write(byte[] data, int offset, int length)
 		{
-			for (var i = 0; i < Length; i++)
+			for (var i = 0; i < length; i++)
 			{
-				bffr.Add(Data[i + Offset]);
+				_bffr.Add(data[i + offset]);
 			}
 		}
 
-		public void Write(byte[] Data)
+		public void Write(byte[] data)
 		{
-			foreach (var i in Data)
+			foreach (var i in data)
 			{
-				bffr.Add(i);
+				_bffr.Add(i);
 			}
 		}
 
@@ -292,86 +292,86 @@ namespace SharpMC.Core.Utils
 			WriteLong(toSend);
 		}
 
-		public void WriteVarInt(int Integer)
+		public void WriteVarInt(int integer)
 		{
-			while ((Integer & -128) != 0)
+			while ((integer & -128) != 0)
 			{
-				bffr.Add((byte) (Integer & 127 | 128));
-				Integer = (int) (((uint) Integer) >> 7);
+				_bffr.Add((byte) (integer & 127 | 128));
+				integer = (int) (((uint) integer) >> 7);
 			}
-			bffr.Add((byte) Integer);
+			_bffr.Add((byte) integer);
 		}
 
 		public void WriteVarLong(long i)
 		{
-			var Fuck = i;
-			while ((Fuck & ~0x7F) != 0)
+			var fuck = i;
+			while ((fuck & ~0x7F) != 0)
 			{
-				bffr.Add((byte) ((Fuck & 0x7F) | 0x80));
-				Fuck >>= 7;
+				_bffr.Add((byte) ((fuck & 0x7F) | 0x80));
+				fuck >>= 7;
 			}
-			bffr.Add((byte) Fuck);
+			_bffr.Add((byte) fuck);
 		}
 
-		public void WriteInt(int Data)
+		public void WriteInt(int data)
 		{
-			var Buffer = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(Data));
-			Write(Buffer);
+			var buffer = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(data));
+			Write(buffer);
 		}
 
-		public void WriteString(string Data)
+		public void WriteString(string data)
 		{
-			var StringData = Encoding.UTF8.GetBytes(Data);
-			WriteVarInt(StringData.Length);
-			Write(StringData);
+			var stringData = Encoding.UTF8.GetBytes(data);
+			WriteVarInt(stringData.Length);
+			Write(stringData);
 		}
 
-		public void WriteShort(short Data)
+		public void WriteShort(short data)
 		{
-			var ShortData = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(Data));
-			Write(ShortData);
+			var shortData = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(data));
+			Write(shortData);
 		}
 
-		public void WriteUShort(ushort Data)
+		public void WriteUShort(ushort data)
 		{
-			var UShortData = BitConverter.GetBytes(Data);
-			Write(UShortData);
+			var uShortData = BitConverter.GetBytes(data);
+			Write(uShortData);
 		}
 
-		public void WriteByte(byte Data)
+		public void WriteByte(byte data)
 		{
-			bffr.Add(Data);
+			_bffr.Add(data);
 		}
 
-		public void WriteBool(bool Data)
+		public void WriteBool(bool data)
 		{
-			Write(BitConverter.GetBytes(Data));
+			Write(BitConverter.GetBytes(data));
 		}
 
-		public void WriteDouble(double Data)
+		public void WriteDouble(double data)
 		{
-			Write(HostToNetworkOrder(Data));
+			Write(HostToNetworkOrder(data));
 		}
 
-		public void WriteFloat(float Data)
+		public void WriteFloat(float data)
 		{
-			Write(HostToNetworkOrder(Data));
+			Write(HostToNetworkOrder(data));
 		}
 
-		public void WriteLong(long Data)
+		public void WriteLong(long data)
 		{
-			Write(BitConverter.GetBytes(IPAddress.HostToNetworkOrder(Data)));
+			Write(BitConverter.GetBytes(IPAddress.HostToNetworkOrder(data)));
 		}
 
-		public void WriteUUID(Guid uuid)
+		public void WriteUuid(Guid uuid)
 		{
 			var guid = uuid.ToByteArray();
-			var Long1 = new byte[8];
-			var Long2 = new byte[8];
-			Array.Copy(guid, 0, Long1, 0, 8);
-			Array.Copy(guid, 8, Long2, 0, 8);
-			Write(Long1);
-			Write(Long2);
+			var long1 = new byte[8];
+			var long2 = new byte[8];
+			Array.Copy(guid, 0, long1, 0, 8);
+			Array.Copy(guid, 8, long2, 0, 8);
+			Write(long1);
+			Write(long2);
 		}
 
 		/// <summary>
@@ -381,13 +381,13 @@ namespace SharpMC.Core.Utils
 		{
 			try
 			{
-				var AllData = bffr.ToArray();
-				bffr.Clear();
+				var allData = _bffr.ToArray();
+				_bffr.Clear();
 
 				if (ServerSettings.UseCompression && _client.PacketMode == PacketMode.Play)
 				{
 					var mg = new DataBuffer(_client); //ToWriteAllData
-					var compressed = ZlibStream.CompressBuffer(AllData);
+					var compressed = ZlibStream.CompressBuffer(allData);
 
 					mg.WriteVarInt(compressed.Length);
 					mg.WriteVarInt(compressed.Length);
@@ -397,21 +397,21 @@ namespace SharpMC.Core.Utils
 				}
 				else
 				{
-					WriteVarInt(AllData.Length);
-					var Buffer = bffr.ToArray();
+					WriteVarInt(allData.Length);
+					var buffer = _bffr.ToArray();
 
 					var data = new List<byte>();
-					foreach (var i in Buffer)
+					foreach (var i in buffer)
 					{
 						data.Add(i);
 					}
-					foreach (var i in AllData)
+					foreach (var i in allData)
 					{
 						data.Add(i);
 					}
 					_client.AddToQuee(data.ToArray(), quee);
 				}
-				bffr.Clear();
+				_bffr.Clear();
 			}
 			catch (Exception ex)
 			{

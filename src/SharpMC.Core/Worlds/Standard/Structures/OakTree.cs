@@ -29,7 +29,7 @@ namespace SharpMC.Core.Worlds.Standard.Structures
 {
 	internal class OakTree : Structure
 	{
-		private readonly int LeafRadius = 2;
+		private readonly int _leafRadius = 2;
 
 		public override string Name
 		{
@@ -87,8 +87,8 @@ namespace SharpMC.Core.Worlds.Standard.Structures
 
 		public bool ValidLocation(Vector3 location)
 		{
-			if (location.X - LeafRadius < 0 || location.X + LeafRadius >= 16 || location.Z - LeafRadius < 0 ||
-			    location.Z + LeafRadius >= 256)
+			if (location.X - _leafRadius < 0 || location.X + _leafRadius >= 16 || location.Z - _leafRadius < 0 ||
+			    location.Z + _leafRadius >= 256)
 				return false;
 			return true;
 		}

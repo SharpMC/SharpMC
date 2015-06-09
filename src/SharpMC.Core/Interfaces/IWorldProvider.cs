@@ -31,7 +31,7 @@ using SharpMC.Core.Worlds;
 
 namespace SharpMC.Core.Interfaces
 {
-	public class IWorldProvider
+	public class WorldProvider
 	{
 		public virtual bool IsCaching { get; set; }
 

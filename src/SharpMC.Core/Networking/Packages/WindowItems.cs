@@ -28,7 +28,7 @@ namespace SharpMC.Core.Networking.Packages
 {
 	internal class WindowItems : Package<WindowItems>
 	{
-		public ItemStack[] ItemStacks;
+		public ItemStack[] ItemStacks = null;
 		public byte WindowId = 0;
 
 		public WindowItems(ClientWrapper client) : base(client)

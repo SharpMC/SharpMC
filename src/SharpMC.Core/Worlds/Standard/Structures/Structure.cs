@@ -58,15 +58,15 @@ namespace SharpMC.Core.Worlds.Standard.Structures
 
 		protected void GenerateVanillaLeaves(ChunkColumn chunk, Vector3 location, int radius, Block block)
 		{
-			var RadiusOffset = radius;
-			for (var YOffset = -radius; YOffset <= radius; YOffset = (YOffset + 1))
+			var radiusOffset = radius;
+			for (var yOffset = -radius; yOffset <= radius; yOffset = (yOffset + 1))
 			{
-				var Y = location.Y + YOffset;
-				if (Y > 256)
+				var y = location.Y + yOffset;
+				if (y > 256)
 					continue;
-				GenerateVanillaCircle(chunk, new Vector3(location.X, Y, location.Z), RadiusOffset, block);
-				if (YOffset != -radius && YOffset%2 == 0)
-					RadiusOffset--;
+				GenerateVanillaCircle(chunk, new Vector3(location.X, y, location.Z), radiusOffset, block);
+				if (yOffset != -radius && yOffset%2 == 0)
+					radiusOffset--;
 			}
 		}
 
@@ -74,22 +74,22 @@ namespace SharpMC.Core.Worlds.Standard.Structures
 		{
 			for (var I = -radius; I <= radius; I = (I + 1))
 			{
-				for (var J = -radius; J <= radius; J = (J + 1))
+				for (var j = -radius; j <= radius; j = (j + 1))
 				{
-					var Max = (int) Math.Sqrt((I*I) + (J*J));
-					if (Max <= radius)
+					var max = (int) Math.Sqrt((I*I) + (j*j));
+					if (max <= radius)
 					{
-						if (I.Equals(-radius) && J.Equals(-radius) || I.Equals(-radius) && J.Equals(radius) ||
-						    I.Equals(radius) && J.Equals(-radius) || I.Equals(radius) && J.Equals(radius))
+						if (I.Equals(-radius) && j.Equals(-radius) || I.Equals(-radius) && j.Equals(radius) ||
+						    I.Equals(radius) && j.Equals(-radius) || I.Equals(radius) && j.Equals(radius))
 						{
 							if (corner + radius*0.2 < 0.4 || corner + radius*0.2 > 0.7 || corner.Equals(0))
 								continue;
 						}
-						var X = location.X + I;
-						var Z = location.Z + J;
-						if (chunk.GetBlock((int) X, (int) location.Y, (int) Z).Equals(0))
+						var x = location.X + I;
+						var z = location.Z + j;
+						if (chunk.GetBlock((int) x, (int) location.Y, (int) z).Equals(0))
 						{
-							chunk.SetBlock((int) X, (int) location.Y, (int) Z, block);
+							chunk.SetBlock((int) x, (int) location.Y, (int) z, block);
 						}
 					}
 				}
@@ -111,13 +111,13 @@ namespace SharpMC.Core.Worlds.Standard.Structures
 		{
 			for (var I = -radius; I <= radius; I = (I + 1))
 			{
-				for (var J = -radius; J <= radius; J = (J + 1))
+				for (var j = -radius; j <= radius; j = (j + 1))
 				{
-					var Max = (int) Math.Sqrt((I*I) + (J*J));
-					if (Max <= radius)
+					var max = (int) Math.Sqrt((I*I) + (j*j));
+					if (max <= radius)
 					{
 						var X = location.X + I;
-						var Z = location.Z + J;
+						var Z = location.Z + j;
 
 						if (X < 0 || X >= 16 || Z < 0 || Z >= 256)
 							continue;

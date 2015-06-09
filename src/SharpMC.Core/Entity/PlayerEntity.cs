@@ -97,7 +97,7 @@ namespace SharpMC.Core.Entity
 						return false;
 					}
 				}
-				catch (Exception exc)
+				catch
 				{
 					return false;
 				}
@@ -207,7 +207,7 @@ namespace SharpMC.Core.Entity
             {
                 Action = 1,
                 Gamemode = Gamemode,
-                UUID = Uuid
+                Uuid = Uuid
             }.Broadcast(Level);
 
 			new ChangeGameState(Wrapper)
@@ -224,7 +224,7 @@ namespace SharpMC.Core.Entity
 		{
 			new EntityTeleport(Wrapper)
 			{
-				UniqueServerID = EntityId,
+				UniqueServerId = EntityId,
 				Coordinates = newPosition.ToVector3(),
 				OnGround = newPosition.OnGround,
 				Pitch = (byte)newPosition.Pitch,
@@ -282,7 +282,6 @@ namespace SharpMC.Core.Entity
 
 			Wrapper.ThreadPool.LaunchThread(() =>
 			{
-				var counted = 0;
 				foreach (
 					var chunk in
 						Level.Generator.GenerateChunks((ViewDistance*21), KnownPosition.X, KnownPosition.Z,

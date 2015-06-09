@@ -29,7 +29,7 @@ namespace SharpMC.Core.Utils
 {
 	public class CryptoRandom : RandomNumberGenerator
 	{
-		private static RandomNumberGenerator r;
+		private static RandomNumberGenerator _r;
 
 		/// <summary>
 		///     Creates an instance of the default implementation of a cryptographic random number generator that can be used to
@@ -37,7 +37,7 @@ namespace SharpMC.Core.Utils
 		/// </summary>
 		public CryptoRandom()
 		{
-			r = Create();
+			_r = Create();
 		}
 
 		/// <summary>
@@ -46,7 +46,7 @@ namespace SharpMC.Core.Utils
 		/// <param name=” buffer”>An array of bytes to contain random numbers.</param>
 		public override void GetBytes(byte[] buffer)
 		{
-			r.GetBytes(buffer);
+			_r.GetBytes(buffer);
 		}
 
 		/// <summary>
@@ -55,7 +55,7 @@ namespace SharpMC.Core.Utils
 		public double NextDouble()
 		{
 			var b = new byte[4];
-			r.GetBytes(b);
+			_r.GetBytes(b);
 			return (double) BitConverter.ToUInt32(b, 0)/uint.MaxValue;
 		}
 

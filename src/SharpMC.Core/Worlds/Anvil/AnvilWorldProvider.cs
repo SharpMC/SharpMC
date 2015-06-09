@@ -38,7 +38,7 @@ using SharpMC.Core.Worlds.Standard;
 
 namespace SharpMC.Core.Worlds.Anvil
 {
-	public class AnvilWorldProvider : IWorldProvider
+	public class AnvilWorldProvider : WorldProvider
 	{
 		private readonly StandardWorldProvider _backEndGenerator;
 

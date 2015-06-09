@@ -28,11 +28,11 @@ namespace SharpMC.Core.Utils
 {
 	public class PlayerLocation
 	{
-		public PlayerLocation(double _X, double _Y, double _Z)
+		public PlayerLocation(double x, double y, double z)
 		{
-			X = _X;
-			Y = _Y;
-			Z = _Z;
+			X = x;
+			Y = y;
+			Z = z;
 		}
 
 		public float Yaw { get; set; }

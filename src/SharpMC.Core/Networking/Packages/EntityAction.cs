@@ -40,11 +40,11 @@ namespace SharpMC.Core.Networking.Packages
 
 		public override void Read()
 		{
-			var EntityID = Buffer.ReadVarInt();
-			var ActionID = Buffer.ReadVarInt();
-			var JumpBoost = Buffer.ReadVarInt();
+			var entityId = Buffer.ReadVarInt();
+			var actionId = Buffer.ReadVarInt();
+			var jumpBoost = Buffer.ReadVarInt();
 
-			Client.Player.LastEntityAction = (Enums.EntityAction) ActionID;
+			Client.Player.LastEntityAction = (Enums.EntityAction) actionId;
 		}
 	}
 }

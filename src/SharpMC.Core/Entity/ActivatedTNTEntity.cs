@@ -29,11 +29,11 @@ using SharpMC.Core.Worlds;
 
 namespace SharpMC.Core.Entity
 {
-	public class ActivatedTNTEntity : Entity
+	public class ActivatedTntEntity : Entity
 	{
 		public int Fuse = 30;
 
-		public ActivatedTNTEntity(Level level)
+		public ActivatedTntEntity(Level level)
 			: base(50, level)
 		{
 			Height = 0.98;
@@ -41,13 +41,13 @@ namespace SharpMC.Core.Entity
 			Length = 0.98;
 		}
 
-		private void DespawnEntity()
+		public override void DespawnEntity()
 		{
 			foreach (var i in Level.OnlinePlayers)
 			{
-				var SpawnedBy = i.Wrapper;
+				var spawnedBy = i.Wrapper;
 
-				new DestroyEntities(SpawnedBy)
+				new DestroyEntities(spawnedBy)
 				{
 					EntityIds = new[] {EntityId}
 				}.Write();
@@ -60,14 +60,14 @@ namespace SharpMC.Core.Entity
 			Level.AddEntity(this);
 			foreach (var i in Level.OnlinePlayers)
 			{
-				var SpawnedBy = i.Wrapper;
-				new SpawnObject(SpawnedBy)
+				var spawnedBy = i.Wrapper;
+				new SpawnObject(spawnedBy)
 				{
 					EntityId = EntityId,
 					X = KnownPosition.X,
 					Y = KnownPosition.Y,
 					Z = KnownPosition.Z,
-					Type = ObjectType.ActivatedTNT,
+					Type = ObjectType.ActivatedTnt,
 					Data = 0
 				}.Write();
 			}

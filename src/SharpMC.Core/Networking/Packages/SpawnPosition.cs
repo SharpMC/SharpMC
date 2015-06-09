@@ -42,10 +42,10 @@ namespace SharpMC.Core.Networking.Packages
 		{
 			if (Buffer != null)
 			{
-				var D = Globals.LevelManager.MainLevel.Generator.GetSpawnPoint();
-				var Data = (((long) D.X & 0x3FFFFFF) << 38) | (((long) D.Y & 0xFFF) << 26) | ((long) D.Z & 0x3FFFFFF);
+				var d = Globals.LevelManager.MainLevel.Generator.GetSpawnPoint();
+				var data = (((long) d.X & 0x3FFFFFF) << 38) | (((long) d.Y & 0xFFF) << 26) | ((long) d.Z & 0x3FFFFFF);
 				Buffer.WriteVarInt(SendId);
-				Buffer.WriteLong(Data);
+				Buffer.WriteLong(data);
 				Buffer.FlushData();
 			}
 		}

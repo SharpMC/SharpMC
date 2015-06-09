@@ -23,12 +23,12 @@
 // ©Copyright Kenny van Vulpen - 2015
 namespace SharpMC.Core.Enums
 {
-	public enum LVLType
+	public enum LvlType
 	{
 		Default,
-		flat,
-		largeBiomes,
-		amplified,
-		default_1_1
+		Flat,
+		LargeBiomes,
+		Amplified,
+		Default11
 	}
 }

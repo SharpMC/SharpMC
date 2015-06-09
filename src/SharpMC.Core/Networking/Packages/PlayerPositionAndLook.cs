@@ -65,14 +65,14 @@ namespace SharpMC.Core.Networking.Packages
 		{
 			if (Buffer != null)
 			{
-				var X = Buffer.ReadDouble();
-				var FeetY = Buffer.ReadDouble();
-				var Z = Buffer.ReadDouble();
-				var Yaw = Buffer.ReadFloat();
-				var Pitch = Buffer.ReadFloat();
-				var OnGround = Buffer.ReadBool();
+				var x = Buffer.ReadDouble();
+				var feetY = Buffer.ReadDouble();
+				var z = Buffer.ReadDouble();
+				var yaw = Buffer.ReadFloat();
+				var pitch = Buffer.ReadFloat();
+				var onGround = Buffer.ReadBool();
 
-				Client.Player.PositionChanged(new Vector3(X, FeetY, Z), Yaw, Pitch, OnGround);
+				Client.Player.PositionChanged(new Vector3(x, feetY, z), yaw, pitch, onGround);
 			}
 		}
 	}
