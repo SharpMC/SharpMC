@@ -44,7 +44,7 @@ namespace SharpMC.Core.Worlds
 			CurrentWorldTime = 1200;
 			Day = 1;
 			OnlinePlayers = new List<Player>();
-			DefaultGamemode = Gamemode.Creative;
+			DefaultGamemode = Config.GetProperty("Gamemode", Gamemode.Survival);
 			BlockWithTicks = new ConcurrentDictionary<Vector3, int>();
 			StartTimeOfDayTimer();
 			Entities = new List<Entity.Entity>();
