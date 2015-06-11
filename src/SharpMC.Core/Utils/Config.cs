@@ -33,6 +33,7 @@ namespace SharpMC.Core.Utils
 		public static string ConfigFile = string.Empty;
 		private static string _fileContents = string.Empty;
 		public static string[] InitialValue;
+		private static bool ConfigChanged = false;
 
 		public static bool Check()
 		{
@@ -42,11 +43,6 @@ namespace SharpMC.Core.Utils
 				return Check();
 			}
 			_fileContents = File.ReadAllText(ConfigFile);
-			if (!_fileContents.Contains("#DO NOT REMOVE THIS LINE - SharpMC Config"))
-			{
-				File.Delete(ConfigFile);
-				return Check();
-			}
 			return true;
 		}
 
@@ -141,6 +137,37 @@ namespace SharpMC.Core.Utils
 			catch
 			{
 				return Default;
+			}
+		}
+
+		public static void SetProperty(string property, string value)
+		{
+			string lined = "";
+			foreach (var line in _fileContents.Split(new[] {"\r\n", "\n", Environment.NewLine}, StringSplitOptions.None))
+			{
+				if (line.ToLower().StartsWith(property.ToLower() + "="))
+				{
+					lined = line;
+					break; //Correct line is found
+				}
+			}
+
+			if (lined != "")
+			{
+				_fileContents.Replace(lined, string.Format("{0}={1}", lined.Split('=')[0], value));
+			}
+			else
+			{
+				_fileContents += string.Format("{0}={1}\r\n", property, value);
+			}
+			ConfigChanged = true;
+		}
+
+		public static void SaveConfig()
+		{
+			if (ConfigChanged)
+			{
+				File.WriteAllText(ConfigFile, _fileContents);
 			}
 		}
 	}

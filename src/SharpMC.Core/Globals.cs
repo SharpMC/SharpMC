@@ -94,8 +94,6 @@ namespace SharpMC.Core
 			return count;
 		}
 
-		#region Global Functions
-
 		public static byte[] Compress(byte[] input)
 		{
 			using (var output = new MemoryStream())
@@ -196,12 +194,12 @@ namespace SharpMC.Core
 			OperatorLoader.SaveOperators();
             ConsoleFunctions.WriteInfoLine("Disabling plugins...");
             PluginManager.DisablePlugins();
+			ConsoleFunctions.WriteInfoLine("Saving config file...");
+			Config.SaveConfig();
             ConsoleFunctions.WriteInfoLine("Saving chunks...");
 	        LevelManager.SaveAllChunks();
 	        ServerListener.StopListenening();
 	        Environment.Exit(0);
         }
-
-		#endregion
 	}
 }

@@ -224,7 +224,6 @@
     <Compile Include="Utils\PlayerInventoryManager.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="ConsoleFunctions.cs" />
-    <Compile Include="Interfaces\IPacket.cs" />
     <Compile Include="Globals.cs" />
     <Compile Include="Utils\ClientWrapper.cs" />
     <Compile Include="Entity\PlayerEntity.cs" />
@@ -293,7 +292,7 @@
     <Compile Include="Utils\NbtFormatException.cs" />
     <Compile Include="Worlds\Flatland\FlatLandLevel.cs" />
     <Compile Include="Worlds\Level.cs" />
-    <Compile Include="Interfaces\IWorldProvider.cs" />
+    <Compile Include="Worlds\WorldProvider.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <ItemGroup>
