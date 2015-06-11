@@ -24,8 +24,11 @@
 
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
+using System.Linq;
 using SharpMC.Core.Blocks;
 using SharpMC.Core.Entity;
+using SharpMC.Core.Networking.Packages;
 using SharpMC.Core.Utils;
 using SharpMC.Core.Worlds;
 
@@ -50,9 +53,66 @@ namespace SharpMC.Core.Interfaces
 		}
 
 		public virtual IEnumerable<ChunkColumn> GenerateChunks(int viewDistance, double playerX, double playerZ,
-			Dictionary<Tuple<int, int>, ChunkColumn> chunksUsed, Player player, bool output = false)
+			List<Tuple<int, int>> chunksUsed, Player player, bool output = false)
 		{
-			throw new NotImplementedException();
+			lock (chunksUsed)
+			{
+				var newOrders = new Dictionary<Tuple<int, int>, double>();
+				var radiusSquared = viewDistance / Math.PI;
+				var radius = Math.Ceiling(Math.Sqrt(radiusSquared));
+				var centerX = (int)(playerX) >> 4;
+				var centerZ = (int)(playerZ) >> 4;
+
+				for (var x = -radius; x <= radius; ++x)
+				{
+					for (var z = -radius; z <= radius; ++z)
+					{
+						var distance = (x * x) + (z * z);
+						if (distance > radiusSquared)
+						{
+							continue;
+						}
+						var chunkX = (int)(x + centerX);
+						var chunkZ = (int)(z + centerZ);
+						var index = new Tuple<int, int>(chunkX, chunkZ);
+						newOrders[index] = distance;
+					}
+				}
+
+				if (newOrders.Count > viewDistance)
+				{
+					foreach (var pair in newOrders.OrderByDescending(pair => pair.Value))
+					{
+						if (newOrders.Count <= viewDistance) break;
+						newOrders.Remove(pair.Key);
+					}
+				}
+
+				foreach (var chunkKey in chunksUsed.ToArray())
+				{
+					if (!newOrders.ContainsKey(chunkKey))
+					{
+						new ChunkData(player.Wrapper)
+						{
+							Queee = false,
+							Unloader = true,
+							Chunk = new ChunkColumn { X = chunkKey.Item1, Z = chunkKey.Item2 }
+						}.Write();
+
+						chunksUsed.Remove(chunkKey);
+					}
+				}
+
+				foreach (var pair in newOrders.OrderBy(pair => pair.Value))
+				{
+					if (chunksUsed.Contains(pair.Key)) continue;
+
+					var chunk = GenerateChunkColumn(new Vector2(pair.Key.Item1, pair.Key.Item2));
+					chunksUsed.Add(pair.Key); 
+
+					yield return chunk;
+				}
+			}
 		}
 
 		public virtual void SaveChunks(string folder)

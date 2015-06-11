@@ -38,14 +38,14 @@ namespace SharpMC.Core.Entity
 {
 	public class Player : Entity
 	{
-		private readonly Dictionary<Tuple<int, int>, ChunkColumn> _chunksUsed;
+		private readonly List<Tuple<int, int>> _chunksUsed;
 		private readonly Vector2 _currentChunkPosition = new Vector2(0, 0);
 		public PlayerInventoryManager Inventory; //The player's Inventory
 		public string SkinBlob = "";
 
 		public Player(Level level) : base(-1, level)
 		{
-			_chunksUsed = new Dictionary<Tuple<int, int>, ChunkColumn>();
+			_chunksUsed = new List<Tuple<int, int>>();
 			Inventory = new PlayerInventoryManager(this);
 			Level = level;
 
@@ -110,6 +110,7 @@ namespace SharpMC.Core.Entity
 
 		public void PositionChanged(Vector3 location, float yaw = 0.0f, float pitch = 0.0f, bool onGround = false)
 		{
+			var originalchunkcoords = new Vector2(_currentChunkPosition.X, _currentChunkPosition.Z);
 			var originalcoordinates = KnownPosition;
 			KnownPosition.Yaw = yaw;
 			KnownPosition.Pitch = pitch;
@@ -118,21 +119,25 @@ namespace SharpMC.Core.Entity
 			KnownPosition.Z = location.Z;
 			KnownPosition.OnGround = onGround;
 
-			SendChunksForKnownPosition();
-			/*new EntityTeleport(Wrapper)
+			_currentChunkPosition.X = (int) location.X >> 4;
+			_currentChunkPosition.Z = (int) location.Z >> 4;
+
+			if (originalchunkcoords != _currentChunkPosition) SendChunksForKnownPosition();
+
+			new EntityTeleport(Wrapper)
 			{
-				UniqueServerID = EntityId,
+				UniqueServerId = EntityId,
 				Coordinates = location,
 				OnGround = onGround,
 				Pitch = (byte) pitch,
-				Yaw = (byte) yaw
-			}.Broadcast(Level, false, this);*/
+				Yaw = (byte) yaw,
+			}.Broadcast(Level, false, this);
 
-			new EntityRelativeMove(Wrapper)
+			/*new EntityRelativeMove(Wrapper)
 			{
 				Player = this,
 				Movement = originalcoordinates.ToVector3() - location
-			}.Broadcast(Level, false, this);
+			}.Broadcast(Level, false, this);*/
 		}
 
 		public void HeldItemChanged(int slot)
@@ -257,7 +262,7 @@ namespace SharpMC.Core.Entity
 				IsOperator = OperatorLoader.IsOperator(savename);
 			}
 
-			var chunks = Level.Generator.GenerateChunks((ViewDistance*21), KnownPosition.X, KnownPosition.Z, _chunksUsed, this);
+			var chunks = Level.Generator.GenerateChunks((ViewDistance * 21), KnownPosition.X, KnownPosition.Z, _chunksUsed, this);
 			new MapChunkBulk(Wrapper) {Chunks = chunks.ToArray()}.Write();
 
 			new PlayerPositionAndLook(Wrapper) {X = KnownPosition.X, Y = KnownPosition.Y, Z = KnownPosition.Z, Yaw = KnownPosition.Yaw, Pitch = KnownPosition.Pitch}.Write();
@@ -285,7 +290,7 @@ namespace SharpMC.Core.Entity
 				foreach (
 					var chunk in
 						Level.Generator.GenerateChunks((ViewDistance*21), KnownPosition.X, KnownPosition.Z,
-							force ? new Dictionary<Tuple<int, int>, ChunkColumn>() : _chunksUsed, this))
+							force ? new List<Tuple<int, int>>() : _chunksUsed, this))
 				{
 					if (Wrapper != null && Wrapper.TcpClient.Client.Connected)
 						new ChunkData(Wrapper) {Chunk = chunk}.Write();
