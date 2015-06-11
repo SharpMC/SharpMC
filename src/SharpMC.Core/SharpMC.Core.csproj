@@ -146,7 +146,6 @@
     <Compile Include="Networking\Packages\Particle.cs" />
     <Compile Include="Networking\Packages\Request.cs" />
     <Compile Include="Networking\Packages\SoundEffect.cs" />
-    <Compile Include="Networking\Packages\StevenBug.cs" />
     <Compile Include="OperatorLoader.cs" />
     <Compile Include="ServerSettings.cs" />
     <Compile Include="SharpMCServer.cs" />

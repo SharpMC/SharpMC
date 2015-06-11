@@ -41,7 +41,6 @@ namespace SharpMC.Core.Networking.Packages
 			#region Ping
 
 			PingPackages.Add(new Handshake(client, buffer));
-			PingPackages.Add(new StevenBug(client, buffer));
 
 			#endregion
 
