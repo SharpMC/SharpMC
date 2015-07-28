@@ -31,7 +31,6 @@ using System.Timers;
 using SharpMC.Core.Blocks;
 using SharpMC.Core.Entity;
 using SharpMC.Core.Enums;
-using SharpMC.Core.Interfaces;
 using SharpMC.Core.Networking.Packages;
 using SharpMC.Core.Utils;
 

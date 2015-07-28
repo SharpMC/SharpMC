@@ -262,7 +262,7 @@ namespace SharpMC.Core.Entity
 				IsOperator = OperatorLoader.IsOperator(savename);
 			}
 
-			var chunks = Level.Generator.GenerateChunks((ViewDistance * 21), KnownPosition.X, KnownPosition.Z, _chunksUsed, this);
+			var chunks = Level.Generator.GenerateChunks((ViewDistance * 21), _chunksUsed, this);
 			new MapChunkBulk(Wrapper) {Chunks = chunks.ToArray()}.Write();
 
 			new PlayerPositionAndLook(Wrapper) {X = KnownPosition.X, Y = KnownPosition.Y, Z = KnownPosition.Z, Yaw = KnownPosition.Yaw, Pitch = KnownPosition.Pitch}.Write();
@@ -287,15 +287,33 @@ namespace SharpMC.Core.Entity
 
 			Wrapper.ThreadPool.LaunchThread(() =>
 			{
-				foreach (
+				/*foreach (
 					var chunk in
 						Level.Generator.GenerateChunks((ViewDistance*21), KnownPosition.X, KnownPosition.Z,
 							force ? new List<Tuple<int, int>>() : _chunksUsed, this))
 				{
 					if (Wrapper != null && Wrapper.TcpClient.Client.Connected)
 						new ChunkData(Wrapper) {Chunk = chunk}.Write();
+				}*/
+				foreach (
+					var chunk in
+						Level.Generator.GenerateChunks((ViewDistance * 21),
+							force ? new List<Tuple<int, int>>() : _chunksUsed, this))
+				{
+					if (Wrapper != null && Wrapper.TcpClient.Client.Connected)
+						new ChunkData(Wrapper) { Chunk = chunk }.Write();
 				}
 			});
+		}
+
+		public void UnloadChunk(int x, int y)
+		{
+			new ChunkData(Wrapper)
+			{
+				Queee = false,
+				Unloader = true,
+				Chunk = new ChunkColumn { X = x, Z = y }
+			}.Write();
 		}
 
 		public void SendChat(string message)

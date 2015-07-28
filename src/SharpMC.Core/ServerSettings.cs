@@ -7,6 +7,7 @@
 	{
 		internal static string Seed = "default";
 		internal static bool UseCompression = false;
+		internal static int CompressionThreshold = 0;
 		internal static bool OnlineMode = false;
 		internal static bool EncryptionEnabled = true;
 		internal static int MaxPlayers = 10;

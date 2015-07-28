@@ -374,6 +374,18 @@ namespace SharpMC.Core.Utils
 			Write(long2);
 		}
 
+		private byte[] GetVarIntBytes(int integer)
+		{
+			List<Byte> bytes = new List<byte>();
+			while ((integer & -128) != 0)
+			{
+				bytes.Add((byte)(integer & 127 | 128));
+				integer = (int)(((uint)integer) >> 7);
+			}
+			bytes.Add((byte)integer);
+			return bytes.ToArray();
+		}
+
 		/// <summary>
 		///     Flush all data to the TCPClient NetworkStream.
 		/// </summary>
@@ -386,14 +398,20 @@ namespace SharpMC.Core.Utils
 
 				if (ServerSettings.UseCompression && _client.PacketMode == PacketMode.Play)
 				{
-					var mg = new DataBuffer(_client); //ToWriteAllData
-					var compressed = ZlibStream.CompressBuffer(allData);
+					bool isOver = (allData.Length >= ServerSettings.CompressionThreshold);
+					int dataLength = isOver ? allData.Length : 0;
 
-					mg.WriteVarInt(compressed.Length);
-					mg.WriteVarInt(compressed.Length);
+					//Calculate length of 'Data Length'
+					byte[] dLength = GetVarIntBytes(dataLength);
 
-					mg.Write(compressed);
-					_client.AddToQuee(mg.ExportWriter, quee);
+					//Create all data
+					var compressedBytes = ZlibStream.CompressBuffer(allData);
+					var compressed = new DataBuffer(_client);
+					compressed.WriteVarInt(compressedBytes.Length + dLength.Length);
+					compressed.WriteVarInt(dataLength);
+					compressed.Write(isOver ? compressedBytes : allData);
+
+					_client.AddToQuee(compressed.ExportWriter, quee);
 				}
 				else
 				{

@@ -24,15 +24,14 @@
 
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.Linq;
+using System.Threading.Tasks;
 using SharpMC.Core.Blocks;
 using SharpMC.Core.Entity;
 using SharpMC.Core.Networking.Packages;
 using SharpMC.Core.Utils;
-using SharpMC.Core.Worlds;
 
-namespace SharpMC.Core.Interfaces
+namespace SharpMC.Core.Worlds
 {
 	public class WorldProvider
 	{
@@ -50,6 +49,62 @@ namespace SharpMC.Core.Interfaces
 		public virtual Vector3 GetSpawnPoint()
 		{
 			throw new NotImplementedException();
+		}
+
+		public IEnumerable<ChunkColumn> GenerateChunks(int viewDistance, List<Tuple<int, int>> chunksUsed, Player player)
+		{
+			lock (chunksUsed)
+			{
+				Dictionary<Tuple<int, int>, double> newOrders = new Dictionary<Tuple<int, int>, double>();
+				double radiusSquared = viewDistance / Math.PI;
+				double radius = Math.Ceiling(Math.Sqrt(radiusSquared));
+				int centerX = (int)player.KnownPosition.X >> 4;
+				int centerZ = (int)player.KnownPosition.Z >> 4;
+
+				for (double x = -radius; x <= radius; ++x)
+				{
+					for (double z = -radius; z <= radius; ++z)
+					{
+						var distance = (x * x) + (z * z);
+						if (distance > radiusSquared)
+						{
+							continue;
+						}
+						int chunkX = (int)(x + centerX);
+						int chunkZ = (int)(z + centerZ);
+						Tuple<int, int> index = new Tuple<int, int>(chunkX, chunkZ);
+						newOrders[index] = distance;
+					}
+				}
+
+				if (newOrders.Count > viewDistance)
+				{
+					foreach (var pair in newOrders.OrderByDescending(pair => pair.Value))
+					{
+						if (newOrders.Count <= viewDistance) break;
+						newOrders.Remove(pair.Key);
+					}
+				}
+
+				foreach (var chunkKey in chunksUsed.ToArray())
+				{
+					if (!newOrders.ContainsKey(chunkKey))
+					{
+						chunksUsed.Remove(chunkKey);
+						new Task(() => player.UnloadChunk(chunkKey.Item1, chunkKey.Item2)).Start();
+					}
+				}
+
+				foreach (var pair in newOrders.OrderBy(pair => pair.Value))
+				{
+					if (chunksUsed.Contains(pair.Key)) continue;
+
+					var chunk = GenerateChunkColumn(new Vector2(pair.Key.Item1, pair.Key.Item2));
+					chunksUsed.Add(pair.Key);
+
+					yield return chunk;
+				}
+			}
 		}
 
 		public virtual IEnumerable<ChunkColumn> GenerateChunks(int viewDistance, double playerX, double playerZ,

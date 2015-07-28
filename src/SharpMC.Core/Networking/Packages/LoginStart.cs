@@ -86,7 +86,7 @@ namespace SharpMC.Core.Networking.Packages
 				};
 				Client.PacketMode = PacketMode.Play;
 
-				new SetCompression(Client).Write();
+				new SetCompression(Client) {CompressionLevel = ServerSettings.UseCompression ? ServerSettings.CompressionThreshold : -1 }.Write();
 
 				new JoinGame(Client) { Player = Client.Player }.Write();
 				new SpawnPosition(Client).Write();

@@ -23,11 +23,13 @@
 // ©Copyright Kenny van Vulpen - 2015
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Ionic.Zlib;
 using SharpMC.Core.Networking.Packages;
 using SharpMC.Core.Utils;
 
@@ -78,6 +80,97 @@ namespace SharpMC.Core.Networking
 			}
 			return value | ((b & 0x7F) << (size * 7));
 		}
+		private byte[] GetVarIntBytes(int integer)
+		{
+			List<Byte> bytes = new List<byte>();
+			while ((integer & -128) != 0)
+			{
+				bytes.Add((byte)(integer & 127 | 128));
+				integer = (int)(((uint)integer) >> 7);
+			}
+			bytes.Add((byte)integer);
+			return bytes.ToArray();
+		}
+
+		private bool ReadUncompressed(ClientWrapper client, NetworkStream clientStream, int dlength)
+		{
+			var buffie = new byte[dlength];
+			int receivedData;
+			receivedData = clientStream.Read(buffie, 0, buffie.Length);
+			if (receivedData > 0)
+			{
+				var buf = new DataBuffer(client);
+
+				if (client.Decrypter != null)
+				{
+					var date = new byte[4096];
+					client.Decrypter.TransformBlock(buffie, 0, buffie.Length, date, 0);
+					buf.BufferedData = date;
+				}
+				else
+				{
+					buf.BufferedData = buffie;
+				}
+
+				buf.BufferedData = buffie;
+
+				buf.Size = dlength;
+				var packid = buf.ReadVarInt();
+
+				if (!new PackageFactory(client, buf).Handle(packid))
+				{
+					ConsoleFunctions.WriteWarningLine("Unknown packet received! \"0x" + packid.ToString("X2") + "\"");
+				}
+
+				buf.Dispose();
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+
+		private bool ReadCompressed(ClientWrapper client, NetworkStream clientStream, int dlength)
+		{
+			var buffie = new byte[dlength];
+			int receivedData;
+			receivedData = clientStream.Read(buffie, 0, buffie.Length);
+			buffie = ZlibStream.UncompressBuffer(buffie);
+
+			if (receivedData > 0)
+			{
+				var buf = new DataBuffer(client);
+
+				if (client.Decrypter != null)
+				{
+					var date = new byte[4096];
+					client.Decrypter.TransformBlock(buffie, 0, buffie.Length, date, 0);
+					buf.BufferedData = date;
+				}
+				else
+				{
+					buf.BufferedData = buffie;
+				}
+
+				buf.BufferedData = buffie;
+
+				buf.Size = dlength;
+				var packid = buf.ReadVarInt();
+
+				if (!new PackageFactory(client, buf).Handle(packid))
+				{
+					ConsoleFunctions.WriteWarningLine("Unknown packet received! \"0x" + packid.ToString("X2") + "\"");
+				}
+
+				buf.Dispose();
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
 
 		private void HandleClientCommNew(object client)
 		{
@@ -92,42 +185,26 @@ namespace SharpMC.Core.Networking
 					while (!clientStream.DataAvailable)
 						Thread.Sleep(5);
 
-					int dlength = ReadVarInt(clientStream);
-					var buffie = new byte[dlength];
-					int receivedData;
-					receivedData = clientStream.Read(buffie, 0, buffie.Length);
-					if (receivedData > 0)
+					if (ServerSettings.UseCompression && Client.PacketMode == PacketMode.Play)
 					{
-						var buf = new DataBuffer(Client);
-
-						if (Client.Decrypter != null)
+						int packetLength = ReadVarInt(clientStream);
+						int dataLength = ReadVarInt(clientStream);
+						int actualDataLength = packetLength - GetVarIntBytes(dataLength).Length;
+						
+						if (dataLength == 0)
 						{
-							var date = new byte[4096];
-							Client.Decrypter.TransformBlock(buffie, 0, buffie.Length, date, 0);
-							buf.BufferedData = date;
+							if (!ReadCompressed(Client, clientStream, actualDataLength)) break;
 						}
 						else
 						{
-							buf.BufferedData = buffie;
+							if (!ReadUncompressed(Client, clientStream, dataLength)) break;
 						}
-
-						buf.BufferedData = buffie;
-
-						buf.Size = dlength;
-						var packid = buf.ReadVarInt();
-
-						if (!new PackageFactory(Client, buf).Handle(packid))
-						{
-							ConsoleFunctions.WriteWarningLine("Unknown packet received! \"0x" + packid.ToString("X2") + "\"");
-						}
-
-						buf.Dispose();
 					}
 					else
 					{
-						break;
+						int dlength = ReadVarInt(clientStream);
+						if (!ReadUncompressed(Client, clientStream, dlength)) break;
 					}
-
 				}
 				catch (Exception ex)
 				{
