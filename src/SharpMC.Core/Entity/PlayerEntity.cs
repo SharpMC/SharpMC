@@ -74,6 +74,7 @@ namespace SharpMC.Core.Entity
 		public EntityAction LastEntityAction { get; set; }
 		public bool IsOperator { get; internal set; }
 		private bool Loaded { get; set; }
+
 		public bool IsAuthenticated()
 		{
 			if (ServerSettings.OnlineMode)
@@ -205,27 +206,36 @@ namespace SharpMC.Core.Entity
 			}
 		}
 
-		public void SetGamemode(Gamemode target)
+		public void SetGamemode(Gamemode target, bool silent)
 		{
 			Gamemode = target;
-            new PlayerListItem(Wrapper)
-            {
-                Action = 1,
-                Gamemode = Gamemode,
-                Uuid = Uuid
-            }.Broadcast(Level);
+			new PlayerListItem(Wrapper)
+			{
+				Action = 1,
+				Gamemode = Gamemode,
+				Uuid = Uuid
+			}.Broadcast(Level);
 
 			new ChangeGameState(Wrapper)
 			{
 				Reason = GameStateReason.ChangeGameMode,
-				Value = (float)target
+				Value = (float) target
 			}.Write();
 
-			ConsoleFunctions.WriteInfoLine(Username + "'s gamemode was changed to " + target.ToString("D"));
-			SendChat("Your gamemode was changed to " + target.ToString(), ChatColor.Yellow);
+			if (!silent)
+			{
+				ConsoleFunctions.WriteInfoLine(Username + "'s gamemode was changed to " + target.ToString("D"));
+				SendChat("Your gamemode was changed to " + target.ToString(), ChatColor.Yellow);
+			}
 		}
 
-		public void Teleport(PlayerLocation newPosition)
+		public void SetGamemode(Gamemode target)
+		{
+			SetGamemode(target, false);
+		}
+	
+
+	public void Teleport(PlayerLocation newPosition)
 		{
 			new EntityTeleport(Wrapper)
 			{
@@ -271,7 +281,7 @@ namespace SharpMC.Core.Entity
 			Level.AddPlayer(this);
 			Wrapper.Player.Inventory.SendToPlayer();
 			BroadcastEquipment();
-			SetGamemode(Gamemode);
+			SetGamemode(Gamemode, true);
 			Globals.PluginManager.HandlePlayerJoin(this);
 		}
 
@@ -287,26 +297,18 @@ namespace SharpMC.Core.Entity
 
 			Wrapper.ThreadPool.LaunchThread(() =>
 			{
-				/*foreach (
-					var chunk in
-						Level.Generator.GenerateChunks((ViewDistance*21), KnownPosition.X, KnownPosition.Z,
-							force ? new List<Tuple<int, int>>() : _chunksUsed, this))
-				{
-					if (Wrapper != null && Wrapper.TcpClient.Client.Connected)
-						new ChunkData(Wrapper) {Chunk = chunk}.Write();
-				}*/
 				foreach (
 					var chunk in
 						Level.Generator.GenerateChunks((ViewDistance * 21),
 							force ? new List<Tuple<int, int>>() : _chunksUsed, this))
 				{
 					if (Wrapper != null && Wrapper.TcpClient.Client.Connected)
-						new ChunkData(Wrapper) { Chunk = chunk }.Write();
+						new ChunkData(Wrapper) { Chunk = chunk, Queee = false }.Write();
 				}
 			});
 		}
 
-		public void UnloadChunk(int x, int y)
+		internal void UnloadChunk(int x, int y)
 		{
 			new ChunkData(Wrapper)
 			{
@@ -397,7 +399,7 @@ namespace SharpMC.Core.Entity
 				float yaw = reader.ReadFloat();
 				float pitch = reader.ReadFloat();
 				bool onGround = reader.ReadBool();
-				KnownPosition = new PlayerLocation(x,y,z) {Yaw = yaw, Pitch = pitch, OnGround = onGround};
+				KnownPosition = new PlayerLocation(x, y, z) {Yaw = yaw, Pitch = pitch, OnGround = onGround};
 				Gamemode = (Gamemode) reader.ReadVarInt();
 				int healthLength = reader.ReadVarInt();
 				byte[] healthData = reader.Read(healthLength);
@@ -405,6 +407,10 @@ namespace SharpMC.Core.Entity
 				byte[] inventoryData = reader.Read(inventoryLength);
 				HealthManager.Import(healthData);
 				Inventory.Import(inventoryData);
+			}
+			else
+			{
+				KnownPosition = Level.GetSpawnPoint();
 			}
 			Loaded = true;
 		}

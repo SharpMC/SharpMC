@@ -204,7 +204,7 @@ namespace SharpMC.Core.Worlds.Nether
 			new NetherLavaDecorator().Decorate(chunk, new PlainsBiome());
 		}
 
-		public override void SetBlock(Block block, Level level, bool broadcast)
+		/*public override void SetBlock(Block block, Level level, bool broadcast)
 		{
 			ChunkColumn c;
 			lock (ChunkCache)
@@ -219,7 +219,7 @@ namespace SharpMC.Core.Worlds.Nether
 			if (!broadcast) return;
 
 			BlockChange.Broadcast(block, level);
-		}
+		}*/
 
 		public override Vector3 GetSpawnPoint()
 		{

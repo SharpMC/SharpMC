@@ -147,7 +147,7 @@ namespace SharpMC.Core.Blocks
 				SetToStill(world, x, y, z);
 			}
 
-			if (CanBeFlownInto(world, x, y - 1, z) /* || world.GetBlock(x, y - 1, z) is Flowing*/)
+			if (CanBeFlownInto(world, x, y - 1, z))
 			{
 				if (this is BlockFlowingLava &&
 				    (world.GetBlock(new Vector3(x, y - 1, z)) is BlockFlowingWater ||
@@ -329,6 +329,16 @@ namespace SharpMC.Core.Blocks
 		{
 			if (CanBeFlownInto(world, x, y, z))
 			{
+				var oldBlock = world.GetBlock(new Vector3(x, y, z));
+				if (oldBlock is Flowing || oldBlock.Id == 0)
+				{
+				}
+				else
+				{
+					oldBlock.DoDrop(world);
+				}
+				oldBlock.BreakBlock(world);
+
 				var newBlock = BlockFactory.GetBlockById(Id);
 				newBlock.Coordinates = new Vector3(x, y, z);
 				newBlock.Metadata = (byte) decay;

@@ -162,5 +162,10 @@ namespace SharpMC.Core.Items
 		{
 			return null;
 		}
+
+		public ItemStack GetItemStack()
+		{
+			return new ItemStack((short)Id, 1, Metadata);
+		}
 	}
 }

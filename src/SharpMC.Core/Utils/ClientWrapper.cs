@@ -45,7 +45,6 @@ namespace SharpMC.Core.Utils
 	public class ClientWrapper
 	{
 		private readonly Queue<byte[]> _commands = new Queue<byte[]>();
-		private readonly Timer _kTimer = new Timer();
 		private readonly AutoResetEvent _resume = new AutoResetEvent(false);
 		internal bool EncryptionEnabled = false;
 		public PacketMode PacketMode = PacketMode.Ping;
@@ -53,6 +52,7 @@ namespace SharpMC.Core.Utils
 		public TcpClient TcpClient;
 		public MyThreadPool ThreadPool;
 		internal int Protocol = 0;
+		internal int ClientIdentifier = -1;
 
 		public ClientWrapper(TcpClient client)
 		{
@@ -124,9 +124,10 @@ namespace SharpMC.Core.Utils
 					}
 					else
 					{
-						var a = TcpClient.GetStream();
-						a.Write(data, 0, data.Length);
-						a.Flush();
+						//var a = TcpClient.GetStream();
+						//a.Write(data, 0, data.Length);
+						//a.Flush();
+						TcpClient.Client.Send(data);
 					}
 				}
 				catch
@@ -134,23 +135,6 @@ namespace SharpMC.Core.Utils
 					ConsoleFunctions.WriteErrorLine("Failed to send a packet!");
 				}
 			}
-		}
-
-		public void StartKeepAliveTimer()
-		{
-			_kTimer.Elapsed += DisplayTimeEvent;
-			_kTimer.Interval = 5000;
-			_kTimer.Start();
-		}
-
-		public void StopKeepAliveTimer()
-		{
-			_kTimer.Stop();
-		}
-
-		public void DisplayTimeEvent(object source, ElapsedEventArgs e)
-		{
-			new KeepAlive(Player.Wrapper).Write();
 		}
 
 		public void DoTick(object source, ElapsedEventArgs e)

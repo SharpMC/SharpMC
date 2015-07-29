@@ -101,7 +101,11 @@ namespace SharpMC.Core.Networking.Packages
 						var b = BlockFactory.GetBlockById(heldItem);
 						b.Coordinates = position;
 						b.Metadata = itemMeta;
-						Client.Player.Level.SetBlock(b, true, heldItem == 8 || heldItem == 10);
+						if (!b.PlaceBlock(Client.Player.Level, Client.Player, position, (BlockFace) face))
+						{
+							Client.Player.Level.SetBlock(b);
+						}
+						//Client.Player.Level.SetBlock(b, true, heldItem == 8 || heldItem == 10);
 
 						if (Client.Player.Gamemode != Gamemode.Creative)
 						{

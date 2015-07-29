@@ -38,7 +38,7 @@ namespace SharpMC.Core.Blocks
 			Durability = 0.5f;
 			Metadata = 0;
 			Drops = new[] {new ItemStack(this, 1)};
-			;
+			
 
 			IsSolid = true;
 			IsBuildable = true;
@@ -59,6 +59,18 @@ namespace SharpMC.Core.Blocks
 		public bool CanPlace(Level world)
 		{
 			return CanPlace(world, Coordinates);
+		}
+
+		public void DoDrop(Level world)
+		{
+			if (Drops == null) return;
+			foreach (var its in Drops)
+			{
+				new ItemEntity(world, its)
+				{
+					KnownPosition = new PlayerLocation(Coordinates.X, Coordinates.Y + 0.25, Coordinates.Z)
+				}.SpawnEntity();
+			}
 		}
 
 		protected virtual bool CanPlace(Level world, Vector3 blockCoordinates)

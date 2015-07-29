@@ -178,6 +178,8 @@ namespace SharpMC.Core.Networking
 			var clientStream = tcpClient.GetStream();
 			var Client = new ClientWrapper(tcpClient);
 
+			Globals.ClientManager.AddClient(Client);
+
 			while (true)
 			{
 				try
@@ -220,7 +222,8 @@ namespace SharpMC.Core.Networking
 			}
 			//Close the connection with the client. :)
 			Client.ThreadPool.KillAllThreads();
-			Client.StopKeepAliveTimer();
+			//Client.StopKeepAliveTimer();
+			Globals.ClientManager.RemoveClient(Client);
 
 			if (Client.Player != null)
 			{

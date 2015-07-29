@@ -27,6 +27,7 @@ namespace SharpMC.Core.Blocks
 	{
 		public static Block GetBlockById(ushort id, short metadata)
 		{
+			if (id == 1) return new BlockStone();
 			if (id == 46) return new BlockTnt();
 			if (id == 0) return new BlockAir();
 			if (id == 51) return new BlockFire();
@@ -43,6 +44,8 @@ namespace SharpMC.Core.Blocks
 			if (id == 31 && metadata == 1) return new BlockTallGrass();
 			if (id == 5 && metadata == 0) return new OakWoodPlank();
 			if (id == 64) return new BlockOakDoor();
+			
+			//ConsoleFunctions.WriteWarningLine("Unknown block: " + id + ":" + metadata);
 			return new Block(id);
 		}
 

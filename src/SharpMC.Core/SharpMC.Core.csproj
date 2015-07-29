@@ -136,7 +136,10 @@
     <Compile Include="Items\ItemSnowball.cs" />
     <Compile Include="Items\ItemStick.cs" />
     <Compile Include="Items\ItemWaterBucket.cs" />
+    <Compile Include="Items\ItemWheatSeeds.cs" />
+    <Compile Include="Items\Seed.cs" />
     <Compile Include="LevelManager.cs" />
+    <Compile Include="Networking\ClientManager.cs" />
     <Compile Include="Networking\Packages\ClickWindow.cs" />
     <Compile Include="Networking\Packages\CloseWindow.cs" />
     <Compile Include="Networking\Packages\EncryptionRequest.cs" />

@@ -38,16 +38,17 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PlayerUtils.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\SharpMC\SharpMC.csproj">
-      <Project>{4eaf641d-6367-44ba-a522-f5a2ca5822ad}</Project>
-      <Name>SharpMC</Name>
-    </ProjectReference>
+    <Content Include="What is this.txt" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="What is this.txt" />
+    <ProjectReference Include="..\SharpMC.Core\SharpMC.Core.csproj">
+      <Project>{089aba36-c58c-40c3-8f88-988bea720974}</Project>
+      <Name>SharpMC.Core</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

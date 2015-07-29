@@ -41,8 +41,8 @@ namespace SharpMC.Core.Worlds.Anvil
 	{
 		private readonly StandardWorldProvider _backEndGenerator;
 
-		private readonly ConcurrentDictionary<ChunkCoordinates, ChunkColumn> _chunkCache =
-			new ConcurrentDictionary<ChunkCoordinates, ChunkColumn>();
+		private readonly Dictionary<Tuple<int,int>, ChunkColumn> _chunkCache =
+			new Dictionary<Tuple<int, int>, ChunkColumn>();
 
 		private string _basePath;
 		private LevelInfo _level;
@@ -68,11 +68,18 @@ namespace SharpMC.Core.Worlds.Anvil
 			_basePath = _basePath ?? Config.GetProperty("PCWorldFolder", "World").Trim();
 
 			var file = new NbtFile();
-			file.LoadFromFile(Path.Combine(_basePath, "level.dat"));
-			var dataTag = file.RootTag["Data"];
-			_level = new LevelInfo(dataTag);
+			if (File.Exists(Path.Combine(_basePath, "level.dat")))
+			{
+				file.LoadFromFile(Path.Combine(_basePath, "level.dat"));
+				var dataTag = file.RootTag["Data"];
+				_level = new LevelInfo(dataTag);
+			}
+			else
+			{
+				throw new Exception(@"Could not load Anvil world!");
+			}
 
-			_waterOffsetY = (byte) Config.GetProperty("PCWaterOffset", 0);
+			_waterOffsetY = (byte)Config.GetProperty("PCWaterOffset", 0);
 		}
 
 		private byte Nibble4(byte[] arr, int index)
@@ -209,15 +216,6 @@ namespace SharpMC.Core.Worlds.Anvil
 							var anvilIndex = (y + yoffset)*16*16 + z*16 + x;
 							var blockId = chunk.GetBlock(x, yi, z);
 
-							// PE to Anvil friendly converstion
-							if (blockId == 5) blockId = 125;
-							else if (blockId == 158) blockId = 126;
-							else if (blockId == 50) blockId = 75;
-							else if (blockId == 50) blockId = 76;
-							else if (blockId == 89) blockId = 123;
-							else if (blockId == 89) blockId = 124;
-							else if (blockId == 73) blockId = 152;
-
 							blocks[anvilIndex] = (byte) blockId;
 							SetNibble4(data, anvilIndex, chunk.GetMetadata(x, yi, z));
 							SetNibble4(blockLight, anvilIndex, chunk.GetBlocklight(x, yi, z));
@@ -248,13 +246,18 @@ namespace SharpMC.Core.Worlds.Anvil
 		{
 			lock (_chunkCache)
 			{
-				ChunkColumn cachedChunk;
-				if (_chunkCache.TryGetValue(new ChunkCoordinates(chunkCoordinates.X, chunkCoordinates.Z), out cachedChunk))
-					return cachedChunk;
+				var coords = new Tuple<int,int>(chunkCoordinates.X, chunkCoordinates.Z);
+
+				if (_chunkCache.ContainsKey(coords))
+				{
+					return _chunkCache[coords];
+				}
 
 				var chunk = GetChunk(chunkCoordinates.X, chunkCoordinates.Z);
-
-				_chunkCache[new ChunkCoordinates(chunkCoordinates.X, chunkCoordinates.Z)] = chunk;
+				if (!_chunkCache.ContainsKey(coords))
+				{
+					_chunkCache.Add(coords, chunk);
+				}
 
 				return chunk;
 			}
@@ -293,7 +296,12 @@ namespace SharpMC.Core.Worlds.Anvil
 
 				var length = regionFile.ReadByte();
 
-				if (offset == 0 || length == 0) return _backEndGenerator.GenerateChunkColumn(new Vector2(X, Z));
+				//if (offset == 0 || length == 0) return _backEndGenerator.GenerateChunkColumn(new Vector2(X, Z));
+
+				if (offset == 0 || length == 0)
+				{
+					return _backEndGenerator.GenerateChunkColumn(new Vector2(X,Z));
+				}
 
 				regionFile.Seek(offset, SeekOrigin.Begin);
 				var waste = new byte[4];
@@ -306,7 +314,7 @@ namespace SharpMC.Core.Worlds.Anvil
 				var dataTag = nbt.RootTag["Level"];
 
 				var sections = dataTag["Sections"] as NbtList;
-
+				
 				var chunk = new ChunkColumn
 				{
 					X = X,
@@ -388,5 +396,22 @@ namespace SharpMC.Core.Worlds.Anvil
 		{
 			return GetChunk(x, y);
 		}
+
+		/*public override void SetBlock(Block block, Level level, bool broadcast)
+		{
+			/*==ChunkColumn c;
+			lock (_chunkCache)
+			{
+				if (
+					!_chunkCache.TryGetValue(new ChunkCoordinates((int)block.Coordinates.X >> 4, (int)block.Coordinates.Z >> 4), out c))
+					throw new Exception("No chunk found!");
+			}
+
+			c.SetBlock(((int)block.Coordinates.X & 0x0f), ((int)block.Coordinates.Y & 0x7f), ((int)block.Coordinates.Z & 0x0f),
+				block);
+			if (!broadcast) return;
+
+			BlockChange.Broadcast(block, level);
+		}*/
 	}
 }

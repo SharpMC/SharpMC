@@ -180,10 +180,6 @@ namespace SharpMC.Core.Worlds
 			throw new NotImplementedException();
 		}
 
-		public virtual void SetBlock(Block block, Level level, bool broadcast)
-		{
-		}
-
 		public virtual void ClearCache()
 		{
 		}

@@ -241,7 +241,7 @@ namespace SharpMC.Core.Worlds.Standard
 			new LavaDecorator().Decorate(chunk, new PlainsBiome());
 		}
 
-		public override void SetBlock(Block block, Level level, bool broadcast)
+		/*public override void SetBlock(Block block, Level level, bool broadcast)
 		{
 			ChunkColumn c;
 			lock (ChunkCache)
@@ -256,7 +256,7 @@ namespace SharpMC.Core.Worlds.Standard
 			if (!broadcast) return;
 
 			BlockChange.Broadcast(block, level);
-		}
+		}*/
 
 		public override Vector3 GetSpawnPoint()
 		{

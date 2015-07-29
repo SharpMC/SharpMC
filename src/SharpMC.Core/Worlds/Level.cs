@@ -63,7 +63,7 @@ namespace SharpMC.Core.Worlds
 		internal List<Entity.Entity> Entities { get; private set; }
 		internal ConcurrentDictionary<Vector3, int> BlockWithTicks { get; private set; }
         public int Timetorain { get; set; }
-        public bool Raining { get; set; }
+        internal bool Raining { get; set; }
 
 		#region APISpecific
 
@@ -193,7 +193,8 @@ namespace SharpMC.Core.Worlds
 		public void SetBlock(Block block, bool broadcast = true, bool applyPhysics = true)
 		{
 			var chunk =
-				Generator.GenerateChunkColumn(new ChunkCoordinates((int) block.Coordinates.X >> 4, (int) block.Coordinates.Z >> 4));
+				Generator.GenerateChunkColumn(new Vector2((int) block.Coordinates.X >> 4, (int) block.Coordinates.Z >> 4));
+			
 			chunk.SetBlock(Mod(block.Coordinates.X), (int)block.Coordinates.Y,
 				Mod(block.Coordinates.Z),
 				block);
@@ -377,7 +378,7 @@ namespace SharpMC.Core.Worlds
 				entity.OnTick();
 			}
 
-			if (_saveTick == 3000)
+			/*if (_saveTick == 3000)
 			{
 				_saveTick = 0;
 				ConsoleFunctions.WriteInfoLine("Saving chunks");
@@ -392,7 +393,7 @@ namespace SharpMC.Core.Worlds
 			else
 			{
 				_saveTick++;
-			}
+			}*/
 
 			if (_saveTick == 750) GC.Collect();
 

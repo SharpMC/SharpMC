@@ -23,10 +23,26 @@
 // ©Copyright Kenny van Vulpen - 2015
 namespace SharpMC.Core.Utils
 {
-	public class ChunkCoordinates : Vector2
+	public class ChunkCoordinates
 	{
-		public ChunkCoordinates(int x, int z) : base(x, z)
+		public ChunkCoordinates(int x, int z)
 		{
+			X = x;
+			Z = z;
+		}
+
+		public ChunkCoordinates(Vector2 vec)
+		{
+			X = vec.X;
+			Z = vec.Z;
+		}
+
+		public int X { get; set; }
+		public int Z { get; set; }
+
+		public static ChunkCoordinates operator -(ChunkCoordinates a, ChunkCoordinates b)
+		{
+			return new ChunkCoordinates(a.X - b.X, a.Z - b.Z);
 		}
 	}
 }

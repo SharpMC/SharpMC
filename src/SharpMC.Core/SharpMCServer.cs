@@ -96,6 +96,8 @@ namespace SharpMC.Core
 			
 			Globals.ServerKey = PacketCryptography.GenerateKeyPair();
 
+			Globals.ClientManager = new ClientManager();
+
 			Globals.ConsolePlayer = new Player(Globals.LevelManager.MainLevel)
 			{
 				Username = "Console",

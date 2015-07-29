@@ -21,6 +21,10 @@
 // THE SOFTWARE.
 // 
 // ©Copyright Kenny van Vulpen - 2015
+
+using SharpMC.Core.Items;
+using SharpMC.Core.Utils;
+
 namespace SharpMC.Core.Blocks
 {
 	public class BlockTallGrass : Block
@@ -29,6 +33,9 @@ namespace SharpMC.Core.Blocks
 		{
 			Metadata = 1;
 			IsSolid = false;
+			Drops = new ItemStack[] { new ItemWheatSeeds().GetItemStack() };
 		}
+
+		
 	}
 }

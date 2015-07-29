@@ -132,7 +132,7 @@ namespace SharpMC.Core.Worlds.Better
 		{
 		}
 
-		public override void SetBlock(Block block, Level level, bool broadcast)
+		/*public override void SetBlock(Block block, Level level, bool broadcast)
 		{
 			ChunkColumn c;
 			lock (ChunkCache)
@@ -147,7 +147,7 @@ namespace SharpMC.Core.Worlds.Better
 			if (!broadcast) return;
 
 			BlockChange.Broadcast(block, level);
-		}
+		}*/
 
 		public override Vector3 GetSpawnPoint()
 		{

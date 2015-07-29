@@ -55,6 +55,8 @@ namespace SharpMC.Core
 
 		internal static Synchronized<ChatHandler> ChatHandler;
 
+		internal static ClientManager ClientManager;
+
 		/// <summary>
 		/// Sets the chat handler.
 		/// Made just for the api, so it can be safely changed to a custom handler.

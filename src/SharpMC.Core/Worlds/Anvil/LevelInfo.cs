@@ -40,8 +40,8 @@ namespace SharpMC.Core.Worlds.Anvil
 			LoadFromNbt(dataTag);
 		}
 
-		public int Version { get; private set; }
-		public bool Initialized { get; private set; }
+		public int Version { get; set; }
+		public bool Initialized { get; set; }
 		public string LevelName { get; set; }
 		public string GeneratorName { get; set; }
 		public int GeneratorVersion { get; set; }
