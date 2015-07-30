@@ -105,9 +105,11 @@
     <Compile Include="Blocks\BlockTallGrass.cs" />
     <Compile Include="Blocks\BlockTNT.cs" />
     <Compile Include="Blocks\BlockWoodenDoor.cs" />
+    <Compile Include="Blocks\BlockCobbleStoneStairs.cs" />
     <Compile Include="Blocks\Door.cs" />
     <Compile Include="Blocks\Flowing.cs" />
     <Compile Include="Blocks\OakWoodPlank.cs" />
+    <Compile Include="Blocks\StairsBlock.cs" />
     <Compile Include="Blocks\Stationairy.cs" />
     <Compile Include="Blocks\BlockStationaryLava.cs" />
     <Compile Include="ConsoleCommandHandler.cs" />

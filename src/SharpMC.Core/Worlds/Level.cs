@@ -149,9 +149,7 @@ namespace SharpMC.Core.Worlds
 		{
 			new PlayerListItem(caller)
 			{
-				Action = 0,
-				Gamemode = caller.Player.Gamemode,
-				Username = caller.Player.Username,
+				Action = 4,
 				Uuid = caller.Player.Uuid
 			}.Broadcast(this);
 		}

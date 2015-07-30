@@ -24,7 +24,7 @@ namespace SharpMC.Core.Networking
 			Ticks.Start();
 		}
 
-		internal void AddClient(ClientWrapper client)
+		internal void AddClient(ref ClientWrapper client)
 		{
 			if (client.ClientIdentifier == -1)
 			{

@@ -113,8 +113,11 @@ namespace SharpMC.Core.Entity
 		{
 			var originalchunkcoords = new Vector2(_currentChunkPosition.X, _currentChunkPosition.Z);
 			var originalcoordinates = KnownPosition;
-			KnownPosition.Yaw = yaw;
-			KnownPosition.Pitch = pitch;
+			if (yaw != 0.0f && pitch != 0.0f)
+			{
+				KnownPosition.Yaw = yaw;
+				KnownPosition.Pitch = pitch;
+			}
 			KnownPosition.Y = location.Y;
 			KnownPosition.X = location.X;
 			KnownPosition.Z = location.Z;
@@ -134,7 +137,7 @@ namespace SharpMC.Core.Entity
 				Yaw = (byte) yaw,
 			}.Broadcast(Level, false, this);
 
-			//LookChanged();
+			LookChanged();
 
 			/*new EntityRelativeMove(Wrapper)
 			{
@@ -153,11 +156,11 @@ namespace SharpMC.Core.Entity
 				OnGround = KnownPosition.OnGround
 			}.Broadcast(Level, false, this);
 			
-			new EntityHeadLook(Wrapper)
+			/*new EntityHeadLook(Wrapper)
 			{
 				EntityId = this.EntityId,
 				HeadYaw = (byte)KnownPosition.Yaw,
-			}.Broadcast(Level, false, this);
+			}.Broadcast(Level, false, this);*/
 		}
 
 		public void HeldItemChanged(int slot)

@@ -178,7 +178,7 @@ namespace SharpMC.Core.Networking
 			var clientStream = tcpClient.GetStream();
 			var Client = new ClientWrapper(tcpClient);
 
-			Globals.ClientManager.AddClient(Client);
+			Globals.ClientManager.AddClient(ref Client);
 
 			while (true)
 			{
