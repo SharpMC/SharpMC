@@ -83,6 +83,7 @@ namespace SharpMC.Core
 			Globals.Rand = new Random();
 			Console.Title = Globals.ProtocolName;
 			ServerSettings.Debug = Config.GetProperty("debug", false);
+			ServerSettings.DisplayPacketErrors = Config.GetProperty("ShowNetworkErrors", false);
 #if DEBUG
 			ServerSettings.Debug = true;
 #endif

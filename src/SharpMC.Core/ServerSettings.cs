@@ -12,6 +12,7 @@
 		internal static bool EncryptionEnabled = true;
 		internal static int MaxPlayers = 10;
 
+		public static bool DisplayPacketErrors = false;
 		public static bool Debug = false;
 		public static string Motd = "";
 	}

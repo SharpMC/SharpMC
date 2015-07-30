@@ -74,7 +74,7 @@ namespace SharpMC.Core.Entity
 		public EntityAction LastEntityAction { get; set; }
 		public bool IsOperator { get; internal set; }
 		private bool Loaded { get; set; }
-
+		public bool IsCrouching { get; set; }
 		public bool IsAuthenticated()
 		{
 			if (ServerSettings.OnlineMode)

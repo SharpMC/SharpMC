@@ -62,6 +62,13 @@ namespace SharpMC.Core.Networking
 			{
 				int errors = PacketErrors[client.ClientIdentifier];
 				PacketErrors[client.ClientIdentifier] = errors + 1;
+
+				if (ServerSettings.DisplayPacketErrors)
+				{
+					ConsoleFunctions.WriteWarningLine("Packet error for player: \"" + client.Player.Username + "\" Packet errors: " +
+					                                  PacketErrors[client.ClientIdentifier]);
+				}
+
 				if (PacketErrors[client.ClientIdentifier] > 3)
 				{
 					//RemoveClient(client);

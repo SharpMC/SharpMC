@@ -43,8 +43,16 @@ namespace SharpMC.Core.Networking.Packages
 			var entityId = Buffer.ReadVarInt();
 			var actionId = Buffer.ReadVarInt();
 			var jumpBoost = Buffer.ReadVarInt();
-
+			
 			Client.Player.LastEntityAction = (Enums.EntityAction) actionId;
+			if (actionId == 0)
+			{
+				Client.Player.IsCrouching = true;
+			}
+			else if (actionId == 1)
+			{
+				Client.Player.IsCrouching = false;
+			}
 		}
 	}
 }

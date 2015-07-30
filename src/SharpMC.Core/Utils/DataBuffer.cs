@@ -434,7 +434,7 @@ namespace SharpMC.Core.Utils
 			}
 			catch (Exception ex)
 			{
-				ConsoleFunctions.WriteErrorLine("Failed to send a packet!\n" + ex);
+			//	ConsoleFunctions.WriteErrorLine("Failed to send a packet!\n" + ex);
 				Globals.ClientManager.PacketError(_client);
 			}
 		}

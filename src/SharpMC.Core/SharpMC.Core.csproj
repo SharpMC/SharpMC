@@ -96,6 +96,7 @@
     <Compile Include="Blocks\BlockFlowingWater.cs" />
     <Compile Include="Blocks\BlockGrass.cs" />
     <Compile Include="Blocks\BlockLapisLazuliOre.cs" />
+    <Compile Include="Blocks\BlockLever.cs" />
     <Compile Include="Blocks\BlockNetherrack.cs" />
     <Compile Include="Blocks\BlockObsidian.cs" />
     <Compile Include="Blocks\BlockSand.cs" />

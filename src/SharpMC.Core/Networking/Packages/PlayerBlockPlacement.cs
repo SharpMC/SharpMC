@@ -46,6 +46,7 @@ namespace SharpMC.Core.Networking.Packages
 			if (Buffer != null)
 			{
 				var position = Buffer.ReadPosition();
+				Vector3 c = new Vector3(position.X, position.Y, position.Z);
 
 				if (position.Y > 256)
 				{
@@ -87,16 +88,23 @@ namespace SharpMC.Core.Networking.Packages
 				var cursorY = Buffer.ReadByte(); //Unused
 				var cursorZ = Buffer.ReadByte(); //Unused
 
+				
+				var blockatloc = Client.Player.Level.GetBlock(c);
+				if (blockatloc.IsUsable && !Client.Player.IsCrouching)
+				{
+					blockatloc.UseItem(Client.Player.Level, Client.Player, c, (BlockFace)face);
+					return;
+				}
 
 				if (Client.Player.Level.GetBlock(position).Id == 0 || Client.Player.Level.GetBlock(position).IsReplacible)
 				{
 					if (Client.Player.Inventory.HasItem(heldItem) || Client.Player.Gamemode == Gamemode.Creative)
 					{
-						if (ItemFactory.GetItemById((short) heldItem).IsUsable)
+						/*if (ItemFactory.GetItemById((short) heldItem).IsUsable)
 						{
 							ItemFactory.GetItemById((short) heldItem).UseItem(Client.Player.Level, Client.Player, position, (BlockFace) face);
 							return;
-						}
+						}*/
 
 						var b = BlockFactory.GetBlockById(heldItem);
 						b.Coordinates = position;
