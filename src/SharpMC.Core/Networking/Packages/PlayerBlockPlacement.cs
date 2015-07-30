@@ -100,11 +100,11 @@ namespace SharpMC.Core.Networking.Packages
 				{
 					if (Client.Player.Inventory.HasItem(heldItem) || Client.Player.Gamemode == Gamemode.Creative)
 					{
-						/*if (ItemFactory.GetItemById((short) heldItem).IsUsable)
+						if (ItemFactory.GetItemById((short) heldItem).IsUsable)
 						{
 							ItemFactory.GetItemById((short) heldItem).UseItem(Client.Player.Level, Client.Player, position, (BlockFace) face);
 							return;
-						}*/
+						}
 
 						var b = BlockFactory.GetBlockById(heldItem);
 						b.Coordinates = position;
