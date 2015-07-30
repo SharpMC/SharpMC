@@ -176,7 +176,7 @@ namespace SharpMC.Core.Utils
 		private void SpawnTnt(Vector3 blockCoordinates, Level world)
 		{
 			var rand = new Random();
-			new ActivatedTntEntity(world)
+			new PrimedTNTEntity(world)
 			{
 				KnownPosition = blockCoordinates.ToPlayerLocation(),
 				Fuse = (rand.Next(0, 20) + 10)

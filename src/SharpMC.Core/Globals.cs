@@ -32,6 +32,7 @@ using SharpMC.Core.API;
 using SharpMC.Core.Entity;
 using SharpMC.Core.Networking;
 using SharpMC.Core.Networking.Packages;
+using SharpMC.Core.PluginChannel;
 using SharpMC.Core.Utils;
 
 namespace SharpMC.Core
@@ -56,6 +57,7 @@ namespace SharpMC.Core
 		internal static Synchronized<ChatHandler> ChatHandler;
 
 		internal static ClientManager ClientManager;
+		internal static MessageFactory MessageFactory;
 
 		/// <summary>
 		/// Sets the chat handler.
@@ -203,5 +205,22 @@ namespace SharpMC.Core
 	        ServerListener.StopListenening();
 	        Environment.Exit(0);
         }
+
+		/// <summary>
+		/// Adds a Plugin Channel Message Handler.
+		/// Returns true if it is succesfully added.
+		/// Returns false if something went wrong.
+		/// </summary>
+		/// <param name="message">The Channel Message Handler</param>
+		/// <param name="channel">The Channel</param>
+		/// <returns></returns>
+		public static bool RegisterPluginMessage(PluginChannel.PluginMessage message, string channel)
+		{
+			if (MessageFactory != null)
+			{
+				return MessageFactory.AddMessage(message, channel);
+			}
+			return false;
+		}
 	}
 }

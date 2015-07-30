@@ -28,6 +28,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using Ionic.Zlib;
+using SharpMC.Core.Networking;
 
 namespace SharpMC.Core.Utils
 {
@@ -434,6 +435,7 @@ namespace SharpMC.Core.Utils
 			catch (Exception ex)
 			{
 				ConsoleFunctions.WriteErrorLine("Failed to send a packet!\n" + ex);
+				Globals.ClientManager.PacketError(_client);
 			}
 		}
 

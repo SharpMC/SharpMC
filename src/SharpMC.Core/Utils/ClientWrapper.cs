@@ -53,6 +53,7 @@ namespace SharpMC.Core.Utils
 		public MyThreadPool ThreadPool;
 		internal int Protocol = 0;
 		internal int ClientIdentifier = -1;
+		public bool Kicked = false;
 
 		public ClientWrapper(TcpClient client)
 		{
@@ -129,10 +130,12 @@ namespace SharpMC.Core.Utils
 						//a.Flush();
 						TcpClient.Client.Send(data);
 					}
+					Globals.ClientManager.CleanErrors(this);
 				}
 				catch
 				{
 					ConsoleFunctions.WriteErrorLine("Failed to send a packet!");
+					Globals.ClientManager.PacketError(this);
 				}
 			}
 		}

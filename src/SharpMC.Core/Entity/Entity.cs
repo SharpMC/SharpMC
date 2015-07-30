@@ -62,9 +62,11 @@ namespace SharpMC.Core.Entity
 		public double Drag { get; set; }
 		public double Gravity { get; set; }
 		public int Data { get; set; }
+		public int Age { get; private set; }
 
 		public virtual void OnTick()
 		{
+			Age++;
 		}
 
 		public virtual void DespawnEntity()

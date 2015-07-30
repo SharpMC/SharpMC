@@ -111,9 +111,9 @@
     <Compile Include="Blocks\Stationairy.cs" />
     <Compile Include="Blocks\BlockStationaryLava.cs" />
     <Compile Include="ConsoleCommandHandler.cs" />
-    <Compile Include="Entity\ActivatedTNTEntity.cs" />
+    <Compile Include="Entity\PrimedTNTEntity.cs" />
     <Compile Include="Entity\SnowballEntity.cs" />
-    <Compile Include="Entity\Throwable.cs" />
+    <Compile Include="Entity\Projectile.cs" />
     <Compile Include="Enums\ChatColors.cs" />
     <Compile Include="Enums\DamageCause.cs" />
     <Compile Include="Enums\EntityAction.cs" />
@@ -145,11 +145,15 @@
     <Compile Include="Networking\Packages\EncryptionRequest.cs" />
     <Compile Include="Networking\Packages\EncryptionResponse.cs" />
     <Compile Include="Networking\Packages\EntityEquipment.cs" />
+    <Compile Include="Networking\Packages\EntityHeadLook.cs" />
     <Compile Include="Networking\Packages\LoginStart.cs" />
     <Compile Include="Networking\Packages\Particle.cs" />
     <Compile Include="Networking\Packages\Request.cs" />
     <Compile Include="Networking\Packages\SoundEffect.cs" />
     <Compile Include="OperatorLoader.cs" />
+    <Compile Include="PluginChannel\BrandMessage.cs" />
+    <Compile Include="PluginChannel\MessageFactory.cs" />
+    <Compile Include="PluginChannel\PluginMessage.cs" />
     <Compile Include="ServerSettings.cs" />
     <Compile Include="SharpMCServer.cs" />
     <Compile Include="Utils\BoundingBox.cs" />

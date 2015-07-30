@@ -11,11 +11,13 @@ namespace SharpMC.Core.Networking
 	{
 		private int CurrentIdentifier { get; set; }
 		private Timer Ticks { get; set; }
-		private Dictionary<int, ClientWrapper> Clients { get; set; } 
+		private Dictionary<int, ClientWrapper> Clients { get; set; }
+		private Dictionary<int, int> PacketErrors { get; set; } 
 		internal ClientManager()
 		{
 			CurrentIdentifier = 0;
 			Clients = new Dictionary<int, ClientWrapper>();
+			PacketErrors = new Dictionary<int, int>();
 			Ticks = new Timer();
 			Ticks.Elapsed += DoServerTick;
 			Ticks.Interval = 5000;
@@ -29,6 +31,7 @@ namespace SharpMC.Core.Networking
 				CurrentIdentifier++;
 				client.ClientIdentifier = CurrentIdentifier;
 				Clients.Add(CurrentIdentifier, client);
+				PacketErrors.Add(CurrentIdentifier, 0);
 			}
 		}
 
@@ -37,6 +40,7 @@ namespace SharpMC.Core.Networking
 			if (Clients.ContainsKey(client.ClientIdentifier))
 			{
 				Clients.Remove(client.ClientIdentifier);
+				PacketErrors.Remove(client.ClientIdentifier);
 				GC.Collect();
 			}
 		}
@@ -49,6 +53,36 @@ namespace SharpMC.Core.Networking
 				{
 					new KeepAlive(c).Write();
 				}
+			}
+		}
+
+		public void PacketError(ClientWrapper client)
+		{
+			if (PacketErrors.ContainsKey(client.ClientIdentifier))
+			{
+				int errors = PacketErrors[client.ClientIdentifier];
+				PacketErrors[client.ClientIdentifier] = errors + 1;
+				if (PacketErrors[client.ClientIdentifier] > 3)
+				{
+					//RemoveClient(client);
+					client.Kicked = true;
+				}
+			}
+			else
+			{
+				//Something really wrong
+			}
+		}
+
+		public void CleanErrors(ClientWrapper client)
+		{
+			if (PacketErrors.ContainsKey(client.ClientIdentifier))
+			{
+				PacketErrors[client.ClientIdentifier] = 0;
+			}
+			else
+			{
+				//Something really wrong
 			}
 		}
 	}

@@ -33,9 +33,9 @@ using SharpMC.Core.Worlds;
 
 namespace SharpMC.Core.Entity
 {
-	public class Throwable : Entity
+	public class Projectile : Entity
 	{
-		protected Throwable(Player shooter, int entityTypeId, Level level) : base(entityTypeId, level)
+		protected Projectile(Player shooter, int entityTypeId, Level level) : base(entityTypeId, level)
 		{
 			Shooter = shooter;
 			Ttl = 0;

@@ -185,7 +185,18 @@ namespace SharpMC.Core.Networking
 				try
 				{
 					while (!clientStream.DataAvailable)
+					{
+						if (Client.Kicked)
+						{
+							break;
+						}
 						Thread.Sleep(5);
+					}
+
+					if (Client.Kicked)
+					{
+						break;
+					}
 
 					if (ServerSettings.UseCompression && Client.PacketMode == PacketMode.Play)
 					{

@@ -42,14 +42,7 @@ namespace SharpMC.Core.Networking.Packages
 		{
 			if (Buffer != null)
 			{
-				var message = Buffer.ReadString();
-
-				switch (message)
-				{
-					case "MC|Brand":
-						ConsoleFunctions.WriteInfoLine(Client.Player.Username + "'s client: " + Buffer.ReadString());
-						break;
-				}
+				Globals.MessageFactory.HandleMessage(Client, Buffer);
 			}
 		}
 	}

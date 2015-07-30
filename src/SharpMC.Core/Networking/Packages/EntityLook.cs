@@ -29,7 +29,10 @@ namespace SharpMC.Core.Networking.Packages
 {
 	internal class EntityLook : Package<EntityLook>
 	{
-		public Player Player;
+		public int EntityId;
+		public byte Yaw;
+		public byte Pitch;
+		public bool OnGround;
 
 		public EntityLook(ClientWrapper client) : base(client)
 		{
@@ -46,10 +49,10 @@ namespace SharpMC.Core.Networking.Packages
 			if (Buffer != null)
 			{
 				Buffer.WriteVarInt(SendId);
-				Buffer.WriteVarInt(Player.EntityId);
-				Buffer.WriteByte((byte) Player.KnownPosition.Yaw);
-				Buffer.WriteByte((byte) Player.KnownPosition.Pitch);
-				Buffer.WriteBool(Player.KnownPosition.OnGround);
+				Buffer.WriteVarInt(EntityId);
+				Buffer.WriteByte(Yaw);
+				Buffer.WriteByte(Pitch);
+				Buffer.WriteBool(OnGround);
 				Buffer.FlushData();
 			}
 		}

@@ -35,6 +35,7 @@ namespace SharpMC.Core.Utils
 			Z = z;
 		}
 
+		public byte HeadYaw { get; set; }
 		public float Yaw { get; set; }
 		public float Pitch { get; set; }
 		public bool OnGround { get; set; }

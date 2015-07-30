@@ -42,7 +42,7 @@ namespace SharpMC.Core.Entity
 		private readonly Vector2 _currentChunkPosition = new Vector2(0, 0);
 		public PlayerInventoryManager Inventory; //The player's Inventory
 		public string SkinBlob = "";
-
+		
 		public Player(Level level) : base(-1, level)
 		{
 			_chunksUsed = new List<Tuple<int, int>>();
@@ -134,11 +134,30 @@ namespace SharpMC.Core.Entity
 				Yaw = (byte) yaw,
 			}.Broadcast(Level, false, this);
 
+			//LookChanged();
+
 			/*new EntityRelativeMove(Wrapper)
 			{
 				Player = this,
 				Movement = originalcoordinates.ToVector3() - location
 			}.Broadcast(Level, false, this);*/
+		}
+
+		public void LookChanged()
+		{
+			new EntityLook(Wrapper)
+			{
+				EntityId = this.EntityId,
+				Pitch = (byte)KnownPosition.Pitch,
+				Yaw = (byte)KnownPosition.Yaw,
+				OnGround = KnownPosition.OnGround
+			}.Broadcast(Level, false, this);
+			
+			new EntityHeadLook(Wrapper)
+			{
+				EntityId = this.EntityId,
+				HeadYaw = (byte)KnownPosition.Yaw,
+			}.Broadcast(Level, false, this);
 		}
 
 		public void HeldItemChanged(int slot)
@@ -235,7 +254,7 @@ namespace SharpMC.Core.Entity
 		}
 	
 
-	public void Teleport(PlayerLocation newPosition)
+		public void Teleport(PlayerLocation newPosition)
 		{
 			new EntityTeleport(Wrapper)
 			{
@@ -250,7 +269,11 @@ namespace SharpMC.Core.Entity
 		public void Respawn()
 		{
 			HealthManager.ResetHealth();
-			if (Wrapper != null && Wrapper.TcpClient.Connected) new Respawn(Wrapper) {GameMode = (byte) Gamemode}.Write();
+			if (Wrapper != null && Wrapper.TcpClient.Connected)
+			{
+				new Respawn(Wrapper) {GameMode = (byte) Gamemode}.Write();
+				Teleport(Level.GetSpawnPoint());
+			}
 		}
 
 		public void SendHealth()

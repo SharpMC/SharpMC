@@ -29,11 +29,11 @@ using SharpMC.Core.Worlds;
 
 namespace SharpMC.Core.Entity
 {
-	public class ActivatedTntEntity : Entity
+	public class PrimedTNTEntity : Entity
 	{
 		public int Fuse = 30;
 
-		public ActivatedTntEntity(Level level)
+		public PrimedTNTEntity(Level level)
 			: base(50, level)
 		{
 			Height = 0.98;

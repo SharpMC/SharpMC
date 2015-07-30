@@ -28,7 +28,7 @@ using SharpMC.Core.Worlds;
 
 namespace SharpMC.Core.Entity
 {
-	public class SnowballEntity : Throwable
+	public class SnowballEntity : Projectile
 	{
 		public SnowballEntity(Player shooter, Level level) : base(shooter, 61, level)
 		{

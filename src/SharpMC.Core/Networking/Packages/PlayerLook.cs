@@ -46,7 +46,7 @@ namespace SharpMC.Core.Networking.Packages
 				Client.Player.KnownPosition.Pitch = Buffer.ReadFloat();
 				Client.Player.KnownPosition.OnGround = Buffer.ReadBool();
 
-				new EntityLook(Client) {Player = Client.Player}.Broadcast(Client.Player.Level, false, Client.Player);
+				Client.Player.LookChanged();
 			}
 		}
 	}

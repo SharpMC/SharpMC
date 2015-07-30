@@ -5,6 +5,7 @@ using SharpMC.Core.API;
 using SharpMC.Core.Entity;
 using SharpMC.Core.Enums;
 using SharpMC.Core.Networking;
+using SharpMC.Core.PluginChannel;
 using SharpMC.Core.Utils;
 using SharpMC.Core.Worlds;
 using SharpMC.Core.Worlds.Anvil;
@@ -107,6 +108,8 @@ namespace SharpMC.Core
 			};
 			Globals.ConsolePlayer.Wrapper.Player = Globals.ConsolePlayer;
 			Globals.ConsolePlayer.IsOperator = true;
+
+			Globals.MessageFactory = new MessageFactory();
 
 			Globals.PluginManager = new PluginManager();
 

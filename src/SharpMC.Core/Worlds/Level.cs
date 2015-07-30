@@ -390,12 +390,17 @@ namespace SharpMC.Core.Worlds
 
 				GC.Collect(); //Collect garbage
 			}
+			*/
+
+			if (_saveTick == 750)
+			{
+				GC.Collect();
+				_saveTick = 0;
+			}
 			else
 			{
 				_saveTick++;
-			}*/
-
-			if (_saveTick == 750) GC.Collect();
+			}
 
 			_sw.Stop();
 			_lastCalc = _sw.ElapsedMilliseconds;
