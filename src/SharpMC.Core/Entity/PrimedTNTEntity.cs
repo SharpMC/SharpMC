@@ -68,7 +68,7 @@ namespace SharpMC.Core.Entity
 					Y = KnownPosition.Y,
 					Z = KnownPosition.Z,
 					Type = ObjectType.ActivatedTnt,
-					Data = 0
+					Info = 0
 				}.Write();
 			}
 		}

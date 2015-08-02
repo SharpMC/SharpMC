@@ -27,7 +27,7 @@ namespace SharpMC.Core.Blocks
 	{
 		public static Block GetBlockById(ushort id, short metadata)
 		{
-			if (id == 1) return new BlockStone();
+			if (id == 1) return new BlockStone() {Metadata = (byte)metadata};
 			if (id == 46) return new BlockTnt();
 			if (id == 0) return new BlockAir();
 			if (id == 51) return new BlockFire();
@@ -61,6 +61,10 @@ namespace SharpMC.Core.Blocks
 				id == 134 || id == 135 || id == 136 ||
 				id == 156 || id == 163 || id == 164 ||
 				id == 180) return new StairsBlock(id);
+
+			//Slabs
+			if (id == 44) return new Slab((byte)metadata);
+			if (id == 43) return new DoubleSlab((byte)metadata);
 
 			return new Block(id);
 		}

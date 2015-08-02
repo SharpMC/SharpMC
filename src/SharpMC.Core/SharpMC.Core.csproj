@@ -111,10 +111,12 @@
     <Compile Include="Blocks\BlockWoodenDoor.cs" />
     <Compile Include="Blocks\BlockCobbleStoneStairs.cs" />
     <Compile Include="Blocks\Door.cs" />
+    <Compile Include="Blocks\DoubleSlab.cs" />
     <Compile Include="Blocks\Flowing.cs" />
     <Compile Include="Blocks\OakWoodPlank.cs" />
     <Compile Include="Blocks\RedstoneDevice.cs" />
     <Compile Include="Blocks\RedstonePowerSource.cs" />
+    <Compile Include="Blocks\Slab.cs" />
     <Compile Include="Blocks\StairsBlock.cs" />
     <Compile Include="Blocks\Stationairy.cs" />
     <Compile Include="Blocks\BlockStationaryLava.cs" />
@@ -126,6 +128,7 @@
     <Compile Include="Enums\DamageCause.cs" />
     <Compile Include="Enums\EntityAction.cs" />
     <Compile Include="Enums\GameStateReason.cs" />
+    <Compile Include="Items\InfoTool.cs" />
     <Compile Include="Items\ItemBucket.cs" />
     <Compile Include="Items\ItemCoal.cs" />
     <Compile Include="Items\ItemDiamond.cs" />

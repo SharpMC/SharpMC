@@ -32,6 +32,9 @@ namespace SharpMC.Core.Items
 
 		public static Item GetItemById(short id, byte metadata)
 		{
+
+			if (id == 286) return new InfoTool(); //Debugging item, prints metadata into Console.
+
 			if (id == 259) return new ItemFlintAndSteel();
 			if (id == 263) return new ItemCoal();
 			if (id == 276) return new ItemDiamondSword();

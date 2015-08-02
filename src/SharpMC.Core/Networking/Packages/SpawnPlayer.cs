@@ -54,7 +54,7 @@ namespace SharpMC.Core.Networking.Packages
 				Buffer.WriteInt((int) Player.KnownPosition.Z*32);
 				Buffer.WriteByte((byte) Player.KnownPosition.Yaw);
 				Buffer.WriteByte((byte) Player.KnownPosition.Pitch);
-				Buffer.WriteShort(0);
+				//Buffer.WriteShort(0);
 				Buffer.WriteByte(127);
 				Buffer.FlushData();
 			}

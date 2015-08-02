@@ -19,16 +19,5 @@ namespace SharpMC.Core.Blocks
 		{
 			
 		}
-
-		public byte ConvertToByte(BitArray bits)
-		{
-			if (bits.Count != 8)
-			{
-				throw new ArgumentException("bits");
-			}
-			byte[] bytes = new byte[1];
-			bits.CopyTo(bytes, 0);
-			return bytes[0];
-		}
 	}
 }

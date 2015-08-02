@@ -30,7 +30,7 @@ namespace SharpMC.Core.Networking.Packages
 {
 	public class SpawnObject : Package<SpawnObject>
 	{
-		public object Data;
+		public int Info = 0;
 		public int EntityId = 0;
 		public double Pitch = 0;
 		public ObjectType Type;
@@ -67,21 +67,11 @@ namespace SharpMC.Core.Networking.Packages
 				Buffer.WriteInt((int) Z*32);
 				Buffer.WriteByte((byte)Pitch);
 				Buffer.WriteByte((byte)((Yaw/360)*256));
-				if (Type == ObjectType.ItemStack)
-				{
-					Buffer.WriteInt(0);
-				}
-				if (Type == ObjectType.ActivatedTnt)
-				{
-					Buffer.WriteInt(0);
-				}
-				if (Type == ObjectType.Snowball)
-				{
-					Buffer.WriteInt((int) Data);
-					Buffer.WriteShort(VelocityX);
-					Buffer.WriteShort(VelocityY);
-					Buffer.WriteShort(VelocityZ);
-				}
+				Buffer.WriteInt((int) Info);
+				Buffer.WriteShort(VelocityX);
+				Buffer.WriteShort(VelocityY);
+				Buffer.WriteShort(VelocityZ);
+
 				Buffer.FlushData();
 			}
 		}

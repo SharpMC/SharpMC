@@ -84,7 +84,6 @@ namespace SharpMC.Core.Entity
 					Y = KnownPosition.Y,
 					Z = KnownPosition.Z,
 					Type = ObjectType.ItemStack,
-					Data = Item
 				}.Write();
 
 				new EntityMetadata(spawnedBy)

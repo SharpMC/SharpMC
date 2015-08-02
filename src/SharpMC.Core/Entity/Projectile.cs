@@ -61,7 +61,7 @@ namespace SharpMC.Core.Entity
 				Y = KnownPosition.Y,
 				Z = KnownPosition.Z,
 				Type = ObjectType,
-				Data = Shooter.EntityId,
+				Info = Shooter.EntityId,
 				Pitch = (byte) KnownPosition.Pitch,
 				Yaw = (byte) KnownPosition.Yaw,
 				VelocityX = (short)Velocity.X,
