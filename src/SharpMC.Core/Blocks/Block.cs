@@ -84,7 +84,7 @@ namespace SharpMC.Core.Blocks
 			world.SetBlock(new Block(0) {Coordinates = Coordinates});
 		}
 
-		public virtual bool PlaceBlock(Level world, Player player, Vector3 blockCoordinates, BlockFace face)
+		public virtual bool PlaceBlock(Level world, Player player, Vector3 blockCoordinates, BlockFace face, Vector3 mouseLocation)
 		{
 			// No default placement. Return unhandled.
 			return false;

@@ -22,7 +22,7 @@ namespace SharpMC.Core.Blocks
 			return bits[3];
 		}
 
-		public override bool PlaceBlock(Level world, Player player, Vector3 blockCoordinates, BlockFace face)
+		public override bool PlaceBlock(Level world, Player player, Vector3 blockCoordinates, BlockFace face, Vector3 mouseLocation)
 		{
 			var rawbits = new BitArray(new byte[] { 0x00 });
 

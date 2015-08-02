@@ -35,7 +35,7 @@ namespace SharpMC.Core.Blocks
 		{
 		}
 
-		public override bool PlaceBlock(Level world, Player player, Vector3 blockCoordinates, BlockFace face)
+		public override bool PlaceBlock(Level world, Player player, Vector3 blockCoordinates, BlockFace face, Vector3 mouseLocation)
 		{
 			var direction = player.GetDirection();
 			var coordinates = GetNewCoordinatesFromFace(blockCoordinates, face);

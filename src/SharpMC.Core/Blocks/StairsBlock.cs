@@ -17,10 +17,10 @@ namespace SharpMC.Core.Blocks
 			FuelEfficiency = 15;
 		}
 
-		public override bool PlaceBlock(Level world, Player player, Vector3 blockCoordinates, BlockFace face)
+		public override bool PlaceBlock(Level world, Player player, Vector3 blockCoordinates, BlockFace face, Vector3 mouseLocation)
 		{
 			byte direction = player.GetDirection();
-			byte upper = (byte)((player.KnownPosition.Pitch < 0 && face != BlockFace.PositiveY) || face == BlockFace.NegativeY ? 0x04 : 0x00);
+			byte upper = (byte)((mouseLocation.Y >= 8 && face != BlockFace.PositiveY) || face == BlockFace.NegativeY ? 0x04 : 0x00);
 			switch (direction)
 			{
 				case 0:

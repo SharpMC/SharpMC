@@ -103,7 +103,7 @@ namespace SharpMC.Core.Networking.Packages
 					{
 						var f = (Block) d;
 						f.Coordinates = position;
-						if (!f.PlaceBlock(Client.Player.Level, Client.Player, c, (BlockFace) face))
+						if (!f.PlaceBlock(Client.Player.Level, Client.Player, c, (BlockFace) face, new Vector3(cursorX, cursorY, cursorZ)))
 						{
 							Client.Player.Level.SetBlock(f);
 						}

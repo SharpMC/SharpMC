@@ -42,7 +42,7 @@ namespace SharpMC.Core.Blocks
 			IsReplacible = true;
 		}
 
-		public override bool PlaceBlock(Level world, Player player, Vector3 blockCoordinates, BlockFace face)
+		public override bool PlaceBlock(Level world, Player player, Vector3 blockCoordinates, BlockFace face, Vector3 mouseLocation)
 		{
 			CheckForHarden(world, (int) blockCoordinates.X, (int) blockCoordinates.Y, (int) blockCoordinates.Z);
 			world.ScheduleBlockTick(this, TickRate());
