@@ -164,6 +164,7 @@
     <Compile Include="Networking\Packages\Particle.cs" />
     <Compile Include="Networking\Packages\Request.cs" />
     <Compile Include="Networking\Packages\SoundEffect.cs" />
+    <Compile Include="Networking\Packages\UpdateSign.cs" />
     <Compile Include="Networking\Packages\UseItem.cs" />
     <Compile Include="OperatorLoader.cs" />
     <Compile Include="PluginChannel\BrandMessage.cs" />
@@ -171,6 +172,9 @@
     <Compile Include="PluginChannel\PluginMessage.cs" />
     <Compile Include="ServerSettings.cs" />
     <Compile Include="SharpMCServer.cs" />
+    <Compile Include="TileEntities\SignTileEntity.cs" />
+    <Compile Include="TileEntities\TileEntity.cs" />
+    <Compile Include="TileEntities\TileEntityFactory.cs" />
     <Compile Include="Utils\BoundingBox.cs" />
     <Compile Include="Utils\Explosion.cs" />
     <Compile Include="Utils\HealthManager.cs" />

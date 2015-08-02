@@ -28,8 +28,10 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using fNbt;
 using SharpMC.Core.Enums;
 using SharpMC.Core.Networking.Packages;
+using SharpMC.Core.TileEntities;
 using SharpMC.Core.Utils;
 using SharpMC.Core.Worlds;
 using EntityAction = SharpMC.Core.Enums.EntityAction;
@@ -370,6 +372,39 @@ namespace SharpMC.Core.Entity
 				if (chunkX == x && chunkZ == z)
 				{
 					new SpawnObject(Wrapper){X = entity.KnownPosition.X, Y = entity.KnownPosition.Y, Z = entity.KnownPosition.Z, EntityId = entity.EntityId, Type = (ObjectType)entity.EntityTypeId, Yaw = entity.KnownPosition.Yaw, Pitch = entity.KnownPosition.Pitch}.Write();
+				}
+			}
+
+			ChunkColumn chunk = Level.Generator.GenerateChunkColumn(new Vector2(chunkX, chunkZ));
+			foreach (var raw in chunk.TileEntities)
+			{
+				var nbt = raw.Value;
+				if (nbt == null) continue;
+
+				string id = null;
+				var idTag = nbt.Get("id");
+				if (idTag != null)
+				{
+					id = idTag.StringValue;
+				}
+
+				if (string.IsNullOrEmpty(id)) continue;
+
+				var tileEntity = TileEntityFactory.GetBlockEntityById(id);
+				tileEntity.Coordinates = raw.Key;
+				tileEntity.SetCompound(nbt);
+
+				if (tileEntity.Id == "Sign")
+				{
+					var sign = (SignTileEntity) tileEntity;
+					new UpdateSign(Wrapper)
+					{
+						SignCoordinates = sign.Coordinates,
+						Line1 = sign.Line1,
+						Line2 = sign.Line2,
+						Line3 = sign.Line3,
+						Line4 = sign.Line4,
+					}.Write();
 				}
 			}
 		}

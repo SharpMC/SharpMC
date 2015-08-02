@@ -23,8 +23,10 @@
 // ©Copyright Kenny van Vulpen - 2015
 
 using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Net;
+using fNbt;
 using SharpMC.Core.Blocks;
 using SharpMC.Core.Utils;
 using SharpMC.Core.Worlds.Standard.BiomeSystem;
@@ -41,6 +43,7 @@ namespace SharpMC.Core.Worlds
 		public bool IsDirty = false;
 		public ushort[] Metadata = new ushort[16*16*256];
 		public NibbleArray Skylight = new NibbleArray(16*16*256);
+		public IDictionary<Vector3, NbtCompound> TileEntities = new Dictionary<Vector3, NbtCompound>();
 
 		public ChunkColumn()
 		{
@@ -113,6 +116,25 @@ namespace SharpMC.Core.Worlds
 		public void SetSkylight(int x, int y, int z, byte data)
 		{
 			Skylight[(x*2048) + (z*256) + y] = data;
+		}
+
+		public NbtCompound GetBlockEntity(Vector3 coordinates)
+		{
+			NbtCompound nbt;
+			TileEntities.TryGetValue(coordinates, out nbt);
+			return nbt;
+		}
+
+		public void SetBlockEntity(Vector3 coordinates, NbtCompound nbt)
+		{
+			IsDirty = true;
+			TileEntities[coordinates] = nbt;
+		}
+
+		public void RemoveBlockEntity(Vector3 coordinates)
+		{
+			IsDirty = true;
+			TileEntities.Remove(coordinates);
 		}
 
 		public byte[] GetMeta()

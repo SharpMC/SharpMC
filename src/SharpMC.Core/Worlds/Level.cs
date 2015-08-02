@@ -34,6 +34,7 @@ using SharpMC.Core.Entity;
 using SharpMC.Core.Enums;
 using SharpMC.Core.Networking;
 using SharpMC.Core.Networking.Packages;
+using SharpMC.Core.TileEntities;
 using SharpMC.Core.Utils;
 
 namespace SharpMC.Core.Worlds
@@ -184,6 +185,22 @@ namespace SharpMC.Core.Worlds
 			block.Metadata = metadata;
 
 			return block;
+		}
+
+		public void UpdateSign(Vector3 coordinates, string[] lines)
+		{
+			if (lines.Length >= 4)
+			{
+				var signUpdate = new UpdateSign(null)
+				{
+					SignCoordinates = coordinates,
+					Line1 = lines[0],
+					Line2 = lines[1],
+					Line3 = lines[2],
+					Line4 = lines[4],
+				};
+				BroadcastPacket(signUpdate);
+			}
 		}
 
 		public void SetBlock(Vector3 coordinates, Block block)

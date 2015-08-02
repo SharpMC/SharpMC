@@ -32,6 +32,7 @@ using fNbt;
 using SharpMC.Core.Blocks;
 using SharpMC.Core.Entity;
 using SharpMC.Core.Networking.Packages;
+using SharpMC.Core.TileEntities;
 using SharpMC.Core.Utils;
 using SharpMC.Core.Worlds.Standard;
 
@@ -364,7 +365,28 @@ namespace SharpMC.Core.Worlds.Anvil
 				}
 
 				var entities = dataTag["Entities"] as NbtList;
-				var blockEntities = dataTag["TileEntities"] as NbtList;
+				var tileEntities = dataTag["TileEntities"] as NbtList;
+
+				if (tileEntities != null)
+				{
+					foreach (var nbtTag in tileEntities)
+					{
+						var blockEntityTag = (NbtCompound)nbtTag;
+						string entityId = blockEntityTag["id"].StringValue;
+						int x = blockEntityTag["x"].IntValue;
+						int y = blockEntityTag["y"].IntValue - _waterOffsetY;
+						int z = blockEntityTag["z"].IntValue;
+						blockEntityTag["y"] = new NbtInt("y", y);
+
+						TileEntity blockEntity = TileEntityFactory.GetBlockEntityById(entityId);
+						if (blockEntity != null)
+						{
+							blockEntityTag.Name = string.Empty;
+							chunk.SetBlockEntity(new Vector3(x, y, z), blockEntityTag);
+						}
+					}
+				}
+
 				var tileTicks = dataTag["TileTicks"] as NbtList;
 
 				chunk.IsDirty = false;
