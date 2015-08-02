@@ -34,11 +34,12 @@ namespace SharpMC.Core.Items
 	{
 		public ItemFlintAndSteel() : base(259, 0)
 		{
-			IsUsable = true;
+			IsUsable = false;
 		}
 
 		public override void UseItem(Level world, Player player, Vector3 blockCoordinates, BlockFace face)
 		{
+			blockCoordinates = GetNewCoordinatesFromFace(blockCoordinates, face);
 			var block = world.GetBlock(blockCoordinates);
 			ConsoleFunctions.WriteInfoLine("Block: " + block.Id);
 			if (block.Id != 46)
@@ -55,7 +56,7 @@ namespace SharpMC.Core.Items
 			}
 			else
 			{
-				//TODO: Fix flint & steel on TNT
+				new PrimedTNTEntity(world) {KnownPosition = blockCoordinates.ToPlayerLocation()}.SpawnEntity();
 			}
 		}
 	}

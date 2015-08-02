@@ -30,8 +30,8 @@ namespace SharpMC.Core.Networking.Packages
 	internal class EntityLook : Package<EntityLook>
 	{
 		public int EntityId;
-		public byte Yaw;
-		public byte Pitch;
+		public double Yaw;
+		public double Pitch;
 		public bool OnGround;
 
 		public EntityLook(ClientWrapper client) : base(client)
@@ -50,8 +50,8 @@ namespace SharpMC.Core.Networking.Packages
 			{
 				Buffer.WriteVarInt(SendId);
 				Buffer.WriteVarInt(EntityId);
-				Buffer.WriteByte(Yaw);
-				Buffer.WriteByte(Pitch);
+				Buffer.WriteByte((byte)((Yaw / 360) * 256));
+				Buffer.WriteByte((byte)Pitch);
 				Buffer.WriteBool(OnGround);
 				Buffer.FlushData();
 			}

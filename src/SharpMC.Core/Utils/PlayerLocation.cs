@@ -59,5 +59,15 @@ namespace SharpMC.Core.Utils
 		{
 			return num*num;
 		}
+
+		public string GetString()
+		{
+			return "X: " + X + ", Y: " + Y + ", Z: " + Z + ", Yaw: " + Yaw + ", Pitch: " + Pitch;
+		}
+
+		public PlayerLocation Clone()
+		{
+			return new PlayerLocation(X, Y, Z) {Yaw = Yaw, Pitch = Pitch, OnGround = OnGround};
+		}
 	}
 }

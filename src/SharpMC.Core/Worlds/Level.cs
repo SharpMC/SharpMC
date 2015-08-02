@@ -26,11 +26,13 @@ using System;
 using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Linq;
 using System.Threading.Tasks;
 using System.Timers;
 using SharpMC.Core.Blocks;
 using SharpMC.Core.Entity;
 using SharpMC.Core.Enums;
+using SharpMC.Core.Networking;
 using SharpMC.Core.Networking.Packages;
 using SharpMC.Core.Utils;
 
@@ -44,7 +46,8 @@ namespace SharpMC.Core.Worlds
 			Day = 1;
 			OnlinePlayers = new List<Player>();
 			DefaultGamemode = Config.GetProperty("Gamemode", Gamemode.Survival);
-			BlockWithTicks = new ConcurrentDictionary<Vector3, int>();
+			BlockWithTicks = new Dictionary<Vector3, int>();
+			BlocksPermaTicks = new ConcurrentDictionary<Vector3, int>();
 			StartTimeOfDayTimer();
 			Entities = new List<Entity.Entity>();
 			Dimension = 0;
@@ -61,7 +64,8 @@ namespace SharpMC.Core.Worlds
 		internal int Day { get; set; }
 		public WorldProvider Generator { get; set; }
 		internal List<Entity.Entity> Entities { get; private set; }
-		internal ConcurrentDictionary<Vector3, int> BlockWithTicks { get; private set; }
+		internal Dictionary<Vector3, int> BlockWithTicks { get; private set; }
+		internal ConcurrentDictionary<Vector3, int> BlocksPermaTicks { get; private set; }
         public int Timetorain { get; set; }
         internal bool Raining { get; set; }
 
@@ -212,6 +216,7 @@ namespace SharpMC.Core.Worlds
 			DoPhysics(x, y + 1, z);
 			DoPhysics(x, y, z - 1);
 			DoPhysics(x, y, z + 1);
+			DoPhysics(x,y,z);
 		}
 
 		private void DoPhysics(int x, int y, int z)
@@ -223,9 +228,11 @@ namespace SharpMC.Core.Worlds
 
 		public void ScheduleBlockTick(Block block, int tickRate)
 		{
-			BlockWithTicks[block.Coordinates] = CurrentWorldTime + tickRate;
+			//if (!BlockWithTicks.ContainsKey(block.Coordinates))
+			//{
+				BlockWithTicks[block.Coordinates] = CurrentWorldTime + tickRate;
+			//}
 		}
-
 		public void AddEntity(Entity.Entity entity)
 		{
 			Entities.Add(entity);
@@ -234,6 +241,15 @@ namespace SharpMC.Core.Worlds
 		public void RemoveEntity(Entity.Entity entity)
 		{
 			if (Entities.Contains(entity)) Entities.Remove(entity);
+		}
+
+		public void BroadcastPacket(Package package)
+		{
+			foreach (var i in OnlinePlayers)
+			{
+				package.SetTarget(i.Wrapper);
+				package.Write();
+			}
 		}
 
 		public PlayerLocation GetSpawnPoint()
@@ -360,9 +376,9 @@ namespace SharpMC.Core.Worlds
 			{
 				if (blockEvent.Value <= CurrentWorldTime)
 				{
-					GetBlock(blockEvent.Key).OnTick(this);
-					int value;
-					BlockWithTicks.TryRemove(blockEvent.Key, out value);
+					var d = GetBlock(blockEvent.Key);
+					d.OnTick(this);
+					BlockWithTicks.Remove(blockEvent.Key);
 				}
 			}
 
@@ -371,7 +387,7 @@ namespace SharpMC.Core.Worlds
 				player.OnTick();
 			}
 
-			foreach (var entity in Entities.ToArray())
+			foreach (var entity in Entities)
 			{
 				entity.OnTick();
 			}

@@ -60,6 +60,14 @@ namespace SharpMC.Core.Networking.Packages
 					return;
 				}
 
+				if (status == 6)
+				{
+					//Swap item in hand
+					//TODO: inventory changes
+					Client.Player.Inventory.SwapHands();
+					return;
+				}
+
 				if (status == 2 || Client.Player.Gamemode == Gamemode.Creative)
 				{
 					var position = Buffer.ReadPosition();

@@ -30,12 +30,12 @@ namespace SharpMC.Core.Networking.Packages
 	{
 		public PluginMessage(ClientWrapper client) : base(client)
 		{
-			ReadId = 0x17;
+			ReadId = 0x18;
 		}
 
 		public PluginMessage(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
-			ReadId = 0x17;
+			ReadId = 0x18;
 		}
 
 		public override void Read()

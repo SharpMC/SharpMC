@@ -51,6 +51,7 @@ namespace SharpMC.Core.Networking.Packages
 			float targetX;
 			float targetY;
 			float targetZ;
+			byte hand;
 
 			if (type == 2)
 			{
@@ -58,6 +59,7 @@ namespace SharpMC.Core.Networking.Packages
 				targetX = Buffer.ReadFloat();
 				targetY = Buffer.ReadFloat();
 				targetZ = Buffer.ReadFloat();
+				hand = (byte)Buffer.ReadByte();
 			}
 			else if (type == 1)
 			{
@@ -77,6 +79,7 @@ namespace SharpMC.Core.Networking.Packages
 
 				//I guess this is for stuff like villagers & horses for openening inventory's?
 				//Or maybe to get on a horse or somethin
+				hand = (byte)Buffer.ReadByte();
 			}
 		}
 

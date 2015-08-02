@@ -54,6 +54,13 @@ namespace SharpMC.Core.Networking
 		public int ReadId { get; set; }
 		public int SendId { get; set; }
 
+		internal void SetTarget(ClientWrapper client)
+		{
+			Client = client;
+			Stream = client.TcpClient.GetStream();
+			Buffer = new DataBuffer(client);
+		}
+
 		public virtual void Read()
 		{
 		}

@@ -30,14 +30,14 @@ namespace SharpMC.Core.Networking.Packages
 	{
 		public HeldItemChange(ClientWrapper client) : base(client)
 		{
-			SendId = 0x09;
-			ReadId = 0x09;
+			SendId = 0x0A;
+			ReadId = 0x0A;
 		}
 
 		public HeldItemChange(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
-			SendId = 0x09;
-			ReadId = 0x09;
+			SendId = 0x0A;
+			ReadId = 0x0A;
 		}
 
 		public override void Read()

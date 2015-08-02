@@ -40,139 +40,277 @@ namespace SharpMC.Core.Entity
 			Shooter = shooter;
 			Ttl = 0;
 			DespawnOnImpact = true;
-
-			KnownPosition = shooter.KnownPosition;
+			Collided = false;
+			KnownPosition = new PlayerLocation(shooter.KnownPosition.X, shooter.KnownPosition.Y, shooter.KnownPosition.Z) {Yaw = shooter.KnownPosition.Yaw, Pitch = shooter.KnownPosition.Pitch};
 		}
 
 		public Player Shooter { get; set; }
 		public int Ttl { get; set; }
 		public bool DespawnOnImpact { get; set; }
+		public bool Collided { get;set; }
+		public ObjectType ObjectType { get; set; }
+
+		public override void SpawnEntity()
+		{
+			Ttl = 9999999;
+			Level.AddEntity(this);
+			var addEntity = new SpawnObject(Shooter.Wrapper)
+			{
+				EntityId = EntityId,
+				X = KnownPosition.X,
+				Y = KnownPosition.Y,
+				Z = KnownPosition.Z,
+				Type = ObjectType,
+				Data = Shooter.EntityId,
+				Pitch = (byte) KnownPosition.Pitch,
+				Yaw = (byte) KnownPosition.Yaw,
+				VelocityX = (short)Velocity.X,
+				VelocityY = (short)Velocity.Y,
+				VelocityZ = (short)Velocity.Z,
+			};
+			Level.BroadcastPacket(addEntity);
+		}
 
 		public override void OnTick()
 		{
 			base.OnTick();
 
-			if (KnownPosition.Y <= 0
-			    || (Velocity.Distance <= 0 && DespawnOnImpact)
-			    || (Velocity.Distance <= 0 && !DespawnOnImpact && Ttl == 0))
+			if (Ttl <= 0 || KnownPosition.Y <= 0 || Collided)
 			{
 				DespawnEntity();
-				return;
 			}
 
 			Ttl--;
 
-			if (KnownPosition.Y <= 0 || Velocity.Distance <= 0) return;
+			Entity entityCollided = CheckEntityCollide(KnownPosition.ToVector3(), Velocity);
 
-			Velocity *= (1.0 - Drag);
-			Velocity -= new Vector3(0, Gravity, 0);
-
-			KnownPosition.X += (float) Velocity.X;
-			KnownPosition.Y += (float) Velocity.Y;
-			KnownPosition.Z += (float) Velocity.Z;
-
-			var k = Math.Sqrt((Velocity.X*Velocity.X) + (Velocity.Z*Velocity.Z));
-			KnownPosition.Yaw = (float) (Math.Atan2(Velocity.X, Velocity.Z)*180f/Math.PI);
-			KnownPosition.Pitch = (float) (Math.Atan2(Velocity.Y, k)*180f/Math.PI);
-
-			var bbox = GetBoundingBox();
-
-			var playerHitted = CheckEntityCollide(bbox);
-
-			bool collided;
-			if (playerHitted != null)
+			bool collided = false;
+			if (entityCollided != null)
 			{
-				playerHitted.HealthManager.TakeHit(playerHitted, 1, DamageCause.Projectile);
+				entityCollided.HealthManager.TakeHit(Shooter, 2, DamageCause.Projectile);
 				collided = true;
 			}
 			else
 			{
-				collided = CheckBlockCollide(KnownPosition);
+				//collided = CheckBlockCollide(KnownPosition);
+				if (!collided)
+				{
+					var velocity2 = Velocity;
+					velocity2 *= (1.0d - Drag);
+					velocity2 -= new Vector3(0, Gravity, 0);
+					double distance = velocity2.Distance;
+					velocity2 = velocity2.Normalize() / 2;
+
+					for (int i = 0; i < Math.Ceiling(distance) * 2; i++)
+					{
+						PlayerLocation nextPos = (PlayerLocation)KnownPosition.Clone();
+						nextPos.X += (float)velocity2.X * i;
+						nextPos.Y += (float)velocity2.Y * i;
+						nextPos.Z += (float)velocity2.Z * i;
+
+						Vector3 coord = new Vector3(nextPos.ToVector3());
+						Block block = Level.GetBlock(coord);
+						collided = block.Id != 0 && (block.GetBoundingBox()).Contains(nextPos.ToVector3());
+						if (collided)
+						{
+							var substBlock = new Block(57) { Coordinates = block.Coordinates };
+							Level.SetBlock(substBlock);
+							KnownPosition = nextPos;
+							SetIntersectLocation(block.GetBoundingBox(), KnownPosition);
+							break;
+						}
+					}
+				}
 			}
 
 			if (collided)
 			{
+				Collided = collided;
 				Velocity = Vector3.Zero;
+			}
+			else
+			{
+				KnownPosition.X += (float)Velocity.X;
+				KnownPosition.Y += (float)Velocity.Y;
+				KnownPosition.Z += (float)Velocity.Z;
+
+				Velocity *= (1.0 - Drag);
+				Velocity -= new Vector3(0, Gravity, 0);
+
+				var k = Math.Sqrt((Velocity.X * Velocity.X) + (Velocity.Z * Velocity.Z));
+				KnownPosition.Yaw = (float)(Math.Atan2(Velocity.X, Velocity.Z) * 180f / Math.PI);
+				KnownPosition.Pitch = (float)(Math.Atan2(Velocity.Y, k) * 180f / Math.PI);
 			}
 
 			BroadcastMoveAndMotion();
 		}
 
-		private Player CheckEntityCollide(BoundingBox bbox)
+		private Entity CheckEntityCollide(Vector3 position, Vector3 direction)
 		{
-			var players = Level.GetOnlinePlayers;
-			foreach (var player in players)
+			var players = Level.OnlinePlayers.OrderBy(player => position.DistanceTo(player.KnownPosition.ToVector3()));
+			Ray2 ray = new Ray2
 			{
-				if (player == Shooter) continue;
+				x = position,
+				d = direction.Normalize()
+			};
 
-				if ((player.GetBoundingBox() + 0.3).Intersects(bbox))
+			foreach (var entity in players)
+			{
+				if (entity == Shooter) continue;
+
+				if (Intersect(entity.GetBoundingBox(), ray))
 				{
-					return player;
+					if (ray.tNear < direction.Distance) break;
+
+					Vector3 p = ray.x + ray.tNear * ray.d;
+					KnownPosition = new PlayerLocation((float)p.X, (float)p.Y, (float)p.Z);
+					return entity;
+				}
+			}
+
+			var entities = Level.Entities.OrderBy(entity => position.DistanceTo(entity.KnownPosition.ToVector3()));
+			foreach (var entity in entities)
+			{
+				if (entity == Shooter) continue;
+				if (entity == this) continue;
+
+				if (Intersect(entity.GetBoundingBox(), ray))
+				{
+					if (ray.tNear < direction.Distance) break;
+
+					Vector3 p = ray.x + ray.tNear * ray.d;
+					KnownPosition = new PlayerLocation((float)p.X, (float)p.Y, (float)p.Z);
+					return entity;
 				}
 			}
 
 			return null;
 		}
 
-		private bool CheckBlockCollide(PlayerLocation location)
+		public static Vector3 GetMinimum(BoundingBox bbox)
 		{
-			var bbox = GetBoundingBox();
-			var pos = location.ToVector3();
+			return bbox.Min;
+		}
 
-			var coords = new Vector3(
-				(int) Math.Floor(KnownPosition.X),
-				(int) Math.Floor((bbox.Max.Y + bbox.Min.Y)/2.0),
-				(int) Math.Floor(KnownPosition.Z));
+		public static Vector3 GetMaximum(BoundingBox bbox)
+		{
+			return bbox.Max;
+		}
 
-			var blocks = new Dictionary<double, Block>();
+		public static bool Intersect(BoundingBox aabb, Ray2 ray)
+		{
+			Vector3 min = GetMinimum(aabb), max = GetMaximum(aabb);
+			double ix = ray.x.X;
+			double iy = ray.x.Y;
+			double iz = ray.x.Z;
+			double t, u, v;
+			bool hit = false;
 
-			for (var x = -1; x < 2; x++)
+			ray.tNear = Double.MaxValue;
+
+			t = (min.X - ix) / ray.d.X;
+			if (t < ray.tNear && t > -Ray2.EPSILON)
 			{
-				for (var z = -1; z < 2; z++)
+				u = iz + ray.d.Z * t;
+				v = iy + ray.d.Y * t;
+				if (u >= min.Z && u <= max.Z &&
+					v >= min.Y && v <= max.Y)
 				{
-					for (var y = -1; y < 2; y++)
-					{
-						var block = Level.GetBlock(new Vector3(coords.X + x, coords.Y + y, coords.Z + z));
-						if (block is BlockAir) continue;
-
-						var blockbox = block.GetBoundingBox() + 0.3;
-						if (blockbox.Intersects(GetBoundingBox()))
-						{
-							if (block is BlockFlowingLava || block is BlockStationaryLava)
-							{
-								//TODO: Implement lighting stuff on fire.
-								continue;
-							}
-
-							if (!block.IsSolid) continue;
-
-							blockbox = block.GetBoundingBox();
-
-							var midPoint = blockbox.Min + 0.5;
-							blocks.Add((pos - Velocity).DistanceTo(midPoint), block);
-						}
-					}
+					hit = true;
+					ray.tNear = t;
+					ray.u = u;
+					ray.v = v;
+					ray.n.X = -1;
+					ray.n.Y = 0;
+					ray.n.Z = 0;
 				}
 			}
-
-			if (blocks.Count == 0) return false;
-
-			var firstBlock = blocks.OrderBy(pair => pair.Key).First().Value;
-
-			var boundingBox = firstBlock.GetBoundingBox();
-			if (!SetIntersectLocation(boundingBox, KnownPosition))
+			t = (max.X - ix) / ray.d.X;
+			if (t < ray.tNear && t > -Ray2.EPSILON)
 			{
-				// No real hit
-				return false;
+				u = iz + ray.d.Z * t;
+				v = iy + ray.d.Y * t;
+				if (u >= min.Z && u <= max.Z &&
+					v >= min.Y && v <= max.Y)
+				{
+					hit = true;
+					ray.tNear = t;
+					ray.u = 1 - u;
+					ray.v = v;
+					ray.n.X = 1;
+					ray.n.Y = 0;
+					ray.n.Z = 0;
+				}
 			}
-
-			// Use to debug hits, makes visual impressions (can be used for paintball too)
-			var substBlock = new BlockStone {Coordinates = firstBlock.Coordinates};
-			Level.SetBlock(substBlock);
-			// End debug block
-
-			Velocity = Vector3.Zero;
-			return true;
+			t = (min.Y - iy) / ray.d.Y;
+			if (t < ray.tNear && t > -Ray2.EPSILON)
+			{
+				u = ix + ray.d.X * t;
+				v = iz + ray.d.Z * t;
+				if (u >= min.X && u <= max.X &&
+					v >= min.Z && v <= max.Z)
+				{
+					hit = true;
+					ray.tNear = t;
+					ray.u = u;
+					ray.v = v;
+					ray.n.X = 0;
+					ray.n.Y = -1;
+					ray.n.Z = 0;
+				}
+			}
+			t = (max.Y - iy) / ray.d.Y;
+			if (t < ray.tNear && t > -Ray2.EPSILON)
+			{
+				u = ix + ray.d.X * t;
+				v = iz + ray.d.Z * t;
+				if (u >= min.X && u <= max.X &&
+					v >= min.Z && v <= max.Z)
+				{
+					hit = true;
+					ray.tNear = t;
+					ray.u = u;
+					ray.v = v;
+					ray.n.X = 0;
+					ray.n.Y = 1;
+					ray.n.Z = 0;
+				}
+			}
+			t = (min.Z - iz) / ray.d.Z;
+			if (t < ray.tNear && t > -Ray2.EPSILON)
+			{
+				u = ix + ray.d.X * t;
+				v = iy + ray.d.Y * t;
+				if (u >= min.X && u <= max.X &&
+					v >= min.Y && v <= max.Y)
+				{
+					hit = true;
+					ray.tNear = t;
+					ray.u = 1 - u;
+					ray.v = v;
+					ray.n.X = 0;
+					ray.n.Y = 0;
+					ray.n.Z = -1;
+				}
+			}
+			t = (max.Z - iz) / ray.d.Z;
+			if (t < ray.tNear && t > -Ray2.EPSILON)
+			{
+				u = ix + ray.d.X * t;
+				v = iy + ray.d.Y * t;
+				if (u >= min.X && u <= max.X &&
+					v >= min.Y && v <= max.Y)
+				{
+					hit = true;
+					ray.tNear = t;
+					ray.u = u;
+					ray.v = v;
+					ray.n.X = 0;
+					ray.n.Y = 0;
+					ray.n.Z = 1;
+				}
+			}
+			return hit;
 		}
 
 		public bool SetIntersectLocation(BoundingBox bbox, PlayerLocation location)
@@ -200,9 +338,17 @@ namespace SharpMC.Core.Entity
 				{
 					UniqueServerId = EntityId,
 					Coordinates = KnownPosition.ToVector3(),
-					Yaw = (byte) KnownPosition.Yaw,
-					Pitch = (byte) KnownPosition.Pitch,
-					OnGround = true
+					Yaw = KnownPosition.Yaw,
+					Pitch = KnownPosition.Pitch,
+					OnGround = false
+				}.Write();
+
+				new EntityVelocity(i.Wrapper)
+				{
+					EntityId = EntityId,
+					VelocityX = (short)Velocity.X,
+					VelocityY = (short)Velocity.Y,
+					VelocityZ = (short)Velocity.Z
 				}.Write();
 			}
 		}

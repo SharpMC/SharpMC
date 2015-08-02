@@ -38,7 +38,7 @@ namespace SharpMC.Core.Items
 
 		public override void UseItem(Level world, Player player, Vector3 blockCoordinates, BlockFace face)
 		{
-			new SnowballEntity(player, world) {KnownPosition = player.KnownPosition}.SpawnEntity();
+			new SnowballEntity(player, world).SpawnEntity();
 		}
 	}
 }

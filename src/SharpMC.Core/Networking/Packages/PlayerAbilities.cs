@@ -34,13 +34,13 @@ namespace SharpMC.Core.Networking.Packages
 
 		public PlayerAbilities(ClientWrapper client) : base(client)
 		{
-			ReadId = 0x13;
+			ReadId = 0x14;
 			SendId = 0x39;
 		}
 
 		public PlayerAbilities(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
-			ReadId = 0x13;
+			ReadId = 0x14;
 			SendId = 0x39;
 		}
 

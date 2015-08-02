@@ -22,6 +22,7 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 
+using System;
 using SharpMC.Core.Blocks;
 using SharpMC.Core.Items;
 using SharpMC.Core.Utils;
@@ -32,12 +33,12 @@ namespace SharpMC.Core.Networking.Packages
 	{
 		public ClickWindow(ClientWrapper client) : base(client)
 		{
-			ReadId = 0x0E;
+			ReadId = 0x0F;
 		}
 
 		public ClickWindow(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
-			ReadId = 0x0E;
+			ReadId = 0x0F;
 		}
 
 		public override void Read()
@@ -56,7 +57,61 @@ namespace SharpMC.Core.Networking.Packages
 				short itemDamage = 0;
 				byte nbt = 0;
 
-				if (Slot >= 1 && Slot <= 4) return; //We don't actually use that :)
+				if (itemId != -1)
+				{
+					itemCount = (byte)Buffer.ReadByte();
+					itemDamage = Buffer.ReadShort();
+					nbt = (byte)Buffer.ReadByte();
+					if (nbt != 0)
+					{
+						//NBT Data found
+					}
+				}
+
+				if (mode == 0)
+				{
+					if (itemId == -1)
+					{
+						var old = Client.Player.Inventory.GetSlot(Slot);
+						var slot = Client.Player.Inventory.ClickedItem;
+						if (old.ItemId == -1)
+						{
+							Client.Player.Inventory.SetSlot(Slot, slot.ItemId, slot.MetaData, slot.ItemCount);
+						}
+						else
+						{
+							if (old.ItemId == slot.ItemId && old.MetaData == slot.MetaData)
+							{
+								if (old.ItemCount < 64)
+								{
+									if ((old.ItemCount + slot.ItemCount) <= 64)
+									{
+										Client.Player.Inventory.SetSlot(Slot, slot.ItemId, slot.MetaData, (byte) (old.ItemCount + slot.ItemCount));
+									}
+									else
+									{
+
+									}
+								}
+							}
+							else
+							{
+									
+							}
+						}
+					}
+					else
+					{
+						if (Client.Player.Inventory.GetSlot(Slot).ItemId == itemId) //Is the information true?
+						{
+							Client.Player.Inventory.SetSlot(Slot, -1, 0, 0);
+							Client.Player.Inventory.ClickedItem = new ItemStack(itemId, itemCount, (byte)itemDamage);
+						}
+					}
+				}
+
+
+				/*if (Slot >= 1 && Slot <= 4) return; //We don't actually use that :)
 
 				if (itemId != -1)
 				{
@@ -69,7 +124,7 @@ namespace SharpMC.Core.Networking.Packages
 					}
 				}
 
-				if (Slot == 0) //Crafting output.
+				/*if (Slot == 0) //Crafting output.
 				{
 					var item = ItemFactory.GetItemById(itemId);
 					if (item.CraftingItems != null) //Valid
@@ -106,7 +161,7 @@ namespace SharpMC.Core.Networking.Packages
 				{
 					var slot = Client.Player.Inventory.ClickedItem;
 					Client.Player.Inventory.SetSlot(Slot, slot.ItemId, slot.MetaData, slot.ItemCount);
-				}
+				}*/
 			}
 		}
 	}

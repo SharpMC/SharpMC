@@ -7,7 +7,7 @@ using SharpMC.Core.Worlds;
 
 namespace SharpMC.Core.Blocks
 {
-	public class BlockLever : Block
+	public class BlockLever : RedstonePowerSource
 	{
 		internal BlockLever() : base(69)
 		{
@@ -16,7 +16,7 @@ namespace SharpMC.Core.Blocks
 			IsSolid = false;
 		}
 
-		public bool IsActive()
+		public override bool IsActive()
 		{
 			var bits = new BitArray(new byte[] { Metadata });
 			return bits[3];
@@ -97,7 +97,7 @@ namespace SharpMC.Core.Blocks
 			}
 
 			Metadata = ConvertToByte(bits);
-			world.SetBlock(this, true, false);
+			world.SetBlock(this);
 		}
 
 		private byte ConvertToByte(BitArray bits)

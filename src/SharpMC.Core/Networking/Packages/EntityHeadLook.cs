@@ -10,7 +10,7 @@ namespace SharpMC.Core.Networking.Packages
 	public class EntityHeadLook : Package<EntityHeadLook>
 	{
 		public int EntityId;
-		public byte HeadYaw;
+		public double HeadYaw;
 		public EntityHeadLook(ClientWrapper client) : base(client)
 		{
 			SendId = 0x19;
@@ -27,7 +27,7 @@ namespace SharpMC.Core.Networking.Packages
 			{
 				Buffer.WriteVarInt(SendId);
 				Buffer.WriteVarInt(EntityId);
-				Buffer.WriteByte(HeadYaw);
+				Buffer.WriteByte((byte)((HeadYaw / 360) * 256));
 				Buffer.FlushData();
 			}
 		}

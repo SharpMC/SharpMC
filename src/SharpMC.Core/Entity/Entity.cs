@@ -71,6 +71,7 @@ namespace SharpMC.Core.Entity
 
 		public virtual void DespawnEntity()
 		{
+			Level.RemoveEntity(this);
 		}
 
 		public virtual void SpawnEntity()

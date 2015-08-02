@@ -38,10 +38,14 @@ namespace SharpMC.Core.Entity
 
 			Gravity = 0.03;
 			Drag = 0.01;
+
+			Ttl = 9999999;
+			ObjectType = ObjectType.Snowball;
 		}
 
-		public override void SpawnEntity()
+		/*public override void SpawnEntity()
 		{
+			Ttl = 9999999;
 			Level.AddEntity(this);
 			foreach (var i in Level.OnlinePlayers)
 			{
@@ -58,6 +62,6 @@ namespace SharpMC.Core.Entity
 					Yaw = (byte) KnownPosition.Yaw
 				}.Write();
 			}
-		}
+		}*/
 	}
 }

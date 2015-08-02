@@ -50,6 +50,7 @@ namespace SharpMC.Core.Items
 			if (id == 280) return new ItemStick();
 			if (id == 332) return new ItemSnowball();
 			if (id == 295) return new ItemWheatSeeds();
+			if (id == 331) return new ItemRedstone();
 
 			return new Item((ushort) id, metadata);
 		}

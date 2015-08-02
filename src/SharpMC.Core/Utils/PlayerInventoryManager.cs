@@ -24,6 +24,7 @@
 
 using System;
 using System.Linq;
+using SharpMC.Core.Blocks;
 using SharpMC.Core.Entity;
 using SharpMC.Core.Items;
 using SharpMC.Core.Networking.Packages;
@@ -33,12 +34,12 @@ namespace SharpMC.Core.Utils
 	public class PlayerInventoryManager
 	{
 		private readonly Player _player;
-		private readonly ItemStack[] _slots = new ItemStack[45];
+		private readonly ItemStack[] _slots = new ItemStack[46];
 
 		public PlayerInventoryManager(Player player)
 		{
 			_player = player;
-			for (var i = 0; i <= 44; i++)
+			for (var i = 0; i <= 45; i++)
 			{
 				_slots[i] = (new ItemStack(-1, 0, 0));
 			}
@@ -64,6 +65,9 @@ namespace SharpMC.Core.Utils
 		public ItemStack ClickedItem { get; set; }
 		public int CurrentSlot { get; set; }
 
+		private Item Hand1 { get; set; }
+		private Item Hand2 { get; set; }
+
 		public void InventoryClosed()
 		{
 			if (ClickedItem != null)
@@ -71,6 +75,45 @@ namespace SharpMC.Core.Utils
 				AddItem(ClickedItem);
 				ClickedItem = null;
 			}
+		}
+
+		public void HeldItemChanged(int newSlot)
+		{
+			CurrentSlot = newSlot;
+			UpdateHandItems();
+		}
+
+		private void UpdateHandItems()
+		{
+			var s = GetSlot(CurrentSlot + 36);
+			Hand1 = s.ItemId > 255 ? ItemFactory.GetItemById(s.ItemId, s.MetaData) : BlockFactory.GetBlockById((ushort)s.ItemId, s.MetaData);
+
+			s = GetSlot(45);
+			Hand2 = s.ItemId > 255 ? ItemFactory.GetItemById(s.ItemId, s.MetaData) : BlockFactory.GetBlockById((ushort)s.ItemId, s.MetaData);
+		}
+
+		public Item GetItemInHand(int hand)
+		{
+			UpdateHandItems();
+			switch (hand)
+			{
+				case 0:
+					return Hand1;
+				case 1:
+					return Hand2;
+				default:
+					throw new Exception("Invalid");
+					break;
+			}
+		}
+
+		public void SwapHands()
+		{
+			UpdateHandItems();
+			var mainhand = GetSlot(CurrentSlot + 36);
+			var hand2 = GetSlot(45);
+			SetSlot(CurrentSlot + 36, hand2.ItemId, hand2.MetaData, hand2.ItemCount);
+			SetSlot(45, mainhand.ItemId, mainhand.MetaData, mainhand.ItemCount);
 		}
 
 		public bool HasItems(ItemStack[] items)
@@ -84,7 +127,7 @@ namespace SharpMC.Core.Utils
 
 		public void SetSlot(int slot, short itemId, byte metadata, byte itemcount)
 		{
-			if (slot <= 44 && slot >= 5)
+			if (slot <= 45 && slot >= 5)
 			{
 				_slots[slot] = new ItemStack(itemId, itemcount, metadata);
 				if (_player != null && _player.IsSpawned)
@@ -109,7 +152,7 @@ namespace SharpMC.Core.Utils
 
 		public bool AddItem(short itemId, byte metadata, byte itemcount = 1)
 		{
-			for (var i = 9; i <= 44; i++)
+			for (var i = 9; i <= 45; i++)
 			{
 				if (_slots[i].ItemId == itemId && _slots[i].MetaData == metadata && _slots[i].ItemCount < 64)
 				{
@@ -125,7 +168,7 @@ namespace SharpMC.Core.Utils
 				}
 			}
 
-			for (var i = 9; i <= 44; i++)
+			for (var i = 9; i <= 45; i++)
 			{
 				if (_slots[i].ItemId == -1)
 				{
@@ -138,11 +181,11 @@ namespace SharpMC.Core.Utils
 
 		public ItemStack GetSlot(int slot)
 		{
-			if (slot <= 44 && slot >= 0)
+			if (slot <= 45 && slot >= 0)
 			{
 				return _slots[slot];
 			}
-			throw new IndexOutOfRangeException("slot");
+			throw new IndexOutOfRangeException("Invalid slot: " + slot);
 		}
 
 		public void DropCurrentItem()
@@ -192,7 +235,7 @@ namespace SharpMC.Core.Utils
 
 		public bool RemoveItem(short itemId, short metaData, short count)
 		{
-			for (var index = 0; index <= 44; index++)
+			for (var index = 0; index <= 45; index++)
 			{
 				var itemStack = _slots[index];
 				if (itemStack.ItemId == itemId && itemStack.MetaData == metaData && itemStack.ItemCount >= count)
@@ -211,7 +254,7 @@ namespace SharpMC.Core.Utils
 
 		public void SendToPlayer()
 		{
-			for (short i = 0; i <= 44; i++)
+			for (short i = 0; i <= 45; i++)
 			{
 				var value = _slots[i];
 				if (value.ItemId != -1)
@@ -231,7 +274,7 @@ namespace SharpMC.Core.Utils
 		public byte[] GetBytes()
 		{
 			DataBuffer buffer = new DataBuffer(new byte[0]);
-			for (int i = 0; i <= 44; i++)
+			for (int i = 0; i <= 45; i++)
 			{
 				var slot = _slots[i];
 				buffer.WriteInt(i); //Write the SlotID
@@ -246,7 +289,7 @@ namespace SharpMC.Core.Utils
 		{
 			DataBuffer buffer = new DataBuffer(data);
 
-			for (int i = 0; i <= 44; i++)
+			for (int i = 0; i <= 45; i++)
 			{
 				int slotId = buffer.ReadInt();
 				short itemId = buffer.ReadShort();

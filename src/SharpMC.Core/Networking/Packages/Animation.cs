@@ -31,22 +31,23 @@ namespace SharpMC.Core.Networking.Packages
 	{
 		public byte AnimationId;
 		public Player TargetPlayer;
+		public byte Hand;
 
 		public Animation(ClientWrapper client) : base(client)
 		{
 			SendId = 0x0B;
-			ReadId = 0x0A;
+			ReadId = 0x0B;
 		}
 
 		public Animation(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
 			SendId = 0x0B;
-			ReadId = 0x0A;
+			ReadId = 0x0B;
 		}
 
 		public override void Read()
 		{
-			new Animation(Client) {AnimationId = 0, TargetPlayer = Client.Player}.Broadcast(Client.Player.Level, false,
+			new Animation(Client) {AnimationId = 0, TargetPlayer = Client.Player, Hand = (byte)Buffer.ReadByte()}.Broadcast(Client.Player.Level, false,
 				Client.Player);
 		}
 

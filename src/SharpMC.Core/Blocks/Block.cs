@@ -46,6 +46,7 @@ namespace SharpMC.Core.Blocks
 			IsTransparent = false;
 
 			FuelEfficiency = 0;
+			IsBlock = true;
 		}
 
 		public Vector3 Coordinates { get; set; }
@@ -86,12 +87,6 @@ namespace SharpMC.Core.Blocks
 		public virtual bool PlaceBlock(Level world, Player player, Vector3 blockCoordinates, BlockFace face)
 		{
 			// No default placement. Return unhandled.
-			return false;
-		}
-
-		public virtual bool Interact(Level world, Player player, Vector3 blockCoordinates, BlockFace face)
-		{
-			// No default interaction. Return unhandled.
 			return false;
 		}
 

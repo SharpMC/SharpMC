@@ -22,6 +22,7 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 
+using System;
 using SharpMC.Core.Blocks;
 using SharpMC.Core.Enums;
 using SharpMC.Core.Items;
@@ -33,12 +34,12 @@ namespace SharpMC.Core.Networking.Packages
 	{
 		public PlayerBlockPlacement(ClientWrapper client) : base(client)
 		{
-			ReadId = 0x08;
+			ReadId = 0x09;
 		}
 
 		public PlayerBlockPlacement(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
-			ReadId = 0x08;
+			ReadId = 0x09;
 		}
 
 		public override void Read()
@@ -53,7 +54,7 @@ namespace SharpMC.Core.Networking.Packages
 					return;
 				}
 
-				var face = Buffer.ReadByte();
+				var face = Buffer.ReadVarInt();
 
 				switch (face)
 				{
@@ -77,12 +78,13 @@ namespace SharpMC.Core.Networking.Packages
 						break;
 				}
 
-				var heldItem = Buffer.ReadUShort();
-				if (heldItem <= ushort.MinValue || heldItem >= ushort.MaxValue) return;
+				//var heldItem = Buffer.ReadUShort();
+				//if (heldItem <= ushort.MinValue || heldItem >= ushort.MaxValue) return;
 
-				var itemCount = Buffer.ReadByte();
-				var itemDamage = Buffer.ReadByte();
-				var itemMeta = (byte) Buffer.ReadByte();
+				//var itemCount = Buffer.ReadByte();
+				//var itemDamage = Buffer.ReadByte();
+				//var itemMeta = (byte) Buffer.ReadByte();
+				var hand = Buffer.ReadVarInt();
 
 				var cursorX = Buffer.ReadByte(); //Unused
 				var cursorY = Buffer.ReadByte(); //Unused
@@ -96,35 +98,33 @@ namespace SharpMC.Core.Networking.Packages
 					return;
 				}
 
-				if (Client.Player.Level.GetBlock(position).Id == 0 || Client.Player.Level.GetBlock(position).IsReplacible)
-				{
-					if (Client.Player.Inventory.HasItem(heldItem) || Client.Player.Gamemode == Gamemode.Creative)
+					var d = Client.Player.Inventory.GetItemInHand(hand);
+					if (d.IsBlock)
 					{
-						if (ItemFactory.GetItemById((short) heldItem).IsUsable)
+						var f = (Block) d;
+						f.Coordinates = position;
+						if (!f.PlaceBlock(Client.Player.Level, Client.Player, c, (BlockFace) face))
 						{
-							ItemFactory.GetItemById((short) heldItem).UseItem(Client.Player.Level, Client.Player, position, (BlockFace) face);
-							return;
+							Client.Player.Level.SetBlock(f);
 						}
-
-						var b = BlockFactory.GetBlockById(heldItem);
-						b.Coordinates = position;
-						b.Metadata = itemMeta;
-						if (!b.PlaceBlock(Client.Player.Level, Client.Player, position, (BlockFace) face))
-						{
-							Client.Player.Level.SetBlock(b);
-						}
-						//Client.Player.Level.SetBlock(b, true, heldItem == 8 || heldItem == 10);
 
 						if (Client.Player.Gamemode != Gamemode.Creative)
 						{
-							Client.Player.Inventory.RemoveItem((short) b.Id, itemMeta, 1);
+							Client.Player.Inventory.RemoveItem((short)f.Id, f.Metadata, 1);
 						}
 					}
 					else
 					{
-						Client.Player.Inventory.SendToPlayer(); //Client not synced up, SYNC!
+						if (d.IsUsable)
+						{
+							d.UseItem(Client.Player.Level, Client.Player, c, (BlockFace)face);
+
+							if (Client.Player.Gamemode != Gamemode.Creative)
+							{
+								Client.Player.Inventory.RemoveItem((short)d.Id, d.Metadata, 1);
+							}
+						}
 					}
-				}
 			}
 		}
 	}

@@ -43,9 +43,9 @@ namespace SharpMC.Core
 	*/
 	public class Globals
 	{
-		internal static int ProtocolVersion = 47;
-		internal static string ProtocolName = "SharpMC 1.8";
-		internal static string OfficialProtocolName = "Minecraft 1.8";
+		internal static int ProtocolVersion = 51;
+		internal static string ProtocolName = "SharpMC - 15w31c (1.9 Snapshot)";
+		internal static string OfficialProtocolName = "Minecraft Snapshot 15w31c";
 
 		internal static BasicListener ServerListener;
 		internal static LevelManager LevelManager;

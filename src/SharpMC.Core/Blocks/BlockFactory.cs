@@ -39,11 +39,14 @@ namespace SharpMC.Core.Blocks
 			if (id == 56) return new BlockDiamondOre();
 			if (id == 10) return new BlockFlowingLava();
 			if (id == 8) return new BlockFlowingWater();
-			if (id == 11) return new BlockStationaryLava();
-			if (id == 9) return new BlockStationaryWater();
+			if (id == 11) return new BlockFlowingLava();
+			if (id == 9) return new BlockFlowingWater();
 			if (id == 31 && metadata == 1) return new BlockTallGrass();
 			if (id == 5 && metadata == 0) return new OakWoodPlank();
 			if (id == 69) return new BlockLever();
+			if (id == 55) return new BlockRedstoneDust();
+			if (id == 123) return new BlockRedstoneLampInActive();
+			if (id == 124) return new BlockRedstoneLampActive();
 
 			//Doors
 			if (id == 64 || id == 71 || id == 193 ||

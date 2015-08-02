@@ -28,18 +28,19 @@ namespace SharpMC.Core.Networking.Packages
 {
 	public enum EquipmentSlot
 	{
-		Held = 0,
-		Boots = 1,
-		Leggings = 2,
-		Chestplate = 3,
-		Helmet = 4
+		Boots = 2,
+		Leggings = 3,
+		Chestplate = 4,
+		Helmet = 5,
+		Hand0 = 0,
+		Hand1 = 1,
 	}
 
 	public class EntityEquipment : Package<EntityEquipment>
 	{
 		public int EntityId = 0;
 		public ItemStack Item;
-		public EquipmentSlot Slot = EquipmentSlot.Held;
+		public EquipmentSlot Slot = EquipmentSlot.Hand0;
 
 		public EntityEquipment(ClientWrapper client) : base(client)
 		{
@@ -57,7 +58,7 @@ namespace SharpMC.Core.Networking.Packages
 			{
 				Buffer.WriteVarInt(SendId);
 				Buffer.WriteVarInt(EntityId);
-				Buffer.WriteShort((short) Slot);
+				Buffer.WriteVarInt((int)Slot);
 				Buffer.WriteShort(Item.ItemId);
 				if (Item.ItemId != -1)
 				{

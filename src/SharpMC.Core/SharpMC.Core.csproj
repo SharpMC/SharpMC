@@ -99,6 +99,9 @@
     <Compile Include="Blocks\BlockLever.cs" />
     <Compile Include="Blocks\BlockNetherrack.cs" />
     <Compile Include="Blocks\BlockObsidian.cs" />
+    <Compile Include="Blocks\BlockRedstoneDust.cs" />
+    <Compile Include="Blocks\BlockRedstoneLampInActive.cs" />
+    <Compile Include="Blocks\BlockRedstoneLampActive.cs" />
     <Compile Include="Blocks\BlockSand.cs" />
     <Compile Include="Blocks\BlockSandStone.cs" />
     <Compile Include="Blocks\BlockStationaryWater.cs" />
@@ -110,6 +113,8 @@
     <Compile Include="Blocks\Door.cs" />
     <Compile Include="Blocks\Flowing.cs" />
     <Compile Include="Blocks\OakWoodPlank.cs" />
+    <Compile Include="Blocks\RedstoneDevice.cs" />
+    <Compile Include="Blocks\RedstonePowerSource.cs" />
     <Compile Include="Blocks\StairsBlock.cs" />
     <Compile Include="Blocks\Stationairy.cs" />
     <Compile Include="Blocks\BlockStationaryLava.cs" />
@@ -136,6 +141,7 @@
     <Compile Include="Items\ItemIronSword.cs" />
     <Compile Include="Items\ItemLapisLazuli.cs" />
     <Compile Include="Items\ItemLavaBucket.cs" />
+    <Compile Include="Items\ItemRedstone.cs" />
     <Compile Include="Items\ItemSnowball.cs" />
     <Compile Include="Items\ItemStick.cs" />
     <Compile Include="Items\ItemWaterBucket.cs" />
@@ -145,14 +151,17 @@
     <Compile Include="Networking\ClientManager.cs" />
     <Compile Include="Networking\Packages\ClickWindow.cs" />
     <Compile Include="Networking\Packages\CloseWindow.cs" />
+    <Compile Include="Networking\Packages\CreativeInventoryAction.cs" />
     <Compile Include="Networking\Packages\EncryptionRequest.cs" />
     <Compile Include="Networking\Packages\EncryptionResponse.cs" />
     <Compile Include="Networking\Packages\EntityEquipment.cs" />
     <Compile Include="Networking\Packages\EntityHeadLook.cs" />
+    <Compile Include="Networking\Packages\EntityVelocity.cs" />
     <Compile Include="Networking\Packages\LoginStart.cs" />
     <Compile Include="Networking\Packages\Particle.cs" />
     <Compile Include="Networking\Packages\Request.cs" />
     <Compile Include="Networking\Packages\SoundEffect.cs" />
+    <Compile Include="Networking\Packages\UseItem.cs" />
     <Compile Include="OperatorLoader.cs" />
     <Compile Include="PluginChannel\BrandMessage.cs" />
     <Compile Include="PluginChannel\MessageFactory.cs" />
@@ -171,6 +180,7 @@
     <Compile Include="Utils\PermissionManager.cs" />
     <Compile Include="Utils\PlayerLocation.cs" />
     <Compile Include="Utils\Ray.cs" />
+    <Compile Include="Utils\Ray2.cs" />
     <Compile Include="Utils\ReadOnlyNibbleArray.cs" />
     <Compile Include="Utils\Records.cs" />
     <Compile Include="Utils\ItemStack.cs" />

@@ -32,9 +32,9 @@ namespace SharpMC.Core.Networking.Packages
 	{
 		public Vector3 Coordinates;
 		public bool OnGround;
-		public byte Pitch;
+		public double Pitch;
 		public int UniqueServerId;
-		public byte Yaw;
+		public double Yaw;
 
 		public EntityTeleport(ClientWrapper client) : base(client)
 		{
@@ -55,8 +55,8 @@ namespace SharpMC.Core.Networking.Packages
 				Buffer.WriteInt((int) Coordinates.X*32);
 				Buffer.WriteInt((int) Coordinates.Y*32);
 				Buffer.WriteInt((int) Coordinates.Z*32);
-				Buffer.WriteByte(Yaw);
-				Buffer.WriteByte(Pitch);
+				Buffer.WriteByte((byte)((Yaw / 360) * 256));
+				Buffer.WriteByte((byte)Pitch);
 				Buffer.WriteBool(OnGround);
 				Buffer.FlushData();
 			}

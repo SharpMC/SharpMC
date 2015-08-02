@@ -30,12 +30,12 @@ namespace SharpMC.Core.Networking.Packages
 	{
 		public ClientSettings(ClientWrapper client) : base(client)
 		{
-			ReadId = 0x15;
+			ReadId = 0x16;
 		}
 
 		public ClientSettings(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
-			ReadId = 0x15;
+			ReadId = 0x16;
 		}
 
 		public override void Read()
@@ -45,12 +45,14 @@ namespace SharpMC.Core.Networking.Packages
 			var chatFlags = (byte) Buffer.ReadByte();
 			var chatColours = Buffer.ReadBool();
 			var skinParts = (byte) Buffer.ReadByte();
+			var mainHand = Buffer.ReadVarInt();
 
 			Client.Player.Locale = locale;
 			Client.Player.ViewDistance = viewDistance;
 			Client.Player.ChatColours = chatColours;
 			Client.Player.ChatFlags = chatFlags;
 			Client.Player.SkinParts = skinParts;
+			Client.Player.MainHand = mainHand;
 		}
 	}
 }

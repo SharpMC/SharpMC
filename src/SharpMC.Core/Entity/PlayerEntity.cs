@@ -69,6 +69,7 @@ namespace SharpMC.Core.Entity
 		public byte ChatFlags { get; set; }
 		public bool ChatColours { get; set; }
 		public byte SkinParts { get; set; }
+		public int MainHand { get; set; }
 		public bool ForceChunkReload { get; set; }
 		//Not Sure Why Stuff
 		public EntityAction LastEntityAction { get; set; }
@@ -151,31 +152,41 @@ namespace SharpMC.Core.Entity
 			new EntityLook(Wrapper)
 			{
 				EntityId = this.EntityId,
-				Pitch = (byte)KnownPosition.Pitch,
-				Yaw = (byte)KnownPosition.Yaw,
+				Pitch =KnownPosition.Pitch,
+				Yaw = KnownPosition.Yaw,
 				OnGround = KnownPosition.OnGround
 			}.Broadcast(Level, false, this);
 			
-			/*new EntityHeadLook(Wrapper)
+			new EntityHeadLook(Wrapper)
 			{
 				EntityId = this.EntityId,
-				HeadYaw = (byte)KnownPosition.Yaw,
-			}.Broadcast(Level, false, this);*/
+				HeadYaw = KnownPosition.Yaw,
+			}.Broadcast(Level, false, this);
 		}
 
 		public void HeldItemChanged(int slot)
 		{
-			Inventory.CurrentSlot = slot;
+			//Inventory.CurrentSlot = slot;
+			Inventory.HeldItemChanged(slot);
 			BroadcastEquipment();
 		}
 
 		public void BroadcastEquipment()
 		{
-			//HeldItem
+			//Main Hand
 			var slotdata = Inventory.GetSlot(36 + Inventory.CurrentSlot);
 			new EntityEquipment(Wrapper)
 			{
-				Slot = EquipmentSlot.Held,
+				Slot = EquipmentSlot.Hand0,
+				Item = slotdata,
+				EntityId = EntityId
+			}.Broadcast(Level, false, this);
+
+			//Second hand
+			slotdata = Inventory.GetSlot(45);
+			new EntityEquipment(Wrapper)
+			{
+				Slot = EquipmentSlot.Hand1,
 				Item = slotdata,
 				EntityId = EntityId
 			}.Broadcast(Level, false, this);
@@ -264,8 +275,8 @@ namespace SharpMC.Core.Entity
 				UniqueServerId = EntityId,
 				Coordinates = newPosition.ToVector3(),
 				OnGround = newPosition.OnGround,
-				Pitch = (byte)newPosition.Pitch,
-				Yaw = (byte)newPosition.Yaw
+				Pitch = newPosition.Pitch,
+				Yaw = newPosition.Yaw
 			}.Broadcast(Level, true, this);
 		}
 
@@ -329,9 +340,38 @@ namespace SharpMC.Core.Entity
 							force ? new List<Tuple<int, int>>() : _chunksUsed, this))
 				{
 					if (Wrapper != null && Wrapper.TcpClient.Client.Connected)
-						new ChunkData(Wrapper) { Chunk = chunk, Queee = false }.Write();
+					{
+						new ChunkData(Wrapper) {Chunk = chunk, Queee = false}.Write();
+						GetEntitysInChunk(chunk.X, chunk.Z);
+					}
+
 				}
 			});
+		}
+
+		public void GetEntitysInChunk(int chunkX, int chunkZ)
+		{
+			foreach (var player in Level.OnlinePlayers)
+			{
+				if (player == this) continue;
+
+				var x = (int)player.KnownPosition.X >> 4;
+				var z = (int)player.KnownPosition.Z >> 4;
+				if (chunkX == x && chunkZ == z)
+				{
+					new SpawnPlayer(Wrapper){Player = player}.Write();
+				}
+			}
+
+			foreach (var entity in Level.Entities)
+			{
+				var x = (int)entity.KnownPosition.X >> 4;
+				var z = (int)entity.KnownPosition.Z >> 4;
+				if (chunkX == x && chunkZ == z)
+				{
+					new SpawnObject(Wrapper){X = entity.KnownPosition.X, Y = entity.KnownPosition.Y, Z = entity.KnownPosition.Z, EntityId = entity.EntityId, Type = (ObjectType)entity.EntityTypeId, Yaw = entity.KnownPosition.Yaw, Pitch = entity.KnownPosition.Pitch}.Write();
+				}
+			}
 		}
 
 		internal void UnloadChunk(int x, int y)

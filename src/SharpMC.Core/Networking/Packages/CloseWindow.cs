@@ -31,12 +31,12 @@ namespace SharpMC.Core.Networking.Packages
 		public byte WindowId = 0;
 		public CloseWindow(ClientWrapper client) : base(client)
 		{
-			ReadId = 0x0D;
+			ReadId = 0x0E;
 		}
 
 		public CloseWindow(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
-			ReadId = 0x0D;
+			ReadId = 0x0E;
 		}
 
 		public override void Read()

@@ -22,6 +22,7 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 
+using System;
 using SharpMC.Core.Enums;
 using SharpMC.Core.Utils;
 
@@ -31,15 +32,16 @@ namespace SharpMC.Core.Networking.Packages
 	{
 		public object Data;
 		public int EntityId = 0;
-		public byte Pitch = 0;
+		public double Pitch = 0;
 		public ObjectType Type;
 		public short VelocityX = 0;
 		public short VelocityY = 0;
 		public short VelocityZ = 0;
 		public double X = 0;
 		public double Y = 0;
-		public byte Yaw = 0;
+		public double Yaw = 0;
 		public double Z = 0;
+		public Guid ObjectUuid = new Guid();
 
 		public SpawnObject(ClientWrapper client) : base(client)
 		{
@@ -55,14 +57,16 @@ namespace SharpMC.Core.Networking.Packages
 		{
 			if (Buffer != null)
 			{
+				//ConsoleFunctions.WriteInfoLine("Spawning object with Pitch: " + Pitch + ", Yaw: " + Yaw);
 				Buffer.WriteVarInt(SendId);
 				Buffer.WriteVarInt(EntityId);
+				Buffer.WriteUuid(ObjectUuid);
 				Buffer.WriteByte((byte) Type);
 				Buffer.WriteInt((int) X*32);
 				Buffer.WriteInt((int) Y*32);
 				Buffer.WriteInt((int) Z*32);
-				Buffer.WriteByte(Pitch);
-				Buffer.WriteByte(Yaw);
+				Buffer.WriteByte((byte)Pitch);
+				Buffer.WriteByte((byte)((Yaw/360)*256));
 				if (Type == ObjectType.ItemStack)
 				{
 					Buffer.WriteInt(0);
@@ -74,9 +78,9 @@ namespace SharpMC.Core.Networking.Packages
 				if (Type == ObjectType.Snowball)
 				{
 					Buffer.WriteInt((int) Data);
-					Buffer.WriteShort(0);
-					Buffer.WriteShort(0);
-					Buffer.WriteShort(0);
+					Buffer.WriteShort(VelocityX);
+					Buffer.WriteShort(VelocityY);
+					Buffer.WriteShort(VelocityZ);
 				}
 				Buffer.FlushData();
 			}

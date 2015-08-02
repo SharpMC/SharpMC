@@ -30,12 +30,12 @@ namespace SharpMC.Core.Networking.Packages
 	{
 		public EntityAction(ClientWrapper client) : base(client)
 		{
-			ReadId = 0x0B;
+			ReadId = 0x0C;
 		}
 
 		public EntityAction(ClientWrapper client, DataBuffer buffer) : base(client, buffer)
 		{
-			ReadId = 0x0B;
+			ReadId = 0x0C;
 		}
 
 		public override void Read()
