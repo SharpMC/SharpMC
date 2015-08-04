@@ -47,6 +47,7 @@ namespace SharpMC.Core.Blocks
 			if (id == 55) return new BlockRedstoneDust();
 			if (id == 123) return new BlockRedstoneLampInActive();
 			if (id == 124) return new BlockRedstoneLampActive();
+			if (id == 63) return new BlockStandingSign();
 
 			//Doors
 			if (id == 64 || id == 71 || id == 193 ||

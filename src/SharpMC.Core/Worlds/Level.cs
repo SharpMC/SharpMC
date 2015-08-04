@@ -23,7 +23,6 @@
 // ©Copyright Kenny van Vulpen - 2015
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
@@ -34,8 +33,8 @@ using SharpMC.Core.Entity;
 using SharpMC.Core.Enums;
 using SharpMC.Core.Networking;
 using SharpMC.Core.Networking.Packages;
-using SharpMC.Core.TileEntities;
 using SharpMC.Core.Utils;
+using Ent = SharpMC.Core.Entity.Entity;
 
 namespace SharpMC.Core.Worlds
 {
@@ -48,9 +47,8 @@ namespace SharpMC.Core.Worlds
 			OnlinePlayers = new List<Player>();
 			DefaultGamemode = Config.GetProperty("Gamemode", Gamemode.Survival);
 			BlockWithTicks = new Dictionary<Vector3, int>();
-			BlocksPermaTicks = new ConcurrentDictionary<Vector3, int>();
 			StartTimeOfDayTimer();
-			Entities = new List<Entity.Entity>();
+			Entities = new List<Ent>();
 			Dimension = 0;
             Timetorain = Globals.Rand.Next(24000, 96000);
 		}
@@ -64,13 +62,22 @@ namespace SharpMC.Core.Worlds
 		internal int CurrentWorldTime { get; set; }
 		internal int Day { get; set; }
 		public WorldProvider Generator { get; set; }
-		internal List<Entity.Entity> Entities { get; private set; }
+		internal List<Ent> Entities { get; private set; }
 		internal Dictionary<Vector3, int> BlockWithTicks { get; private set; }
-		internal ConcurrentDictionary<Vector3, int> BlocksPermaTicks { get; private set; }
         public int Timetorain { get; set; }
         internal bool Raining { get; set; }
 
 		#region APISpecific
+
+		public int GetWorldTime()
+		{
+			return CurrentWorldTime;
+		}
+
+		public void SetWorldTime(int time)
+		{
+			CurrentWorldTime = time;
+		}
 
 		public Player[] GetOnlinePlayers
 		{
@@ -108,7 +115,7 @@ namespace SharpMC.Core.Worlds
 				Uuid = player.Uuid
 			}.Broadcast(this); //Send playerlist item to old players & player him self
 
-			BroadcastExistingPlayers(player.Wrapper);
+			IntroduceNewPlayer(player.Wrapper);
 		}
 
 		public void BroadcastChat(string message)
@@ -118,6 +125,7 @@ namespace SharpMC.Core.Worlds
 				new ChatMessage(i.Wrapper) {Message = @message}.Write();
 			}
 		}
+
         public void BroadcastChat(string message, Player sender)
         {
             foreach (var i in OnlinePlayers)
@@ -130,7 +138,7 @@ namespace SharpMC.Core.Worlds
             }
         }
 
-		internal void BroadcastExistingPlayers(ClientWrapper caller)
+		internal void IntroduceNewPlayer(ClientWrapper caller)
 		{
 			foreach (var i in OnlinePlayers)
 			{
@@ -250,12 +258,12 @@ namespace SharpMC.Core.Worlds
 				BlockWithTicks[block.Coordinates] = CurrentWorldTime + tickRate;
 			//}
 		}
-		public void AddEntity(Entity.Entity entity)
+		public void AddEntity(Ent entity)
 		{
 			Entities.Add(entity);
 		}
 
-		public void RemoveEntity(Entity.Entity entity)
+		public void RemoveEntity(Ent entity)
 		{
 			if (Entities.Contains(entity)) Entities.Remove(entity);
 		}
@@ -439,15 +447,5 @@ namespace SharpMC.Core.Worlds
 		}
 
 		#endregion
-
-        public int GetWorldTime()
-        {
-            return CurrentWorldTime;
-        }
-
-        public void SetWorldTime(int time)
-        {
-            CurrentWorldTime = time;
-        }
 	}
 }

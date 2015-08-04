@@ -54,6 +54,7 @@ namespace SharpMC.Core.Items
 			if (id == 332) return new ItemSnowball();
 			if (id == 295) return new ItemWheatSeeds();
 			if (id == 331) return new ItemRedstone();
+			if (id == 323) return new ItemSign();
 
 			return new Item((ushort) id, metadata);
 		}

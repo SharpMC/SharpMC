@@ -104,6 +104,7 @@
     <Compile Include="Blocks\BlockRedstoneLampActive.cs" />
     <Compile Include="Blocks\BlockSand.cs" />
     <Compile Include="Blocks\BlockSandStone.cs" />
+    <Compile Include="Blocks\BlockStandingSign.cs" />
     <Compile Include="Blocks\BlockStationaryWater.cs" />
     <Compile Include="Blocks\BlockStone.cs" />
     <Compile Include="Blocks\BlockTallGrass.cs" />
@@ -145,6 +146,7 @@
     <Compile Include="Items\ItemLapisLazuli.cs" />
     <Compile Include="Items\ItemLavaBucket.cs" />
     <Compile Include="Items\ItemRedstone.cs" />
+    <Compile Include="Items\ItemSign.cs" />
     <Compile Include="Items\ItemSnowball.cs" />
     <Compile Include="Items\ItemStick.cs" />
     <Compile Include="Items\ItemWaterBucket.cs" />
@@ -163,6 +165,7 @@
     <Compile Include="Networking\Packages\LoginStart.cs" />
     <Compile Include="Networking\Packages\Particle.cs" />
     <Compile Include="Networking\Packages\Request.cs" />
+    <Compile Include="Networking\Packages\SignEditorOpen.cs" />
     <Compile Include="Networking\Packages\SoundEffect.cs" />
     <Compile Include="Networking\Packages\UpdateSign.cs" />
     <Compile Include="Networking\Packages\UseItem.cs" />

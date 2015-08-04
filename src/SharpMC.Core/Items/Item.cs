@@ -22,6 +22,8 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 
+using System;
+using System.Collections;
 using SharpMC.Core.Entity;
 using SharpMC.Core.Enums;
 using SharpMC.Core.Utils;
@@ -168,6 +170,17 @@ namespace SharpMC.Core.Items
 		public ItemStack GetItemStack()
 		{
 			return new ItemStack((short)Id, 1, Metadata);
+		}
+
+		public byte ConvertToByte(BitArray bits)
+		{
+			if (bits.Count != 8)
+			{
+				throw new ArgumentException("bits");
+			}
+			byte[] bytes = new byte[1];
+			bits.CopyTo(bytes, 0);
+			return bytes[0];
 		}
 	}
 }

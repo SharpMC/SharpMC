@@ -80,6 +80,7 @@ namespace SharpMC.Core.Networking.Packages
 			PlayPackages.Add(new CloseWindow(client, buffer));
 			PlayPackages.Add(new UseItem(client, buffer));
 			PlayPackages.Add(new CreativeInventoryAction(client, buffer));
+			PlayPackages.Add(new UpdateSign(client, buffer));
 
 			#endregion
 

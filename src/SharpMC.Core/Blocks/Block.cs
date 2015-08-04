@@ -111,16 +111,5 @@ namespace SharpMC.Core.Blocks
 				new Vector3(Coordinates.X, Coordinates.Y, Coordinates.Z),
 				new Vector3(Coordinates.X + 1, Coordinates.Y + 1, Coordinates.Z + 1));
 		}
-
-		public byte ConvertToByte(BitArray bits)
-		{
-			if (bits.Count != 8)
-			{
-				throw new ArgumentException("bits");
-			}
-			byte[] bytes = new byte[1];
-			bits.CopyTo(bytes, 0);
-			return bytes[0];
-		}
 	}
 }
