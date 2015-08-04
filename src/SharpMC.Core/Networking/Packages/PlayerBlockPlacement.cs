@@ -22,10 +22,8 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 
-using System;
 using SharpMC.Core.Blocks;
 using SharpMC.Core.Enums;
-using SharpMC.Core.Items;
 using SharpMC.Core.Utils;
 
 namespace SharpMC.Core.Networking.Packages

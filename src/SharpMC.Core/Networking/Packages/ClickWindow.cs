@@ -22,9 +22,6 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 
-using System;
-using SharpMC.Core.Blocks;
-using SharpMC.Core.Items;
 using SharpMC.Core.Utils;
 
 namespace SharpMC.Core.Networking.Packages
@@ -77,6 +74,7 @@ namespace SharpMC.Core.Networking.Packages
 						if (old.ItemId == -1)
 						{
 							Client.Player.Inventory.SetSlot(Slot, slot.ItemId, slot.MetaData, slot.ItemCount);
+							Client.Player.Inventory.ClickedItem = null;
 						}
 						else
 						{
@@ -87,6 +85,7 @@ namespace SharpMC.Core.Networking.Packages
 									if ((old.ItemCount + slot.ItemCount) <= 64)
 									{
 										Client.Player.Inventory.SetSlot(Slot, slot.ItemId, slot.MetaData, (byte) (old.ItemCount + slot.ItemCount));
+										Client.Player.Inventory.ClickedItem = null;
 									}
 									else
 									{

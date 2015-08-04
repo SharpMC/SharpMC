@@ -62,8 +62,6 @@ namespace SharpMC.Core.Networking.Packages
 
 				if (status == 6)
 				{
-					//Swap item in hand
-					//TODO: inventory changes
 					Client.Player.Inventory.SwapHands();
 					return;
 				}

@@ -1,4 +1,5 @@
-﻿using SharpMC.Core.Utils;
+﻿using Newtonsoft.Json;
+using SharpMC.Core.Utils;
 
 namespace SharpMC.Core.Networking.Packages
 {
@@ -18,12 +19,10 @@ namespace SharpMC.Core.Networking.Packages
 		{
 			if (Buffer != null)
 			{
+				var status = new StatusRequestMessage(Globals.ProtocolName, Globals.ProtocolVersion, ServerSettings.MaxPlayers, Globals.GetOnlinePlayerCount(), ServerSettings.Motd);
+				var statusstring = JsonConvert.SerializeObject(status);
 				Buffer.WriteVarInt(SendId);
-				Buffer.WriteString("{\"version\": {\"name\": \"" + Globals.ProtocolName + "\",\"protocol\": " +
-								   Globals.ProtocolVersion + "},\"players\": {\"max\": " + ServerSettings.MaxPlayers + ",\"online\": " +
-								   Globals.GetOnlinePlayerCount() + "},\"description\": {\"text\":\"" +
-								   Globals.CleanForJson(ServerSettings.Motd) +
-								   "\"}}");
+				Buffer.WriteString(statusstring);
 				Buffer.FlushData();
 			}
 		}

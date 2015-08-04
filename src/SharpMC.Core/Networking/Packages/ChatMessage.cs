@@ -22,13 +22,16 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 
+using Newtonsoft.Json;
+using SharpMC.Core.Enums;
 using SharpMC.Core.Utils;
 
 namespace SharpMC.Core.Networking.Packages
 {
 	public class ChatMessage : Package<ChatMessage>
 	{
-		public string Message;
+		public McChatMessage Message;
+		public ChatMessageType MessageType = ChatMessageType.ChatBox;
 
 		public ChatMessage(ClientWrapper client) : base(client)
 		{
@@ -44,15 +47,16 @@ namespace SharpMC.Core.Networking.Packages
 
 		public override void Read()
 		{
-			Message = Buffer.ReadString();
+			var message = Buffer.ReadString();
 
-			if (Message.StartsWith(Globals.ChatHandler.Value.CommandPrefix.ToString()))
+			if (message.StartsWith(Globals.ChatHandler.Value.CommandPrefix.ToString()))
 			{
-				Globals.PluginManager.HandleCommand(Message, Client.Player);
+				Globals.PluginManager.HandleCommand(message, Client.Player);
 				return;
 			}
 
-			string msg = Globals.CleanForJson(Globals.ChatHandler.Value.PrepareMessage(Client.Player, Message));
+			//string msg = Globals.CleanForJson(Globals.ChatHandler.Value.PrepareMessage(Client.Player, message));
+			var msg = Globals.ChatHandler.Value.PrepareMessage(Client.Player, message);
 
 			Globals.BroadcastChat(msg);
 			ConsoleFunctions.WriteInfoLine(msg);
@@ -62,11 +66,12 @@ namespace SharpMC.Core.Networking.Packages
 		{
 			if (Buffer != null)
 			{
-				Message = Globals.CleanForJson(Message);
-
+				string message = JsonConvert.SerializeObject(Message);
+				
 				Buffer.WriteVarInt(SendId);
-				Buffer.WriteString("{ \"text\": \"" + Message + "\" }");
-				Buffer.WriteByte(0);
+				//Buffer.WriteString("{ \"text\": \"" + Message + "\" }");
+				Buffer.WriteString(message);
+				Buffer.WriteByte((byte)MessageType);
 				Buffer.FlushData();
 			}
 		}

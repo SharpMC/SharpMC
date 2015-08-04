@@ -68,6 +68,10 @@
     <Reference Include="LibNoise">
       <HintPath>..\packages\LibNoise.0.2\lib\NET45\LibNoise.dll</HintPath>
     </Reference>
+    <Reference Include="Newtonsoft.Json">
+      <HintPath>..\packages\Newtonsoft.Json.7.0.1\lib\net45\Newtonsoft.Json.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="PresentationCore" />
     <Reference Include="PresentationFramework" />
     <Reference Include="System" />
@@ -126,6 +130,7 @@
     <Compile Include="Entity\SnowballEntity.cs" />
     <Compile Include="Entity\Projectile.cs" />
     <Compile Include="Enums\ChatColors.cs" />
+    <Compile Include="Enums\ChatMessagePosition.cs" />
     <Compile Include="Enums\DamageCause.cs" />
     <Compile Include="Enums\EntityAction.cs" />
     <Compile Include="Enums\GameStateReason.cs" />
@@ -183,6 +188,7 @@
     <Compile Include="Utils\HealthManager.cs" />
     <Compile Include="Enums\LVLType.cs" />
     <Compile Include="Utils\JavaHexDigest.cs" />
+    <Compile Include="Utils\MCChatMessage.cs" />
     <Compile Include="Utils\MyThreadPool.cs" />
     <Compile Include="Networking\Package.cs" />
     <Compile Include="Utils\OpenSimplex.cs" />
@@ -226,7 +232,6 @@
     <Compile Include="Networking\Packages\KeepAlive.cs" />
     <Compile Include="Networking\Packages\LoginSucces.cs" />
     <Compile Include="Networking\Packages\MapChunkBulk.cs" />
-    <Compile Include="Networking\Packages\MsgBuffer.cs" />
     <Compile Include="Networking\Packages\OnGround.cs" />
     <Compile Include="Networking\Packages\OpenWindow.cs" />
     <Compile Include="Networking\Packages\PackageFactory.cs" />
@@ -259,6 +264,7 @@
     <Compile Include="Utils\DataBuffer.cs" />
     <Compile Include="Enums\Gamemode.cs" />
     <Compile Include="Utils\SecurityUtils.cs" />
+    <Compile Include="Utils\StatusRequestMessage.cs" />
     <Compile Include="Utils\Synchronized.cs" />
     <Compile Include="Utils\Vector2.cs" />
     <Compile Include="Utils\Config.cs" />

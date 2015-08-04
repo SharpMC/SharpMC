@@ -34,6 +34,7 @@ using SharpMC.Core.Networking.Packages;
 using SharpMC.Core.TileEntities;
 using SharpMC.Core.Utils;
 using SharpMC.Core.Worlds;
+using Animation = SharpMC.Core.Networking.Packages.Animation;
 using EntityAction = SharpMC.Core.Enums.EntityAction;
 
 namespace SharpMC.Core.Entity
@@ -112,6 +113,8 @@ namespace SharpMC.Core.Entity
 			return true;
 		}
 
+		#region PacketHandling
+
 		public void PositionChanged(Vector3 location, float yaw = 0.0f, float pitch = 0.0f, bool onGround = false)
 		{
 			var originalchunkcoords = new Vector2(_currentChunkPosition.X, _currentChunkPosition.Z);
@@ -172,6 +175,19 @@ namespace SharpMC.Core.Entity
 			Inventory.HeldItemChanged(slot);
 			BroadcastEquipment();
 		}
+
+		public void PlayerHandSwing(byte hand)
+		{
+			PlayerAnimation(Animations.SwingArm, hand);
+		}
+
+		public void PlayerAnimation(Animations animation, byte hand = 0)
+		{
+			var packet = new Animation(null) {EntityId = EntityId, AnimationId = (byte)animation, Hand = hand};
+			Level.BroadcastPacket(packet);
+		}
+
+		#endregion
 
 		public void BroadcastEquipment()
 		{
@@ -297,11 +313,6 @@ namespace SharpMC.Core.Entity
 			new UpdateHealth(Wrapper).Write();
 		}
 
-		public void BroadcastEntityAnimation(Animations action)
-		{
-			new Animation(Wrapper) {AnimationId = (byte) action, TargetPlayer = this}.Broadcast(Level);
-		}
-
 		internal void InitializePlayer()
 		{
 			if (!Loaded)
@@ -419,15 +430,20 @@ namespace SharpMC.Core.Entity
 			}.Write();
 		}
 
-		public void SendChat(string message)
+		public void SendChat(McChatMessage message)
 		{
 			if (Wrapper.TcpClient == null)
 			{
-				ConsoleFunctions.WriteInfoLine(message);
+				ConsoleFunctions.WriteInfoLine(message.text);
 				return;
 			}
 
 			new ChatMessage(Wrapper) {Message = message}.Write();
+		}
+
+		public void SendChat(string message)
+		{
+			SendChat(new McChatMessage(message));
 		}
 
 		public void SendChat(string message, ChatColor color)
@@ -435,7 +451,7 @@ namespace SharpMC.Core.Entity
 			SendChat("§" + color.Value + message);
 		}
 
-		public void Kick(string reason)
+		public void Kick(McChatMessage reason)
 		{
 			new Disconnect(Wrapper) {Reason = reason}.Write();
 			SavePlayer();
@@ -443,7 +459,7 @@ namespace SharpMC.Core.Entity
 
 		public void Kick()
 		{
-			Kick("Unknown reason.");
+			Kick(new McChatMessage("Unknown reason."));
 		}
 
 		/// <summary>

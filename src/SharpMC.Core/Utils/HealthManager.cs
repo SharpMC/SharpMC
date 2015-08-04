@@ -96,7 +96,7 @@ namespace SharpMC.Core.Utils
 			if (player != null)
 			{
 				player.SendHealth();
-				player.BroadcastEntityAnimation(Animations.TakeDamage);
+				player.PlayerAnimation(Animations.TakeDamage);
 			}
 		}
 
@@ -132,10 +132,11 @@ namespace SharpMC.Core.Utils
 				IsDead = true;
 				if (player != null)
 				{
-					Entity.Level.BroadcastChat("§e" +
+					/*Entity.Level.BroadcastChat("§e" +
 					                           GetDescription(LastDamageCause)
 						                           .Replace("{0}", player.Username)
-						                           .Replace("{1}", LastDamageSource.Username));
+						                           .Replace("{1}", LastDamageSource.Username));*/
+					//TODO: replace with offical death packet
 				}
 				return;
 			}

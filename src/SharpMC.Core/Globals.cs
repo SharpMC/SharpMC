@@ -30,6 +30,7 @@ using System.Security.Cryptography;
 using System.Text;
 using SharpMC.Core.API;
 using SharpMC.Core.Entity;
+using SharpMC.Core.Enums;
 using SharpMC.Core.Networking;
 using SharpMC.Core.Networking.Packages;
 using SharpMC.Core.PluginChannel;
@@ -71,21 +72,22 @@ namespace SharpMC.Core
 
 		public static void BroadcastChat(string message)
 		{
-			foreach (var lvl in LevelManager.GetLevels())
-			{
-				lvl.BroadcastChat(message);
-			}
-			LevelManager.MainLevel.BroadcastChat(message);
+			BroadcastChat(new McChatMessage(message), ChatMessageType.ChatBox, null);
 		}
 
         public static void BroadcastChat(string message, Player sender)
         {
-            foreach (var lvl in LevelManager.GetLevels())
-            {
-                lvl.BroadcastChat(message, sender);
-            }
-            LevelManager.MainLevel.BroadcastChat(message, sender);
+			BroadcastChat(new McChatMessage(message), ChatMessageType.ChatBox, sender);
         }
+
+		public static void BroadcastChat(McChatMessage message, ChatMessageType chattype, Player sender)
+		{
+			foreach (var lvl in LevelManager.GetLevels())
+			{
+				lvl.BroadcastChat(message, chattype, sender);
+			}
+			LevelManager.MainLevel.BroadcastChat(message, chattype, sender);
+		}
 
 		public static int GetOnlinePlayerCount()
 		{
@@ -189,7 +191,9 @@ namespace SharpMC.Core
         public static void StopServer(string stopMsg = "Shutting down server...")
         {
             ConsoleFunctions.WriteInfoLine("Shutting down...");
-            Disconnect.Broadcast("§f" + stopMsg);
+			Disconnect d = new Disconnect(null);
+			d.Reason = new McChatMessage("§f" + stopMsg);
+			BroadcastPacket(d);
 	        ConsoleFunctions.WriteInfoLine("Saving all player data...");
 	        foreach (var player in LevelManager.GetAllPlayers())
 	        {
@@ -205,6 +209,15 @@ namespace SharpMC.Core
 	        ServerListener.StopListenening();
 	        Environment.Exit(0);
         }
+
+		public static void BroadcastPacket(Package packet)
+		{
+			foreach (var lvl in LevelManager.GetLevels())
+			{
+				LevelManager.MainLevel.BroadcastPacket(packet);
+			}
+			LevelManager.MainLevel.BroadcastPacket(packet);
+		}
 
 		/// <summary>
 		/// Adds a Plugin Channel Message Handler.

@@ -57,26 +57,5 @@ namespace SharpMC.Core.Networking.Packages
 				Buffer.FlushData();
 			}
 		}
-
-		public static void Broadcast(Block block, Level level, bool self = true, Player source = null)
-		{
-			lock (level.OnlinePlayers)
-			{
-				foreach (var i in level.OnlinePlayers.ToArray())
-				{
-					if (!self && i == source)
-					{
-						continue;
-					}
-
-					new BlockChange(i.Wrapper)
-					{
-						BlockId = block.Id,
-						MetaData = block.Metadata,
-						Location = block.Coordinates
-					}.Write();
-				}
-			}
-		}
 	}
 }

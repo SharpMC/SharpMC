@@ -45,21 +45,21 @@ namespace SharpMC.Core.Networking.Packages
 					}
 					if (!Client.Player.IsAuthenticated())
 					{
-						new Disconnect(Client) { Reason = "§4SharpMC\n§fAuthentication failed!" }.Write();
+						new Disconnect(Client) { Reason = new McChatMessage("§fAuthentication failed!") }.Write();
 						return;
 					}
 				}
 
 				if (Encoding.UTF8.GetBytes(username).Length == 0)
 				{
-					new Disconnect(Client) { Reason = "§4SharpMC\n§fSomething went wrong while decoding your username!" }.Write();
+					new Disconnect(Client) { Reason = new McChatMessage("§fSomething went wrong while decoding your username!") }.Write();
 					return;
 				}
 
 				//Protocol check!
 				if (Client.Protocol < Globals.ProtocolVersion) //Protocol to old?
 				{
-					new Disconnect(Client) { Reason = "§4SharpMC\n§fYour Minecraft version is to old!\nPlease update in order to play!" }
+					new Disconnect(Client) { Reason = new McChatMessage("§fYour Minecraft version is too old!\nPlease update in order to play!") }
 						.Write();
 					return;
 				}
@@ -69,8 +69,8 @@ namespace SharpMC.Core.Networking.Packages
 					new Disconnect(Client)
 					{
 						Reason =
-							"§4SharpMC\n§fThis server is not yet updated for your version of Minecraft!\nIn order to play you have to use " +
-							Globals.OfficialProtocolName
+							new McChatMessage("§fThis server is not yet updated for your version of Minecraft!\nIn order to play you have to use " +
+							Globals.OfficialProtocolName)
 					}.Write();
 					return;
 				}

@@ -34,6 +34,7 @@ namespace SharpMC.Core.Networking.Packages
 		public Gamemode Gamemode;
 		public string Username;
 		public string Uuid;
+		public int Latency = 0;
 
 		public PlayerListItem(ClientWrapper client) : base(client)
 		{
@@ -52,14 +53,12 @@ namespace SharpMC.Core.Networking.Packages
 				Buffer.WriteVarInt(SendId);
 				Buffer.WriteVarInt(Action);
 				Buffer.WriteVarInt(1);
-				//foreach(Player player in Globals.Level.OnlinePlayers)
-				//{
 				Buffer.WriteUuid(new Guid(Uuid));
 				switch (Action)
 				{
 					case 0:
 						Buffer.WriteString(Username);
-						Buffer.WriteVarInt(0);
+						Buffer.WriteVarInt(Latency);
 						Buffer.WriteVarInt((byte) Gamemode);
 						Buffer.WriteVarInt(0);
 						Buffer.WriteBool(false);
@@ -67,10 +66,12 @@ namespace SharpMC.Core.Networking.Packages
                     case 1:
                         Buffer.WriteVarInt((byte)Gamemode);
                         break;
+					case 2:
+						Buffer.WriteVarInt(Latency);
+						break;
 					case 4:
 						break;
 				}
-				//}
 				Buffer.FlushData();
 			}
 		}

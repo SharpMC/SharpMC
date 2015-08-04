@@ -22,15 +22,14 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 
-using SharpMC.Core.Entity;
+using Newtonsoft.Json;
 using SharpMC.Core.Utils;
-using SharpMC.Core.Worlds;
 
 namespace SharpMC.Core.Networking.Packages
 {
 	internal class Disconnect : Package<Disconnect>
 	{
-		public string Reason = "";
+		public McChatMessage Reason;
 
 		public Disconnect(ClientWrapper client) : base(client)
 		{
@@ -46,47 +45,10 @@ namespace SharpMC.Core.Networking.Packages
 		{
 			if (Buffer != null)
 			{
+				var msg = JsonConvert.SerializeObject(Reason);
 				Buffer.WriteVarInt(Client.PacketMode == PacketMode.Login ? 0x00 : SendId);
-				Buffer.WriteString("{ \"text\": \"" + Reason + "\" }");
+				Buffer.WriteString(msg);
 				Buffer.FlushData();
-			}
-		}
-
-		public static void Broadcast(string reason, Level level = null, bool self = true, Player source = null)
-		{
-			if (level == null)
-			{
-				foreach (var lvl in Globals.LevelManager.GetLevels())
-				{
-					foreach (var i in lvl.OnlinePlayers)
-					{
-						if (!self && i == source)
-						{
-							continue;
-						}
-						new Disconnect(i.Wrapper) { Reason = reason }.Write();
-					}
-				}
-
-				foreach (var i in Globals.LevelManager.MainLevel.OnlinePlayers)
-				{
-					if (!self && i == source)
-					{
-						continue;
-					}
-					new Disconnect(i.Wrapper) { Reason = reason }.Write();
-				}
-			}
-			else
-			{
-				foreach (var i in level.OnlinePlayers)
-				{
-					if (!self && i == source)
-					{
-						continue;
-					}
-					new Disconnect(i.Wrapper) { Reason = reason }.Write();
-				}
 			}
 		}
 	}

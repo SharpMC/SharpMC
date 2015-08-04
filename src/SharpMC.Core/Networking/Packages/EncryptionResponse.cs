@@ -94,7 +94,7 @@ namespace SharpMC.Core.Networking.Packages
 				else
 				{
 					new LoginSucces(Client) {Username = Client.Username, Uuid = Client.Player.Uuid}.Write();
-					new Disconnect(Client) {Reason = "Authentication failed! Try restarting your client."}.Write();
+					new Disconnect(Client) {Reason = new McChatMessage("Authentication failed! Try restarting your client.")}.Write();
 				}
 			}
 		}

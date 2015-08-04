@@ -224,10 +224,20 @@ namespace SharpMC.Core.Networking
 					Client.ThreadPool.KillAllThreads();
 					//Exception, disconnect!
 					ConsoleFunctions.WriteDebugLine("Error: \n" + ex);
-					new Disconnect(Client)
+					if (ServerSettings.ReportExceptionsToClient)
 					{
-						Reason = "§4SharpMC\n§fServer threw an exception!\n\nFor the nerdy people: \n" + ex.Message
-					}.Write();
+						new Disconnect(Client)
+						{
+							Reason = new McChatMessage("§fServer threw an exception!\n\nFor the nerdy people: \n" + ex.Message)
+						}.Write();
+					}
+					else
+					{
+						new Disconnect(Client)
+						{
+							Reason = new McChatMessage("§fYou were kicked because of an unknown problem!")
+						}.Write();
+					}
 					break;
 				}
 			}

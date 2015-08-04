@@ -45,6 +45,11 @@ namespace SharpMC.Core.Networking.Packages
 		{
 			if (Buffer != null)
 			{
+				if (Client.Player != null)
+				{
+					Client.UpdatePing();
+				}
+
 				long d = Buffer.ReadLong();
 				new Ping(Client){Time = d}.Write();
 			}

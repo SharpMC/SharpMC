@@ -22,7 +22,6 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 
-using SharpMC.Core.Entity;
 using SharpMC.Core.Utils;
 
 namespace SharpMC.Core.Networking.Packages

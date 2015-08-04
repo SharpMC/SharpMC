@@ -118,25 +118,39 @@ namespace SharpMC.Core.Worlds
 			IntroduceNewPlayer(player.Wrapper);
 		}
 
-		public void BroadcastChat(string message)
+		public void BroadcastChat(McChatMessage message)
 		{
-			foreach (var i in OnlinePlayers)
-			{
-				new ChatMessage(i.Wrapper) {Message = @message}.Write();
-			}
+			//foreach (var i in OnlinePlayers)
+			//{
+			//	new ChatMessage(i.Wrapper) {Message = @message}.Write();
+			//}
+			BroadcastChat(message, ChatMessageType.ChatBox, null);
 		}
 
-        public void BroadcastChat(string message, Player sender)
+		public void BroadcastChat(McChatMessage message, Player sender)
         {
-            foreach (var i in OnlinePlayers)
+            /*foreach (var i in OnlinePlayers)
             {
                 if (i == sender)
                 {
                     continue;
                 }
                 new ChatMessage(i.Wrapper) { Message = @message }.Write();
-            }
+            }*/
+			BroadcastChat(message, ChatMessageType.ChatBox, sender);
         }
+
+		public void BroadcastChat(McChatMessage message, ChatMessageType messagetype, Player sender)
+		{
+			foreach (var i in OnlinePlayers)
+			{
+				if (i == sender)
+				{
+					continue;
+				}
+				new ChatMessage(i.Wrapper) { Message = @message }.Write();
+			}
+		}
 
 		internal void IntroduceNewPlayer(ClientWrapper caller)
 		{
@@ -230,7 +244,14 @@ namespace SharpMC.Core.Worlds
 			if (applyPhysics) ApplyPhysics((int) block.Coordinates.X, (int) block.Coordinates.Y, (int) block.Coordinates.Z);
 
 			if (!broadcast) return;
-			BlockChange.Broadcast(block, this);
+			
+			var packet = new BlockChange(null)
+			{
+				BlockId = block.Id,
+				MetaData = block.Metadata,
+				Location = block.Coordinates
+			};
+			BroadcastPacket(packet);
 		}
 
 		internal void ApplyPhysics(int x, int y, int z)

@@ -26,12 +26,15 @@ namespace SharpMC.Core.Networking.Packages
 			{
 				var hand = (byte)Buffer.ReadByte();
 				var binhand = Client.Player.Inventory.GetItemInHand(hand);
-				if (binhand.IsUsable)
+				if (binhand != null)
 				{
-					binhand.UseItem(Client.Player.Level, Client.Player, new Vector3(-1), BlockFace.PositiveY);
-					if (Client.Player.Gamemode != Gamemode.Creative)
+					if (binhand.IsUsable)
 					{
-						Client.Player.Inventory.RemoveItem((short)binhand.Id, binhand.Metadata, 1);
+						binhand.UseItem(Client.Player.Level, Client.Player, new Vector3(-1), BlockFace.PositiveY);
+						if (Client.Player.Gamemode != Gamemode.Creative)
+						{
+							Client.Player.Inventory.RemoveItem((short) binhand.Id, binhand.Metadata, 1);
+						}
 					}
 				}
 			}

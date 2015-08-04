@@ -15,5 +15,7 @@
 		public static bool DisplayPacketErrors = false;
 		public static bool Debug = false;
 		public static string Motd = "";
+
+		public static bool ReportExceptionsToClient = true;
 	}
 }

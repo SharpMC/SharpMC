@@ -22,7 +22,6 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 
-using SharpMC.Core.Entity;
 using SharpMC.Core.Utils;
 
 namespace SharpMC.Core.Networking.Packages
@@ -30,7 +29,7 @@ namespace SharpMC.Core.Networking.Packages
 	internal class Animation : Package<Animation>
 	{
 		public byte AnimationId;
-		public Player TargetPlayer;
+		public int EntityId;
 		public byte Hand;
 
 		public Animation(ClientWrapper client) : base(client)
@@ -47,8 +46,8 @@ namespace SharpMC.Core.Networking.Packages
 
 		public override void Read()
 		{
-			new Animation(Client) {AnimationId = 0, TargetPlayer = Client.Player, Hand = (byte)Buffer.ReadByte()}.Broadcast(Client.Player.Level, false,
-				Client.Player);
+			var hand = Buffer.ReadVarInt();
+			Client.Player.PlayerHandSwing((byte)hand);
 		}
 
 		public override void Write()
@@ -56,7 +55,7 @@ namespace SharpMC.Core.Networking.Packages
 			if (Buffer != null)
 			{
 				Buffer.WriteVarInt(SendId);
-				Buffer.WriteVarInt(TargetPlayer.EntityId);
+				Buffer.WriteVarInt(EntityId);
 				Buffer.WriteByte(AnimationId);
 				Buffer.FlushData();
 			}

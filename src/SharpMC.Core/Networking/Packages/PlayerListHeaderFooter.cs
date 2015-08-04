@@ -22,6 +22,7 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 
+using Newtonsoft.Json;
 using SharpMC.Core.Utils;
 
 namespace SharpMC.Core.Networking.Packages
@@ -38,15 +39,20 @@ namespace SharpMC.Core.Networking.Packages
 			SendId = 0x47;
 		}
 
-		public string Header { get; set; }
-		public string Footer { get; set; }
+		public McChatMessage Header { get; set; }
+		public McChatMessage Footer { get; set; }
 
 		public override void Write()
 		{
-			Buffer.WriteVarInt(SendId);
-			Buffer.WriteString("{ \"text\": \"" + Header + "\" }");
-			Buffer.WriteString("{ \"text\": \"" + Footer + "\" }");
-			Buffer.FlushData();
+			if (Buffer != null)
+			{
+				var head = JsonConvert.SerializeObject(Header);
+				var foot = JsonConvert.SerializeObject(Footer);
+				Buffer.WriteVarInt(SendId);
+				Buffer.WriteString(head);
+				Buffer.WriteString(foot);
+				Buffer.FlushData();
+			}
 		}
 	}
 }

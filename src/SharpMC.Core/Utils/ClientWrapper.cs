@@ -22,6 +22,7 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 
+using System;
 using System.Collections.Generic;
 using System.Net.Sockets;
 using System.Security.Cryptography;
@@ -143,6 +144,27 @@ namespace SharpMC.Core.Utils
 		public void DoTick(object source, ElapsedEventArgs e)
 		{
 
+		}
+
+		private long lastPing = 0;
+		public void UpdatePing()
+		{
+			var time = UnixTimeNow();
+			var ping = time - lastPing;
+			lastPing = time;
+			var packet = new PlayerListItem(null)
+			{
+				Action = 2,
+				Latency = (int)ping,
+				Uuid = Player.Uuid
+			};
+			Globals.BroadcastPacket(packet);
+		}
+
+		private long UnixTimeNow()
+		{
+			var timeSpan = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
+			return (long)timeSpan.TotalSeconds;
 		}
 	}
 }
