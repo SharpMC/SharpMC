@@ -22,6 +22,7 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 
+using SharpMC.Core.Blocks;
 using SharpMC.Core.Entity;
 using SharpMC.Core.Enums;
 using SharpMC.Core.Utils;
@@ -38,21 +39,36 @@ namespace SharpMC.Core.Items
 
 		public override void UseItem(Level world, Player player, Vector3 blockCoordinates, BlockFace face)
 		{
+			blockCoordinates = GetNewCoordinatesFromFace(blockCoordinates, face);
 			var bl = world.GetBlock(blockCoordinates);
+
+			var slot = 0;
+			var hand0 = player.Inventory.GetItemInHand(0);
+			var hand1 = player.Inventory.GetItemInHand(1);
+			if (hand0.Id == Id)
+			{
+				slot = player.Inventory.CurrentSlot + 36;
+			}
+			else if (hand1.Id == Id)
+			{
+				slot = 45;
+			}
+
+			//player.SendChat("Block: " + bl.Id, ChatColor.Bold);
+			if (bl.Id == 65535) return;
 
 			if (bl.Id == 8)
 			{
 				//Water
-				var slot = player.Inventory.CurrentSlot + 36;
 				player.Inventory.SetSlot(slot, 326, 0, 1);
-				bl.BreakBlock(world);
+				world.SetBlock(new BlockAir() {Coordinates = blockCoordinates}, true, true);
 			}
 
 			if (bl.Id == 10)
 			{
-				var slot = player.Inventory.CurrentSlot + 36;
+				//lava
 				player.Inventory.SetSlot(slot, 327, 0, 1);
-				bl.BreakBlock(world);
+				world.SetBlock(new BlockAir() { Coordinates = blockCoordinates }, true, true);
 			}
 		}
 	}
