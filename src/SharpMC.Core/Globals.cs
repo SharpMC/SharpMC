@@ -214,7 +214,7 @@ namespace SharpMC.Core
 		{
 			foreach (var lvl in LevelManager.GetLevels())
 			{
-				LevelManager.MainLevel.BroadcastPacket(packet);
+				lvl.BroadcastPacket(packet);
 			}
 			LevelManager.MainLevel.BroadcastPacket(packet);
 		}
