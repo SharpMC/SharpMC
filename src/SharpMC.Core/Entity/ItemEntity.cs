@@ -51,7 +51,7 @@ namespace SharpMC.Core.Entity
 		{
 			TickTimer.Stop();
 
-			foreach (var i in Level.OnlinePlayers)
+			foreach (var i in Level.GetOnlinePlayers)
 			{
 				var spawnedBy = i.Wrapper;
 				if (source != null)
@@ -74,7 +74,7 @@ namespace SharpMC.Core.Entity
 		public override void SpawnEntity()
 		{
 			Level.AddEntity(this);
-			foreach (var i in Level.OnlinePlayers)
+			foreach (var i in Level.GetOnlinePlayers)
 			{
 				var spawnedBy = i.Wrapper;
 				new SpawnObject(spawnedBy)
@@ -105,7 +105,7 @@ namespace SharpMC.Core.Entity
 				return;
 			}
 
-			var players = Level.OnlinePlayers;
+			var players = Level.GetOnlinePlayers;
 			foreach (var player in players)
 			{
 				if (KnownPosition.DistanceTo(player.KnownPosition) <= 1.8)

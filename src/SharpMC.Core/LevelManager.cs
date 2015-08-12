@@ -113,9 +113,9 @@ namespace SharpMC.Core
 			List<Player> players = new List<Player>();
 			foreach (Level lvl in GetLevels())
 			{
-				players.AddRange(lvl.OnlinePlayers);
+				players.AddRange(lvl.GetOnlinePlayers);
 			}
-			players.AddRange(MainLevel.OnlinePlayers);
+			players.AddRange(MainLevel.GetOnlinePlayers);
 			return players.ToArray();
 		}
 	}

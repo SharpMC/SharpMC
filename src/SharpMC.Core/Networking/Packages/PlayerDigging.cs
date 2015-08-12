@@ -45,6 +45,8 @@ namespace SharpMC.Core.Networking.Packages
 			if (Buffer != null)
 			{
 				var status = Buffer.ReadByte();
+				var position = Buffer.ReadPosition();
+				var face = Buffer.ReadByte();
 
 				if (status == 3)
 				{
@@ -66,11 +68,10 @@ namespace SharpMC.Core.Networking.Packages
 					return;
 				}
 
+				if (position == Vector3.Zero) return;
+
 				if (status == 2 || Client.Player.Gamemode == Gamemode.Creative)
 				{
-					var position = Buffer.ReadPosition();
-					var face = Buffer.ReadByte();
-
 					var block = Client.Player.Level.GetBlock(position);
 					block.BreakBlock(Client.Player.Level);
 					Client.Player.Digging = false;

@@ -147,7 +147,7 @@ namespace SharpMC.Core.Entity
 
 		private Entity CheckEntityCollide(Vector3 position, Vector3 direction)
 		{
-			var players = Level.OnlinePlayers.OrderBy(player => position.DistanceTo(player.KnownPosition.ToVector3()));
+			var players = Level.GetOnlinePlayers.OrderBy(player => position.DistanceTo(player.KnownPosition.ToVector3()));
 			Ray2 ray = new Ray2
 			{
 				x = position,
@@ -332,7 +332,7 @@ namespace SharpMC.Core.Entity
 
 		private void BroadcastMoveAndMotion()
 		{
-			foreach (var i in Level.OnlinePlayers)
+			foreach (var i in Level.GetOnlinePlayers)
 			{
 				new EntityTeleport(i.Wrapper)
 				{

@@ -47,6 +47,7 @@ namespace SharpMC.Core.Networking.Packages
 				Buffer.WriteVarInt(SendId);
 				Buffer.WriteVarInt(CompressionLevel);
 				Buffer.FlushData();
+				Client.SetCompressionSend = true;
 			}
 		}
 	}

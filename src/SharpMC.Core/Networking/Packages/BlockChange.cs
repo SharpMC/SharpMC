@@ -22,10 +22,7 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 
-using SharpMC.Core.Blocks;
-using SharpMC.Core.Entity;
 using SharpMC.Core.Utils;
-using SharpMC.Core.Worlds;
 
 namespace SharpMC.Core.Networking.Packages
 {

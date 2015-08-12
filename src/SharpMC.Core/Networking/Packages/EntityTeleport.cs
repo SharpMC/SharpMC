@@ -61,21 +61,5 @@ namespace SharpMC.Core.Networking.Packages
 				Buffer.FlushData();
 			}
 		}
-
-		public static void Broadcast(Player player, Level level)
-		{
-			foreach (var i in level.OnlinePlayers)
-			{
-				if (i != player)
-					new EntityTeleport(i.Wrapper)
-					{
-						Coordinates = player.KnownPosition.ToVector3(),
-						OnGround = player.KnownPosition.OnGround,
-						UniqueServerId = player.EntityId,
-						Pitch = (byte) player.KnownPosition.Pitch,
-						Yaw = (byte) player.KnownPosition.Yaw
-					}.Write();
-			}
-		}
 	}
 }

@@ -22,7 +22,6 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 
-using System;
 using System.Net.Sockets;
 using SharpMC.Core.Entity;
 using SharpMC.Core.Utils;
@@ -34,6 +33,7 @@ namespace SharpMC.Core.Networking
 	{
 		protected Package(ClientWrapper client)
 		{
+			if (client == null) return;
 			if (!client.TcpClient.Connected) return;
 			Client = client;
 			Stream = client.TcpClient.GetStream();
@@ -42,6 +42,7 @@ namespace SharpMC.Core.Networking
 
 		protected Package(ClientWrapper client, DataBuffer buffer)
 		{
+			if (client == null) return;
 			if (!client.TcpClient.Connected) return;
 			Client = client;
 			Stream = client.TcpClient.GetStream();
@@ -71,7 +72,7 @@ namespace SharpMC.Core.Networking
 
 		public void Broadcast(Level level, bool self = true, Player source = null)
 		{
-			foreach (var i in level.OnlinePlayers)
+			foreach (var i in level.GetOnlinePlayers)
 			{
 				try
 				{

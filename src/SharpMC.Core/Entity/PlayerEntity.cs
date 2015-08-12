@@ -69,7 +69,7 @@ namespace SharpMC.Core.Entity
 		//Client settings
 		public string Locale { get; set; }
 		public byte ViewDistance { get; set; }
-		public byte ChatFlags { get; set; }
+		public int ChatFlags { get; set; }
 		public bool ChatColours { get; set; }
 		public byte SkinParts { get; set; }
 		public int MainHand { get; set; }
@@ -183,8 +183,8 @@ namespace SharpMC.Core.Entity
 
 		public void PlayerAnimation(Animations animation, byte hand = 0)
 		{
-			var packet = new Animation(null) {EntityId = EntityId, AnimationId = (byte)animation, Hand = hand};
-			Level.BroadcastPacket(packet);
+			var packet = new Animation(Wrapper) {EntityId = EntityId, AnimationId = (byte)animation, Hand = hand};
+			Level.BroadcastPacket(packet, false);
 		}
 
 		#endregion
@@ -364,7 +364,7 @@ namespace SharpMC.Core.Entity
 
 		public void GetEntitysInChunk(int chunkX, int chunkZ)
 		{
-			foreach (var player in Level.OnlinePlayers)
+			foreach (var player in Level.GetOnlinePlayers)
 			{
 				if (player == this) continue;
 

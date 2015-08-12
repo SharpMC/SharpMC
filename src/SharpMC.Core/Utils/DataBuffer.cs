@@ -397,7 +397,7 @@ namespace SharpMC.Core.Utils
 				var allData = _bffr.ToArray();
 				_bffr.Clear();
 
-				if (ServerSettings.UseCompression && _client.PacketMode == PacketMode.Play)
+				if (ServerSettings.UseCompression && _client.PacketMode == PacketMode.Play && _client.SetCompressionSend)
 				{
 					bool isOver = (allData.Length >= ServerSettings.CompressionThreshold);
 					int dataLength = isOver ? allData.Length : 0;
@@ -407,10 +407,25 @@ namespace SharpMC.Core.Utils
 
 					//Create all data
 					var compressedBytes = ZlibStream.CompressBuffer(allData);
+					int packetlength = compressedBytes.Length + dLength.Length;
+					var dataToSend = isOver ? compressedBytes : allData;
+
 					var compressed = new DataBuffer(_client);
-					compressed.WriteVarInt(compressedBytes.Length + dLength.Length);
+					compressed.WriteVarInt(packetlength);
 					compressed.WriteVarInt(dataLength);
-					compressed.Write(isOver ? compressedBytes : allData);
+					compressed.Write(dataToSend);
+
+					Console.WriteLine();
+
+					Console.WriteLine("Packet bigger than Threshold: " + isOver);
+					Console.WriteLine("Packet info: ");
+
+					Console.WriteLine("(Header) Packet Length: " + packetlength);
+					Console.WriteLine("(Header) Data Length: " + dataLength);
+					Console.WriteLine("Data Length " + dataToSend.Length);
+					Console.WriteLine("Length difference: " + (packetlength - dataToSend.Length));
+
+					Console.WriteLine();
 
 					_client.AddToQuee(compressed.ExportWriter, quee);
 				}
@@ -435,7 +450,7 @@ namespace SharpMC.Core.Utils
 			catch (Exception ex)
 			{
 			//	ConsoleFunctions.WriteErrorLine("Failed to send a packet!\n" + ex);
-				Globals.ClientManager.PacketError(_client);
+				Globals.ClientManager.PacketError(_client, ex);
 			}
 		}
 

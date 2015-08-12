@@ -221,7 +221,6 @@ namespace SharpMC.Core.Networking
 				}
 				catch (Exception ex)
 				{
-					Client.ThreadPool.KillAllThreads();
 					//Exception, disconnect!
 					ConsoleFunctions.WriteDebugLine("Error: \n" + ex);
 					if (ServerSettings.ReportExceptionsToClient)
@@ -241,18 +240,28 @@ namespace SharpMC.Core.Networking
 					break;
 				}
 			}
+
+			if (Client.Kicked)
+			{
+				new Disconnect(Client)
+				{
+					Reason = new McChatMessage("§fYou were kicked because of a network problem!")
+				}.Write();
+			}
+			
 			//Close the connection with the client. :)
 			Client.ThreadPool.KillAllThreads();
 			//Client.StopKeepAliveTimer();
-			Globals.ClientManager.RemoveClient(Client);
 
 			if (Client.Player != null)
 			{
 				Client.Player.SavePlayer();
-				Client.Player.Level.RemovePlayer(Client.Player);
+				Client.Player.Level.RemovePlayer(Client.Player.EntityId);
 				Client.Player.Level.BroadcastPlayerRemoval(Client);
 			}
+
 			Client.TcpClient.Close();
+			Globals.ClientManager.RemoveClient(Client);
 			Thread.CurrentThread.Abort();
 		}
 	}

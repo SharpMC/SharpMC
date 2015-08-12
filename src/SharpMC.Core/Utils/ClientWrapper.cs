@@ -55,6 +55,7 @@ namespace SharpMC.Core.Utils
 		internal int Protocol = 0;
 		internal int ClientIdentifier = -1;
 		public bool Kicked = false;
+		public bool SetCompressionSend = false;
 
 		public ClientWrapper(TcpClient client)
 		{
@@ -133,25 +134,26 @@ namespace SharpMC.Core.Utils
 					}
 					Globals.ClientManager.CleanErrors(this);
 				}
-				catch
+				catch(Exception ex)
 				{
 					//ConsoleFunctions.WriteErrorLine("Failed to send a packet!");
-					Globals.ClientManager.PacketError(this);
+					Globals.ClientManager.PacketError(this, ex);
 				}
 			}
 		}
 
-		public void DoTick(object source, ElapsedEventArgs e)
+		public long GetLastPing
 		{
-
+			get { return lastPing; }
 		}
-
 		private long lastPing = 0;
 		public void UpdatePing()
 		{
 			var time = UnixTimeNow();
 			var ping = time - lastPing;
 			lastPing = time;
+			Globals.ClientManager.ReportPing(this);
+
 			var packet = new PlayerListItem(null)
 			{
 				Action = 2,

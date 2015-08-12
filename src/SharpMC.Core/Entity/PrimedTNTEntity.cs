@@ -43,7 +43,7 @@ namespace SharpMC.Core.Entity
 
 		public override void DespawnEntity()
 		{
-			foreach (var i in Level.OnlinePlayers)
+			foreach (var i in Level.GetOnlinePlayers)
 			{
 				var spawnedBy = i.Wrapper;
 
@@ -58,7 +58,7 @@ namespace SharpMC.Core.Entity
 		public override void SpawnEntity()
 		{
 			Level.AddEntity(this);
-			foreach (var i in Level.OnlinePlayers)
+			foreach (var i in Level.GetOnlinePlayers)
 			{
 				var spawnedBy = i.Wrapper;
 				new SpawnObject(spawnedBy)
@@ -81,7 +81,7 @@ namespace SharpMC.Core.Entity
 			{
 				DespawnEntity();
 
-				foreach (var player in Level.OnlinePlayers)
+				foreach (var player in Level.GetOnlinePlayers)
 				{
 					new Particle(player.Wrapper)
 					{

@@ -42,7 +42,7 @@ namespace SharpMC.Core.Networking.Packages
 		{
 			var locale = Buffer.ReadString();
 			var viewDistance = (byte) Buffer.ReadByte();
-			var chatFlags = (byte) Buffer.ReadByte();
+			var chatFlags = Buffer.ReadVarInt();
 			var chatColours = Buffer.ReadBool();
 			var skinParts = (byte) Buffer.ReadByte();
 			var mainHand = Buffer.ReadVarInt();

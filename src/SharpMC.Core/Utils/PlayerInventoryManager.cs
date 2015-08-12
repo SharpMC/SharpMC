@@ -60,6 +60,8 @@ namespace SharpMC.Core.Utils
 			SetSlot(41, 327, 0, 1);
 			SetSlot(42, 326, 0, 1);
 			SetSlot(40, 325, 0, 1);
+
+			UpdateHandItems();
 		}
 
 		public ItemStack ClickedItem { get; set; }
@@ -143,6 +145,7 @@ namespace SharpMC.Core.Utils
 					}.Write();
 				}
 			}
+			UpdateHandItems();
 		}
 
 		public bool AddItem(ItemStack item)
@@ -297,6 +300,7 @@ namespace SharpMC.Core.Utils
 				byte itemCount = (byte)buffer.ReadByte();
 
 				_slots[slotId] = new ItemStack(itemId, itemCount, metaData);
+				UpdateHandItems();
 			}
 		}
 	}

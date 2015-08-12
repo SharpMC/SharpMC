@@ -26,6 +26,7 @@ using System;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using System.Timers;
 using SharpMC.Core.Blocks;
@@ -44,7 +45,7 @@ namespace SharpMC.Core.Worlds
 		{
 			CurrentWorldTime = 1200;
 			Day = 1;
-			OnlinePlayers = new List<Player>();
+			OnlinePlayers = new Dictionary<int, Player>();
 			DefaultGamemode = Config.GetProperty("Gamemode", Gamemode.Survival);
 			BlockWithTicks = new Dictionary<Vector3, int>();
 			StartTimeOfDayTimer();
@@ -58,7 +59,7 @@ namespace SharpMC.Core.Worlds
 		internal int Difficulty { get; set; }
 		internal Gamemode DefaultGamemode { get; set; }
 		internal LvlType LevelType { get; set; }
-		internal List<Player> OnlinePlayers { get; private set; }
+		internal Dictionary<int, Player> OnlinePlayers { get; private set; }
 		internal int CurrentWorldTime { get; set; }
 		internal int Day { get; set; }
 		public WorldProvider Generator { get; set; }
@@ -81,31 +82,40 @@ namespace SharpMC.Core.Worlds
 
 		public Player[] GetOnlinePlayers
 		{
-			get { return OnlinePlayers.ToArray(); }
+			get { return OnlinePlayers.Values.ToArray(); }
 		}
 
 		#endregion
 
 		public void RemovePlayer(Player player)
 		{
+			RemovePlayer(player.EntityId);
+		}
+
+		public void RemovePlayer(int entityId)
+		{
 			lock (OnlinePlayers)
 			{
-				OnlinePlayers.Remove(player);
+				if (OnlinePlayers.ContainsKey(entityId))
+				{
+					OnlinePlayers.Remove(entityId);
+				}
 			}
 		}
 
 		public Player GetPlayer(int entityId)
 		{
-			foreach (var p in OnlinePlayers)
+			if (OnlinePlayers.ContainsKey(entityId))
 			{
-				if (p.EntityId == entityId) return p;
+				return OnlinePlayers[entityId];
 			}
+
 			return null;
 		}
 
 		public void AddPlayer(Player player)
 		{
-			OnlinePlayers.Add(player);
+			OnlinePlayers.Add(player.EntityId, player);
 
 			new PlayerListItem(player.Wrapper)
 			{
@@ -142,7 +152,7 @@ namespace SharpMC.Core.Worlds
 
 		public void BroadcastChat(McChatMessage message, ChatMessageType messagetype, Player sender)
 		{
-			foreach (var i in OnlinePlayers)
+			foreach (var i in OnlinePlayers.Values)
 			{
 				if (i == sender)
 				{
@@ -154,7 +164,7 @@ namespace SharpMC.Core.Worlds
 
 		internal void IntroduceNewPlayer(ClientWrapper caller)
 		{
-			foreach (var i in OnlinePlayers)
+			foreach (var i in OnlinePlayers.Values)
 			{
 				if (i.Wrapper != caller)
 				{
@@ -262,7 +272,7 @@ namespace SharpMC.Core.Worlds
 			DoPhysics(x, y + 1, z);
 			DoPhysics(x, y, z - 1);
 			DoPhysics(x, y, z + 1);
-			DoPhysics(x,y,z);
+			DoPhysics(x, y, z);
 		}
 
 		private void DoPhysics(int x, int y, int z)
@@ -291,8 +301,15 @@ namespace SharpMC.Core.Worlds
 
 		public void BroadcastPacket(Package package)
 		{
-			foreach (var i in OnlinePlayers)
+			BroadcastPacket(package, true);
+		}
+
+		public void BroadcastPacket(Package package, bool self)
+		{
+			foreach (var i in OnlinePlayers.Values)
 			{
+				if (i == null) continue;
+				if (!self && package.Client != null && i.Wrapper.ClientIdentifier == package.Client.ClientIdentifier) continue;
 				package.SetTarget(i.Wrapper);
 				package.Write();
 			}
@@ -338,7 +355,7 @@ namespace SharpMC.Core.Worlds
 
 			lock (OnlinePlayers)
 			{
-				foreach (var i in OnlinePlayers)
+				foreach (var i in OnlinePlayers.Values)
 				{
 					new TimeUpdate(i.Wrapper) {Time = CurrentWorldTime, Day = Day}.Write();
 				}
@@ -375,14 +392,14 @@ namespace SharpMC.Core.Worlds
             if(Timetorain == 0 && !Raining)
             {
                 Raining = true;
-                foreach (var player in OnlinePlayers.ToArray())
-                {
-                    new ChangeGameState(player.Wrapper)
-                    {
-                        Reason = GameStateReason.BeginRaining,
-                        Value = (float)1
-                    }.Write();
-                }
+
+				var packet = new ChangeGameState(null)
+				{
+					Reason = GameStateReason.BeginRaining,
+					Value = (float)1
+				};
+				BroadcastPacket(packet);
+
                 Timetorain = Globals.Rand.Next(12000, 36000);
             }
             else if(!Raining)
@@ -392,14 +409,14 @@ namespace SharpMC.Core.Worlds
             else if(Raining && Timetorain == 0)
             {
                 Raining = false;
-                foreach (var player in OnlinePlayers.ToArray())
-                {
-                    new ChangeGameState(player.Wrapper)
-                    {
-                        Reason = GameStateReason.EndRaining,
-                        Value = (float)1
-                    }.Write();
-                }
+
+	            var packet = new ChangeGameState(null)
+	            {
+		            Reason = GameStateReason.EndRaining,
+		            Value = (float) 1
+	            };
+                BroadcastPacket(packet);
+
                 Timetorain = Globals.Rand.Next(24000, 96000);
             }
             else if(Raining)
@@ -428,7 +445,7 @@ namespace SharpMC.Core.Worlds
 				}
 			}
 
-			foreach (var player in OnlinePlayers.ToArray())
+			foreach (var player in OnlinePlayers.Values.ToArray())
 			{
 				player.OnTick();
 			}
