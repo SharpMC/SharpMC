@@ -6,7 +6,7 @@
 What is SharpMC?
 ----------------
 SharpMC is a Minecraft server written in C# made by Kennyvv.
-It is a hobby project with the goal is to create an alternative to Spigot/Bukkit/Sponge.
+It is a hobby project with the goal to create an alternative to Spigot/Bukkit/Sponge.
 Recently BuddyTex joined me, so please welcome him to the team! :)
 
 Will this be an alternative to Spigot/Bukkit/Sponge?
