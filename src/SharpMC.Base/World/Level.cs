@@ -4,8 +4,9 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using log4net;
+using Microsoft.Extensions.Logging;
 using SharpMC.Entities;
+using SharpMC.Log;
 using SharpMC.Network.Packets;
 using SharpMC.Util;
 using SharpMC.World.Generators;
@@ -14,7 +15,7 @@ namespace SharpMC.World
 {
 	public class Level : IDisposable
 	{
-		private static readonly ILog Log = LogManager.GetLogger(typeof (Level));
+		private static readonly ILogger Log= LogManager.GetLogger(typeof (Level));
 
 		private EntityManager EntityManager { get; }
 		private ConcurrentDictionary<int, Player> Players { get; } 
@@ -27,9 +28,10 @@ namespace SharpMC.World
 		public int PlayerCount => Players.Count;
 
 		public IWorldGenerator WorldGenerator { get; }
+
 		public Level(string name, IWorldGenerator worldGenerator)
 		{
-			Name = name;
+            Name = name;
 			WorldGenerator = worldGenerator;
 			EntityManager = new EntityManager();
 			Players = new ConcurrentDictionary<int, Player>();
@@ -72,7 +74,7 @@ namespace SharpMC.World
 				count++;
 			}
 			chunkLoading.Stop();
-			Log.InfoFormat("World pre-cache {0} chunks completed in {1}ms", count, chunkLoading.ElapsedMilliseconds);
+			Log.LogInformation("World pre-cache {0} chunks completed in {1}ms", count, chunkLoading.ElapsedMilliseconds);
 
 			TickTimer = new Timer(OnTick, null, 50, 50);
 		}

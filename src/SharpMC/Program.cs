@@ -1,22 +1,30 @@
-﻿using SharpCore;
-using SharpMC.Core;
+﻿using System;
+using Microsoft.Extensions.Logging;
+using SharpCore;
+using SharpMC.Log;
 using TestPlugin;
+using L = Microsoft.Extensions.Logging.LoggerFactory;
 
 namespace SharpMC
 {
-	internal static class Program
-	{
-		private static SharpMcServer _server;
+    internal static class Program
+    {
+        private static MinecraftServer _server;
 
-		private static void Main(string[] args)
-		{
-			// ReSharper disable ObjectCreationAsStatement
-			new Main();
+        private static void Main(string[] args)
+        {
+            // ReSharper disable ObjectCreationAsStatement
+            new Main();
             new Test();
-			// ReSharper restore ObjectCreationAsStatement
+            // ReSharper restore ObjectCreationAsStatement
 
-			_server = new SharpMcServer();
-			_server.StartServer();
-		}
-	}
+            using var logFactory = L.Create(builder => builder.AddConsole());
+            LogManager.Factory = logFactory;
+
+            _server = new MinecraftServer();
+            _server.Start();
+            Console.ReadLine();
+            _server.Stop();
+        }
+    }
 }

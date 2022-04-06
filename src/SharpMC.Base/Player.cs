@@ -1,7 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using log4net;
+using Microsoft.Extensions.Logging;
 using SharpMC.Entities;
+using SharpMC.Log;
 using SharpMC.Network.Packets.Play;
 using SharpMC.Util;
 
@@ -9,7 +10,7 @@ namespace SharpMC
 {
 	public class Player : Entity
 	{
-		private static readonly ILog Log = LogManager.GetLogger(typeof (Player));
+		private static readonly ILogger Log = LogManager.GetLogger(typeof(Player));
 
 		private Dictionary<Tuple<int,int>, byte[]> ChunksUsed = new Dictionary<Tuple<int, int>, byte[]>(); 
 
@@ -27,8 +28,8 @@ namespace SharpMC
 		public int ViewDistance { get; set; } = 8;
 
 		public Player(MCNetConnection connection, MinecraftServer server, string username) : base(null)
-		{
-			Server = server;
+        {
+            Server = server;
 
 			Connection = connection;
 			Username = username;
@@ -136,7 +137,7 @@ namespace SharpMC
 
 		public void Disconnect(string reason)
 		{
-			Log.WarnFormat("Kicking player {0} with reason: {1}", Username, reason);
+			Log.LogWarning("Kicking player {0} with reason: {1}", Username, reason);
 		}
 
 		public override void SpawnToPlayers(Player[] players)

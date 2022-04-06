@@ -4,7 +4,8 @@ using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Security.Cryptography;
-using log4net;
+using Microsoft.Extensions.Logging;
+using SharpMC.Log;
 
 /// <summary>
 /// A class file to aide in working with ASN.1 encoded
@@ -473,8 +474,8 @@ namespace SharpMC.Util.Encryption
 
       return new AsnMessage(privateKeyInfo.GetBytes(), "PKCS#8");
     }
-    
-    private static readonly ILog Log = LogManager.GetLogger(typeof (AsnKeyBuilder));
+
+    private static readonly ILogger Log = LogManager.GetLogger(typeof (AsnKeyBuilder));
     
 		public static RSA DecodePublicKey(byte[] publicKeyBytes)
 		{
@@ -497,7 +498,7 @@ namespace SharpMC.Util.Encryption
 					case 0x8230:
 						rd.ReadInt16(); break;
 					default:
-                        Log.Warn($"PublicKey Decode Returning null!");
+                        Log.LogWarning($"PublicKey Decode Returning null!");
 						return null;
 				}
 
@@ -509,14 +510,14 @@ namespace SharpMC.Util.Encryption
 					rd.ReadInt16();
                 else
                 {
-                    Log.Warn($"PublicKey Decode Returning null! (shortvalue 1)");
+                    Log.LogWarning($"PublicKey Decode Returning null! (shortvalue 1)");
                     return null;
                 }
 
                 byteValue = rd.ReadByte();
                 if (byteValue != 0x00)
                 {
-                    Log.Warn($"PublicKey Decode Returning null! (bytevalue)");
+                    Log.LogWarning($"PublicKey Decode Returning null! (bytevalue)");
                     return null;
                 }
 
@@ -526,7 +527,7 @@ namespace SharpMC.Util.Encryption
 					rd.ReadInt16();
                 else
                 {
-                    Log.Warn($"PublicKey Decode Returning null! (Shortvalue 2)");
+                    Log.LogWarning($"PublicKey Decode Returning null! (Shortvalue 2)");
                     return null;
                 }
 
@@ -552,7 +553,7 @@ namespace SharpMC.Util.Encryption
 			}
 			catch (Exception e)
 			{
-                Log.Warn($"PublicKey Decode Exception: {e}");
+                Log.LogWarning($"PublicKey Decode Exception: {e}");
 				return null;
 			}
 			finally

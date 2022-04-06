@@ -1,10 +1,6 @@
-﻿#region Imports
-
-using System;
+﻿using System;
 using System.Net.Sockets;
 using SharpMC.Network.Events;
-
-#endregion
 
 namespace SharpMC.Network
 {

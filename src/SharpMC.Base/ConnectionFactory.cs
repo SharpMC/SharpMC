@@ -4,10 +4,11 @@ using SharpMC.Network;
 namespace SharpMC
 {
 	public class ConnectionFactory : NetConnectionFactory
-	{
+    {
 		private MinecraftServer Server { get; }
-		public ConnectionFactory(MinecraftServer server)
-		{
+
+        public ConnectionFactory(MinecraftServer server)
+        {
 			Server = server;
 		}
 

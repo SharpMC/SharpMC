@@ -1,6 +1,7 @@
 ﻿using System.Net;
-using log4net;
+using Microsoft.Extensions.Logging;
 using SharpMC.API;
+using SharpMC.Log;
 using SharpMC.Network;
 using SharpMC.Network.Packets;
 using SharpMC.Util;
@@ -10,7 +11,7 @@ namespace SharpMC
 {
 	public class MinecraftServer
 	{
-		private static readonly ILog Log = LogManager.GetLogger(typeof (MinecraftServer));
+		private static readonly ILogger Log = LogManager.GetLogger(typeof(MinecraftServer));
 
 		private NetServer Server { get; }
 		public ServerInfo Info { get; }
@@ -20,8 +21,8 @@ namespace SharpMC
 		public LevelManager LevelManager { get; }
 
 		public MinecraftServer()
-		{
-			Log.Info("Initializing...");
+        {
+            Log.LogInformation("Initializing...");
 			MCPacketFactory.Load();
 
 			Server = new NetServer(new NetConfiguration()
@@ -42,7 +43,7 @@ namespace SharpMC
 
 			Info = new ServerInfo(this);
 
-			Log.Info("Generating RSA keypair...");
+			Log.LogInformation("Generating RSA keypair...");
 			//RsaEncryption = null;
 			RsaEncryption = new EncryptionHolder();
 		}
@@ -50,7 +51,7 @@ namespace SharpMC
 		public void Start()
 		{
 			Server.Start();
-			Log.Info("Server ready for connections.");
+			Log.LogInformation("Server ready for connections.");
 		}
 
 		public void Stop()

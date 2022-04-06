@@ -1,8 +1,4 @@
-﻿#region Imports
-
-using System.Net;
-
-#endregion
+﻿using System.Net;
 
 namespace SharpMC.Network
 {

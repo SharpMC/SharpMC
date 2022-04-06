@@ -4,8 +4,9 @@ using System.Net;
 using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
-using log4net;
+using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using SharpMC.Log;
 using SharpMC.Network;
 using SharpMC.Network.Events;
 using SharpMC.Network.Packets;
@@ -19,7 +20,7 @@ namespace SharpMC
 {
 	public class MCNetConnection : NetConnection
 	{
-		private static readonly ILog Log = LogManager.GetLogger(typeof (MCNetConnection));
+		private static readonly ILogger Log = LogManager.GetLogger(typeof(MCNetConnection));
 
 		private MinecraftServer Server { get; }
 		private Player Player { get; set; }
@@ -28,8 +29,8 @@ namespace SharpMC
 
 		public MCNetConnection(MinecraftServer server, Direction direction, Socket socket)
 			: base(direction, socket)
-		{
-			Server = server;
+        {
+            Server = server;
 			OnConnectionClosed += OnConnectionClosedEvent;
 		}
 
@@ -114,7 +115,7 @@ namespace SharpMC
 			{
 				if (!decrypted[i].Equals(_encryptionVerification[i]))
 				{
-					Log.Warn("Encryption verification failed!");
+					Log.LogWarning("Encryption verification failed!");
 					return;
 				}
 			}

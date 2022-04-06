@@ -5,11 +5,11 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="log4net" Version="2.0.14" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\SharpMC.Log\SharpMC.Log.csproj" />
     <ProjectReference Include="..\SharpMC.Network\SharpMC.Network.csproj" />
   </ItemGroup>
 

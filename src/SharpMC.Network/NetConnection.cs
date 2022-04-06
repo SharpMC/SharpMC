@@ -1,6 +1,4 @@
-﻿#region Imports
-
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Net;
@@ -8,24 +6,24 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Ionic.Zlib;
-using log4net;
+using Microsoft.Extensions.Logging;
+using SharpMC.Log;
 using SharpMC.Network.Events;
 using SharpMC.Network.Packets;
 using SharpMC.Network.Util;
-
-#endregion
 
 namespace SharpMC.Network
 {
     public delegate void ConnectionConfirmed(NetConnection conn);
     public class NetConnection
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(NetConnection));
+        private static readonly ILogger Log = LogManager.GetLogger(typeof(NetConnection));
         
         private CancellationTokenSource CancellationToken { get; }
         private ConnectionConfirmed ConnectionConfirmed { get; }
         private Direction Direction { get; }
         private Socket Socket { get; }
+
         public NetConnection(Direction direction, Socket socket, ConnectionConfirmed confirmdAction = null)
         {
             Direction = direction;
@@ -192,7 +190,7 @@ namespace SharpMC.Network
 							packet = MCPacketFactory.GetPacket(ConnectionState, packetId);
 							if (packet == null)
 							{
-								Log.Warn($"Unhandled package! 0x{packetId.ToString("x2")}");
+								Log.LogWarning($"Unhandled package! 0x{packetId.ToString("x2")}");
 								continue;
 							}
 							packet.Decode(new MinecraftStream(new MemoryStream(packetData)));
@@ -203,12 +201,12 @@ namespace SharpMC.Network
             }
             catch(Exception ex)
             {
-	            Log.Warn("OH NO", ex);
+	            Log.LogWarning("OH NO", ex);
                 if (ex is OperationCanceledException) return;
                 if (ex is EndOfStreamException) return;
                 if (ex is IOException) return;
 
-                Log.Error("An unhandled exception occured while processing network!", ex);
+                Log.LogError("An unhandled exception occurred while processing network!", ex);
             }
             finally
             {
@@ -228,7 +226,7 @@ namespace SharpMC.Network
             PacketReceivedEventArgs args = (PacketReceivedEventArgs)ar.AsyncState;
             if (args.IsInvalid)
             {
-                Log.Warn("Packet reported as invalid!");
+                Log.LogWarning("Packet reported as invalid!");
             }
         }
 
@@ -252,12 +250,12 @@ namespace SharpMC.Network
 		        {
 			        if (sent != data.Buffer.Length)
 			        {
-				        Log.WarnFormat("Sent {0} out of {1} bytes!", sent, data.Buffer.Length);
+				        Log.LogWarning("Sent {0} out of {1} bytes!", sent, data.Buffer.Length);
 			        }
 		        }
 		        else
 		        {
-			        Log.WarnFormat("Failed to send data! (Reason: {0})", result);
+			        Log.LogWarning("Failed to send data! (Reason: {0})", result);
 		        }
 			}
 			catch { }

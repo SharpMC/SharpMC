@@ -1,20 +1,17 @@
-﻿#region Imports
-
-using System;
+﻿using System;
 using System.Collections.Concurrent;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using log4net;
+using Microsoft.Extensions.Logging;
+using SharpMC.Log;
 using SharpMC.Network.Events;
-
-#endregion
 
 namespace SharpMC.Network
 {
     public class NetServer
     {
-        private static readonly ILog Log = LogManager.GetLogger(typeof(NetServer));
+        private static readonly ILogger Log = LogManager.GetLogger(typeof(NetServer));
         
 		public NetConnectionFactory NetConnectionFactory { get; set; }
 
@@ -23,6 +20,7 @@ namespace SharpMC.Network
 
 		internal NetConfiguration Configuration { get; }
         private Socket ListenerSocket { get; set; }
+        
         public NetServer(NetConfiguration configuration)
         {
             Configuration = configuration;
@@ -85,7 +83,7 @@ namespace SharpMC.Network
             }
             catch
             {
-                Log.Warn("Failed to accept connection!");
+                Log.LogWarning("Failed to accept connection!");
             }
 
             ListenerSocket.BeginAccept(ConnectionCallback, null);
@@ -101,14 +99,14 @@ namespace SharpMC.Network
 					NetConnection nc;
 					if (Connections.TryRemove(args.Connection.RemoteEndPoint, out nc))
 					{
-						Log.Info("Client disconnected!");
+						Log.LogInformation("Client disconnected!");
 					}
 				};
 				conn.Initialize();
 			}
 			else
 			{
-				Log.WarnFormat("Could not create new active connection!");
+				Log.LogWarning("Could not create new active connection!");
 			}
 		}
 
