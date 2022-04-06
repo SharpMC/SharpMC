@@ -61,6 +61,11 @@ namespace SharpMC.Core.API
 
 				foreach (var pluginPath in Directory.GetFiles(pluginDirectory, "*.dll", SearchOption.AllDirectories))
 				{
+					if (pluginPath.Contains("/ref/") || pluginPath.Contains("\\ref\\")) {
+						// Skip modern reference assemblies
+						continue;
+					}
+
 					var newAssembly = Assembly.LoadFile(pluginPath);
 					var types = newAssembly.GetExportedTypes();
 					foreach (var type in types)

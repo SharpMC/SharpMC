@@ -216,3 +216,5 @@ pip-log.txt
 .mr.developer.cfg
 /src/Externals/.idea/
 /src/.idea/
+/src/SharpMC/operators.txt
+/src/SharpMC/server.properties
