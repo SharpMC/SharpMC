@@ -1,9 +1,9 @@
-// Distrubuted under the MIT license
+// Distributed under the MIT license
 // ===================================================
 // SharpMC uses the permissive MIT license.
 // 
 // Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the “Software”), to deal
+// of this software and associated documentation files (the ï¿½Softwareï¿½), to deal
 // in the Software without restriction, including without limitation the rights
 // to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
 // copies of the Software, and to permit persons to whom the Software is
@@ -12,7 +12,7 @@
 // The above copyright notice and this permission notice shall be included in
 // all copies or substantial portions of the Software
 // 
-// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+// THE SOFTWARE IS PROVIDED ï¿½AS ISï¿½, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 // IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
 // FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
 // AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
@@ -20,7 +20,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
 // THE SOFTWARE.
 // 
-// ©Copyright Kenny van Vulpen - 2015
+// ï¿½Copyright Kenny van Vulpen - 2015
 
 using System;
 using System.Security.Cryptography;
@@ -43,7 +43,7 @@ namespace SharpMC.Core.Utils
 		/// <summary>
 		///     Fills the elements of a specified array of bytes with random numbers.
 		/// </summary>
-		/// <param name=” buffer”>An array of bytes to contain random numbers.</param>
+		/// <param name=ï¿½ bufferï¿½>An array of bytes to contain random numbers.</param>
 		public override void GetBytes(byte[] buffer)
 		{
 			_r.GetBytes(buffer);
@@ -62,8 +62,8 @@ namespace SharpMC.Core.Utils
 		/// <summary>
 		///     Returns a random number within the specified range.
 		/// </summary>
-		/// <param name=” minValue”>The inclusive lower bound of the random number returned.</param>
-		/// <param name=” maxValue”>
+		/// <param name=ï¿½ minValueï¿½>The inclusive lower bound of the random number returned.</param>
+		/// <param name=ï¿½ maxValueï¿½>
 		///     The exclusive upper bound of the random number returned. maxValue must be greater than or equal
 		///     to minValue.
 		/// </param>
@@ -83,7 +83,7 @@ namespace SharpMC.Core.Utils
 		/// <summary>
 		///     Returns a nonnegative random number less than the specified maximum
 		/// </summary>
-		/// <param name=” maxValue”>
+		/// <param name=ï¿½ maxValueï¿½>
 		///     The inclusive upper bound of the random number returned. maxValue must be greater than or equal
 		///     0
 		/// </param>

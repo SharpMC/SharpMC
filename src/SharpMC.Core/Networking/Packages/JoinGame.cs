@@ -1,4 +1,4 @@
-﻿// Distrubuted under the MIT license
+﻿// Distributed under the MIT license
 // ===================================================
 // SharpMC uses the permissive MIT license.
 // 

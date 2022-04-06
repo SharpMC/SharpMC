@@ -1,22 +1,13 @@
 # SharpMC
 
-[![Join the chat at https://gitter.im/SharpMC/SharpMC](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/SharpMC/SharpMC?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](http://94.23.50.5:8080/buildStatus/icon?job=SharpMC)](http://94.23.50.5:8080/job/SharpMC/)
+Note
+----
+This fork should run under newest .NET (Core) framework without Mono.
 
 What is SharpMC?
 ----------------
 SharpMC is a Minecraft server written in C# made by Kennyvv.
 It is a hobby project, the goal is to create an alternative to Spigot/Bukkit/Sponge.
-Recently BuddyTex joined me, so please welcome him to the team! :)
-
-Will this be an alternative to Spigot/Bukkit/Sponge?
--------------------------------------------------------
-I must honestly say, i doubt it. It is a hobby project, i don't have the time to work on it that much.
-However, it is my goal! But you have to understand that i'm on my own working on this so it might take some time...
-
-Where can i find the latest build?
-----------------------------------
-We provide a direct download link right here! [Download latest build](http://94.23.50.5:8080/job/SharpMC/lastSuccessfulBuild/artifact/*zip*/archive.zip)
 
 Current Specs
 -----------------
