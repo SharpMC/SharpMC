@@ -28,7 +28,6 @@ using System.IO;
 using System.Net;
 using System.Text;
 using Ionic.Zlib;
-using SharpMC.Core.Networking;
 
 namespace SharpMC.Core.Utils
 {

@@ -28,7 +28,6 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
-using fNbt;
 using SharpMC.Core.Enums;
 using SharpMC.Core.Networking.Packages;
 using SharpMC.Core.TileEntities;

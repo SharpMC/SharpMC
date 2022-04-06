@@ -27,9 +27,6 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Linq;
-using SharpMC.Core.Blocks;
-using SharpMC.Core.Entity;
-using SharpMC.Core.Networking.Packages;
 using SharpMC.Core.Utils;
 
 namespace SharpMC.Core.Worlds.Better

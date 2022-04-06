@@ -23,15 +23,10 @@
 // ©Copyright Kenny van Vulpen - 2015
 
 using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
-using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using fNbt;
 using SharpMC.Core.Blocks;
-using SharpMC.Core.Entity;
-using SharpMC.Core.Networking.Packages;
 using SharpMC.Core.TileEntities;
 using SharpMC.Core.Utils;
 using SharpMC.Core.Worlds.Standard;

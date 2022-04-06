@@ -27,7 +27,6 @@ using System.ComponentModel;
 using System.IO;
 using SharpMC.Core.Entity;
 using SharpMC.Core.Enums;
-using SharpMC.Core.Items;
 
 namespace SharpMC.Core.Utils
 {

@@ -22,8 +22,6 @@
 // 
 // ©Copyright Kenny van Vulpen - 2015
 
-using System;
-using System.Collections;
 using SharpMC.Core.Entity;
 using SharpMC.Core.Enums;
 using SharpMC.Core.Items;

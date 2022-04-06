@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using SharpMC.Core.Worlds;
+﻿using SharpMC.Core.Worlds;
 
 namespace SharpMC.Core.Blocks
 {

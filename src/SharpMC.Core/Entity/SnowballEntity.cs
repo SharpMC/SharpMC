@@ -23,7 +23,6 @@
 // ©Copyright Kenny van Vulpen - 2015
 
 using SharpMC.Core.Enums;
-using SharpMC.Core.Networking.Packages;
 using SharpMC.Core.Worlds;
 
 namespace SharpMC.Core.Entity
