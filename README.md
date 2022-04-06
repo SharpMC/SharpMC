@@ -15,6 +15,30 @@ Current Specs
   - Scripting: C# Plugins
   - Platforms: Windows, Mac, Linux under .NET 6
 
+What is SharpCore?
+----------------
+SharpCore is the main plugin for SharpMC which provides the basic most basic commands needed for server operation.
+
+List of Commands & Permissions
+------------------------------
+
+| Command               | Permission                      | Description                                     |
+|-----------------------|---------------------------------|-------------------------------------------------|
+| /world                | Core.World                      | Teleport between worlds.                        |
+| /tnt                  | Core.TNT                        | Spawn an active TNT entity.                     |
+| /tps                  | Core.Tps                        | Get the current server TPS.                     |
+| /save-all             | Core.Save                       | Save all chunks.                                |
+| /gamemode             | Core.Gamemode                   | Change player gamemode.                         |
+| /stopserver           | Core.StopServer                 | Stops the server.                               |
+| /time                 | Core.Time                       | Gets the current time.                          |
+| /settime              | Core.Time                       | Allows you to set the current time.             |
+| /toggledownfall       | Core.Toggledownfall             | Toggles downfall                                |
+| /msg                  | Core.Msg                        | Message a player,                               |
+| /tp                   | Core.TP                         | Teleports a player to another player.           |
+| /me                   | Core.Me                         | Says something in the third person perspective. |
+| /broadcast            | Core.Broadcast                  | Broadcasts a message to all players.            |
+| /kick                 | Core.Kick                       | Allows the kicking of a player.                 |
+
 Made possible by
 ------------------
   - <a href="http://wiki.vg/">Wiki.VG</a> for providing Protocol information.<br>
@@ -23,7 +47,7 @@ Made possible by
 
 Licensing
 ----------
-SharpMC uses the permissive MIT license.<br><br>
+SharpMC (including SharpCore) uses the permissive MIT license.<br><br>
 
 In a nutshell:<br>
 You are not restricted on usage of SharpMC; commercial, private, etc, all fine.<br>

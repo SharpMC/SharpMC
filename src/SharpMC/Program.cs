@@ -1,13 +1,19 @@
-﻿using SharpMC.Core;
+﻿using SharpCore;
+using SharpMC.Core;
 
 namespace SharpMC
 {
-	class Program
+	internal static class Program
 	{
 		private static SharpMcServer _server;
-		static void Main(string[] args)
+
+		private static void Main(string[] args)
 		{
-			_server= new SharpMcServer();
+			// ReSharper disable ObjectCreationAsStatement
+			new Main();
+			// ReSharper restore ObjectCreationAsStatement
+
+			_server = new SharpMcServer();
 			_server.StartServer();
 		}
 	}
