@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Net;
 using System.Text;
+using Newtonsoft.Json;
 using SharpMC.Core.Entity;
 using SharpMC.Core.Utils;
 
@@ -98,11 +99,12 @@ namespace SharpMC.Core.Networking.Packages
 			try
 			{
 				var wc = new WebClient();
-				var result = wc.DownloadString("https://api.mojang.com/users/profiles/minecraft/" + username);
-				var _result = result.Split('"');
-				if (_result.Length > 1)
+                var url = $"https://api.mojang.com/users/profiles/minecraft/{username}";
+				var result = wc.DownloadString(url);
+				var profile = JsonConvert.DeserializeObject<ProfileResult>(result);
+                if (!string.IsNullOrWhiteSpace(profile?.Id))
 				{
-					var uuid = _result[3];
+					var uuid = profile.Id;
 					return new Guid(uuid).ToString();
 				}
 				return Guid.NewGuid().ToString();

@@ -218,3 +218,4 @@ pip-log.txt
 /src/.idea/
 /src/SharpMC/operators.txt
 /src/SharpMC/server.properties
+.vs/

@@ -1,5 +1,6 @@
 ﻿using SharpCore;
 using SharpMC.Core;
+using TestPlugin;
 
 namespace SharpMC
 {
@@ -11,6 +12,7 @@ namespace SharpMC
 		{
 			// ReSharper disable ObjectCreationAsStatement
 			new Main();
+            new Test();
 			// ReSharper restore ObjectCreationAsStatement
 
 			_server = new SharpMcServer();

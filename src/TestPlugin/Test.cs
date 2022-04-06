@@ -6,7 +6,7 @@ using SharpMC.Core.Enums;
 namespace TestPlugin
 {
 	[Plugin]
-    public class TestPlugin : IPlugin
+    public class Test : IPlugin
 	{
 		private PluginContext _context;
 		public void OnEnable(PluginContext context)
