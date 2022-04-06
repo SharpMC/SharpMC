@@ -1,9 +1,5 @@
 # SharpMC
 
-Note
-----
-This fork should run under newest .NET (Core) framework without Mono.
-
 What is SharpMC?
 ----------------
 SharpMC is a Minecraft server written in C# made by Kennyvv.
@@ -17,7 +13,7 @@ Current Specs
   - Physics: Partial
   - Entities: Partial
   - Scripting: C# Plugins
-  - Platforms: Windows. (Mac & Linux using Mono.)
+  - Platforms: Windows, Mac, Linux under .NET 6
 
 Made possible by
 ------------------
