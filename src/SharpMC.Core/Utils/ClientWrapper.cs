@@ -28,10 +28,8 @@ using System.Net.Sockets;
 using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
-using System.Timers;
 using SharpMC.Core.Entity;
 using SharpMC.Core.Networking.Packages;
-using Timer = System.Timers.Timer;
 
 namespace SharpMC.Core.Utils
 {
