@@ -1,6 +1,4 @@
-﻿using SharpMC.Core.Entity;
-using SharpMC.Core.Enums;
-using SharpMC.Core.Utils;
+﻿using SharpMC.Enums;
 
 namespace SharpMC.API
 {

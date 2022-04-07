@@ -1,7 +1,7 @@
 ﻿using System;
-using SharpMC.Core.API;
-using SharpMC.Core.Entity;
-using SharpMC.Core.Enums;
+using SharpMC;
+using SharpMC.Enums;
+using SharpMC.Plugins.API;
 
 namespace TestPlugin
 {

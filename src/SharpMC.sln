@@ -1,25 +1,23 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 2013
-VisualStudioVersion = 12.0.31101.0
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31919.166
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMC.Core", "SharpMC.Core\SharpMC.Core.csproj", "{089ABA36-C58C-40C3-8F88-988BEA720974}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "fNbt", "Externals\fNbt\fNbt.csproj", "{4488498D-976D-4DA3-BF72-109531AF0488}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "fNbt", "Externals\fNbt\fNbt.csproj", "{4488498D-976D-4DA3-BF72-109531AF0488}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TestPlugin", "TestPlugin\TestPlugin.csproj", "{C903E653-062F-49A8-9980-CA1314409DE2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TestPlugin", "TestPlugin\TestPlugin.csproj", "{C903E653-062F-49A8-9980-CA1314409DE2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMC", "SharpMC\SharpMC.csproj", "{4EAF641D-6367-44BA-A522-F5A2CA5822AD}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMC", "SharpMC\SharpMC.csproj", "{4EAF641D-6367-44BA-A522-F5A2CA5822AD}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMC.API", "SharpMC.API\SharpMC.API.csproj", "{49988812-4913-40E4-8A83-66607FBD7309}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMC.API", "SharpMC.API\SharpMC.API.csproj", "{49988812-4913-40E4-8A83-66607FBD7309}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMC.MainOp", "SharpMC.MainOp\SharpMC.MainOp.csproj", "{8F070313-E4A0-4806-8648-09E619ADB57D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMC.MainOp", "SharpMC.MainOp\SharpMC.MainOp.csproj", "{8F070313-E4A0-4806-8648-09E619ADB57D}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMC.Network", "SharpMC.Network\SharpMC.Network.csproj", "{8E836105-E0D7-47DA-807B-8258C2D7CDD4}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMC.Network", "SharpMC.Network\SharpMC.Network.csproj", "{8E836105-E0D7-47DA-807B-8258C2D7CDD4}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMC.Base", "SharpMC.Base\SharpMC.Base.csproj", "{BB9BBCE5-5377-4A9E-9BDD-700B8FC39329}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMC.Base", "SharpMC.Base\SharpMC.Base.csproj", "{BB9BBCE5-5377-4A9E-9BDD-700B8FC39329}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMC.Log", "SharpMC.Log\SharpMC.Log.csproj", "{C6CDAE87-050B-4CAF-8F97-787666FB1329}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SharpMC.Log", "SharpMC.Log\SharpMC.Log.csproj", "{C6CDAE87-050B-4CAF-8F97-787666FB1329}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -33,22 +31,6 @@ Global
 		Release|x86 = Release|x86
 	EndGlobalSection
 	GlobalSection(ProjectConfigurationPlatforms) = postSolution
-		{089ABA36-C58C-40C3-8F88-988BEA720974}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{089ABA36-C58C-40C3-8F88-988BEA720974}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{089ABA36-C58C-40C3-8F88-988BEA720974}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
-		{089ABA36-C58C-40C3-8F88-988BEA720974}.Debug|Mixed Platforms.Build.0 = Debug|Any CPU
-		{089ABA36-C58C-40C3-8F88-988BEA720974}.Debug|x64.ActiveCfg = Debug|Any CPU
-		{089ABA36-C58C-40C3-8F88-988BEA720974}.Debug|x64.Build.0 = Debug|Any CPU
-		{089ABA36-C58C-40C3-8F88-988BEA720974}.Debug|x86.ActiveCfg = Debug|x86
-		{089ABA36-C58C-40C3-8F88-988BEA720974}.Debug|x86.Build.0 = Debug|x86
-		{089ABA36-C58C-40C3-8F88-988BEA720974}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{089ABA36-C58C-40C3-8F88-988BEA720974}.Release|Any CPU.Build.0 = Release|Any CPU
-		{089ABA36-C58C-40C3-8F88-988BEA720974}.Release|Mixed Platforms.ActiveCfg = Release|x86
-		{089ABA36-C58C-40C3-8F88-988BEA720974}.Release|Mixed Platforms.Build.0 = Release|x86
-		{089ABA36-C58C-40C3-8F88-988BEA720974}.Release|x64.ActiveCfg = Release|x86
-		{089ABA36-C58C-40C3-8F88-988BEA720974}.Release|x64.Build.0 = Release|x86
-		{089ABA36-C58C-40C3-8F88-988BEA720974}.Release|x86.ActiveCfg = Release|x86
-		{089ABA36-C58C-40C3-8F88-988BEA720974}.Release|x86.Build.0 = Release|x86
 		{4488498D-976D-4DA3-BF72-109531AF0488}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{4488498D-976D-4DA3-BF72-109531AF0488}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{4488498D-976D-4DA3-BF72-109531AF0488}.Debug|Mixed Platforms.ActiveCfg = Debug|Any CPU
@@ -174,6 +156,9 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {E067B1A3-D8CC-42C0-A63D-5FB7179699BF}
 	EndGlobalSection
 	GlobalSection(MonoDevelopProperties) = preSolution
 		StartupItem = SharpMC.Core\SharpMC.Core.csproj

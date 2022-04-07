@@ -7,7 +7,6 @@
   <ItemGroup>
     <PackageReference Include="Ionic.Zlib.Core" Version="1.0.0" />
     <PackageReference Include="Portable.BouncyCastle" Version="1.9.0" />
-    <PackageReference Include="System.Numerics.Vectors" Version="4.5.0" />
   </ItemGroup>
 
   <ItemGroup>

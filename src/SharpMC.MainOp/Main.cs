@@ -22,8 +22,12 @@
 
 #endregion
 
-using SharpMC.Core.Enums;
+using SharpMC.Core;
+using SharpMC.Core.Entity;
 using SharpMC.Core.Utils;
+using SharpMC.Enums;
+using SharpMC.Plugins.API;
+
 // ReSharper disable UnusedMember.Global
 
 namespace SharpCore
@@ -31,9 +35,7 @@ namespace SharpCore
     using System;
     using System.Linq;
 
-    using SharpMC.Core;
-    using SharpMC.Core.API;
-    using SharpMC.Core.Entity;
+    using SharpMC;
 
     public class Main : IPlugin
     {
@@ -103,16 +105,16 @@ namespace SharpCore
             switch (gamemode)
             {
                 case 0:
-                    player.SetGamemode(SharpMC.Core.Enums.Gamemode.Survival);
+                    player.SetGamemode(SharpMC.Enums.Gamemode.Survival);
                     break;
                 case 1:
-                    player.SetGamemode(SharpMC.Core.Enums.Gamemode.Creative);
+                    player.SetGamemode(SharpMC.Enums.Gamemode.Creative);
                     break;
                 case 2:
-					player.SetGamemode(SharpMC.Core.Enums.Gamemode.Adventure);
+					player.SetGamemode(SharpMC.Enums.Gamemode.Adventure);
                     break;
                 case 3:
-					player.SetGamemode(SharpMC.Core.Enums.Gamemode.Spectator);
+					player.SetGamemode(SharpMC.Enums.Gamemode.Spectator);
                     break;
             }
         }

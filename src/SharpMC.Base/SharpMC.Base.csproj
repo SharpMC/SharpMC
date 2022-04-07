@@ -1,14 +1,17 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>netstandard2.0</TargetFramework>
+	<RootNamespace>SharpMC</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="LibNoise.NetStandart" Version="0.2.0" />
     <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\Externals\fNbt\fNbt.csproj" />
     <ProjectReference Include="..\SharpMC.Log\SharpMC.Log.csproj" />
     <ProjectReference Include="..\SharpMC.Network\SharpMC.Network.csproj" />
   </ItemGroup>

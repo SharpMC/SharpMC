@@ -7,7 +7,6 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SharpMC.Base\SharpMC.Base.csproj" />
-    <ProjectReference Include="..\SharpMC.Core\SharpMC.Core.csproj" />
     <ProjectReference Include="..\SharpMC.MainOp\SharpMC.MainOp.csproj" />
     <ProjectReference Include="..\TestPlugin\TestPlugin.csproj" />
   </ItemGroup>

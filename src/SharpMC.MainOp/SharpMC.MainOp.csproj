@@ -6,7 +6,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SharpMC.Core\SharpMC.Core.csproj" />
+    <ProjectReference Include="..\SharpMC.Base\SharpMC.Base.csproj" />
   </ItemGroup>
 
 </Project>

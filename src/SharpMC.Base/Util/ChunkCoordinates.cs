@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Numerics;
 
 namespace SharpMC.Util
 {
@@ -215,5 +216,11 @@ namespace SharpMC.Util
 				return (X * 397) ^ Z;
 			}
 		}
-	}
+
+		public ChunkCoordinates(Vector2 vec)
+		{
+			X = (int) vec.X;
+			Z = (int) vec.Y;
+		}
+    }
 }
