@@ -77,7 +77,7 @@ namespace SharpMC.Core.Worlds.Better
 			ChunkColumn c;
 			if (ChunkCache.TryGetValue(chunkCoordinates.ToTuple(), out c)) return c;
 
-			if (File.Exists((_folder + "/" + chunkCoordinates.X + "." + chunkCoordinates.Y + ".cfile")))
+			if (File.Exists(_folder + "/" + chunkCoordinates.X + "." + chunkCoordinates.Y + ".cfile"))
 			{
 				var cd = LoadChunk((int) chunkCoordinates.X, (int) chunkCoordinates.Y);
 				lock (ChunkCache)

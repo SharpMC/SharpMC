@@ -13,8 +13,7 @@ namespace SharpMC.Network.Packets.Play
 
 		public override void Decode(MinecraftStream stream)
 		{
-			
-		}
+        }
 
 		public override void Encode(MinecraftStream stream)
 		{

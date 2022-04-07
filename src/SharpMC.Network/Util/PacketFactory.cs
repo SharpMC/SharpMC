@@ -5,12 +5,16 @@ using SharpMC.Network.Framework;
 
 namespace SharpMC.Network.Util
 {
-	public class PacketFactory<TType, TStream, TPacket> where TType : IComparable<TType> where TStream : Stream where TPacket : IPacket<TStream>
+	public class PacketFactory<TType, TStream, TPacket> 
+        where TType : IComparable<TType> 
+        where TStream : Stream
+        where TPacket : IPacket<TStream>
 	{
 		private Dictionary<Type, TType> IdMap { get; }
  		private Dictionary<TType, Func<TPacket>> Packets { get; }
 
 		private readonly object _addLock = new object();
+
 		public PacketFactory()
 		{
 			IdMap = new Dictionary<Type, TType>();
@@ -36,7 +40,7 @@ namespace SharpMC.Network.Util
 			Func<TPacket> p;
 			if (!Packets.TryGetValue(packetId, out p))
 			{
-				packet = default(TPacket);
+				packet = default;
 				return false;
 			}
 			packet = p();
@@ -49,7 +53,7 @@ namespace SharpMC.Network.Util
 			{
 				return true;
 			}
-			id = default(TType);
+			id = default;
 			return false;
 		}
 
@@ -61,16 +65,8 @@ namespace SharpMC.Network.Util
 				packet = (TPacketType) Packets[id]();
 				return true;
 			}
-			packet = default(TPacketType);
+			packet = default;
 			return false;
-		}
-	}
-
-	public class DuplicatePacketIdException<TType> : Exception where TType : IComparable<TType>
-	{
-		internal DuplicatePacketIdException(TType id) : base($"A packet with the id \"{id}\" already exists!")
-		{
-			
 		}
 	}
 }

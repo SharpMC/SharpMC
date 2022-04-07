@@ -42,7 +42,7 @@ namespace SharpMC.Core.Networking.Packages
 				Buffer.WriteInt((int) Y*32);
 				Buffer.WriteInt((int) Z*32);
 				Buffer.WriteByte((byte)Pitch);
-				Buffer.WriteByte((byte)((Yaw/360)*256));
+				Buffer.WriteByte((byte)(Yaw/360*256));
 				Buffer.WriteInt((int) Info);
 				Buffer.WriteShort(VelocityX);
 				Buffer.WriteShort(VelocityY);

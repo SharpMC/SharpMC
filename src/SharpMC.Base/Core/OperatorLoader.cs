@@ -10,15 +10,15 @@ namespace SharpMC.Core
 		{
 			if (File.Exists("operators.txt"))
 			{
-				string[] contents = File.ReadAllLines("operators.txt");
-				foreach (string line in contents)
+				var contents = File.ReadAllLines("operators.txt");
+				foreach (var line in contents)
 				{
 					_ops.Add(line.ToLower());
 				}
 			}
 			else
 			{
-				File.WriteAllLines("operators.txt", new string[] { "#Notice: If your server is in online mode the values have to be a users UUID!" });
+				File.WriteAllLines("operators.txt", new[] { "#Notice: If your server is in online mode the values have to be a users UUID!" });
 			}
 		}
 

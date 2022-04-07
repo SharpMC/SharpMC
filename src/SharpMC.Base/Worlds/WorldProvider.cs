@@ -30,24 +30,24 @@ namespace SharpMC.Worlds
 		{
 			lock (chunksUsed)
 			{
-				Dictionary<Tuple<int, int>, double> newOrders = new Dictionary<Tuple<int, int>, double>();
-				double radiusSquared = viewDistance / Math.PI;
-				double radius = Math.Ceiling(Math.Sqrt(radiusSquared));
-				int centerX = (int)player.KnownPosition.X >> 4;
-				int centerZ = (int)player.KnownPosition.Z >> 4;
+				var newOrders = new Dictionary<Tuple<int, int>, double>();
+				var radiusSquared = viewDistance / Math.PI;
+				var radius = Math.Ceiling(Math.Sqrt(radiusSquared));
+				var centerX = (int)player.KnownPosition.X >> 4;
+				var centerZ = (int)player.KnownPosition.Z >> 4;
 
-				for (double x = -radius; x <= radius; ++x)
+				for (var x = -radius; x <= radius; ++x)
 				{
-					for (double z = -radius; z <= radius; ++z)
+					for (var z = -radius; z <= radius; ++z)
 					{
-						var distance = (x * x) + (z * z);
+						var distance = x * x + z * z;
 						if (distance > radiusSquared)
 						{
 							continue;
 						}
-						int chunkX = (int)(x + centerX);
-						int chunkZ = (int)(z + centerZ);
-						Tuple<int, int> index = new Tuple<int, int>(chunkX, chunkZ);
+						var chunkX = (int)(x + centerX);
+						var chunkZ = (int)(z + centerZ);
+						var index = new Tuple<int, int>(chunkX, chunkZ);
 						newOrders[index] = distance;
 					}
 				}
@@ -90,14 +90,14 @@ namespace SharpMC.Worlds
 				var newOrders = new Dictionary<Tuple<int, int>, double>();
 				var radiusSquared = viewDistance / Math.PI;
 				var radius = Math.Ceiling(Math.Sqrt(radiusSquared));
-				var centerX = (int)(playerX) >> 4;
-				var centerZ = (int)(playerZ) >> 4;
+				var centerX = (int)playerX >> 4;
+				var centerZ = (int)playerZ >> 4;
 
 				for (var x = -radius; x <= radius; ++x)
 				{
 					for (var z = -radius; z <= radius; ++z)
 					{
-						var distance = (x * x) + (z * z);
+						var distance = x * x + z * z;
 						if (distance > radiusSquared)
 						{
 							continue;

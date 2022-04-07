@@ -69,7 +69,7 @@ namespace SharpMC.Core.Networking
 					}*/
 					if (ClientPing.ContainsKey(c.ClientIdentifier))
 					{
-						if ((UnixTimeNow() - ClientPing[c.ClientIdentifier]) > 2000)
+						if (UnixTimeNow() - ClientPing[c.ClientIdentifier] > 2000)
 						{
 							PacketError(c, new Exception("Ping timeout"));
 						}
@@ -82,7 +82,7 @@ namespace SharpMC.Core.Networking
 		{
 			if (PacketErrors.ContainsKey(client.ClientIdentifier))
 			{
-				int errors = PacketErrors[client.ClientIdentifier];
+				var errors = PacketErrors[client.ClientIdentifier];
 				PacketErrors[client.ClientIdentifier] = errors + 1;
 
 				if (ServerSettings.DisplayPacketErrors)
@@ -125,7 +125,7 @@ namespace SharpMC.Core.Networking
 
 		private long UnixTimeNow()
 		{
-			var timeSpan = (DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0));
+			var timeSpan = DateTime.UtcNow - new DateTime(1970, 1, 1, 0, 0, 0);
 			return (long)timeSpan.TotalSeconds;
 		}
 	}

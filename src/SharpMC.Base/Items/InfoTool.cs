@@ -19,12 +19,12 @@ namespace SharpMC.Items
             var blockatpos = world.GetBlock(blockCoordinates);
             if (!(blockatpos is BlockAir))
             {
-                BitArray b = new BitArray(new byte[] { blockatpos.Metadata });
+                var b = new BitArray(new[] { blockatpos.Metadata });
                 ConsoleFunctions.WriteLine("\n\n");
                 ConsoleFunctions.WriteInfoLine("------------------------------------");
                 ConsoleFunctions.WriteInfoLine("Block: " + blockatpos);
                 ConsoleFunctions.WriteInfoLine("------------------------------------");
-                for (int i = 0; i < b.Count; i++)
+                for (var i = 0; i < b.Count; i++)
                 {
                     ConsoleFunctions.WriteInfoLine("Bit " + i + ": " + b[i]);
                 }

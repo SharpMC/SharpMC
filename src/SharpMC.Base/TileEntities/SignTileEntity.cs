@@ -51,7 +51,7 @@ namespace SharpMC.TileEntities
 		{
 			NbtString text;
 			compound.TryGet(key, out text);
-			return text != null ? (text.StringValue ?? string.Empty) : string.Empty;
+			return text != null ? text.StringValue ?? string.Empty : string.Empty;
 		}
 	}
 }

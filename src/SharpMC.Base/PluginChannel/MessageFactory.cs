@@ -9,8 +9,8 @@ namespace SharpMC.PluginChannel
 
 		public MessageFactory()
 		{
-			Messages = new Dictionary<string, PluginMessage>()
-			{
+			Messages = new Dictionary<string, PluginMessage>
+            {
 				{"MC", new BrandMessage() }
 			};
 		}
@@ -24,9 +24,9 @@ namespace SharpMC.PluginChannel
 
 		public bool HandleMessage(ClientWrapper client, DataBuffer buffer)
 		{
-			string raw = buffer.ReadString();
-			string channel = raw.Split('|')[0];
-			string command = raw.Split('|')[1];
+			var raw = buffer.ReadString();
+			var channel = raw.Split('|')[0];
+			var command = raw.Split('|')[1];
 
 			foreach (var msg in Messages)
 			{

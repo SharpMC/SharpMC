@@ -17,7 +17,7 @@ namespace SharpMC.Util
 		    }
 		    set
 		    {
-			    int val = value;
+			    var val = value;
 			    _seed = val;
 			    Random = new Random(val);
 		    }
@@ -65,23 +65,23 @@ namespace SharpMC.Util
             x *= frequency;
             z *= frequency;
 
-            int xInt = (x > .0 ? (int)x : (int)x - 1);
-            int zInt = (z > .0 ? (int)z : (int)z - 1);
+            var xInt = x > .0 ? (int)x : (int)x - 1;
+            var zInt = z > .0 ? (int)z : (int)z - 1;
 
-            double minDist = 32000000.0;
+            var minDist = 32000000.0;
 
             double xCandidate = 0;
             double zCandidate = 0;
 
-            for (int zCur = zInt - 2; zCur <= zInt + 2; zCur++)
+            for (var zCur = zInt - 2; zCur <= zInt + 2; zCur++)
             {
-                for (int xCur = xInt - 2; xCur <= xInt + 2; xCur++)
+                for (var xCur = xInt - 2; xCur <= xInt + 2; xCur++)
                 {
-                    double xPos = xCur + ValueNoise2D(xCur, zCur, Seed);
-                    double zPos = zCur + ValueNoise2D(xCur, zCur, Random.NextLong());
-                    double xDist = xPos - x;
-                    double zDist = zPos - z;
-                    double dist = xDist * xDist + zDist * zDist;
+                    var xPos = xCur + ValueNoise2D(xCur, zCur, Seed);
+                    var zPos = zCur + ValueNoise2D(xCur, zCur, Random.NextLong());
+                    var xDist = xPos - x;
+                    var zDist = zPos - z;
+                    var dist = xDist * xDist + zDist * zDist;
 
                     if (dist < minDist)
                     {
@@ -94,14 +94,14 @@ namespace SharpMC.Util
 
             if (_useDistance)
             {
-                double xDist = xCandidate - x;
-                double zDist = zCandidate - z;
+                var xDist = xCandidate - x;
+                var zDist = zCandidate - z;
                 return GetDistance(xDist, zDist);
             }
 
             return ValueNoise2D(
-                (int)(Math.Floor(xCandidate)),
-                (int)(Math.Floor(zCandidate)), Seed);
+                (int)Math.Floor(xCandidate),
+                (int)Math.Floor(zCandidate), Seed);
         }
 
         public double Noise(double x, double y, double z, double frequency)
@@ -113,32 +113,32 @@ namespace SharpMC.Util
             y *= frequency;
             z *= frequency;
 
-            int xInt = (x > .0 ? (int)x : (int)x - 1);
-            int yInt = (y > .0 ? (int)y : (int)y - 1);
-            int zInt = (z > .0 ? (int)z : (int)z - 1);
+            var xInt = x > .0 ? (int)x : (int)x - 1;
+            var yInt = y > .0 ? (int)y : (int)y - 1;
+            var zInt = z > .0 ? (int)z : (int)z - 1;
 
-            double minDist = 32000000.0;
+            var minDist = 32000000.0;
 
             double xCandidate = 0;
             double yCandidate = 0;
             double zCandidate = 0;
 
-            for (int zCur = zInt - 2; zCur <= zInt + 2; zCur++)
+            for (var zCur = zInt - 2; zCur <= zInt + 2; zCur++)
             {
-                for (int yCur = yInt - 2; yCur <= yInt + 2; yCur++)
+                for (var yCur = yInt - 2; yCur <= yInt + 2; yCur++)
                 {
-                    for (int xCur = xInt - 2; xCur <= xInt + 2; xCur++)
+                    for (var xCur = xInt - 2; xCur <= xInt + 2; xCur++)
                     {
                         // Calculate the position and distance to the _seed point inside of
                         // this unit cube.
 
-                        double xPos = xCur + ValueNoise3D(xCur, yCur, zCur, Seed);
-                        double yPos = yCur + ValueNoise3D(xCur, yCur, zCur, Random.NextLong());
-	                    double zPos = zCur + ValueNoise3D(xCur, yCur, zCur, Random.NextLong());
-                        double xDist = xPos - x;
-                        double yDist = yPos - y;
-                        double zDist = zPos - z;
-                        double dist = xDist * xDist + yDist * yDist + zDist * zDist;
+                        var xPos = xCur + ValueNoise3D(xCur, yCur, zCur, Seed);
+                        var yPos = yCur + ValueNoise3D(xCur, yCur, zCur, Random.NextLong());
+	                    var zPos = zCur + ValueNoise3D(xCur, yCur, zCur, Random.NextLong());
+                        var xDist = xPos - x;
+                        var yDist = yPos - y;
+                        var zDist = zPos - z;
+                        var dist = xDist * xDist + yDist * yDist + zDist * zDist;
 
                         if (dist < minDist)
                         {
@@ -155,17 +155,17 @@ namespace SharpMC.Util
 
 			if (_useDistance)
 			{
-                double xDist = xCandidate - x;
-                double yDist = yCandidate - y;
-                double zDist = zCandidate - z;
+                var xDist = xCandidate - x;
+                var yDist = yCandidate - y;
+                var zDist = zCandidate - z;
 
                 return GetDistance(xDist, yDist, zDist);
             }
 
             return ValueNoise3D(
-                (int)(Math.Floor(xCandidate)),
-                (int)(Math.Floor(yCandidate)),
-                (int)(Math.Floor(zCandidate)), Seed);
+                (int)Math.Floor(xCandidate),
+                (int)Math.Floor(yCandidate),
+                (int)Math.Floor(zCandidate), Seed);
         }
 
         /**
@@ -175,16 +175,16 @@ namespace SharpMC.Util
          */
         public static double ValueNoise2D(int x, int z, long seed)
         {
-            long n = (1619 * x + 6971 * z + 1013 * seed) & 0x7fffffff;
+            var n = (1619 * x + 6971 * z + 1013 * seed) & 0x7fffffff;
             n = (n >> 13) ^ n;
-            return 1.0 - (((n * (n * n * 60493 + 19990303) + 1376312589) & 0x7fffffff) / 1073741824.0);
+            return 1.0 - ((n * (n * n * 60493 + 19990303) + 1376312589) & 0x7fffffff) / 1073741824.0;
         }
 
         public static double ValueNoise3D(int x, int y, int z, long seed)
         {
-            long n = (1619 * x + 31337 * y + 6971 * z + 1013 * seed) & 0x7fffffff;
+            var n = (1619 * x + 31337 * y + 6971 * z + 1013 * seed) & 0x7fffffff;
             n = (n >> 13) ^ n;
-            return 1.0 - (((n * (n * n * 60493 + 19990303) + 1376312589) & 0x7fffffff) / 1073741824.0);
+            return 1.0 - ((n * (n * n * 60493 + 19990303) + 1376312589) & 0x7fffffff) / 1073741824.0;
         }
 
 	    public enum DistanceMethod

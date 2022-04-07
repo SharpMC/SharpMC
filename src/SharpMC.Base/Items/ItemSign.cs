@@ -25,7 +25,7 @@ namespace SharpMC.Items
 					Metadata = 0x00
 				};
 
-				var rawbytes = new BitArray(new byte[] {bss.Metadata});
+				var rawbytes = new BitArray(new[] {bss.Metadata});
 				
 				var direction = player.GetDirection();
 				switch (direction)

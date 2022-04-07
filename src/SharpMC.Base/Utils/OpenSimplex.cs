@@ -1,28 +1,4 @@
-﻿// Distributed under the MIT license
-// ===================================================
-// SharpMC uses the permissive MIT license.
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the “Software”), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software
-// 
-// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-// 
-// ©Copyright Kenny van Vulpen - 2015
-
-using System;
+﻿using System;
 using System.Runtime.CompilerServices;
 
 namespace SharpMC.Core.Utils
@@ -168,9 +144,11 @@ namespace SharpMC.Core.Utils
 					}
 					previous = current;
 				}
-				current.Next = new Contribution3(p3D[i + 1], p3D[i + 2], p3D[i + 3], p3D[i + 4]);
-				current.Next.Next = new Contribution3(p3D[i + 5], p3D[i + 6], p3D[i + 7], p3D[i + 8]);
-			}
+				current.Next = new Contribution3(p3D[i + 1], p3D[i + 2], p3D[i + 3], p3D[i + 4])
+                {
+                    Next = new Contribution3(p3D[i + 5], p3D[i + 6], p3D[i + 7], p3D[i + 8])
+                };
+            }
 
 			Lookup3D = new Contribution3[2048];
 			for (var i = 0; i < lookupPairs3D.Length; i += 2)
@@ -307,10 +285,14 @@ namespace SharpMC.Core.Utils
 					}
 					previous = current;
 				}
-				current.Next = new Contribution4(p4D[i + 1], p4D[i + 2], p4D[i + 3], p4D[i + 4], p4D[i + 5]);
-				current.Next.Next = new Contribution4(p4D[i + 6], p4D[i + 7], p4D[i + 8], p4D[i + 9], p4D[i + 10]);
-				current.Next.Next.Next = new Contribution4(p4D[i + 11], p4D[i + 12], p4D[i + 13], p4D[i + 14], p4D[i + 15]);
-			}
+				current.Next = new Contribution4(p4D[i + 1], p4D[i + 2], p4D[i + 3], p4D[i + 4], p4D[i + 5])
+ {
+     Next = new Contribution4(p4D[i + 6], p4D[i + 7], p4D[i + 8], p4D[i + 9], p4D[i + 10])
+     {
+         Next = new Contribution4(p4D[i + 11], p4D[i + 12], p4D[i + 13], p4D[i + 14], p4D[i + 15])
+     }
+ };
+            }
 
 			Lookup4D = new Contribution4[1048576];
 			for (var i = 0; i < lookupPairs4D.Length; i += 2)
@@ -344,11 +326,11 @@ namespace SharpMC.Core.Utils
 				var r = (int) ((seed + 31)%(i + 1));
 				if (r < 0)
 				{
-					r += (i + 1);
+					r += i + 1;
 				}
 				_perm[i] = source[r];
 				_perm2D[i] = (byte) (_perm[i] & 0x0E);
-				_perm3D[i] = (byte) ((_perm[i]%24)*3);
+				_perm3D[i] = (byte) (_perm[i]%24*3);
 				_perm4D[i] = (byte) (_perm[i] & 0xFC);
 				source[r] = source[i];
 			}
@@ -381,7 +363,7 @@ namespace SharpMC.Core.Utils
 
 			var hash =
 				(int) (xins - yins + 1) |
-				(int) (inSum) << 1 |
+				(int) inSum << 1 |
 				(int) (inSum + yins) << 2 |
 				(int) (inSum + xins) << 4;
 

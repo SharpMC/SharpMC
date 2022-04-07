@@ -77,9 +77,9 @@ namespace SharpMC.World
 
 		public void Initialize()
 		{
-			Stopwatch chunkLoading = Stopwatch.StartNew();
+			var chunkLoading = Stopwatch.StartNew();
 
-			int count = 0;
+			var count = 0;
 			foreach (var i in GenerateChunks(null, new ChunkCoordinates(SpawnPoint), new Dictionary<Tuple<int, int>, byte[]>(), 8))
 			{
 				count++;
@@ -108,7 +108,7 @@ namespace SharpMC.World
 			{
 				SpawnToAll(newPlayer);
 
-				foreach (Entity entity in Entities.Values.ToArray())
+				foreach (var entity in Entities.Values.ToArray())
 				{
 					entity.SpawnToPlayers(new[] { newPlayer });
 				}
@@ -124,7 +124,7 @@ namespace SharpMC.World
 
 			foreach (var player in Players.Values.ToArray())
 			{
-				player.SpawnToPlayers(new Player[] { newPlayer });
+				player.SpawnToPlayers(new[] { newPlayer });
 			}
 		}
 
@@ -135,7 +135,7 @@ namespace SharpMC.World
 			{
 				DespawnFromAll(player);
 
-				foreach (Entity entity in Entities.Values.ToArray())
+				foreach (var entity in Entities.Values.ToArray())
 				{
 					entity.DespawnFromPlayers(new [] { player });
 				}
@@ -152,7 +152,7 @@ namespace SharpMC.World
 
 			foreach (var player in Players.Values.ToArray())
 			{
-				player.DespawnFromPlayers(new Player[] { newPlayer });
+				player.DespawnFromPlayers(new[] { newPlayer });
 			}
 		}
 
@@ -160,25 +160,25 @@ namespace SharpMC.World
 		{
 			lock (chunksUsed)
 			{
-				Dictionary<Tuple<int, int>, double> newOrders = new Dictionary<Tuple<int, int>, double>();
+				var newOrders = new Dictionary<Tuple<int, int>, double>();
 
-				double radiusSquared = Math.Pow(radius, 2);
+				var radiusSquared = Math.Pow(radius, 2);
 
-				int centerX = chunkPosition.X;
-				int centerZ = chunkPosition.Z;
+				var centerX = chunkPosition.X;
+				var centerZ = chunkPosition.Z;
 
-				for (double x = -radius; x <= radius; ++x)
+				for (var x = -radius; x <= radius; ++x)
 				{
-					for (double z = -radius; z <= radius; ++z)
+					for (var z = -radius; z <= radius; ++z)
 					{
-						var distance = (x*x) + (z*z);
+						var distance = x*x + z*z;
 						if (distance > radiusSquared)
 						{
 							//continue;
 						}
-						int chunkX = (int) (x + centerX);
-						int chunkZ = (int) (z + centerZ);
-						Tuple<int, int> index = new Tuple<int, int>(chunkX, chunkZ);
+						var chunkX = (int) (x + centerX);
+						var chunkZ = (int) (z + centerZ);
+						var index = new Tuple<int, int>(chunkX, chunkZ);
 						newOrders[index] = distance;
 					}
 				}
@@ -203,7 +203,7 @@ namespace SharpMC.World
 					if (WorldGenerator == null) continue;
 
                     var c = new ChunkCoordinates(pair.Key.Item1, pair.Key.Item2);
-					ChunkColumn chunkColumn = WorldGenerator.GenerateChunkColumn(c);
+					var chunkColumn = WorldGenerator.GenerateChunkColumn(c);
 					byte[] chunk = null;
 					if (chunkColumn != null)
 					{
@@ -219,7 +219,7 @@ namespace SharpMC.World
 
 		public void RelayBroadcast(Packet packet)
 		{
-			Player[] players = Players.Values.ToArray();
+			var players = Players.Values.ToArray();
 			RelayBroadcast(players, packet);
 		}
 
@@ -411,12 +411,12 @@ namespace SharpMC.World
 
 		private int Mod(double val)
 		{
-			return (int)(((val%16) + 16)%16);
+			return (int)((val%16 + 16)%16);
 		}
 
 		public Block GetBlock(Vector3 blockCoordinates)
 		{
-			Vector2 chunkcoords = new Vector2((int) blockCoordinates.X >> 4, (int) blockCoordinates.Z >> 4);
+			var chunkcoords = new Vector2((int) blockCoordinates.X >> 4, (int) blockCoordinates.Z >> 4);
 			var chunk = Generator.GenerateChunkColumn(chunkcoords);
 
 			var bid = chunk.GetBlock(Mod(blockCoordinates.X), (int) blockCoordinates.Y,

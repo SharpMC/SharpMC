@@ -49,7 +49,7 @@ namespace fNbt {
                     return;
                 }
 
-                NbtCompound parentAsCompound = Parent as NbtCompound;
+                var parentAsCompound = Parent as NbtCompound;
                 if( parentAsCompound != null ) {
                     if( value == null ) {
                         throw new ArgumentNullException( "value", "Name of tags inside an NbtCompound may not be null." );
@@ -77,7 +77,7 @@ namespace fNbt {
                 if( Parent == null ) {
                     return Name ?? "";
                 }
-                NbtList parentAsList = Parent as NbtList;
+                var parentAsList = Parent as NbtList;
                 if( parentAsList != null ) {
                     return parentAsList.Path + '[' + parentAsList.IndexOf( this ) + ']';
                 } else {
@@ -358,7 +358,7 @@ namespace fNbt {
         /// Indents the string using multiples of the given indentation string. </summary>
         /// <returns> A string representing contants of this tag, and all child tags (if any). </returns>
         public override string ToString() {
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             PrettyPrint( sb, DefaultIndentString, 0 );
             return sb.ToString();
         }
@@ -373,7 +373,7 @@ namespace fNbt {
         public string ToString( [NotNull] string indentString ) {
             if( indentString == null )
                 throw new ArgumentNullException( "indentString" );
-            StringBuilder sb = new StringBuilder();
+            var sb = new StringBuilder();
             PrettyPrint( sb, indentString, 0 );
             return sb.ToString();
         }

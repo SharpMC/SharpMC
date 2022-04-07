@@ -219,7 +219,7 @@ namespace SharpMC.Util
 		{
 			unchecked
 			{
-				int hashCode = X;
+				var hashCode = X;
 				hashCode = (hashCode * 397) ^ Y;
 				hashCode = (hashCode * 397) ^ Z;
 				return hashCode;

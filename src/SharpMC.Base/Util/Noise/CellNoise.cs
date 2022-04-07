@@ -41,26 +41,26 @@ namespace SharpMC.Util.Noise
 
 		public override double Value2D(double x, double y)
 		{
-			double[] distances = new double[3];
+			var distances = new double[3];
 			//Declare some values for later use
 			uint lastRandom, numberFeaturePoints;
 			Vector3 randomDiff, featurePoint;
 
 			int cubeX, cubeY;
 			//Initialize values in distance array to large values
-			for (int i = 0; i < distances.Length; i++)
+			for (var i = 0; i < distances.Length; i++)
 				distances[i] = 6666;
 			//1. Determine which cube the evaluation point is in
-			int evalCubeX = Floor(x);
-			int evalCubeY = Floor(y);
-			for (int i = -1; i < 2; ++i)
+			var evalCubeX = Floor(x);
+			var evalCubeY = Floor(y);
+			for (var i = -1; i < 2; ++i)
 			{
-				for (int j = -1; j < 2; ++j)
+				for (var j = -1; j < 2; ++j)
 				{
 					cubeX = evalCubeX + i;
 					cubeY = evalCubeY + j;
 					//2. Generate a reproducible random number generator for the cube
-					lastRandom = LcgRandom(Hash2D((uint) (cubeX + Seed), (uint) (cubeY)));
+					lastRandom = LcgRandom(Hash2D((uint) (cubeX + Seed), (uint) cubeY));
 					//3. Determine how many feature points are in the cube
 					numberFeaturePoints = ProbLookup(lastRandom);
 					//4. Randomly place the feature points in the cube
@@ -88,29 +88,29 @@ namespace SharpMC.Util.Noise
 		/// <returns>The color worley noise returns at the input position</returns>
 		public override double Value3D(double x, double y, double z)
 		{
-			double[] distances = new double[3];
+			var distances = new double[3];
 			//Declare some values for later use
 			uint lastRandom, numberFeaturePoints;
 			Vector3 randomDiff, featurePoint;
 			int cubeX, cubeY, cubeZ;
 			//Initialize values in distance array to large values
-			for (int i = 0; i < distances.Length; i++)
+			for (var i = 0; i < distances.Length; i++)
 				distances[i] = 6666;
 			//1. Determine which cube the evaluation point is in
-			int evalCubeX = Floor(x);
-			int evalCubeY = Floor(y);
-			int evalCubeZ = Floor(z);
-			for (int i = -1; i < 2; ++i)
+			var evalCubeX = Floor(x);
+			var evalCubeY = Floor(y);
+			var evalCubeZ = Floor(z);
+			for (var i = -1; i < 2; ++i)
 			{
-				for (int j = -1; j < 2; ++j)
+				for (var j = -1; j < 2; ++j)
 				{
-					for (int k = -1; k < 2; ++k)
+					for (var k = -1; k < 2; ++k)
 					{
 						cubeX = evalCubeX + i;
 						cubeY = evalCubeY + j;
 						cubeZ = evalCubeZ + k;
 						//2. Generate a reproducible random number generator for the cube
-						lastRandom = LcgRandom(Hash((uint) (cubeX + Seed), (uint) (cubeY), (uint) (cubeZ)));
+						lastRandom = LcgRandom(Hash((uint) (cubeX + Seed), (uint) cubeY, (uint) cubeZ));
 						//3. Determine how many feature points are in the cube
 						numberFeaturePoints = ProbLookup(lastRandom);
 						//4. Randomly place the feature points in the cube
@@ -193,13 +193,13 @@ namespace SharpMC.Util.Noise
 
 		private double ChebyshevDistance2D(Vector3 p1, Vector3 p2)
 		{
-			Vector3 diff = p1 - p2;
+			var diff = p1 - p2;
 			return Math.Max(Math.Abs(diff.X), Math.Abs(diff.Y));
 		}
 
 		private double ChebyshevDistance3D(Vector3 p1, Vector3 p2)
 		{
-			Vector3 diff = p1 - p2;
+			var diff = p1 - p2;
 			return Math.Max(Math.Max(Math.Abs(diff.X), Math.Abs(diff.Y)), Math.Abs(diff.Z));
 		}
 
@@ -239,7 +239,7 @@ namespace SharpMC.Util.Noise
 		private static void Insert(double[] arr, double value)
 		{
 			double temp;
-			for (int i = arr.Length - 1; i >= 0; i--)
+			for (var i = arr.Length - 1; i >= 0; i--)
 			{
 				if (value > arr[i])
 					break;

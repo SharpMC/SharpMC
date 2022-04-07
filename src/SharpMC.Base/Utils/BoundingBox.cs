@@ -47,7 +47,7 @@ namespace SharpMC.Core.Utils
 
 		public bool Equals(BoundingBox other)
 		{
-			return (Min == other.Min) && (Max == other.Max);
+			return Min == other.Min && Max == other.Max;
 		}
 
 		public ContainmentType Contains(BoundingBox box)
@@ -122,7 +122,7 @@ namespace SharpMC.Core.Utils
 
 		public override bool Equals(object obj)
 		{
-			return (obj is BoundingBox) && Equals((BoundingBox) obj);
+			return obj is BoundingBox && Equals((BoundingBox) obj);
 		}
 
 		public override int GetHashCode()
@@ -139,15 +139,15 @@ namespace SharpMC.Core.Utils
 
 		public void Intersects(ref BoundingBox box, out bool result)
 		{
-			if ((Max.X >= box.Min.X) && (Min.X <= box.Max.X))
+			if (Max.X >= box.Min.X && Min.X <= box.Max.X)
 			{
-				if ((Max.Y < box.Min.Y) || (Min.Y > box.Max.Y))
+				if (Max.Y < box.Min.Y || Min.Y > box.Max.Y)
 				{
 					result = false;
 					return;
 				}
 
-				result = (Max.Z >= box.Min.Z) && (Min.Z <= box.Max.Z);
+				result = Max.Z >= box.Min.Z && Min.Z <= box.Max.Z;
 				return;
 			}
 

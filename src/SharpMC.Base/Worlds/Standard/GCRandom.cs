@@ -58,9 +58,9 @@ namespace SharpMC.Core.Worlds.Standard
 			float yy = y;
 			float zz = (Chunk.Z << 4) | (z & 0xF);
 
-			double n1 = (_noiseGen1.GetValue((float) (xx*_f1Xz), (float) (yy*_f1Y), (float) (zz*_f1Xz))*_amplitude1);
-			double n2 = (_noiseGen2.GetValue((float) (xx*_f2Xz), (float) (yy*_f2Y), (float) (zz*_f2Xz))*_amplitude2);
-			double n3 = (_noiseGen3.GetValue((float) (xx*_f3Xz), (float) (yy*_f3Y), (float) (zz*_f3Xz))*_amplitude3);
+			double n1 = _noiseGen1.GetValue((float) (xx*_f1Xz), (float) (yy*_f1Y), (float) (zz*_f1Xz))*_amplitude1;
+			double n2 = _noiseGen2.GetValue((float) (xx*_f2Xz), (float) (yy*_f2Y), (float) (zz*_f2Xz))*_amplitude2;
+			double n3 = _noiseGen3.GetValue((float) (xx*_f3Xz), (float) (yy*_f3Y), (float) (zz*_f3Xz))*_amplitude3;
 			var lc = LinearCutoffCoefficient(y);
 
 			var isInCave = n1 + n2 - n3 - lc > 62;
@@ -78,13 +78,13 @@ namespace SharpMC.Core.Worlds.Standard
 			if (y >= _minCaveHeight && y <= _minCaveHeight + _caveBandBuffer)
 			{
 				double yy = y - _minCaveHeight;
-				return (-_subtractForLessThanCutoff/_caveBandBuffer)*yy + _subtractForLessThanCutoff;
+				return -_subtractForLessThanCutoff/_caveBandBuffer*yy + _subtractForLessThanCutoff;
 				// Top layer distortion
 			}
 			if (y <= _maxCaveHeight && y >= _maxCaveHeight - _caveBandBuffer)
 			{
 				double yy = y - _maxCaveHeight + _caveBandBuffer;
-				return (_subtractForLessThanCutoff/_caveBandBuffer)*yy;
+				return _subtractForLessThanCutoff/_caveBandBuffer*yy;
 				// In bounds, no distortion
 			}
 			return 0;

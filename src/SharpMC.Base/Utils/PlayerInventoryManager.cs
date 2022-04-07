@@ -17,7 +17,7 @@ namespace SharpMC.Core.Utils
             _player = player;
             for (var i = 0; i <= 45; i++)
             {
-                _slots[i] = (new ItemStack(-1, 0, 0));
+                _slots[i] = new ItemStack(-1, 0, 0);
             }
 
             SetSlot(5, 310, 0, 1); //Diamond helmet
@@ -151,7 +151,7 @@ namespace SharpMC.Core.Utils
 						return true;
 					}
 					SetSlot(i, itemId, metadata, 64);
-					var remaining = (oldslot.ItemCount + itemcount) - 64;
+					var remaining = oldslot.ItemCount + itemcount - 64;
 					return AddItem(itemId, metadata, (byte) remaining);
 				}
 			}
@@ -228,7 +228,7 @@ namespace SharpMC.Core.Utils
 				var itemStack = _slots[index];
 				if (itemStack.ItemId == itemId && itemStack.MetaData == metaData && itemStack.ItemCount >= count)
 				{
-					if ((itemStack.ItemCount - count) > 0)
+					if (itemStack.ItemCount - count > 0)
 					{
 						SetSlot(index, itemStack.ItemId, itemStack.MetaData, (byte) (itemStack.ItemCount - count));
 						return true;
@@ -261,8 +261,8 @@ namespace SharpMC.Core.Utils
 
 		public byte[] GetBytes()
 		{
-			DataBuffer buffer = new DataBuffer(new byte[0]);
-			for (int i = 0; i <= 45; i++)
+			var buffer = new DataBuffer(new byte[0]);
+			for (var i = 0; i <= 45; i++)
 			{
 				var slot = _slots[i];
 				buffer.WriteInt(i); //Write the SlotID
@@ -275,14 +275,14 @@ namespace SharpMC.Core.Utils
 
 		public void Import(byte[] data)
 		{
-			DataBuffer buffer = new DataBuffer(data);
+			var buffer = new DataBuffer(data);
 
-			for (int i = 0; i <= 45; i++)
+			for (var i = 0; i <= 45; i++)
 			{
-				int slotId = buffer.ReadInt();
-				short itemId = buffer.ReadShort();
-				byte metaData = (byte)buffer.ReadByte();
-				byte itemCount = (byte)buffer.ReadByte();
+				var slotId = buffer.ReadInt();
+				var itemId = buffer.ReadShort();
+				var metaData = (byte)buffer.ReadByte();
+				var itemCount = (byte)buffer.ReadByte();
 
 				_slots[slotId] = new ItemStack(itemId, itemCount, metaData);
 				UpdateHandItems();

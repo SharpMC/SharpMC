@@ -6,6 +6,7 @@ namespace SharpMC.Network.Events
     {
         public NetConnection Connection { get; }
         public bool Graceful { get; }
+
         internal ConnectionClosedEventArgs(NetConnection connection, bool requested)
         {
             Connection = connection;

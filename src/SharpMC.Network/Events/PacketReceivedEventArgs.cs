@@ -6,6 +6,7 @@ namespace SharpMC.Network.Events
     {
         public Packets.Packet Packet { get; }
         internal bool IsInvalid { get; set; } = false;
+
         internal PacketReceivedEventArgs(Packets.Packet netPacket)
         {
             Packet = netPacket;

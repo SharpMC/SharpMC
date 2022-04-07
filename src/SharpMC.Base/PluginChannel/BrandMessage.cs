@@ -12,7 +12,7 @@ namespace SharpMC.PluginChannel
 
 		public override void HandleData(ClientWrapper client, DataBuffer buffer)
 		{
-			string c = buffer.ReadString();
+			var c = buffer.ReadString();
 			ConsoleFunctions.WriteInfoLine(client.Player.Username + "'s client: " + c);
 		}
 	}

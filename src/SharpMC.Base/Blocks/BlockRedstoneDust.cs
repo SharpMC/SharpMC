@@ -19,22 +19,23 @@ namespace SharpMC.Blocks
 		{
 			if (target < 0 || target > 15) throw new IndexOutOfRangeException("target");
 
-			var newbits = new BitArray(new int[] { target });
-			var rawbits = new BitArray(new byte[] { Metadata });
+			var newbits = new BitArray(new[] { target });
+			var rawbits = new BitArray(new[] { Metadata })
+            {
+                [0] = newbits[0],
+                [1] = newbits[1],
+                [2] = newbits[2],
+                [3] = newbits[3]
+            };
 
-			rawbits[0] = newbits[0];
-			rawbits[1] = newbits[1];
-			rawbits[2] = newbits[2];
-			rawbits[3] = newbits[3];
-
-			Metadata = ConvertToByte(rawbits);
+            Metadata = ConvertToByte(rawbits);
 			lvl.SetBlock(this);
 		}
 
 		public int GetPowerLevel()
 		{
 			var newbits = new BitArray(new byte[] { 0x00 });
-			var rawbits = new BitArray(new byte[] { Metadata });
+			var rawbits = new BitArray(new[] { Metadata });
 
 			newbits[0] = rawbits[0];
 			newbits[1] = rawbits[1];

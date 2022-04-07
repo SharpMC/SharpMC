@@ -23,7 +23,7 @@ namespace SharpMC.Util
 
 		public byte this[int index]
 		{
-			get { return (byte)(Data[index / 2] >> ((index) % 2 * 4) & 0xF); }
+			get { return (byte)(Data[index / 2] >> (index % 2 * 4) & 0xF); }
 			set
 			{
 				value &= 0xF;
@@ -34,7 +34,7 @@ namespace SharpMC.Util
 
 		public object Clone()
 		{
-			NibbleArray clone = new NibbleArray
+			var clone = new NibbleArray
 			{
 				Data = (byte[]) Data.Clone()
 			};

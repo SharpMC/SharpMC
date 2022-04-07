@@ -17,7 +17,7 @@ namespace SharpMC.Blocks
 
 		public override bool IsActive()
 		{
-			var bits = new BitArray(new byte[] { Metadata });
+			var bits = new BitArray(new[] { Metadata });
 			return bits[3];
 		}
 
@@ -25,7 +25,7 @@ namespace SharpMC.Blocks
 		{
 			var rawbits = new BitArray(new byte[] { 0x00 });
 
-			byte direction = player.GetDirection();
+			var direction = player.GetDirection();
 			if (face == BlockFace.PositiveY)
 			{
 				switch (direction)
@@ -84,7 +84,7 @@ namespace SharpMC.Blocks
 
 		public override void UseItem(Level world, Player player, Vector3 blockCoordinates, BlockFace face)
 		{
-			var bits = new BitArray(new byte[] { Metadata });
+			var bits = new BitArray(new[] { Metadata });
 
 			if (bits[3])
 			{
@@ -105,7 +105,7 @@ namespace SharpMC.Blocks
 			{
 				throw new ArgumentException("bits");
 			}
-			byte[] bytes = new byte[1];
+			var bytes = new byte[1];
 			bits.CopyTo(bytes, 0);
 			return bytes[0];
 		}

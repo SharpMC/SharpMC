@@ -35,17 +35,17 @@ namespace SharpMC.World
 			Sections = new ChunkSection[16];
 			Biomes = new byte[Depth * Width];
 
-			for (int i = 0; i < Sections.Length; i++)
+			for (var i = 0; i < Sections.Length; i++)
 			{
 				Sections[i] = new ChunkSection();
 			}
 
-			for (int i = 0; i < Biomes.Length; i++)
+			for (var i = 0; i < Biomes.Length; i++)
 			{
 				Biomes[i] = 1; //Plains
 			}
 
-			for (int i = 0; i < HeightMap.Length; i++)
+			for (var i = 0; i < HeightMap.Length; i++)
 			{
 				HeightMap[i] = 0;
 			}
@@ -84,7 +84,7 @@ namespace SharpMC.World
 
 		public void SetBiome(int x, int z, byte biome)
 		{
-			Biomes[(z << 4) + (x)] = biome;
+			Biomes[(z << 4) + x] = biome;
 
 			Cache = null;
 			IsDirty = true;
@@ -92,14 +92,14 @@ namespace SharpMC.World
 
 		public byte GetBiome(int x, int z)
 		{
-			return Biomes[(z << 4) + (x)];
+			return Biomes[(z << 4) + x];
 		}
 
 		public void RecalcHeight()
 		{
-			for (int x = 0; x < 16; x++)
+			for (var x = 0; x < 16; x++)
 			{
-				for (int z = 0; z < 16; z++)
+				for (var z = 0; z < 16; z++)
 				{
 					for (byte y = 127; y > 0; y--)
 					{
@@ -116,9 +116,9 @@ namespace SharpMC.World
 
 		public byte[] ToArray()
 		{
-			using (MemoryStream ms = new MemoryStream())
+			using (var ms = new MemoryStream())
 			{
-				using (MinecraftStream m = new MinecraftStream(ms))
+				using (var m = new MinecraftStream(ms))
 				{
 					WriteTo(m);
 				}
@@ -135,14 +135,14 @@ namespace SharpMC.World
 			}
 
 			byte[] sectionData;
-			int sectionBitmask = 0;
-			using (MemoryStream ms = new MemoryStream())
+			var sectionBitmask = 0;
+			using (var ms = new MemoryStream())
 			{
-				using (MinecraftStream mc = new MinecraftStream(ms))
+				using (var mc = new MinecraftStream(ms))
 				{
-					for (int i = 0; i < Sections.Length; i++)
+					for (var i = 0; i < Sections.Length; i++)
 					{
-						ChunkSection section = Sections[i];
+						var section = Sections[i];
 						if (section.IsAllAir) continue;
 
 						sectionBitmask |= 1 << i;
@@ -153,9 +153,9 @@ namespace SharpMC.World
 				sectionData = ms.ToArray();
 			}
 
-			using (MemoryStream ms = new MemoryStream())
+			using (var ms = new MemoryStream())
 			{
-				using (MinecraftStream mc = new MinecraftStream(ms))
+				using (var mc = new MinecraftStream(ms))
 				{
 					mc.WriteInt(Coordinates.X);
 					mc.WriteInt(Coordinates.Z);
@@ -206,7 +206,7 @@ namespace SharpMC.World
 			var index = x + 16*z + 16*16*y;
 			if (index >= 0 && index < Blocks.Length)
 			{
-				return (Blocks[index]);
+				return Blocks[index];
 			}
 			return 0x0;
 		}
@@ -216,7 +216,7 @@ namespace SharpMC.World
 			var index = x + 16*z + 16*16*y;
 			if (index >= 0 && index < Metadata.Length)
 			{
-				return (byte) (Metadata[index]);
+				return (byte) Metadata[index];
 			}
 			return 0x0;
 		}
@@ -242,22 +242,22 @@ namespace SharpMC.World
 
 		public void SetBlocklight(int x, int y, int z, byte data)
 		{
-			Blocklight[(x*2048) + (z*256) + y] = data;
+			Blocklight[x*2048 + z*256 + y] = data;
 		}
 
 		public byte GetBlocklight(int x, int y, int z)
 		{
-			return Blocklight[(x*2048) + (z*256) + y];
+			return Blocklight[x*2048 + z*256 + y];
 		}
 
 		public byte GetSkylight(int x, int y, int z)
 		{
-			return Skylight[(x*2048) + (z*256) + y];
+			return Skylight[x*2048 + z*256 + y];
 		}
 
 		public void SetSkylight(int x, int y, int z, byte data)
 		{
-			Skylight[(x*2048) + (z*256) + y] = data;
+			Skylight[x*2048 + z*256 + y] = data;
 		}
 
 		public NbtCompound GetBlockEntity(Vector3 coordinates)
@@ -302,7 +302,7 @@ namespace SharpMC.World
 			{
 				using (var writer = new NbtBinaryWriter(stream, true))
 				{
-					writer.WriteVarInt((Blocks.Length*2) + Skylight.Data.Length + Blocklight.Data.Length + BiomeId.Length);
+					writer.WriteVarInt(Blocks.Length*2 + Skylight.Data.Length + Blocklight.Data.Length + BiomeId.Length);
 
 					for (var i = 0; i < Blocks.Length; i++)
 						writer.Write((ushort) ((Blocks[i] << 4) | Metadata[i]));
@@ -328,7 +328,7 @@ namespace SharpMC.World
 				writer.WriteInt(Z);
 				writer.WriteBool(true);
 				writer.WriteUShort(0xffff); // bitmap
-				writer.WriteVarInt((Blocks.Length*2) + Skylight.Data.Length + Blocklight.Data.Length + BiomeId.Length);
+				writer.WriteVarInt(Blocks.Length*2 + Skylight.Data.Length + Blocklight.Data.Length + BiomeId.Length);
 
 				for (var i = 0; i < Blocks.Length; i++)
 				{

@@ -22,7 +22,7 @@ namespace SharpMC.Core.Networking.Packages
 			if (Buffer != null)
 			{
 				var position = Buffer.ReadPosition();
-				Vector3 c = new Vector3(position.X, position.Y, position.Z);
+				var c = new Vector3(position.X, position.Y, position.Z);
 
 				if (position.Y > 256)
 				{

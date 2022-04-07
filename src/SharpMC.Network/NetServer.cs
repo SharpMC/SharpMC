@@ -15,7 +15,7 @@ namespace SharpMC.Network
         
 		public NetConnectionFactory NetConnectionFactory { get; set; }
 
-		private CancellationTokenSource CancelationToken { get; set; }
+		private CancellationTokenSource CancellationToken { get; set; }
         private ConcurrentDictionary<EndPoint, NetConnection> Connections { get; set; }
 
 		internal NetConfiguration Configuration { get; }
@@ -32,12 +32,11 @@ namespace SharpMC.Network
 
         private void SetDefaults()
         {
-            CancelationToken = new CancellationTokenSource();
+            CancellationToken = new CancellationTokenSource();
 
             Connections = new ConcurrentDictionary<EndPoint, NetConnection>();
 			NetConnectionFactory = new NetConnectionFactory();
-
-		}
+        }
 
         private void Configure()
         {
@@ -66,7 +65,7 @@ namespace SharpMC.Network
 
         public void Stop()
         {
-            CancelationToken.Cancel();
+            CancellationToken.Cancel();
 
             foreach (var i in Connections)
             {
@@ -90,14 +89,13 @@ namespace SharpMC.Network
 
             if (socket == null) return;
 			
-			NetConnection conn = NetConnectionFactory.CreateConnection(Direction.Client, socket, ConfirmdAction);
+			var conn = NetConnectionFactory.CreateConnection(Direction.Client, socket, ConfirmedAction);
 
 			if (Connections.TryAdd(socket.RemoteEndPoint, conn))
 			{
 				conn.OnConnectionClosed += (sender, args) =>
 				{
-					NetConnection nc;
-					if (Connections.TryRemove(args.Connection.RemoteEndPoint, out nc))
+					if (Connections.TryRemove(args.Connection.RemoteEndPoint, out var nc))
 					{
 						Log.LogInformation("Client disconnected!");
 					}
@@ -110,7 +108,7 @@ namespace SharpMC.Network
 			}
 		}
 
-        private void ConfirmdAction(NetConnection conn)
+        private void ConfirmedAction(NetConnection conn)
         {
             OnConnectionAccepted?.Invoke(this, new ConnectionAcceptedEventArgs(conn));
         }

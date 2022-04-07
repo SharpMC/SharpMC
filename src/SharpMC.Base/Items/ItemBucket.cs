@@ -36,14 +36,14 @@ namespace SharpMC.Items
 			{
 				//Water
 				player.Inventory.SetSlot(slot, 326, 0, 1);
-				world.SetBlock(new BlockAir() {Coordinates = blockCoordinates}, true, true);
+				world.SetBlock(new BlockAir {Coordinates = blockCoordinates}, true, true);
 			}
 
 			if (bl.Id == 10)
 			{
 				//lava
 				player.Inventory.SetSlot(slot, 327, 0, 1);
-				world.SetBlock(new BlockAir() { Coordinates = blockCoordinates }, true, true);
+				world.SetBlock(new BlockAir { Coordinates = blockCoordinates }, true, true);
 			}
 		}
 	}

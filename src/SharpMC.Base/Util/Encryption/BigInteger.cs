@@ -188,7 +188,7 @@ namespace SharpMC.Util.Encryption
 		public BigInteger(long value)
 		{
 			data = new uint[maxLength];
-			long tempVal = value;
+			var tempVal = value;
 
 			// copy bytes from long to BigInteger without any assumption of
 			// the length of the long datatype
@@ -204,12 +204,12 @@ namespace SharpMC.Util.Encryption
 			if (tempVal > 0)         // overflow check for +ve value
 			{
 				if (value != 0 || (data[maxLength - 1] & 0x80000000) != 0)
-					throw (new ArithmeticException("Positive overflow in constructor."));
+					throw new ArithmeticException("Positive overflow in constructor.");
 			}
 			else if (tempVal < 0)    // underflow check for -ve value
 			{
 				if (value != -1 || (data[dataLength - 1] & 0x80000000) == 0)
-					throw (new ArithmeticException("Negative underflow in constructor."));
+					throw new ArithmeticException("Negative underflow in constructor.");
 			}
 
 			if (dataLength == 0)
@@ -237,7 +237,7 @@ namespace SharpMC.Util.Encryption
 			}
 
 			if (value != 0 || (data[maxLength - 1] & 0x80000000) != 0)
-				throw (new ArithmeticException("Positive overflow in constructor."));
+				throw new ArithmeticException("Positive overflow in constructor.");
 
 			if (dataLength == 0)
 				dataLength = 1;
@@ -255,7 +255,7 @@ namespace SharpMC.Util.Encryption
 
 			dataLength = bi.dataLength;
 
-			for (int i = 0; i < dataLength; i++)
+			for (var i = 0; i < dataLength; i++)
 				data[i] = bi.data[i];
 		}
 
@@ -287,36 +287,36 @@ namespace SharpMC.Util.Encryption
 
 		public BigInteger(string value, int radix)
 		{
-			BigInteger multiplier = new BigInteger(1);
-			BigInteger result = new BigInteger();
-			value = (value.ToUpper()).Trim();
-			int limit = 0;
+			var multiplier = new BigInteger(1);
+			var result = new BigInteger();
+			value = value.ToUpper().Trim();
+			var limit = 0;
 
 			if (value[0] == '-')
 				limit = 1;
 
-			for (int i = value.Length - 1; i >= limit; i--)
+			for (var i = value.Length - 1; i >= limit; i--)
 			{
-				int posVal = (int)value[i];
+				var posVal = (int)value[i];
 
 				if (posVal >= '0' && posVal <= '9')
 					posVal -= '0';
 				else if (posVal >= 'A' && posVal <= 'Z')
-					posVal = (posVal - 'A') + 10;
+					posVal = posVal - 'A' + 10;
 				else
 					posVal = 9999999;       // arbitrary large
 
 
 				if (posVal >= radix)
-					throw (new ArithmeticException("Invalid string in constructor."));
+					throw new ArithmeticException("Invalid string in constructor.");
 				else
 				{
 					if (value[0] == '-')
 						posVal = -posVal;
 
-					result = result + (multiplier * posVal);
+					result = result + multiplier * posVal;
 
-					if ((i - 1) >= limit)
+					if (i - 1 >= limit)
 						multiplier = multiplier * radix;
 				}
 			}
@@ -324,16 +324,16 @@ namespace SharpMC.Util.Encryption
 			if (value[0] == '-')     // negative values
 			{
 				if ((result.data[maxLength - 1] & 0x80000000) == 0)
-					throw (new ArithmeticException("Negative underflow in constructor."));
+					throw new ArithmeticException("Negative underflow in constructor.");
 			}
 			else    // positive values
 			{
 				if ((result.data[maxLength - 1] & 0x80000000) != 0)
-					throw (new ArithmeticException("Positive overflow in constructor."));
+					throw new ArithmeticException("Positive overflow in constructor.");
 			}
 
 			data = new uint[maxLength];
-			for (int i = 0; i < result.dataLength; i++)
+			for (var i = 0; i < result.dataLength; i++)
 				data[i] = result.data[i];
 
 			dataLength = result.dataLength;
@@ -361,13 +361,13 @@ namespace SharpMC.Util.Encryption
 		{
 			dataLength = inData.Length >> 2;
 
-			int leftOver = inData.Length & 0x3;
+			var leftOver = inData.Length & 0x3;
 			if (leftOver != 0)         // length not multiples of 4
 				dataLength++;
 
 
 			if (dataLength > maxLength)
-				throw (new ArithmeticException("Byte overflow in constructor."));
+				throw new ArithmeticException("Byte overflow in constructor.");
 
 			data = new uint[maxLength];
 
@@ -401,12 +401,12 @@ namespace SharpMC.Util.Encryption
 		{
 			dataLength = inLen >> 2;
 
-			int leftOver = inLen & 0x3;
+			var leftOver = inLen & 0x3;
 			if (leftOver != 0)         // length not multiples of 4
 				dataLength++;
 
 			if (dataLength > maxLength || inLen > inData.Length)
-				throw (new ArithmeticException("Byte overflow in constructor."));
+				throw new ArithmeticException("Byte overflow in constructor.");
 
 
 			data = new uint[maxLength];
@@ -444,7 +444,7 @@ namespace SharpMC.Util.Encryption
 			dataLength = inData.Length;
 
 			if (dataLength > maxLength)
-				throw (new ArithmeticException("Byte overflow in constructor."));
+				throw new ArithmeticException("Byte overflow in constructor.");
 
 			data = new uint[maxLength];
 
@@ -465,22 +465,22 @@ namespace SharpMC.Util.Encryption
 
 		public static implicit operator BigInteger(long value)
 		{
-			return (new BigInteger(value));
+			return new BigInteger(value);
 		}
 
 		public static implicit operator BigInteger(ulong value)
 		{
-			return (new BigInteger(value));
+			return new BigInteger(value);
 		}
 
 		public static implicit operator BigInteger(int value)
 		{
-			return (new BigInteger((long)value));
+			return new BigInteger((long)value);
 		}
 
 		public static implicit operator BigInteger(uint value)
 		{
-			return (new BigInteger((ulong)value));
+			return new BigInteger((ulong)value);
 		}
 
 
@@ -490,21 +490,22 @@ namespace SharpMC.Util.Encryption
 
 		public static BigInteger operator +(BigInteger bi1, BigInteger bi2)
 		{
-			BigInteger result = new BigInteger();
+			var result = new BigInteger
+            {
+                dataLength = bi1.dataLength > bi2.dataLength ? bi1.dataLength : bi2.dataLength
+            };
 
-			result.dataLength = (bi1.dataLength > bi2.dataLength) ? bi1.dataLength : bi2.dataLength;
-
-			long carry = 0;
-			for (int i = 0; i < result.dataLength; i++)
+            long carry = 0;
+			for (var i = 0; i < result.dataLength; i++)
 			{
-				long sum = (long)bi1.data[i] + (long)bi2.data[i] + carry;
+				var sum = (long)bi1.data[i] + (long)bi2.data[i] + carry;
 				carry = sum >> 32;
 				result.data[i] = (uint)(sum & 0xFFFFFFFF);
 			}
 
 			if (carry != 0 && result.dataLength < maxLength)
 			{
-				result.data[result.dataLength] = (uint)(carry);
+				result.data[result.dataLength] = (uint)carry;
 				result.dataLength++;
 			}
 
@@ -513,11 +514,11 @@ namespace SharpMC.Util.Encryption
 
 
 			// overflow check
-			int lastPos = maxLength - 1;
+			var lastPos = maxLength - 1;
 			if ((bi1.data[lastPos] & 0x80000000) == (bi2.data[lastPos] & 0x80000000) &&
 			    (result.data[lastPos] & 0x80000000) != (bi1.data[lastPos] & 0x80000000))
 			{
-				throw (new ArithmeticException());
+				throw new ArithmeticException();
 			}
 
 			return result;
@@ -530,14 +531,14 @@ namespace SharpMC.Util.Encryption
 
 		public static BigInteger operator ++(BigInteger bi1)
 		{
-			BigInteger result = new BigInteger(bi1);
+			var result = new BigInteger(bi1);
 
 			long val, carry = 1;
-			int index = 0;
+			var index = 0;
 
 			while (carry != 0 && index < maxLength)
 			{
-				val = (long)(result.data[index]);
+				val = (long)result.data[index];
 				val++;
 
 				result.data[index] = (uint)(val & 0xFFFFFFFF);
@@ -555,7 +556,7 @@ namespace SharpMC.Util.Encryption
 			}
 
 			// overflow check
-			int lastPos = maxLength - 1;
+			var lastPos = maxLength - 1;
 
 			// overflow if initial value was +ve but ++ caused a sign
 			// change to negative.
@@ -563,7 +564,7 @@ namespace SharpMC.Util.Encryption
 			if ((bi1.data[lastPos] & 0x80000000) == 0 &&
 			    (result.data[lastPos] & 0x80000000) != (bi1.data[lastPos] & 0x80000000))
 			{
-				throw (new ArithmeticException("Overflow in ++."));
+				throw new ArithmeticException("Overflow in ++.");
 			}
 			return result;
 		}
@@ -575,12 +576,13 @@ namespace SharpMC.Util.Encryption
 
 		public static BigInteger operator -(BigInteger bi1, BigInteger bi2)
 		{
-			BigInteger result = new BigInteger();
+			var result = new BigInteger
+            {
+                dataLength = bi1.dataLength > bi2.dataLength ? bi1.dataLength : bi2.dataLength
+            };
 
-			result.dataLength = (bi1.dataLength > bi2.dataLength) ? bi1.dataLength : bi2.dataLength;
-
-			long carryIn = 0;
-			for (int i = 0; i < result.dataLength; i++)
+            long carryIn = 0;
+			for (var i = 0; i < result.dataLength; i++)
 			{
 				long diff;
 
@@ -596,7 +598,7 @@ namespace SharpMC.Util.Encryption
 			// roll over to negative
 			if (carryIn != 0)
 			{
-				for (int i = result.dataLength; i < maxLength; i++)
+				for (var i = result.dataLength; i < maxLength; i++)
 					result.data[i] = 0xFFFFFFFF;
 				result.dataLength = maxLength;
 			}
@@ -607,11 +609,11 @@ namespace SharpMC.Util.Encryption
 
 			// overflow check
 
-			int lastPos = maxLength - 1;
+			var lastPos = maxLength - 1;
 			if ((bi1.data[lastPos] & 0x80000000) != (bi2.data[lastPos] & 0x80000000) &&
 			    (result.data[lastPos] & 0x80000000) != (bi1.data[lastPos] & 0x80000000))
 			{
-				throw (new ArithmeticException());
+				throw new ArithmeticException();
 			}
 
 			return result;
@@ -624,15 +626,15 @@ namespace SharpMC.Util.Encryption
 
 		public static BigInteger operator --(BigInteger bi1)
 		{
-			BigInteger result = new BigInteger(bi1);
+			var result = new BigInteger(bi1);
 
 			long val;
-			bool carryIn = true;
-			int index = 0;
+			var carryIn = true;
+			var index = 0;
 
 			while (carryIn && index < maxLength)
 			{
-				val = (long)(result.data[index]);
+				val = (long)result.data[index];
 				val--;
 
 				result.data[index] = (uint)(val & 0xFFFFFFFF);
@@ -650,7 +652,7 @@ namespace SharpMC.Util.Encryption
 				result.dataLength--;
 
 			// overflow check
-			int lastPos = maxLength - 1;
+			var lastPos = maxLength - 1;
 
 			// overflow if initial value was -ve but -- caused a sign
 			// change to positive.
@@ -658,7 +660,7 @@ namespace SharpMC.Util.Encryption
 			if ((bi1.data[lastPos] & 0x80000000) != 0 &&
 			    (result.data[lastPos] & 0x80000000) != (bi1.data[lastPos] & 0x80000000))
 			{
-				throw (new ArithmeticException("Underflow in --."));
+				throw new ArithmeticException("Underflow in --.");
 			}
 
 			return result;
@@ -671,7 +673,7 @@ namespace SharpMC.Util.Encryption
 
 		public static BigInteger operator *(BigInteger bi1, BigInteger bi2)
 		{
-			int lastPos = maxLength - 1;
+			var lastPos = maxLength - 1;
 			bool bi1Neg = false, bi2Neg = false;
 
 			// take the absolute value of the inputs
@@ -688,12 +690,12 @@ namespace SharpMC.Util.Encryption
 			}
 			catch (Exception) { }
 
-			BigInteger result = new BigInteger();
+			var result = new BigInteger();
 
 			// multiply the absolute values
 			try
 			{
-				for (int i = 0; i < bi1.dataLength; i++)
+				for (var i = 0; i < bi1.dataLength; i++)
 				{
 					if (bi1.data[i] == 0) continue;
 
@@ -701,11 +703,11 @@ namespace SharpMC.Util.Encryption
 					for (int j = 0, k = i; j < bi2.dataLength; j++, k++)
 					{
 						// k = i + j
-						ulong val = ((ulong)bi1.data[i] * (ulong)bi2.data[j]) +
-						            (ulong)result.data[k] + mcarry;
+						var val = (ulong)bi1.data[i] * (ulong)bi2.data[j] +
+                                  (ulong)result.data[k] + mcarry;
 
 						result.data[k] = (uint)(val & 0xFFFFFFFF);
-						mcarry = (val >> 32);
+						mcarry = val >> 32;
 					}
 
 					if (mcarry != 0)
@@ -714,7 +716,7 @@ namespace SharpMC.Util.Encryption
 			}
 			catch (Exception)
 			{
-				throw (new ArithmeticException("Multiplication overflow."));
+				throw new ArithmeticException("Multiplication overflow.");
 			}
 
 
@@ -737,8 +739,8 @@ namespace SharpMC.Util.Encryption
 						return result;
 					else
 					{
-						bool isMaxNeg = true;
-						for (int i = 0; i < result.dataLength - 1 && isMaxNeg; i++)
+						var isMaxNeg = true;
+						for (var i = 0; i < result.dataLength - 1 && isMaxNeg; i++)
 						{
 							if (result.data[i] != 0)
 								isMaxNeg = false;
@@ -749,7 +751,7 @@ namespace SharpMC.Util.Encryption
 					}
 				}
 
-				throw (new ArithmeticException("Multiplication overflow."));
+				throw new ArithmeticException("Multiplication overflow.");
 			}
 
 			// if input has different signs, then result is -ve
@@ -767,7 +769,7 @@ namespace SharpMC.Util.Encryption
 
 		public static BigInteger operator <<(BigInteger bi1, int shiftVal)
 		{
-			BigInteger result = new BigInteger(bi1);
+			var result = new BigInteger(bi1);
 			result.dataLength = shiftLeft(result.data, shiftVal);
 
 			return result;
@@ -778,13 +780,13 @@ namespace SharpMC.Util.Encryption
 
 		private static int shiftLeft(uint[] buffer, int shiftVal)
 		{
-			int shiftAmount = 32;
-			int bufLen = buffer.Length;
+			var shiftAmount = 32;
+			var bufLen = buffer.Length;
 
 			while (bufLen > 1 && buffer[bufLen - 1] == 0)
 				bufLen--;
 
-			for (int count = shiftVal; count > 0; )
+			for (var count = shiftVal; count > 0; )
 			{
 				if (count < shiftAmount)
 					shiftAmount = count;
@@ -792,9 +794,9 @@ namespace SharpMC.Util.Encryption
 				//Console.WriteLine("shiftAmount = {0}", shiftAmount);
 
 				ulong carry = 0;
-				for (int i = 0; i < bufLen; i++)
+				for (var i = 0; i < bufLen; i++)
 				{
-					ulong val = ((ulong)buffer[i]) << shiftAmount;
+					var val = (ulong)buffer[i] << shiftAmount;
 					val |= carry;
 
 					buffer[i] = (uint)(val & 0xFFFFFFFF);
@@ -821,17 +823,17 @@ namespace SharpMC.Util.Encryption
 
 		public static BigInteger operator >>(BigInteger bi1, int shiftVal)
 		{
-			BigInteger result = new BigInteger(bi1);
+			var result = new BigInteger(bi1);
 			result.dataLength = shiftRight(result.data, shiftVal);
 
 
 			if ((bi1.data[maxLength - 1] & 0x80000000) != 0) // negative
 			{
-				for (int i = maxLength - 1; i >= result.dataLength; i--)
+				for (var i = maxLength - 1; i >= result.dataLength; i--)
 					result.data[i] = 0xFFFFFFFF;
 
-				uint mask = 0x80000000;
-				for (int i = 0; i < 32; i++)
+				var mask = 0x80000000;
+				for (var i = 0; i < 32; i++)
 				{
 					if ((result.data[result.dataLength - 1] & mask) != 0)
 						break;
@@ -848,16 +850,16 @@ namespace SharpMC.Util.Encryption
 
 		private static int shiftRight(uint[] buffer, int shiftVal)
 		{
-			int shiftAmount = 32;
-			int invShift = 0;
-			int bufLen = buffer.Length;
+			var shiftAmount = 32;
+			var invShift = 0;
+			var bufLen = buffer.Length;
 
 			while (bufLen > 1 && buffer[bufLen - 1] == 0)
 				bufLen--;
 
 			//Console.WriteLine("bufLen = " + bufLen + " buffer.Length = " + buffer.Length);
 
-			for (int count = shiftVal; count > 0; )
+			for (var count = shiftVal; count > 0; )
 			{
 				if (count < shiftAmount)
 				{
@@ -868,13 +870,13 @@ namespace SharpMC.Util.Encryption
 				//Console.WriteLine("shiftAmount = {0}", shiftAmount);
 
 				ulong carry = 0;
-				for (int i = bufLen - 1; i >= 0; i--)
+				for (var i = bufLen - 1; i >= 0; i--)
 				{
-					ulong val = ((ulong)buffer[i]) >> shiftAmount;
+					var val = (ulong)buffer[i] >> shiftAmount;
 					val |= carry;
 
-					carry = ((ulong)buffer[i]) << invShift;
-					buffer[i] = (uint)(val);
+					carry = (ulong)buffer[i] << invShift;
+					buffer[i] = (uint)val;
 				}
 
 				count -= shiftAmount;
@@ -893,10 +895,10 @@ namespace SharpMC.Util.Encryption
 
 		public static BigInteger operator ~(BigInteger bi1)
 		{
-			BigInteger result = new BigInteger(bi1);
+			var result = new BigInteger(bi1);
 
-			for (int i = 0; i < maxLength; i++)
-				result.data[i] = (uint)(~(bi1.data[i]));
+			for (var i = 0; i < maxLength; i++)
+				result.data[i] = (uint)~bi1.data[i];
 
 			result.dataLength = maxLength;
 
@@ -917,21 +919,21 @@ namespace SharpMC.Util.Encryption
 			// if we proceed.
 
 			if (bi1.dataLength == 1 && bi1.data[0] == 0)
-				return (new BigInteger());
+				return new BigInteger();
 
-			BigInteger result = new BigInteger(bi1);
+			var result = new BigInteger(bi1);
 
 			// 1's complement
-			for (int i = 0; i < maxLength; i++)
-				result.data[i] = (uint)(~(bi1.data[i]));
+			for (var i = 0; i < maxLength; i++)
+				result.data[i] = (uint)~bi1.data[i];
 
 			// add one to result of 1's complement
 			long val, carry = 1;
-			int index = 0;
+			var index = 0;
 
 			while (carry != 0 && index < maxLength)
 			{
-				val = (long)(result.data[index]);
+				val = (long)result.data[index];
 				val++;
 
 				result.data[index] = (uint)(val & 0xFFFFFFFF);
@@ -941,7 +943,7 @@ namespace SharpMC.Util.Encryption
 			}
 
 			if ((bi1.data[maxLength - 1] & 0x80000000) == (result.data[maxLength - 1] & 0x80000000))
-				throw (new ArithmeticException("Overflow in negation.\n"));
+				throw new ArithmeticException("Overflow in negation.\n");
 
 			result.dataLength = maxLength;
 
@@ -963,18 +965,18 @@ namespace SharpMC.Util.Encryption
 
 		public static bool operator !=(BigInteger bi1, BigInteger bi2)
 		{
-			return !(bi1.Equals(bi2));
+			return !bi1.Equals(bi2);
 		}
 
 
 		public override bool Equals(object o)
 		{
-			BigInteger bi = (BigInteger)o;
+			var bi = (BigInteger)o;
 
 			if (this.dataLength != bi.dataLength)
 				return false;
 
-			for (int i = 0; i < this.dataLength; i++)
+			for (var i = 0; i < this.dataLength; i++)
 			{
 				if (this.data[i] != bi.data[i])
 					return false;
@@ -995,7 +997,7 @@ namespace SharpMC.Util.Encryption
 
 		public static bool operator >(BigInteger bi1, BigInteger bi2)
 		{
-			int pos = maxLength - 1;
+			var pos = maxLength - 1;
 
 			// bi1 is negative, bi2 is positive
 			if ((bi1.data[pos] & 0x80000000) != 0 && (bi2.data[pos] & 0x80000000) == 0)
@@ -1006,7 +1008,7 @@ namespace SharpMC.Util.Encryption
 				return true;
 
 			// same sign
-			int len = (bi1.dataLength > bi2.dataLength) ? bi1.dataLength : bi2.dataLength;
+			var len = bi1.dataLength > bi2.dataLength ? bi1.dataLength : bi2.dataLength;
 			for (pos = len - 1; pos >= 0 && bi1.data[pos] == bi2.data[pos]; pos--) ;
 
 			if (pos >= 0)
@@ -1021,7 +1023,7 @@ namespace SharpMC.Util.Encryption
 
 		public static bool operator <(BigInteger bi1, BigInteger bi2)
 		{
-			int pos = maxLength - 1;
+			var pos = maxLength - 1;
 
 			// bi1 is negative, bi2 is positive
 			if ((bi1.data[pos] & 0x80000000) != 0 && (bi2.data[pos] & 0x80000000) == 0)
@@ -1032,7 +1034,7 @@ namespace SharpMC.Util.Encryption
 				return false;
 
 			// same sign
-			int len = (bi1.dataLength > bi2.dataLength) ? bi1.dataLength : bi2.dataLength;
+			var len = bi1.dataLength > bi2.dataLength ? bi1.dataLength : bi2.dataLength;
 			for (pos = len - 1; pos >= 0 && bi1.data[pos] == bi2.data[pos]; pos--) ;
 
 			if (pos >= 0)
@@ -1047,13 +1049,13 @@ namespace SharpMC.Util.Encryption
 
 		public static bool operator >=(BigInteger bi1, BigInteger bi2)
 		{
-			return (bi1 == bi2 || bi1 > bi2);
+			return bi1 == bi2 || bi1 > bi2;
 		}
 
 
 		public static bool operator <=(BigInteger bi1, BigInteger bi2)
 		{
-			return (bi1 == bi2 || bi1 < bi2);
+			return bi1 == bi2 || bi1 < bi2;
 		}
 
 
@@ -1067,13 +1069,13 @@ namespace SharpMC.Util.Encryption
 		private static void multiByteDivide(BigInteger bi1, BigInteger bi2,
 			BigInteger outQuotient, BigInteger outRemainder)
 		{
-			uint[] result = new uint[maxLength];
+			var result = new uint[maxLength];
 
-			int remainderLen = bi1.dataLength + 1;
-			uint[] remainder = new uint[remainderLen];
+			var remainderLen = bi1.dataLength + 1;
+			var remainder = new uint[remainderLen];
 
-			uint mask = 0x80000000;
-			uint val = bi2.data[bi2.dataLength - 1];
+			var mask = 0x80000000;
+			var val = bi2.data[bi2.dataLength - 1];
 			int shift = 0, resultPos = 0;
 
 			while (mask != 0 && (val & mask) == 0)
@@ -1084,7 +1086,7 @@ namespace SharpMC.Util.Encryption
 			//Console.WriteLine("shift = {0}", shift);
 			//Console.WriteLine("Before bi1 Len = {0}, bi2 Len = {1}", bi1.dataLength, bi2.dataLength);
 
-			for (int i = 0; i < bi1.dataLength; i++)
+			for (var i = 0; i < bi1.dataLength; i++)
 				remainder[i] = bi1.data[i];
 			shiftLeft(remainder, shift);
 			bi2 = bi2 << shift;
@@ -1097,32 +1099,32 @@ namespace SharpMC.Util.Encryption
     Console.WriteLine();
     */
 
-			int j = remainderLen - bi2.dataLength;
-			int pos = remainderLen - 1;
+			var j = remainderLen - bi2.dataLength;
+			var pos = remainderLen - 1;
 
 			ulong firstDivisorByte = bi2.data[bi2.dataLength - 1];
 			ulong secondDivisorByte = bi2.data[bi2.dataLength - 2];
 
-			int divisorLen = bi2.dataLength + 1;
-			uint[] dividendPart = new uint[divisorLen];
+			var divisorLen = bi2.dataLength + 1;
+			var dividendPart = new uint[divisorLen];
 
 			while (j > 0)
 			{
-				ulong dividend = ((ulong)remainder[pos] << 32) + (ulong)remainder[pos - 1];
+				var dividend = ((ulong)remainder[pos] << 32) + (ulong)remainder[pos - 1];
 				//Console.WriteLine("dividend = {0}", dividend);
 
-				ulong q_hat = dividend / firstDivisorByte;
-				ulong r_hat = dividend % firstDivisorByte;
+				var q_hat = dividend / firstDivisorByte;
+				var r_hat = dividend % firstDivisorByte;
 
 				//Console.WriteLine("q_hat = {0:X}, r_hat = {1:X}", q_hat, r_hat);
 
-				bool done = false;
+				var done = false;
 				while (!done)
 				{
 					done = true;
 
 					if (q_hat == 0x100000000 ||
-					    (q_hat * secondDivisorByte) > ((r_hat << 32) + remainder[pos - 2]))
+					    q_hat * secondDivisorByte > (r_hat << 32) + remainder[pos - 2])
 					{
 						q_hat--;
 						r_hat += firstDivisorByte;
@@ -1132,11 +1134,11 @@ namespace SharpMC.Util.Encryption
 					}
 				}
 
-				for (int h = 0; h < divisorLen; h++)
+				for (var h = 0; h < divisorLen; h++)
 					dividendPart[h] = remainder[pos - h];
 
-				BigInteger kk = new BigInteger(dividendPart);
-				BigInteger ss = bi2 * (long)q_hat;
+				var kk = new BigInteger(dividendPart);
+				var ss = bi2 * (long)q_hat;
 
 				//Console.WriteLine("ss before = " + ss);
 				while (ss > kk)
@@ -1145,13 +1147,13 @@ namespace SharpMC.Util.Encryption
 					ss -= bi2;
 					//Console.WriteLine(ss);
 				}
-				BigInteger yy = kk - ss;
+				var yy = kk - ss;
 
 				//Console.WriteLine("ss = " + ss);
 				//Console.WriteLine("kk = " + kk);
 				//Console.WriteLine("yy = " + yy);
 
-				for (int h = 0; h < divisorLen; h++)
+				for (var h = 0; h < divisorLen; h++)
 					remainder[pos - h] = yy.data[bi2.dataLength - h];
 
 				/*
@@ -1168,8 +1170,8 @@ namespace SharpMC.Util.Encryption
 			}
 
 			outQuotient.dataLength = resultPos;
-			int y = 0;
-			for (int x = outQuotient.dataLength - 1; x >= 0; x--, y++)
+			var y = 0;
+			for (var x = outQuotient.dataLength - 1; x >= 0; x--, y++)
 				outQuotient.data[y] = result[x];
 			for (; y < maxLength; y++)
 				outQuotient.data[y] = 0;
@@ -1197,27 +1199,27 @@ namespace SharpMC.Util.Encryption
 		private static void singleByteDivide(BigInteger bi1, BigInteger bi2,
 			BigInteger outQuotient, BigInteger outRemainder)
 		{
-			uint[] result = new uint[maxLength];
-			int resultPos = 0;
+			var result = new uint[maxLength];
+			var resultPos = 0;
 
 			// copy dividend to reminder
-			for (int i = 0; i < maxLength; i++)
+			for (var i = 0; i < maxLength; i++)
 				outRemainder.data[i] = bi1.data[i];
 			outRemainder.dataLength = bi1.dataLength;
 
 			while (outRemainder.dataLength > 1 && outRemainder.data[outRemainder.dataLength - 1] == 0)
 				outRemainder.dataLength--;
 
-			ulong divisor = (ulong)bi2.data[0];
-			int pos = outRemainder.dataLength - 1;
-			ulong dividend = (ulong)outRemainder.data[pos];
+			var divisor = (ulong)bi2.data[0];
+			var pos = outRemainder.dataLength - 1;
+			var dividend = (ulong)outRemainder.data[pos];
 
 			//Console.WriteLine("divisor = " + divisor + " dividend = " + dividend);
 			//Console.WriteLine("divisor = " + bi2 + "\ndividend = " + bi1);
 
 			if (dividend >= divisor)
 			{
-				ulong quotient = dividend / divisor;
+				var quotient = dividend / divisor;
 				result[resultPos++] = (uint)quotient;
 
 				outRemainder.data[pos] = (uint)(dividend % divisor);
@@ -1229,7 +1231,7 @@ namespace SharpMC.Util.Encryption
 				//Console.WriteLine(pos);
 
 				dividend = ((ulong)outRemainder.data[pos + 1] << 32) + (ulong)outRemainder.data[pos];
-				ulong quotient = dividend / divisor;
+				var quotient = dividend / divisor;
 				result[resultPos++] = (uint)quotient;
 
 				outRemainder.data[pos + 1] = 0;
@@ -1238,8 +1240,8 @@ namespace SharpMC.Util.Encryption
 			}
 
 			outQuotient.dataLength = resultPos;
-			int j = 0;
-			for (int i = outQuotient.dataLength - 1; i >= 0; i--, j++)
+			var j = 0;
+			for (var i = outQuotient.dataLength - 1; i >= 0; i--, j++)
 				outQuotient.data[j] = result[i];
 			for (; j < maxLength; j++)
 				outQuotient.data[j] = 0;
@@ -1261,10 +1263,10 @@ namespace SharpMC.Util.Encryption
 
 		public static BigInteger operator /(BigInteger bi1, BigInteger bi2)
 		{
-			BigInteger quotient = new BigInteger();
-			BigInteger remainder = new BigInteger();
+			var quotient = new BigInteger();
+			var remainder = new BigInteger();
 
-			int lastPos = maxLength - 1;
+			var lastPos = maxLength - 1;
 			bool divisorNeg = false, dividendNeg = false;
 
 			if ((bi1.data[lastPos] & 0x80000000) != 0)     // bi1 negative
@@ -1304,11 +1306,11 @@ namespace SharpMC.Util.Encryption
 
 		public static BigInteger operator %(BigInteger bi1, BigInteger bi2)
 		{
-			BigInteger quotient = new BigInteger();
-			BigInteger remainder = new BigInteger(bi1);
+			var quotient = new BigInteger();
+			var remainder = new BigInteger(bi1);
 
-			int lastPos = maxLength - 1;
-			bool dividendNeg = false;
+			var lastPos = maxLength - 1;
+			var dividendNeg = false;
 
 			if ((bi1.data[lastPos] & 0x80000000) != 0)     // bi1 negative
 			{
@@ -1344,13 +1346,13 @@ namespace SharpMC.Util.Encryption
 
 		public static BigInteger operator &(BigInteger bi1, BigInteger bi2)
 		{
-			BigInteger result = new BigInteger();
+			var result = new BigInteger();
 
-			int len = (bi1.dataLength > bi2.dataLength) ? bi1.dataLength : bi2.dataLength;
+			var len = bi1.dataLength > bi2.dataLength ? bi1.dataLength : bi2.dataLength;
 
-			for (int i = 0; i < len; i++)
+			for (var i = 0; i < len; i++)
 			{
-				uint sum = (uint)(bi1.data[i] & bi2.data[i]);
+				var sum = (uint)(bi1.data[i] & bi2.data[i]);
 				result.data[i] = sum;
 			}
 
@@ -1369,13 +1371,13 @@ namespace SharpMC.Util.Encryption
 
 		public static BigInteger operator |(BigInteger bi1, BigInteger bi2)
 		{
-			BigInteger result = new BigInteger();
+			var result = new BigInteger();
 
-			int len = (bi1.dataLength > bi2.dataLength) ? bi1.dataLength : bi2.dataLength;
+			var len = bi1.dataLength > bi2.dataLength ? bi1.dataLength : bi2.dataLength;
 
-			for (int i = 0; i < len; i++)
+			for (var i = 0; i < len; i++)
 			{
-				uint sum = (uint)(bi1.data[i] | bi2.data[i]);
+				var sum = (uint)(bi1.data[i] | bi2.data[i]);
 				result.data[i] = sum;
 			}
 
@@ -1394,13 +1396,13 @@ namespace SharpMC.Util.Encryption
 
 		public static BigInteger operator ^(BigInteger bi1, BigInteger bi2)
 		{
-			BigInteger result = new BigInteger();
+			var result = new BigInteger();
 
-			int len = (bi1.dataLength > bi2.dataLength) ? bi1.dataLength : bi2.dataLength;
+			var len = bi1.dataLength > bi2.dataLength ? bi1.dataLength : bi2.dataLength;
 
-			for (int i = 0; i < len; i++)
+			for (var i = 0; i < len; i++)
 			{
-				uint sum = (uint)(bi1.data[i] ^ bi2.data[i]);
+				var sum = (uint)(bi1.data[i] ^ bi2.data[i]);
 				result.data[i] = sum;
 			}
 
@@ -1420,9 +1422,9 @@ namespace SharpMC.Util.Encryption
 		public BigInteger max(BigInteger bi)
 		{
 			if (this > bi)
-				return (new BigInteger(this));
+				return new BigInteger(this);
 			else
-				return (new BigInteger(bi));
+				return new BigInteger(bi);
 		}
 
 
@@ -1433,9 +1435,9 @@ namespace SharpMC.Util.Encryption
 		public BigInteger min(BigInteger bi)
 		{
 			if (this < bi)
-				return (new BigInteger(this));
+				return new BigInteger(this);
 			else
-				return (new BigInteger(bi));
+				return new BigInteger(bi);
 
 		}
 
@@ -1447,9 +1449,9 @@ namespace SharpMC.Util.Encryption
 		public BigInteger abs()
 		{
 			if ((this.data[maxLength - 1] & 0x80000000) != 0)
-				return (-this);
+				return -this;
 			else
-				return (new BigInteger(this));
+				return new BigInteger(this);
 		}
 
 
@@ -1477,14 +1479,14 @@ namespace SharpMC.Util.Encryption
 		public string ToString(int radix)
 		{
 			if (radix < 2 || radix > 36)
-				throw (new ArgumentException("Radix must be >= 2 and <= 36"));
+				throw new ArgumentException("Radix must be >= 2 and <= 36");
 
-			string charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-			string result = "";
+			var charSet = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
+			var result = "";
 
-			BigInteger a = this;
+			var a = this;
 
-			bool negative = false;
+			var negative = false;
 			if ((a.data[maxLength - 1] & 0x80000000) != 0)
 			{
 				negative = true;
@@ -1495,15 +1497,15 @@ namespace SharpMC.Util.Encryption
 				catch (Exception) { }
 			}
 
-			BigInteger quotient = new BigInteger();
-			BigInteger remainder = new BigInteger();
-			BigInteger biRadix = new BigInteger(radix);
+			var quotient = new BigInteger();
+			var remainder = new BigInteger();
+			var biRadix = new BigInteger(radix);
 
 			if (a.dataLength == 1 && a.data[0] == 0)
 				result = "0";
 			else
 			{
-				while (a.dataLength > 1 || (a.dataLength == 1 && a.data[0] != 0))
+				while (a.dataLength > 1 || a.dataLength == 1 && a.data[0] != 0)
 				{
 					singleByteDivide(a, biRadix, quotient, remainder);
 
@@ -1538,9 +1540,9 @@ namespace SharpMC.Util.Encryption
 
 		public string ToHexString()
 		{
-			string result = data[dataLength - 1].ToString("X");
+			var result = data[dataLength - 1].ToString("X");
 
-			for (int i = dataLength - 2; i >= 0; i--)
+			for (var i = dataLength - 2; i >= 0; i--)
 			{
 				result += data[i].ToString("X8");
 			}
@@ -1557,11 +1559,11 @@ namespace SharpMC.Util.Encryption
 		public BigInteger modPow(BigInteger exp, BigInteger n)
 		{
 			if ((exp.data[maxLength - 1] & 0x80000000) != 0)
-				throw (new ArithmeticException("Positive exponents only."));
+				throw new ArithmeticException("Positive exponents only.");
 
 			BigInteger resultNum = 1;
 			BigInteger tempNum;
-			bool thisNegative = false;
+			var thisNegative = false;
 
 			if ((this.data[maxLength - 1] & 0x80000000) != 0)   // negative this
 			{
@@ -1575,23 +1577,23 @@ namespace SharpMC.Util.Encryption
 				n = -n;
 
 			// calculate constant = b^(2k) / m
-			BigInteger constant = new BigInteger();
+			var constant = new BigInteger();
 
-			int i = n.dataLength << 1;
+			var i = n.dataLength << 1;
 			constant.data[i] = 0x00000001;
 			constant.dataLength = i + 1;
 
 			constant = constant / n;
-			int totalBits = exp.bitCount();
-			int count = 0;
+			var totalBits = exp.bitCount();
+			var count = 0;
 
 			// perform squaring and multiply exponentiation
-			for (int pos = 0; pos < exp.dataLength; pos++)
+			for (var pos = 0; pos < exp.dataLength; pos++)
 			{
 				uint mask = 0x01;
 				//Console.WriteLine("pos = " + pos);
 
-				for (int index = 0; index < 32; index++)
+				for (var index = 0; index < 32; index++)
 				{
 					if ((exp.data[pos] & mask) != 0)
 						resultNum = BarrettReduction(resultNum * tempNum, n, constant);
@@ -1635,7 +1637,7 @@ namespace SharpMC.Util.Encryption
 				kPlusOne = k + 1,
 				kMinusOne = k - 1;
 
-			BigInteger q1 = new BigInteger();
+			var q1 = new BigInteger();
 
 			// q1 = x / b^(k-1)
 			for (int i = kMinusOne, j = 0; i < x.dataLength; i++, j++)
@@ -1645,8 +1647,8 @@ namespace SharpMC.Util.Encryption
 				q1.dataLength = 1;
 
 
-			BigInteger q2 = q1 * constant;
-			BigInteger q3 = new BigInteger();
+			var q2 = q1 * constant;
+			var q3 = new BigInteger();
 
 			// q3 = q2 / b^(k+1)
 			for (int i = kPlusOne, j = 0; i < q2.dataLength; i++, j++)
@@ -1658,9 +1660,9 @@ namespace SharpMC.Util.Encryption
 
 			// r1 = x mod b^(k+1)
 			// i.e. keep the lowest (k+1) words
-			BigInteger r1 = new BigInteger();
-			int lengthToCopy = (x.dataLength > kPlusOne) ? kPlusOne : x.dataLength;
-			for (int i = 0; i < lengthToCopy; i++)
+			var r1 = new BigInteger();
+			var lengthToCopy = x.dataLength > kPlusOne ? kPlusOne : x.dataLength;
+			for (var i = 0; i < lengthToCopy; i++)
 				r1.data[i] = x.data[i];
 			r1.dataLength = lengthToCopy;
 
@@ -1668,21 +1670,21 @@ namespace SharpMC.Util.Encryption
 			// r2 = (q3 * n) mod b^(k+1)
 			// partial multiplication of q3 and n
 
-			BigInteger r2 = new BigInteger();
-			for (int i = 0; i < q3.dataLength; i++)
+			var r2 = new BigInteger();
+			for (var i = 0; i < q3.dataLength; i++)
 			{
 				if (q3.data[i] == 0) continue;
 
 				ulong mcarry = 0;
-				int t = i;
-				for (int j = 0; j < n.dataLength && t < kPlusOne; j++, t++)
+				var t = i;
+				for (var j = 0; j < n.dataLength && t < kPlusOne; j++, t++)
 				{
 					// t = i + j
-					ulong val = ((ulong)q3.data[i] * (ulong)n.data[j]) +
-					            (ulong)r2.data[t] + mcarry;
+					var val = (ulong)q3.data[i] * (ulong)n.data[j] +
+                              (ulong)r2.data[t] + mcarry;
 
 					r2.data[t] = (uint)(val & 0xFFFFFFFF);
-					mcarry = (val >> 32);
+					mcarry = val >> 32;
 				}
 
 				if (t < kPlusOne)
@@ -1695,10 +1697,15 @@ namespace SharpMC.Util.Encryption
 			r1 -= r2;
 			if ((r1.data[maxLength - 1] & 0x80000000) != 0)        // negative
 			{
-				BigInteger val = new BigInteger();
-				val.data[kPlusOne] = 0x00000001;
-				val.dataLength = kPlusOne + 1;
-				r1 += val;
+				var val = new BigInteger
+                {
+                    data =
+                    {
+                        [kPlusOne] = 0x00000001
+                    },
+                    dataLength = kPlusOne + 1
+                };
+                r1 += val;
 			}
 
 			while (r1 >= n)
@@ -1727,9 +1734,9 @@ namespace SharpMC.Util.Encryption
 			else
 				y = bi;
 
-			BigInteger g = y;
+			var g = y;
 
-			while (x.dataLength > 1 || (x.dataLength == 1 && x.data[0] != 0))
+			while (x.dataLength > 1 || x.dataLength == 1 && x.data[0] != 0)
 			{
 				g = x;
 				x = y % x;
@@ -1746,24 +1753,24 @@ namespace SharpMC.Util.Encryption
 
 		public void genRandomBits(int bits, Random rand)
 		{
-			int dwords = bits >> 5;
-			int remBits = bits & 0x1F;
+			var dwords = bits >> 5;
+			var remBits = bits & 0x1F;
 
 			if (remBits != 0)
 				dwords++;
 
 			if (dwords > maxLength)
-				throw (new ArithmeticException("Number of required bits > maxLength."));
+				throw new ArithmeticException("Number of required bits > maxLength.");
 
-			for (int i = 0; i < dwords; i++)
+			for (var i = 0; i < dwords; i++)
 				data[i] = (uint)(rand.NextDouble() * 0x100000000);
 
-			for (int i = dwords; i < maxLength; i++)
+			for (var i = dwords; i < maxLength; i++)
 				data[i] = 0;
 
 			if (remBits != 0)
 			{
-				uint mask = (uint)(0x01 << (remBits - 1));
+				var mask = (uint)(0x01 << (remBits - 1));
 				data[dwords - 1] |= mask;
 
 				mask = (uint)(0xFFFFFFFF >> (32 - remBits));
@@ -1794,16 +1801,16 @@ namespace SharpMC.Util.Encryption
 			while (dataLength > 1 && data[dataLength - 1] == 0)
 				dataLength--;
 
-			uint value = data[dataLength - 1];
-			uint mask = 0x80000000;
-			int bits = 32;
+			var value = data[dataLength - 1];
+			var mask = 0x80000000;
+			var bits = 32;
 
 			while (bits > 0 && (value & mask) == 0)
 			{
 				bits--;
 				mask >>= 1;
 			}
-			bits += ((dataLength - 1) << 5);
+			bits += (dataLength - 1) << 5;
 
 			return bits;
 		}
@@ -1850,18 +1857,18 @@ namespace SharpMC.Util.Encryption
 			if ((thisVal.data[0] & 0x1) == 0)     // even numbers
 				return false;
 
-			int bits = thisVal.bitCount();
-			BigInteger a = new BigInteger();
-			BigInteger p_sub1 = thisVal - (new BigInteger(1));
-			Random rand = new Random();
+			var bits = thisVal.bitCount();
+			var a = new BigInteger();
+			var p_sub1 = thisVal - new BigInteger(1);
+			var rand = new Random();
 
-			for (int round = 0; round < confidence; round++)
+			for (var round = 0; round < confidence; round++)
 			{
-				bool done = false;
+				var done = false;
 
 				while (!done)		// generate a < n
 				{
-					int testBits = 0;
+					var testBits = 0;
 
 					// make sure "a" has at least 2 bits
 					while (testBits < 2)
@@ -1869,26 +1876,26 @@ namespace SharpMC.Util.Encryption
 
 					a.genRandomBits(testBits, rand);
 
-					int byteLen = a.dataLength;
+					var byteLen = a.dataLength;
 
 					// make sure "a" is not 0
-					if (byteLen > 1 || (byteLen == 1 && a.data[0] != 1))
+					if (byteLen > 1 || byteLen == 1 && a.data[0] != 1)
 						done = true;
 				}
 
 				// check whether a factor exists (fix for version 1.03)
-				BigInteger gcdTest = a.gcd(thisVal);
+				var gcdTest = a.gcd(thisVal);
 				if (gcdTest.dataLength == 1 && gcdTest.data[0] != 1)
 					return false;
 
 				// calculate a^(p-1) mod p
-				BigInteger expResult = a.modPow(p_sub1, thisVal);
+				var expResult = a.modPow(p_sub1, thisVal);
 
-				int resultLen = expResult.dataLength;
+				var resultLen = expResult.dataLength;
 
 				// is NOT prime is a^(p-1) mod p != 1
 
-				if (resultLen > 1 || (resultLen == 1 && expResult.data[0] != 1))
+				if (resultLen > 1 || resultLen == 1 && expResult.data[0] != 1)
 				{
 					//Console.WriteLine("a = " + a.ToString());
 					return false;
@@ -1942,14 +1949,14 @@ namespace SharpMC.Util.Encryption
 
 
 			// calculate values of s and t
-			BigInteger p_sub1 = thisVal - (new BigInteger(1));
-			int s = 0;
+			var p_sub1 = thisVal - new BigInteger(1);
+			var s = 0;
 
-			for (int index = 0; index < p_sub1.dataLength; index++)
+			for (var index = 0; index < p_sub1.dataLength; index++)
 			{
 				uint mask = 0x01;
 
-				for (int i = 0; i < 32; i++)
+				for (var i = 0; i < 32; i++)
 				{
 					if ((p_sub1.data[index] & mask) != 0)
 					{
@@ -1961,19 +1968,19 @@ namespace SharpMC.Util.Encryption
 				}
 			}
 
-			BigInteger t = p_sub1 >> s;
+			var t = p_sub1 >> s;
 
-			int bits = thisVal.bitCount();
-			BigInteger a = new BigInteger();
-			Random rand = new Random();
+			var bits = thisVal.bitCount();
+			var a = new BigInteger();
+			var rand = new Random();
 
-			for (int round = 0; round < confidence; round++)
+			for (var round = 0; round < confidence; round++)
 			{
-				bool done = false;
+				var done = false;
 
 				while (!done)		// generate a < n
 				{
-					int testBits = 0;
+					var testBits = 0;
 
 					// make sure "a" has at least 2 bits
 					while (testBits < 2)
@@ -1981,19 +1988,19 @@ namespace SharpMC.Util.Encryption
 
 					a.genRandomBits(testBits, rand);
 
-					int byteLen = a.dataLength;
+					var byteLen = a.dataLength;
 
 					// make sure "a" is not 0
-					if (byteLen > 1 || (byteLen == 1 && a.data[0] != 1))
+					if (byteLen > 1 || byteLen == 1 && a.data[0] != 1)
 						done = true;
 				}
 
 				// check whether a factor exists (fix for version 1.03)
-				BigInteger gcdTest = a.gcd(thisVal);
+				var gcdTest = a.gcd(thisVal);
 				if (gcdTest.dataLength == 1 && gcdTest.data[0] != 1)
 					return false;
 
-				BigInteger b = a.modPow(t, thisVal);
+				var b = a.modPow(t, thisVal);
 
 				/*
       Console.WriteLine("a = " + a.ToString(10));
@@ -2002,12 +2009,12 @@ namespace SharpMC.Util.Encryption
       Console.WriteLine("s = " + s);
       */
 
-				bool result = false;
+				var result = false;
 
 				if (b.dataLength == 1 && b.data[0] == 1)         // a^t mod p = 1
 					result = true;
 
-				for (int j = 0; result == false && j < s; j++)
+				for (var j = 0; result == false && j < s; j++)
 				{
 					if (b == p_sub1)         // a^((2^j)*t) mod p = p-1 for some 0 <= j <= s-1
 					{
@@ -2015,7 +2022,7 @@ namespace SharpMC.Util.Encryption
 						break;
 					}
 
-					b = (b * b) % thisVal;
+					b = b * b % thisVal;
 				}
 
 				if (result == false)
@@ -2066,20 +2073,20 @@ namespace SharpMC.Util.Encryption
 				return false;
 
 
-			int bits = thisVal.bitCount();
-			BigInteger a = new BigInteger();
-			BigInteger p_sub1 = thisVal - 1;
-			BigInteger p_sub1_shift = p_sub1 >> 1;
+			var bits = thisVal.bitCount();
+			var a = new BigInteger();
+			var p_sub1 = thisVal - 1;
+			var p_sub1_shift = p_sub1 >> 1;
 
-			Random rand = new Random();
+			var rand = new Random();
 
-			for (int round = 0; round < confidence; round++)
+			for (var round = 0; round < confidence; round++)
 			{
-				bool done = false;
+				var done = false;
 
 				while (!done)		// generate a < n
 				{
-					int testBits = 0;
+					var testBits = 0;
 
 					// make sure "a" has at least 2 bits
 					while (testBits < 2)
@@ -2087,21 +2094,21 @@ namespace SharpMC.Util.Encryption
 
 					a.genRandomBits(testBits, rand);
 
-					int byteLen = a.dataLength;
+					var byteLen = a.dataLength;
 
 					// make sure "a" is not 0
-					if (byteLen > 1 || (byteLen == 1 && a.data[0] != 1))
+					if (byteLen > 1 || byteLen == 1 && a.data[0] != 1)
 						done = true;
 				}
 
 				// check whether a factor exists (fix for version 1.03)
-				BigInteger gcdTest = a.gcd(thisVal);
+				var gcdTest = a.gcd(thisVal);
 				if (gcdTest.dataLength == 1 && gcdTest.data[0] != 1)
 					return false;
 
 				// calculate a^((p-1)/2) mod p
 
-				BigInteger expResult = a.modPow(p_sub1_shift, thisVal);
+				var expResult = a.modPow(p_sub1_shift, thisVal);
 				if (expResult == p_sub1)
 					expResult = -1;
 
@@ -2166,11 +2173,11 @@ namespace SharpMC.Util.Encryption
 			// Let P = 1, Q = (1-D) / 4
 
 			long D = 5, sign = -1, dCount = 0;
-			bool done = false;
+			var done = false;
 
 			while (!done)
 			{
-				int Jresult = BigInteger.Jacobi(D, thisVal);
+				var Jresult = BigInteger.Jacobi(D, thisVal);
 
 				if (Jresult == -1)
 					done = true;    // J(D, this) = 1
@@ -2182,7 +2189,7 @@ namespace SharpMC.Util.Encryption
 					if (dCount == 20)
 					{
 						// check for square
-						BigInteger root = thisVal.sqrt();
+						var root = thisVal.sqrt();
 						if (root * root == thisVal)
 							return false;
 					}
@@ -2194,7 +2201,7 @@ namespace SharpMC.Util.Encryption
 				dCount++;
 			}
 
-			long Q = (1 - D) >> 2;
+			var Q = (1 - D) >> 2;
 
 			/*
     Console.WriteLine("D = " + D);
@@ -2204,14 +2211,14 @@ namespace SharpMC.Util.Encryption
     Console.WriteLine("J(D|n) = " + BigInteger.Jacobi(D, thisVal));
     */
 
-			BigInteger p_add1 = thisVal + 1;
-			int s = 0;
+			var p_add1 = thisVal + 1;
+			var s = 0;
 
-			for (int index = 0; index < p_add1.dataLength; index++)
+			for (var index = 0; index < p_add1.dataLength; index++)
 			{
 				uint mask = 0x01;
 
-				for (int i = 0; i < 32; i++)
+				for (var i = 0; i < 32; i++)
 				{
 					if ((p_add1.data[index] & mask) != 0)
 					{
@@ -2223,29 +2230,29 @@ namespace SharpMC.Util.Encryption
 				}
 			}
 
-			BigInteger t = p_add1 >> s;
+			var t = p_add1 >> s;
 
 			// calculate constant = b^(2k) / m
 			// for Barrett Reduction
-			BigInteger constant = new BigInteger();
+			var constant = new BigInteger();
 
-			int nLen = thisVal.dataLength << 1;
+			var nLen = thisVal.dataLength << 1;
 			constant.data[nLen] = 0x00000001;
 			constant.dataLength = nLen + 1;
 
 			constant = constant / thisVal;
 
-			BigInteger[] lucas = LucasSequenceHelper(1, Q, t, thisVal, constant, 0);
-			bool isPrime = false;
+			var lucas = LucasSequenceHelper(1, Q, t, thisVal, constant, 0);
+			var isPrime = false;
 
-			if ((lucas[0].dataLength == 1 && lucas[0].data[0] == 0) ||
-			    (lucas[1].dataLength == 1 && lucas[1].data[0] == 0))
+			if (lucas[0].dataLength == 1 && lucas[0].data[0] == 0 ||
+			    lucas[1].dataLength == 1 && lucas[1].data[0] == 0)
 			{
 				// u(t) = 0 or V(t) = 0
 				isPrime = true;
 			}
 
-			for (int i = 1; i < s; i++)
+			for (var i = 1; i < s; i++)
 			{
 				if (!isPrime)
 				{
@@ -2255,7 +2262,7 @@ namespace SharpMC.Util.Encryption
 
 					//lucas[1] = ((lucas[1] * lucas[1]) - (lucas[2] << 1)) % thisVal;
 
-					if ((lucas[1].dataLength == 1 && lucas[1].data[0] == 0))
+					if (lucas[1].dataLength == 1 && lucas[1].data[0] == 0)
 						isPrime = true;
 				}
 
@@ -2268,13 +2275,13 @@ namespace SharpMC.Util.Encryption
 				// If n is prime and gcd(n, Q) == 1, then
 				// Q^((n+1)/2) = Q * Q^((n-1)/2) is congruent to (Q * J(Q, n)) mod n
 
-				BigInteger g = thisVal.gcd(Q);
+				var g = thisVal.gcd(Q);
 				if (g.dataLength == 1 && g.data[0] == 1)         // gcd(this, Q) == 1
 				{
 					if ((lucas[2].data[maxLength - 1] & 0x80000000) != 0)
 						lucas[2] += thisVal;
 
-					BigInteger temp = (Q * BigInteger.Jacobi(Q, thisVal)) % thisVal;
+					var temp = Q * BigInteger.Jacobi(Q, thisVal) % thisVal;
 					if ((temp.data[maxLength - 1] & 0x80000000) != 0)
 						temp += thisVal;
 
@@ -2305,14 +2312,14 @@ namespace SharpMC.Util.Encryption
 
 
 			// test for divisibility by primes < 2000
-			for (int p = 0; p < primesBelow2000.Length; p++)
+			for (var p = 0; p < primesBelow2000.Length; p++)
 			{
 				BigInteger divisor = primesBelow2000[p];
 
 				if (divisor >= thisVal)
 					break;
 
-				BigInteger resultNum = thisVal % divisor;
+				var resultNum = thisVal % divisor;
 				if (resultNum.IntValue() == 0)
 				{
 					/*
@@ -2377,14 +2384,14 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 
 
 			// test for divisibility by primes < 2000
-			for (int p = 0; p < primesBelow2000.Length; p++)
+			for (var p = 0; p < primesBelow2000.Length; p++)
 			{
 				BigInteger divisor = primesBelow2000[p];
 
 				if (divisor >= thisVal)
 					break;
 
-				BigInteger resultNum = thisVal % divisor;
+				var resultNum = thisVal % divisor;
 				if (resultNum.IntValue() == 0)
 				{
 					//Console.WriteLine("Not prime!  Divisible by {0}\n",
@@ -2397,14 +2404,14 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 			// Perform BASE 2 Rabin-Miller Test
 
 			// calculate values of s and t
-			BigInteger p_sub1 = thisVal - (new BigInteger(1));
-			int s = 0;
+			var p_sub1 = thisVal - new BigInteger(1);
+			var s = 0;
 
-			for (int index = 0; index < p_sub1.dataLength; index++)
+			for (var index = 0; index < p_sub1.dataLength; index++)
 			{
 				uint mask = 0x01;
 
-				for (int i = 0; i < 32; i++)
+				for (var i = 0; i < 32; i++)
 				{
 					if ((p_sub1.data[index] & mask) != 0)
 					{
@@ -2416,19 +2423,19 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 				}
 			}
 
-			BigInteger t = p_sub1 >> s;
+			var t = p_sub1 >> s;
 
-			int bits = thisVal.bitCount();
+			var bits = thisVal.bitCount();
 			BigInteger a = 2;
 
 			// b = a^t mod p
-			BigInteger b = a.modPow(t, thisVal);
-			bool result = false;
+			var b = a.modPow(t, thisVal);
+			var result = false;
 
 			if (b.dataLength == 1 && b.data[0] == 1)         // a^t mod p = 1
 				result = true;
 
-			for (int j = 0; result == false && j < s; j++)
+			for (var j = 0; result == false && j < s; j++)
 			{
 				if (b == p_sub1)         // a^((2^j)*t) mod p = p-1 for some 0 <= j <= s-1
 				{
@@ -2436,7 +2443,7 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 					break;
 				}
 
-				b = (b * b) % thisVal;
+				b = b * b % thisVal;
 			}
 
 			// if number is strong pseudoprime to base 2, then do a strong lucas test
@@ -2490,7 +2497,7 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 		{
 			// Jacobi defined only for odd integers
 			if ((b.data[0] & 0x1) == 0)
-				throw (new ArgumentException("Jacobi defined only for odd integers."));
+				throw new ArgumentException("Jacobi defined only for odd integers.");
 
 			if (a >= b) a %= b;
 			if (a.dataLength == 1 && a.data[0] == 0) return 0;  // a == 0
@@ -2498,18 +2505,18 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 
 			if (a < 0)
 			{
-				if ((((b - 1).data[0]) & 0x2) == 0)       //if( (((b-1) >> 1).data[0] & 0x1) == 0)
+				if (((b - 1).data[0] & 0x2) == 0)       //if( (((b-1) >> 1).data[0] & 0x1) == 0)
 					return Jacobi(-a, b);
 				else
 					return -Jacobi(-a, b);
 			}
 
-			int e = 0;
-			for (int index = 0; index < a.dataLength; index++)
+			var e = 0;
+			for (var index = 0; index < a.dataLength; index++)
 			{
 				uint mask = 0x01;
 
-				for (int i = 0; i < 32; i++)
+				for (var i = 0; i < 32; i++)
 				{
 					if ((a.data[index] & mask) != 0)
 					{
@@ -2521,9 +2528,9 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 				}
 			}
 
-			BigInteger a1 = a >> e;
+			var a1 = a >> e;
 
-			int s = 1;
+			var s = 1;
 			if ((e & 0x1) != 0 && ((b.data[0] & 0x7) == 3 || (b.data[0] & 0x7) == 5))
 				s = -1;
 
@@ -2533,7 +2540,7 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 			if (a1.dataLength == 1 && a1.data[0] == 1)
 				return s;
 			else
-				return (s * Jacobi(b % a1, a1));
+				return s * Jacobi(b % a1, a1);
 		}
 
 
@@ -2544,8 +2551,8 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 
 		public static BigInteger genPseudoPrime(int bits, int confidence, Random rand)
 		{
-			BigInteger result = new BigInteger();
-			bool done = false;
+			var result = new BigInteger();
+			var done = false;
 
 			while (!done)
 			{
@@ -2566,8 +2573,8 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 
 		public BigInteger genCoPrime(int bits, Random rand)
 		{
-			bool done = false;
-			BigInteger result = new BigInteger();
+			var done = false;
+			var result = new BigInteger();
 
 			while (!done)
 			{
@@ -2575,7 +2582,7 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 				//Console.WriteLine(result.ToString(16));
 
 				// gcd test
-				BigInteger g = result.gcd(this);
+				var g = result.gcd(this);
 				if (g.dataLength == 1 && g.data[0] == 1)
 					done = true;
 			}
@@ -2592,22 +2599,22 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 		public BigInteger modInverse(BigInteger modulus)
 		{
 			BigInteger[] p = { 0, 1 };
-			BigInteger[] q = new BigInteger[2];    // quotients
+			var q = new BigInteger[2];    // quotients
 			BigInteger[] r = { 0, 0 };             // remainders
 
-			int step = 0;
+			var step = 0;
 
-			BigInteger a = modulus;
-			BigInteger b = this;
+			var a = modulus;
+			var b = this;
 
-			while (b.dataLength > 1 || (b.dataLength == 1 && b.data[0] != 0))
+			while (b.dataLength > 1 || b.dataLength == 1 && b.data[0] != 0)
 			{
-				BigInteger quotient = new BigInteger();
-				BigInteger remainder = new BigInteger();
+				var quotient = new BigInteger();
+				var remainder = new BigInteger();
 
 				if (step > 1)
 				{
-					BigInteger pval = (p[0] - (p[1] * q[0])) % modulus;
+					var pval = (p[0] - p[1] * q[0]) % modulus;
 					p[0] = p[1];
 					p[1] = pval;
 				}
@@ -2634,10 +2641,10 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 				step++;
 			}
 
-			if (r[0].dataLength > 1 || (r[0].dataLength == 1 && r[0].data[0] != 1))
-				throw (new ArithmeticException("No inverse!"));
+			if (r[0].dataLength > 1 || r[0].dataLength == 1 && r[0].data[0] != 1)
+				throw new ArithmeticException("No inverse!");
 
-			BigInteger result = ((p[0] - (p[1] * q[0])) % modulus);
+			var result = (p[0] - p[1] * q[0]) % modulus;
 
 			if ((result.data[maxLength - 1] & 0x80000000) != 0)
 				result += modulus;  // get the least positive modulus
@@ -2653,33 +2660,33 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 
 		public byte[] getBytes()
 		{
-			int numBits = bitCount();
+			var numBits = bitCount();
 
-			int numBytes = numBits >> 3;
+			var numBytes = numBits >> 3;
 			if ((numBits & 0x7) != 0)
 				numBytes++;
 
-			byte[] result = new byte[numBytes];
+			var result = new byte[numBytes];
 
 			//Console.WriteLine(result.Length);
 
-			int pos = 0;
+			var pos = 0;
 			uint tempVal, val = data[dataLength - 1];
 
-			if ((tempVal = (val >> 24 & 0xFF)) != 0)
+			if ((tempVal = val >> 24 & 0xFF) != 0)
 				result[pos++] = (byte)tempVal;
-			if ((tempVal = (val >> 16 & 0xFF)) != 0)
-				result[pos++] = (byte)tempVal;
-			else if (pos > 0)
-				pos++;
-			if ((tempVal = (val >> 8 & 0xFF)) != 0)
+			if ((tempVal = val >> 16 & 0xFF) != 0)
 				result[pos++] = (byte)tempVal;
 			else if (pos > 0)
 				pos++;
-			if ((tempVal = (val & 0xFF)) != 0)
+			if ((tempVal = val >> 8 & 0xFF) != 0)
+				result[pos++] = (byte)tempVal;
+			else if (pos > 0)
+				pos++;
+			if ((tempVal = val & 0xFF) != 0)
 				result[pos++] = (byte)tempVal;
 
-			for (int i = dataLength - 2; i >= 0; i--, pos += 4)
+			for (var i = dataLength - 2; i >= 0; i--, pos += 4)
 			{
 				val = data[i];
 				result[pos + 3] = (byte)(val & 0xFF);
@@ -2702,10 +2709,10 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 
 		public void setBit(uint bitNum)
 		{
-			uint bytePos = bitNum >> 5;             // divide by 32
-			byte bitPos = (byte)(bitNum & 0x1F);    // get the lowest 5 bits
+			var bytePos = bitNum >> 5;             // divide by 32
+			var bitPos = (byte)(bitNum & 0x1F);    // get the lowest 5 bits
 
-			uint mask = (uint)1 << bitPos;
+			var mask = (uint)1 << bitPos;
 			this.data[bytePos] |= mask;
 
 			if (bytePos >= this.dataLength)
@@ -2720,14 +2727,14 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 
 		public void unsetBit(uint bitNum)
 		{
-			uint bytePos = bitNum >> 5;
+			var bytePos = bitNum >> 5;
 
 			if (bytePos < this.dataLength)
 			{
-				byte bitPos = (byte)(bitNum & 0x1F);
+				var bitPos = (byte)(bitNum & 0x1F);
 
-				uint mask = (uint)1 << bitPos;
-				uint mask2 = 0xFFFFFFFF ^ mask;
+				var mask = (uint)1 << bitPos;
+				var mask2 = 0xFFFFFFFF ^ mask;
 
 				this.data[bytePos] &= mask2;
 
@@ -2748,19 +2755,19 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 
 		public BigInteger sqrt()
 		{
-			uint numBits = (uint)this.bitCount();
+			var numBits = (uint)this.bitCount();
 
 			if ((numBits & 0x1) != 0)        // odd number of bits
 				numBits = (numBits >> 1) + 1;
 			else
-				numBits = (numBits >> 1);
+				numBits = numBits >> 1;
 
-			uint bytePos = numBits >> 5;
-			byte bitPos = (byte)(numBits & 0x1F);
+			var bytePos = numBits >> 5;
+			var bitPos = (byte)(numBits & 0x1F);
 
 			uint mask;
 
-			BigInteger result = new BigInteger();
+			var result = new BigInteger();
 			if (bitPos == 0)
 				mask = 0x80000000;
 			else
@@ -2770,7 +2777,7 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 			}
 			result.dataLength = (int)bytePos;
 
-			for (int i = (int)bytePos - 1; i >= 0; i--)
+			for (var i = (int)bytePos - 1; i >= 0; i--)
 			{
 				while (mask != 0)
 				{
@@ -2778,7 +2785,7 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 					result.data[i] ^= mask;
 
 					// undo the guess if its square is larger than this
-					if ((result * result) > this)
+					if (result * result > this)
 						result.data[i] ^= mask;
 
 					mask >>= 1;
@@ -2826,7 +2833,7 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 		{
 			if (k.dataLength == 1 && k.data[0] == 0)
 			{
-				BigInteger[] result = new BigInteger[3];
+				var result = new BigInteger[3];
 
 				result[0] = 0; result[1] = 2 % n; result[2] = 1 % n;
 				return result;
@@ -2834,22 +2841,22 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 
 			// calculate constant = b^(2k) / m
 			// for Barrett Reduction
-			BigInteger constant = new BigInteger();
+			var constant = new BigInteger();
 
-			int nLen = n.dataLength << 1;
+			var nLen = n.dataLength << 1;
 			constant.data[nLen] = 0x00000001;
 			constant.dataLength = nLen + 1;
 
 			constant = constant / n;
 
 			// calculate values of s and t
-			int s = 0;
+			var s = 0;
 
-			for (int index = 0; index < k.dataLength; index++)
+			for (var index = 0; index < k.dataLength; index++)
 			{
 				uint mask = 0x01;
 
-				for (int i = 0; i < 32; i++)
+				for (var i = 0; i < 32; i++)
 				{
 					if ((k.data[index] & mask) != 0)
 					{
@@ -2861,7 +2868,7 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 				}
 			}
 
-			BigInteger t = k >> s;
+			var t = k >> s;
 
 			//Console.WriteLine("s = " + s + " t = " + t);
 			return LucasSequenceHelper(P, Q, t, n, constant, s);
@@ -2879,21 +2886,21 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 			BigInteger k, BigInteger n,
 			BigInteger constant, int s)
 		{
-			BigInteger[] result = new BigInteger[3];
+			var result = new BigInteger[3];
 
 			if ((k.data[0] & 0x00000001) == 0)
-				throw (new ArgumentException("Argument k must be odd."));
+				throw new ArgumentException("Argument k must be odd.");
 
-			int numbits = k.bitCount();
-			uint mask = (uint)0x1 << ((numbits & 0x1F) - 1);
+			var numbits = k.bitCount();
+			var mask = (uint)0x1 << ((numbits & 0x1F) - 1);
 
 			// v = v0, v1 = v1, u1 = u1, Q_k = Q^0
 
 			BigInteger v = 2 % n, Q_k = 1 % n,
 				v1 = P % n, u1 = Q_k;
-			bool flag = true;
+			var flag = true;
 
-			for (int i = k.dataLength - 1; i >= 0; i--)     // iterate on the binary expansion of k
+			for (var i = k.dataLength - 1; i >= 0; i--)     // iterate on the binary expansion of k
 			{
 				//Console.WriteLine("round");
 				while (mask != 0)
@@ -2905,9 +2912,9 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 					{
 						// index doubling with addition
 
-						u1 = (u1 * v1) % n;
+						u1 = u1 * v1 % n;
 
-						v = ((v * v1) - (P * Q_k)) % n;
+						v = (v * v1 - P * Q_k) % n;
 						v1 = n.BarrettReduction(v1 * v1, n, constant);
 						v1 = (v1 - ((Q_k * Q) << 1)) % n;
 
@@ -2916,14 +2923,14 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 						else
 							Q_k = n.BarrettReduction(Q_k * Q_k, n, constant);
 
-						Q_k = (Q_k * Q) % n;
+						Q_k = Q_k * Q % n;
 					}
 					else
 					{
 						// index doubling
-						u1 = ((u1 * v) - Q_k) % n;
+						u1 = (u1 * v - Q_k) % n;
 
-						v1 = ((v * v1) - (P * Q_k)) % n;
+						v1 = (v * v1 - P * Q_k) % n;
 						v = n.BarrettReduction(v * v, n, constant);
 						v = (v - (Q_k << 1)) % n;
 
@@ -2944,21 +2951,21 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 			// at this point u1 = u(n+1) and v = v(n)
 			// since the last bit always 1, we need to transform u1 to u(2n+1) and v to v(2n+1)
 
-			u1 = ((u1 * v) - Q_k) % n;
-			v = ((v * v1) - (P * Q_k)) % n;
+			u1 = (u1 * v - Q_k) % n;
+			v = (v * v1 - P * Q_k) % n;
 			if (flag)
 				flag = false;
 			else
 				Q_k = n.BarrettReduction(Q_k * Q_k, n, constant);
 
-			Q_k = (Q_k * Q) % n;
+			Q_k = Q_k * Q % n;
 
 
-			for (int i = 0; i < s; i++)
+			for (var i = 0; i < s; i++)
 			{
 				// index doubling
-				u1 = (u1 * v) % n;
-				v = ((v * v) - (Q_k << 1)) % n;
+				u1 = u1 * v % n;
+				v = (v * v - (Q_k << 1)) % n;
 
 				if (flag)
 				{
@@ -2983,25 +2990,25 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 
 		public static void MulDivTest(int rounds)
 		{
-			Random rand = new Random();
-			byte[] val = new byte[64];
-			byte[] val2 = new byte[64];
+			var rand = new Random();
+			var val = new byte[64];
+			var val2 = new byte[64];
 
-			for (int count = 0; count < rounds; count++)
+			for (var count = 0; count < rounds; count++)
 			{
 				// generate 2 numbers of random length
-				int t1 = 0;
+				var t1 = 0;
 				while (t1 == 0)
 					t1 = (int)(rand.NextDouble() * 65);
 
-				int t2 = 0;
+				var t2 = 0;
 				while (t2 == 0)
 					t2 = (int)(rand.NextDouble() * 65);
 
-				bool done = false;
+				var done = false;
 				while (!done)
 				{
-					for (int i = 0; i < 64; i++)
+					for (var i = 0; i < 64; i++)
 					{
 						if (i < t1)
 							val[i] = (byte)(rand.NextDouble() * 256);
@@ -3016,7 +3023,7 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 				done = false;
 				while (!done)
 				{
-					for (int i = 0; i < 64; i++)
+					for (var i = 0; i < 64; i++)
 					{
 						if (i < t2)
 							val2[i] = (byte)(rand.NextDouble() * 256);
@@ -3034,18 +3041,18 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 					val2[0] = (byte)(rand.NextDouble() * 256);
 
 				Console.WriteLine(count);
-				BigInteger bn1 = new BigInteger(val, t1);
-				BigInteger bn2 = new BigInteger(val2, t2);
+				var bn1 = new BigInteger(val, t1);
+				var bn2 = new BigInteger(val2, t2);
 
 
 				// Determine the quotient and remainder by dividing
 				// the first number by the second.
 
-				BigInteger bn3 = bn1 / bn2;
-				BigInteger bn4 = bn1 % bn2;
+				var bn3 = bn1 / bn2;
+				var bn4 = bn1 % bn2;
 
 				// Recalculate the number
-				BigInteger bn5 = (bn3 * bn2) + bn4;
+				var bn5 = bn3 * bn2 + bn4;
 
 				// Make sure they're the same
 				if (bn5 != bn1)
@@ -3070,29 +3077,29 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 
 		public static void RSATest(int rounds)
 		{
-			Random rand = new Random(1);
-			byte[] val = new byte[64];
+			var rand = new Random(1);
+			var val = new byte[64];
 
 			// private and public key
-			BigInteger bi_e = new BigInteger("a932b948feed4fb2b692609bd22164fc9edb59fae7880cc1eaff7b3c9626b7e5b241c27a974833b2622ebe09beb451917663d47232488f23a117fc97720f1e7", 16);
-			BigInteger bi_d = new BigInteger("4adf2f7a89da93248509347d2ae506d683dd3a16357e859a980c4f77a4e2f7a01fae289f13a851df6e9db5adaa60bfd2b162bbbe31f7c8f828261a6839311929d2cef4f864dde65e556ce43c89bbbf9f1ac5511315847ce9cc8dc92470a747b8792d6a83b0092d2e5ebaf852c85cacf34278efa99160f2f8aa7ee7214de07b7", 16);
-			BigInteger bi_n = new BigInteger("e8e77781f36a7b3188d711c2190b560f205a52391b3479cdb99fa010745cbeba5f2adc08e1de6bf38398a0487c4a73610d94ec36f17f3f46ad75e17bc1adfec99839589f45f95ccc94cb2a5c500b477eb3323d8cfab0c8458c96f0147a45d27e45a4d11d54d77684f65d48f15fafcc1ba208e71e921b9bd9017c16a5231af7f", 16);
+			var bi_e = new BigInteger("a932b948feed4fb2b692609bd22164fc9edb59fae7880cc1eaff7b3c9626b7e5b241c27a974833b2622ebe09beb451917663d47232488f23a117fc97720f1e7", 16);
+			var bi_d = new BigInteger("4adf2f7a89da93248509347d2ae506d683dd3a16357e859a980c4f77a4e2f7a01fae289f13a851df6e9db5adaa60bfd2b162bbbe31f7c8f828261a6839311929d2cef4f864dde65e556ce43c89bbbf9f1ac5511315847ce9cc8dc92470a747b8792d6a83b0092d2e5ebaf852c85cacf34278efa99160f2f8aa7ee7214de07b7", 16);
+			var bi_n = new BigInteger("e8e77781f36a7b3188d711c2190b560f205a52391b3479cdb99fa010745cbeba5f2adc08e1de6bf38398a0487c4a73610d94ec36f17f3f46ad75e17bc1adfec99839589f45f95ccc94cb2a5c500b477eb3323d8cfab0c8458c96f0147a45d27e45a4d11d54d77684f65d48f15fafcc1ba208e71e921b9bd9017c16a5231af7f", 16);
 
 			Console.WriteLine("e =\n" + bi_e.ToString(10));
 			Console.WriteLine("\nd =\n" + bi_d.ToString(10));
 			Console.WriteLine("\nn =\n" + bi_n.ToString(10) + "\n");
 
-			for (int count = 0; count < rounds; count++)
+			for (var count = 0; count < rounds; count++)
 			{
 				// generate data of random length
-				int t1 = 0;
+				var t1 = 0;
 				while (t1 == 0)
 					t1 = (int)(rand.NextDouble() * 65);
 
-				bool done = false;
+				var done = false;
 				while (!done)
 				{
-					for (int i = 0; i < 64; i++)
+					for (var i = 0; i < 64; i++)
 					{
 						if (i < t1)
 							val[i] = (byte)(rand.NextDouble() * 256);
@@ -3110,9 +3117,9 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 				Console.Write("Round = " + count);
 
 				// encrypt and decrypt data
-				BigInteger bi_data = new BigInteger(val, t1);
-				BigInteger bi_encrypted = bi_data.modPow(bi_e, bi_n);
-				BigInteger bi_decrypted = bi_encrypted.modPow(bi_d, bi_n);
+				var bi_data = new BigInteger(val, t1);
+				var bi_encrypted = bi_data.modPow(bi_e, bi_n);
+				var bi_decrypted = bi_encrypted.modPow(bi_d, bi_n);
 
 				// compare
 				if (bi_decrypted != bi_data)
@@ -3136,8 +3143,8 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 
 		public static void RSATest2(int rounds)
 		{
-			Random rand = new Random();
-			byte[] val = new byte[64];
+			var rand = new Random();
+			var val = new byte[64];
 
 			byte[] pseudoPrime1 = {
 				(byte)0x85, (byte)0x84, (byte)0x64, (byte)0xFD, (byte)0x70, (byte)0x6A,
@@ -3168,30 +3175,30 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 			};
 
 
-			BigInteger bi_p = new BigInteger(pseudoPrime1);
-			BigInteger bi_q = new BigInteger(pseudoPrime2);
-			BigInteger bi_pq = (bi_p - 1) * (bi_q - 1);
-			BigInteger bi_n = bi_p * bi_q;
+			var bi_p = new BigInteger(pseudoPrime1);
+			var bi_q = new BigInteger(pseudoPrime2);
+			var bi_pq = (bi_p - 1) * (bi_q - 1);
+			var bi_n = bi_p * bi_q;
 
-			for (int count = 0; count < rounds; count++)
+			for (var count = 0; count < rounds; count++)
 			{
 				// generate private and public key
-				BigInteger bi_e = bi_pq.genCoPrime(512, rand);
-				BigInteger bi_d = bi_e.modInverse(bi_pq);
+				var bi_e = bi_pq.genCoPrime(512, rand);
+				var bi_d = bi_e.modInverse(bi_pq);
 
 				Console.WriteLine("\ne =\n" + bi_e.ToString(10));
 				Console.WriteLine("\nd =\n" + bi_d.ToString(10));
 				Console.WriteLine("\nn =\n" + bi_n.ToString(10) + "\n");
 
 				// generate data of random length
-				int t1 = 0;
+				var t1 = 0;
 				while (t1 == 0)
 					t1 = (int)(rand.NextDouble() * 65);
 
-				bool done = false;
+				var done = false;
 				while (!done)
 				{
-					for (int i = 0; i < 64; i++)
+					for (var i = 0; i < 64; i++)
 					{
 						if (i < t1)
 							val[i] = (byte)(rand.NextDouble() * 256);
@@ -3209,9 +3216,9 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 				Console.Write("Round = " + count);
 
 				// encrypt and decrypt data
-				BigInteger bi_data = new BigInteger(val, t1);
-				BigInteger bi_encrypted = bi_data.modPow(bi_e, bi_n);
-				BigInteger bi_decrypted = bi_encrypted.modPow(bi_d, bi_n);
+				var bi_data = new BigInteger(val, t1);
+				var bi_encrypted = bi_data.modPow(bi_e, bi_n);
+				var bi_decrypted = bi_encrypted.modPow(bi_d, bi_n);
 
 				// compare
 				if (bi_decrypted != bi_data)
@@ -3232,21 +3239,21 @@ Console.WriteLine("Not prime!  Divisible by {0}\n",
 
 		public static void SqrtTest(int rounds)
 		{
-			Random rand = new Random();
-			for (int count = 0; count < rounds; count++)
+			var rand = new Random();
+			for (var count = 0; count < rounds; count++)
 			{
 				// generate data of random length
-				int t1 = 0;
+				var t1 = 0;
 				while (t1 == 0)
 					t1 = (int)(rand.NextDouble() * 1024);
 
 				Console.Write("Round = " + count);
 
-				BigInteger a = new BigInteger();
+				var a = new BigInteger();
 				a.genRandomBits(t1, rand);
 
-				BigInteger b = a.sqrt();
-				BigInteger c = (b + 1) * (b + 1);
+				var b = a.sqrt();
+				var c = (b + 1) * (b + 1);
 
 				// check that b is the largest integer such that b*b <= a
 				if (c <= a)

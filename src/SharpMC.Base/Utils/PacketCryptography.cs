@@ -1,28 +1,4 @@
-﻿// Distributed under the MIT license
-// ===================================================
-// SharpMC uses the permissive MIT license.
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the “Software”), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software
-// 
-// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-// 
-// ©Copyright Kenny van Vulpen - 2015
-
-using System;
+﻿using System;
 using System.Security.Cryptography;
 
 namespace SharpMC.Core.Utils
@@ -192,7 +168,7 @@ namespace SharpMC.Core.Utils
 			{
 				length = new byte[2];
 				length[0] = 0x81;
-				length[1] = (byte) ((octetsLength & 0xFF));
+				length[1] = (byte) (octetsLength & 0xFF);
 			}
 
 			//
@@ -205,7 +181,7 @@ namespace SharpMC.Core.Utils
 				length = new byte[3];
 				length[0] = 0x82;
 				length[1] = (byte) ((octetsLength & 0xFF00) >> 8);
-				length[2] = (byte) ((octetsLength & 0xFF));
+				length[2] = (byte) (octetsLength & 0xFF);
 			}
 
 			// 0xFFFF < length <= 0xFFFFFF
@@ -215,7 +191,7 @@ namespace SharpMC.Core.Utils
 				length[0] = 0x83;
 				length[1] = (byte) ((octetsLength & 0xFF0000) >> 16);
 				length[2] = (byte) ((octetsLength & 0xFF00) >> 8);
-				length[3] = (byte) ((octetsLength & 0xFF));
+				length[3] = (byte) (octetsLength & 0xFF);
 			}
 			// 0xFFFFFF < length <= 0xFFFFFFFF
 			else
@@ -225,7 +201,7 @@ namespace SharpMC.Core.Utils
 				length[1] = (byte) ((octetsLength & 0xFF000000) >> 24);
 				length[2] = (byte) ((octetsLength & 0xFF0000) >> 16);
 				length[3] = (byte) ((octetsLength & 0xFF00) >> 8);
-				length[4] = (byte) ((octetsLength & 0xFF));
+				length[4] = (byte) (octetsLength & 0xFF);
 			}
 
 			return length;

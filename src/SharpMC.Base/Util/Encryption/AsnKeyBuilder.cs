@@ -63,21 +63,21 @@ namespace SharpMC.Util.Encryption
       public AsnType(byte tag, byte octet)
       {
         m_raw = false;
-        m_tag = new byte[] { tag };
-        m_octets = new byte[] { octet };
+        m_tag = new[] { tag };
+        m_octets = new[] { octet };
       }
 
       public AsnType(byte tag, byte[] octets)
       {
         m_raw = false;
-        m_tag = new byte[] { tag };
+        m_tag = new[] { tag };
         m_octets = octets;
       }
 
       public AsnType(byte tag, byte[] length, byte[] octets)
       {
         m_raw = true;
-        m_tag = new byte[] { tag };
+        m_tag = new[] { tag };
         m_length = length;
         m_octets = octets;
       }
@@ -136,7 +136,7 @@ namespace SharpMC.Util.Encryption
         if (true == m_raw)
         {
           return Concatenate(
-            new byte[][] { m_tag, m_length, m_octets }
+            new[] { m_tag, m_length, m_octets }
           );
         }
 
@@ -147,12 +147,12 @@ namespace SharpMC.Util.Encryption
         if (0x05 == m_tag[0])
         {
           return Concatenate(
-            new byte[][] { m_tag, m_octets }
+            new[] { m_tag, m_octets }
           );
         }
 
         return Concatenate(
-          new byte[][] { m_tag, m_length, m_octets }
+          new[] { m_tag, m_length, m_octets }
         );
       }
 
@@ -185,7 +185,7 @@ namespace SharpMC.Util.Encryption
         {
           length = new byte[2];
           length[0] = 0x81;
-          length[1] = (byte)((m_octets.Length & 0xFF));
+          length[1] = (byte)(m_octets.Length & 0xFF);
         }
 
         //
@@ -198,7 +198,7 @@ namespace SharpMC.Util.Encryption
           length = new byte[3];
           length[0] = 0x82;
           length[1] = (byte)((m_octets.Length & 0xFF00) >> 8);
-          length[2] = (byte)((m_octets.Length & 0xFF));
+          length[2] = (byte)(m_octets.Length & 0xFF);
         }
 
         // 0xFFFF < length <= 0xFFFFFF
@@ -208,7 +208,7 @@ namespace SharpMC.Util.Encryption
           length[0] = 0x83;
           length[1] = (byte)((m_octets.Length & 0xFF0000) >> 16);
           length[2] = (byte)((m_octets.Length & 0xFF00) >> 8);
-          length[3] = (byte)((m_octets.Length & 0xFF));
+          length[3] = (byte)(m_octets.Length & 0xFF);
         }
         // 0xFFFFFF < length <= 0xFFFFFFFF
         else
@@ -218,7 +218,7 @@ namespace SharpMC.Util.Encryption
           length[1] = (byte)((m_octets.Length & 0xFF000000) >> 24);
           length[2] = (byte)((m_octets.Length & 0xFF0000) >> 16);
           length[3] = (byte)((m_octets.Length & 0xFF00) >> 8);
-          length[4] = (byte)((m_octets.Length & 0xFF));
+          length[4] = (byte)(m_octets.Length & 0xFF);
         }
 
         m_length = length;
@@ -230,16 +230,16 @@ namespace SharpMC.Util.Encryption
         if (IsEmpty(values))
           return new byte[] { };
 
-        int length = 0;
-        foreach (byte[] b in values)
+        var length = 0;
+        foreach (var b in values)
         {
           if (null != b) length += b.Length;
         }
 
-        byte[] cated = new byte[length];
+        var cated = new byte[length];
 
-        int current = 0;
-        foreach (byte[] b in values)
+        var current = 0;
+        foreach (var b in values)
         {
           if (null != b)
           {
@@ -283,27 +283,27 @@ namespace SharpMC.Util.Encryption
       * */
 
       // DSA Parameters
-      AsnType p = CreateIntegerPos(publicKey.P);
-      AsnType q = CreateIntegerPos(publicKey.Q);
-      AsnType g = CreateIntegerPos(publicKey.G);
+      var p = CreateIntegerPos(publicKey.P);
+      var q = CreateIntegerPos(publicKey.Q);
+      var g = CreateIntegerPos(publicKey.G);
 
       // Sequence - DSA-Params
-      AsnType dssParams = CreateSequence(new AsnType[] { p, q, g });
+      var dssParams = CreateSequence(new[] { p, q, g });
 
       // OID - packed 1.2.840.10040.4.1
       //   { 0x2A, 0x86, 0x48, 0xCE, 0x38, 0x04, 0x01 }
-      AsnType oid = CreateOid("1.2.840.10040.4.1");
+      var oid = CreateOid("1.2.840.10040.4.1");
 
       // Sequence
-      AsnType algorithmID = CreateSequence(new AsnType[] { oid, dssParams });
+      var algorithmID = CreateSequence(new[] { oid, dssParams });
 
       // Public Key Y
-      AsnType y = CreateIntegerPos(publicKey.Y);
-      AsnType key = CreateBitString(y);
+      var y = CreateIntegerPos(publicKey.Y);
+      var key = CreateBitString(y);
 
       // Sequence 'A'
-      AsnType publicKeyInfo =
-        CreateSequence(new AsnType[] { algorithmID, key });
+      var publicKeyInfo =
+        CreateSequence(new[] { algorithmID, key });
 
       return new AsnMessage(publicKeyInfo.GetBytes(), "X.509");
     }
@@ -336,18 +336,18 @@ namespace SharpMC.Util.Encryption
 
       // OID - packed 1.2.840.113549.1.1.1
       //   { 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01, 0x01 }
-      AsnType oid = CreateOid("1.2.840.113549.1.1.1");
-      AsnType algorithmID =
-        CreateSequence(new AsnType[] { oid, CreateNull() });
+      var oid = CreateOid("1.2.840.113549.1.1.1");
+      var algorithmID =
+        CreateSequence(new[] { oid, CreateNull() });
 
-      AsnType n = CreateIntegerPos(publicKey.Modulus);
-      AsnType e = CreateIntegerPos(publicKey.Exponent);
-      AsnType key = CreateBitString(
-        CreateSequence(new AsnType[] { n, e })
+      var n = CreateIntegerPos(publicKey.Modulus);
+      var e = CreateIntegerPos(publicKey.Exponent);
+      var key = CreateBitString(
+        CreateSequence(new[] { n, e })
       );
 
-      AsnType publicKeyInfo =
-        CreateSequence(new AsnType[] { algorithmID, key });
+      var publicKeyInfo =
+        CreateSequence(new[] { algorithmID, key });
 
       return new AsnMessage(publicKeyInfo.GetBytes(), "X.509");
     }
@@ -383,29 +383,29 @@ namespace SharpMC.Util.Encryption
       * */
 
       // Version - 0 (v1998)
-      AsnType version = CreateInteger(ZERO);
+      var version = CreateInteger(ZERO);
 
       // Domain Parameters
-      AsnType p = CreateIntegerPos(privateKey.P);
-      AsnType q = CreateIntegerPos(privateKey.Q);
-      AsnType g = CreateIntegerPos(privateKey.G);
+      var p = CreateIntegerPos(privateKey.P);
+      var q = CreateIntegerPos(privateKey.Q);
+      var g = CreateIntegerPos(privateKey.G);
 
-      AsnType dssParams = CreateSequence(new AsnType[] { p, q, g });
+      var dssParams = CreateSequence(new[] { p, q, g });
 
       // OID - packed 1.2.840.10040.4.1
       //   { 0x2A, 0x86, 0x48, 0xCE, 0x38, 0x04, 0x01 }
-      AsnType oid = CreateOid("1.2.840.10040.4.1");
+      var oid = CreateOid("1.2.840.10040.4.1");
 
       // AlgorithmIdentifier
-      AsnType algorithmID = CreateSequence(new AsnType[] { oid, dssParams });
+      var algorithmID = CreateSequence(new[] { oid, dssParams });
 
       // Private Key X
-      AsnType x = CreateIntegerPos(privateKey.X);
-      AsnType key = CreateOctetString(x);
+      var x = CreateIntegerPos(privateKey.X);
+      var key = CreateOctetString(x);
 
       // Sequence
-      AsnType privateKeyInfo =
-        CreateSequence(new AsnType[] { version, algorithmID, key });
+      var privateKeyInfo =
+        CreateSequence(new[] { version, algorithmID, key });
 
       return new AsnMessage(privateKeyInfo.GetBytes(), "PKCS#8");
     }
@@ -446,31 +446,31 @@ namespace SharpMC.Util.Encryption
       *       +- INTEGER(Inv Q)
       * */
 
-      AsnType n = CreateIntegerPos(privateKey.Modulus);
-      AsnType e = CreateIntegerPos(privateKey.Exponent);
-      AsnType d = CreateIntegerPos(privateKey.D);
-      AsnType p = CreateIntegerPos(privateKey.P);
-      AsnType q = CreateIntegerPos(privateKey.Q);
-      AsnType dp = CreateIntegerPos(privateKey.DP);
-      AsnType dq = CreateIntegerPos(privateKey.DQ);
-      AsnType iq = CreateIntegerPos(privateKey.InverseQ);
+      var n = CreateIntegerPos(privateKey.Modulus);
+      var e = CreateIntegerPos(privateKey.Exponent);
+      var d = CreateIntegerPos(privateKey.D);
+      var p = CreateIntegerPos(privateKey.P);
+      var q = CreateIntegerPos(privateKey.Q);
+      var dp = CreateIntegerPos(privateKey.DP);
+      var dq = CreateIntegerPos(privateKey.DQ);
+      var iq = CreateIntegerPos(privateKey.InverseQ);
 
       // Version - 0 (v1998)
-      AsnType version = CreateInteger(new byte[] { 0 });
+      var version = CreateInteger(new byte[] { 0 });
 
       // octstring = OCTETSTRING(SEQUENCE(INTEGER(0)INTEGER(N)...))
-      AsnType key = CreateOctetString(
-        CreateSequence(new AsnType[] { version, n, e, d, p, q, dp, dq, iq })
+      var key = CreateOctetString(
+        CreateSequence(new[] { version, n, e, d, p, q, dp, dq, iq })
       );
 
       // OID - packed 1.2.840.113549.1.1.1
       //   { 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01, 0x01 }
-      AsnType algorithmID = CreateSequence(new AsnType[] { CreateOid("1.2.840.113549.1.1.1"), CreateNull() }
+      var algorithmID = CreateSequence(new[] { CreateOid("1.2.840.113549.1.1.1"), CreateNull() }
       );
 
       // PrivateKeyInfo
-      AsnType privateKeyInfo =
-        CreateSequence(new AsnType[] { version, algorithmID, key });
+      var privateKeyInfo =
+        CreateSequence(new[] { version, algorithmID, key });
 
       return new AsnMessage(privateKeyInfo.GetBytes(), "PKCS#8");
     }
@@ -479,10 +479,10 @@ namespace SharpMC.Util.Encryption
     
 		public static RSA DecodePublicKey(byte[] publicKeyBytes)
 		{
-			MemoryStream ms = new MemoryStream(publicKeyBytes);
-			BinaryReader rd = new BinaryReader(ms);
+			var ms = new MemoryStream(publicKeyBytes);
+			var rd = new BinaryReader(ms);
 			byte[] SeqOID = { 0x30, 0x0D, 0x06, 0x09, 0x2A, 0x86, 0x48, 0x86, 0xF7, 0x0D, 0x01, 0x01, 0x01, 0x05, 0x00 };
-			byte[] seq = new byte[15];
+			var seq = new byte[15];
 
 			try
 			{
@@ -532,18 +532,21 @@ namespace SharpMC.Util.Encryption
                 }
 
 
-                CspParameters parms = new CspParameters();
-				parms.Flags = CspProviderFlags.NoFlags;
-				parms.KeyContainerName = Guid.NewGuid().ToString().ToUpperInvariant();
-				parms.ProviderType = ((Environment.OSVersion.Version.Major > 5) || ((Environment.OSVersion.Version.Major == 5) && (Environment.OSVersion.Version.Minor >= 1))) ? 0x18 : 1;
+                var parms = new CspParameters
+                {
+                    Flags = CspProviderFlags.NoFlags,
+                    KeyContainerName = Guid.NewGuid().ToString().ToUpperInvariant(),
+                    ProviderType = Environment.OSVersion.Version.Major > 5 || Environment.OSVersion.Version.Major == 5 && Environment.OSVersion.Version.Minor >= 1 ? 0x18 : 1
+                };
 
                 var rsa = RSA.Create();
 				//RSACryptoServiceProvider rsa = new RSACryptoServiceProvider(parms);
-				RSAParameters rsAparams = new RSAParameters();
+				var rsAparams = new RSAParameters
+                {
+                    Modulus = rd.ReadBytes(Helpers.DecodeIntegerSize(rd))
+                };
 
-				rsAparams.Modulus = rd.ReadBytes(Helpers.DecodeIntegerSize(rd));
-
-				RSAParameterTraits traits = new RSAParameterTraits(rsAparams.Modulus.Length * 8);
+                var traits = new RSAParameterTraits(rsAparams.Modulus.Length * 8);
 
 				rsAparams.Modulus = Helpers.AlignBytes(rsAparams.Modulus, traits.size_Mod);
 				rsAparams.Exponent = Helpers.AlignBytes(rd.ReadBytes(Helpers.DecodeIntegerSize(rd)), traits.size_Exp);
@@ -621,7 +624,7 @@ namespace SharpMC.Util.Encryption
       { throw new ArgumentException("A sequence requires at least one value."); }
 
       // Sequence: Tag 0x30 (16, Universal, Constructed)
-      return new AsnType((0x10 | 0x20), Concatenate(values));
+      return new AsnType(0x10 | 0x20, Concatenate(values));
     }
 
     /// <summary>
@@ -738,7 +741,7 @@ namespace SharpMC.Util.Encryption
       if (!(unusedBits < 8))
       { throw new ArgumentException("Unused bits must be less than 8."); }
 
-      byte[] b = Concatenate(new byte[] { (byte)unusedBits }, octets);
+      var b = Concatenate(new[] { (byte)unusedBits }, octets);
       // BitString: Tag 0x03 (3, Universal, Primitive)
       return new AsnType(0x03, b);
     }
@@ -822,20 +825,20 @@ namespace SharpMC.Util.Encryption
       { return CreateBitString(EMPTY); }
 
       // Any unused bits?
-      int lstrlen = value.Length;
-      int unusedBits = 8 - (lstrlen % 8);
+      var lstrlen = value.Length;
+      var unusedBits = 8 - lstrlen % 8;
       if (8 == unusedBits) { unusedBits = 0; }
 
-      for (int i = 0; i < unusedBits; i++)
+      for (var i = 0; i < unusedBits; i++)
       { value += "0"; }
 
       // Determine number of octets
-      int loctlen = (lstrlen + 7) / 8;
+      var loctlen = (lstrlen + 7) / 8;
 
-      List<byte> octets = new List<byte>();
-      for (int i = 0; i < loctlen; i++)
+      var octets = new List<byte>();
+      for (var i = 0; i < loctlen; i++)
       {
-        String s = value.Substring(i * 8, 8);
+        var s = value.Substring(i * 8, 8);
         byte b = 0x00;
 
         try
@@ -961,12 +964,12 @@ namespace SharpMC.Util.Encryption
       { return CreateOctetString(EMPTY); }
 
       // Determine number of octets
-      int len = (value.Length + 255) / 256;
+      var len = (value.Length + 255) / 256;
 
-      List<byte> octets = new List<byte>();
-      for (int i = 0; i < len; i++)
+      var octets = new List<byte>();
+      for (var i = 0; i < len; i++)
       {
-        String s = value.Substring(i * 2, 2);
+        var s = value.Substring(i * 2, 2);
         byte b = 0x00;
 
         try
@@ -1129,7 +1132,7 @@ namespace SharpMC.Util.Encryption
 
       // No need to Duplicate - Compliment2s
       // performs the action
-      byte[] c = Compliment2s(value);
+      var c = Compliment2s(value);
 
       return CreateInteger(c);
     }
@@ -1155,11 +1158,11 @@ namespace SharpMC.Util.Encryption
       if (IsEmpty(octets) || IsZero(octets))
       { return new byte[] { }; }
 
-      byte[] d = Duplicate(octets);
+      var d = Duplicate(octets);
 
       // RenderPosition of the first non-zero value
-      int pos = 0;
-      foreach (byte b in d)
+      var pos = 0;
+      foreach (var b in d)
       {
         if (0 != b) { break; }
         pos++;
@@ -1170,7 +1173,7 @@ namespace SharpMC.Util.Encryption
       { return octets; }
 
       // Allocate trimmed array
-      byte[] t = new byte[d.Length - pos];
+      var t = new byte[d.Length - pos];
 
       // Copy
       Array.Copy(d, pos, t, 0, t.Length);
@@ -1189,7 +1192,7 @@ namespace SharpMC.Util.Encryption
       if (IsEmpty(octets) || IsZero(octets))
       { return EMPTY; }
 
-      byte[] d = Duplicate(octets);
+      var d = Duplicate(octets);
 
       Array.Reverse(d);
 
@@ -1221,7 +1224,7 @@ namespace SharpMC.Util.Encryption
       if (IsEmpty(value))
         return null;
 
-      String[] tokens = value.Split(new Char[] { ' ', '.' });
+      var tokens = value.Split(new[] { ' ', '.' });
 
       // Punt?
       if (IsEmpty(tokens))
@@ -1231,9 +1234,9 @@ namespace SharpMC.Util.Encryption
       UInt64 a = 0;
 
       // One or more strings are available
-      List<UInt64> arcs = new List<UInt64>();
+      var arcs = new List<UInt64>();
 
-      foreach (String t in tokens)
+      foreach (var t in tokens)
       {
         // No empty or ill-formed strings...
         if (t.Length == 0) { break; }
@@ -1250,22 +1253,22 @@ namespace SharpMC.Util.Encryption
         return null;
 
       // Octets to be returned to caller
-      List<byte> octets = new List<byte>();
+      var octets = new List<byte>();
 
       // Guard the case of a small list
       // The list has at least 1 item...    
       if (arcs.Count >= 1) { a = arcs[0] * 40; }
       if (arcs.Count >= 2) { a += arcs[1]; }
-      octets.Add((byte)(a));
+      octets.Add((byte)a);
 
       // Add remaining arcs (subidentifiers)
-      for (int i = 2; i < arcs.Count; i++)
+      for (var i = 2; i < arcs.Count; i++)
       {
         // Scratch list builder for this arc
-        List<byte> temp = new List<byte>();
+        var temp = new List<byte>();
 
         // The current arc (subidentifier)
-        UInt64 arc = arcs[i];
+        var arc = arcs[i];
 
         // Build the arc (subidentifier) byte array
         // The array is built in reverse (LSB to MSB).
@@ -1280,7 +1283,7 @@ namespace SharpMC.Util.Encryption
 
         // Grab resulting array. Because of the do/while,
         // there is at least one value in the array.
-        byte[] t = temp.ToArray();
+        var t = temp.ToArray();
 
         // Unset high bit of byte t[0]
         // t[0] will be LSB after the array is reversed.
@@ -1290,7 +1293,7 @@ namespace SharpMC.Util.Encryption
         Array.Reverse(t);
 
         // Add to the resulting array
-        foreach (byte b in t)
+        foreach (var b in t)
         { octets.Add(b); }
       }
 
@@ -1330,9 +1333,9 @@ namespace SharpMC.Util.Encryption
       { return EMPTY; }
 
       // Make a copy of octet array
-      byte[] c = Duplicate(value);
+      var c = Duplicate(value);
 
-      for (int i = c.Length - 1; i >= 0; i--)
+      for (var i = c.Length - 1; i >= 0; i--)
       {
         // Compliment
         c[i] = (byte)~c[i];
@@ -1351,16 +1354,16 @@ namespace SharpMC.Util.Encryption
       { return Duplicate(value); }
 
       // Make a copy of octet array
-      byte[] d = Duplicate(value);
+      var d = Duplicate(value);
 
-      int carry = 1;
-      for (int i = d.Length - 1; i >= 0; i--)
+      var carry = 1;
+      for (var i = d.Length - 1; i >= 0; i--)
       {
         // Compliment
         d[i] = (byte)~d[i];
 
         // Add
-        int j = d[i] + carry;
+        var j = d[i] + carry;
 
         // Write Back
         d[i] = (byte)(j & 0xFF);
@@ -1397,21 +1400,21 @@ namespace SharpMC.Util.Encryption
       if (IsEmpty(values))
         return new byte[] { };
 
-      int length = 0;
-      foreach (AsnType t in values)
+      var length = 0;
+      foreach (var t in values)
       {
         if (null != t)
         { length += t.GetBytes().Length; }
       }
 
-      byte[] cated = new byte[length];
+      var cated = new byte[length];
 
-      int current = 0;
-      foreach (AsnType t in values)
+      var current = 0;
+      foreach (var t in values)
       {
         if (null != t)
         {
-          byte[] b = t.GetBytes();
+          var b = t.GetBytes();
 
           Array.Copy(b, 0, cated, current, b.Length);
           current += b.Length;
@@ -1423,7 +1426,7 @@ namespace SharpMC.Util.Encryption
 
     private static byte[] Concatenate(byte[] first, byte[] second)
     {
-      return Concatenate(new byte[][] { first, second });
+      return Concatenate(new[] { first, second });
     }
 
     private static byte[] Concatenate(byte[][] values)
@@ -1432,17 +1435,17 @@ namespace SharpMC.Util.Encryption
       if (IsEmpty(values))
         return new byte[] { };
 
-      int length = 0;
-      foreach (byte[] b in values)
+      var length = 0;
+      foreach (var b in values)
       {
         if (null != b)
         { length += b.Length; }
       }
 
-      byte[] cated = new byte[length];
+      var cated = new byte[length];
 
-      int current = 0;
-      foreach (byte[] b in values)
+      var current = 0;
+      foreach (var b in values)
       {
         if (null != b)
         {
@@ -1459,7 +1462,7 @@ namespace SharpMC.Util.Encryption
       if (IsEmpty(b))
       { return EMPTY; }
 
-      byte[] d = new byte[b.Length];
+      var d = new byte[b.Length];
       Array.Copy(b, d, b.Length);
 
       return d;
@@ -1470,8 +1473,8 @@ namespace SharpMC.Util.Encryption
       if (IsEmpty(octets))
       { return false; }
 
-      bool allZeros = true;
-      for (int i = 0; i < octets.Length; i++)
+      var allZeros = true;
+      for (var i = 0; i < octets.Length; i++)
       {
         if (0 != octets[i])
         { allZeros = false; break; }
@@ -1533,8 +1536,8 @@ namespace SharpMC.Util.Encryption
 			{
 				if (a.Length != b.Length)
 					return false;
-				int i = 0;
-				foreach (byte c in a)
+				var i = 0;
+				foreach (var c in a)
 				{
 					if (c != b[i])
 						return false;
@@ -1544,12 +1547,12 @@ namespace SharpMC.Util.Encryption
 			}
 			public static byte[] AlignBytes(byte[] inputBytes, int alignSize)
 			{
-				int inputBytesSize = inputBytes.Length;
+				var inputBytesSize = inputBytes.Length;
 
-				if ((alignSize != -1) && (inputBytesSize < alignSize))
+				if (alignSize != -1 && inputBytesSize < alignSize)
 				{
-					byte[] buf = new byte[alignSize];
-					for (int i = 0; i < inputBytesSize; ++i)
+					var buf = new byte[alignSize];
+					for (var i = 0; i < inputBytesSize; ++i)
 					{
 						buf[i + (alignSize - inputBytesSize)] = inputBytes[i];
 					}
@@ -1576,7 +1579,7 @@ namespace SharpMC.Util.Encryption
 				}
 				else if (byteValue == 0x82)
 				{
-					byte hi = rd.ReadByte(); byte lo = rd.ReadByte();
+					var hi = rd.ReadByte(); var lo = rd.ReadByte();
 					count = BitConverter.ToUInt16(new[] { lo, hi }, 0);
 				}
 				else
@@ -1598,8 +1601,8 @@ namespace SharpMC.Util.Encryption
 		{
 			public RSAParameterTraits(int modulusLengthInBits)
 			{
-				int assumedLength = -1;
-				double logbase = Math.Log(modulusLengthInBits, 2);
+				var assumedLength = -1;
+				var logbase = Math.Log(modulusLengthInBits, 2);
 				if (logbase == (int)logbase)
 				{
 					assumedLength = modulusLengthInBits;
@@ -1607,7 +1610,7 @@ namespace SharpMC.Util.Encryption
 				else
 				{
 					assumedLength = (int)(logbase + 1.0);
-					assumedLength = (int)(Math.Pow(2, assumedLength));
+					assumedLength = (int)Math.Pow(2, assumedLength);
 					System.Diagnostics.Debug.Assert(false);
 				}
 

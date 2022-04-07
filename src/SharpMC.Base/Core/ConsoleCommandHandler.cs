@@ -8,7 +8,7 @@ namespace SharpMC.Core
 		{
 			while (true)
 			{
-				string input = Console.ReadLine();
+				var input = Console.ReadLine();
 				if (!String.IsNullOrEmpty(input))
 				{
 					Globals.PluginManager.HandleCommand(input, Globals.ConsolePlayer);

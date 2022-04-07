@@ -130,7 +130,7 @@ namespace fNbt {
 
             if( tags == null )
                 return;
-            foreach( NbtTag tag in tags ) {
+            foreach( var tag in tags ) {
                 Add( tag );
             }
         }
@@ -183,7 +183,7 @@ namespace fNbt {
         public void AddRange( [NotNull] IEnumerable<NbtTag> newTags ) {
             if( newTags == null )
                 throw new ArgumentNullException( "newTags" );
-            foreach( NbtTag tag in newTags ) {
+            foreach( var tag in newTags ) {
                 Add( tag );
             }
         }
@@ -205,8 +205,8 @@ namespace fNbt {
         /// <exception cref="InvalidCastException"> If contents of this list cannot be cast to the given type. </exception>
         [NotNull, Pure]
         public T[] ToArray<T>() where T : NbtTag {
-            T[] result = new T[tags.Count];
-            for( int i = 0; i < result.Length; i++ ) {
+            var result = new T[tags.Count];
+            for( var i = 0; i < result.Length; i++ ) {
                 result[i] = (T)tags[i];
             }
             return result;
@@ -223,12 +223,12 @@ namespace fNbt {
 
             ListType = readStream.ReadTagType();
 
-            int length = readStream.ReadInt32();
+            var length = readStream.ReadInt32();
             if( length < 0 ) {
                 throw new NbtFormatException( "Negative count given in TAG_List" );
             }
 
-            for( int i = 0; i < length; i++ ) {
+            for( var i = 0; i < length; i++ ) {
                 NbtTag newTag;
                 switch( ListType ) {
                 case NbtTagType.Byte:
@@ -281,7 +281,7 @@ namespace fNbt {
             // read list type, and make sure it's defined
             ListType = readStream.ReadTagType();
 
-            int length = readStream.ReadInt32();
+            var length = readStream.ReadInt32();
             if( length < 0 ) {
                 throw new NbtFormatException( "Negative count given in TAG_List" );
             }
@@ -306,7 +306,7 @@ namespace fNbt {
                 readStream.Skip( length * sizeof( double ) );
                 break;
             default:
-                for( int i = 0; i < length; i++ ) {
+                for( var i = 0; i < length; i++ ) {
                     switch( listType ) {
                     case NbtTagType.ByteArray:
                         new NbtByteArray().SkipTag( readStream );
@@ -347,7 +347,7 @@ namespace fNbt {
             }
             writeStream.Write( ListType );
             writeStream.Write( tags.Count );
-            foreach( NbtTag tag in tags ) {
+            foreach( var tag in tags ) {
                 tag.WriteData( writeStream );
             }
         }
@@ -407,7 +407,7 @@ namespace fNbt {
         /// <param name="index"> The zero-based index of the item to remove. </param>
         /// <exception cref="ArgumentOutOfRangeException"> <paramref name="index"/> is not a valid index in the NbtList. </exception>
         public void RemoveAt( int index ) {
-            NbtTag tag = this[index];
+            var tag = this[index];
             tags.RemoveAt( index );
             tag.Parent = null;
         }
@@ -434,7 +434,7 @@ namespace fNbt {
 
         /// <summary> Removes all tags from this NbtList. </summary>
         public void Clear() {
-            for( int i = 0; i < tags.Count; i++ ) {
+            for( var i = 0; i < tags.Count; i++ ) {
                 tags[i].Parent = null;
             }
             tags.Clear();
@@ -503,7 +503,7 @@ namespace fNbt {
         #region Implementation of IList and ICollection
 
         void IList.Remove( object value ) {
-            NbtTag val = (NbtTag)value;
+            var val = (NbtTag)value;
             if( tags.Remove( val ) ) {
                 val.Parent = null;
             }
@@ -522,7 +522,7 @@ namespace fNbt {
 
         int IList.Add( object value ) {
             Add( (NbtTag)value );
-            return ( tags.Count - 1 );
+            return tags.Count - 1;
         }
 
 
@@ -594,7 +594,7 @@ namespace fNbt {
 
 
         internal override void PrettyPrint( StringBuilder sb, string indentString, int indentLevel ) {
-            for( int i = 0; i < indentLevel; i++ ) {
+            for( var i = 0; i < indentLevel; i++ ) {
                 sb.Append( indentString );
             }
             sb.Append( "TAG_List" );
@@ -605,11 +605,11 @@ namespace fNbt {
 
             if( Count > 0 ) {
                 sb.Append( '\n' );
-                foreach( NbtTag tag in tags ) {
+                foreach( var tag in tags ) {
                     tag.PrettyPrint( sb, indentString, indentLevel + 1 );
                     sb.Append( '\n' );
                 }
-                for( int i = 0; i < indentLevel; i++ ) {
+                for( var i = 0; i < indentLevel; i++ ) {
                     sb.Append( indentString );
                 }
             }

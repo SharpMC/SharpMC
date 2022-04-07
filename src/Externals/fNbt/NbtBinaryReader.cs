@@ -22,7 +22,7 @@ namespace fNbt {
 
 
         public NbtTagType ReadTagType() {
-            NbtTagType type = (NbtTagType)ReadByte();
+            var type = (NbtTagType)ReadByte();
             if( type < NbtTagType.End || type > NbtTagType.IntArray ) {
                 throw new NbtFormatException( "NBT tag type out of range: " + (int)type );
             }
@@ -78,11 +78,11 @@ namespace fNbt {
 
 
         public override string ReadString() {
-            short length = ReadInt16();
+            var length = ReadInt16();
             if( length < 0 ) {
                 throw new NbtFormatException( "Negative string length given!" );
             }
-            byte[] stringData = ReadBytes( length );
+            var stringData = ReadBytes( length );
             return Encoding.UTF8.GetString( stringData );
         }
 
@@ -95,9 +95,9 @@ namespace fNbt {
             } else if( bytesToSkip != 0 ) {
                 if( seekBuffer == null )
                     seekBuffer = new byte[SeekBufferSize];
-                int bytesDone = 0;
+                var bytesDone = 0;
                 while( bytesDone < bytesToSkip ) {
-                    int readThisTime = BaseStream.Read( seekBuffer, bytesDone, bytesToSkip - bytesDone );
+                    var readThisTime = BaseStream.Read( seekBuffer, bytesDone, bytesToSkip - bytesDone );
                     if( readThisTime == 0 ) {
                         throw new EndOfStreamException();
                     }
@@ -108,7 +108,7 @@ namespace fNbt {
 
 
         public void SkipString() {
-            short length = ReadInt16();
+            var length = ReadInt16();
             if( length < 0 ) {
                 throw new NbtFormatException( "Negative string length given!" );
             }

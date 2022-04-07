@@ -18,7 +18,7 @@ namespace SharpMC.World
 
 		private Level CreateLevel(string s)
 		{
-			Level level = new Level(s, new FlatWorldGenerator());
+			var level = new Level(s, new FlatWorldGenerator());
 			level.Initialize();
 			return level;
 		}
@@ -105,7 +105,7 @@ namespace SharpMC.World
 
 		public void SaveAllChunks()
 		{
-			foreach (Level lvl in GetLevels())
+			foreach (var lvl in GetLevels())
 			{
 				lvl.SaveChunks();
 			}
@@ -114,8 +114,8 @@ namespace SharpMC.World
 
 		public Player[] GetAllPlayers()
 		{
-			List<Player> players = new List<Player>();
-			foreach (Level lvl in GetLevels())
+			var players = new List<Player>();
+			foreach (var lvl in GetLevels())
 			{
 				players.AddRange(lvl.GetOnlinePlayers);
 			}

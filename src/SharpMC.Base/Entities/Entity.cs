@@ -87,7 +87,7 @@ namespace SharpMC.Entities
 
         public static byte DirectionByRotationFlat(float yaw)
         {
-            var direction = (byte)((int)Math.Floor((yaw * 4F) / 360F + 0.5D) & 0x03);
+            var direction = (byte)((int)Math.Floor(yaw * 4F / 360F + 0.5D) & 0x03);
             switch (direction)
             {
                 case 0:

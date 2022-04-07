@@ -77,7 +77,7 @@ namespace fNbt {
 
 
         internal override bool ReadTag( NbtBinaryReader readStream ) {
-            int length = readStream.ReadInt32();
+            var length = readStream.ReadInt32();
             if( length < 0 ) {
                 throw new NbtFormatException( "Negative length given in TAG_Int_Array" );
             }
@@ -88,7 +88,7 @@ namespace fNbt {
             }
 
             Value = new int[length];
-            for( int i = 0; i < length; i++ ) {
+            for( var i = 0; i < length; i++ ) {
                 Value[i] = readStream.ReadInt32();
             }
             return true;
@@ -96,7 +96,7 @@ namespace fNbt {
 
 
         internal override void SkipTag( NbtBinaryReader readStream ) {
-            int length = readStream.ReadInt32();
+            var length = readStream.ReadInt32();
             if( length < 0 ) {
                 throw new NbtFormatException( "Negative length given in TAG_Int_Array" );
             }
@@ -117,7 +117,7 @@ namespace fNbt {
 
         internal override void WriteData( NbtBinaryWriter writeStream ) {
             writeStream.Write( Value.Length );
-            for( int i = 0; i < Value.Length; i++ ) {
+            for( var i = 0; i < Value.Length; i++ ) {
                 writeStream.Write( Value[i] );
             }
         }
@@ -134,7 +134,7 @@ namespace fNbt {
 
 
         internal override void PrettyPrint( StringBuilder sb, string indentString, int indentLevel ) {
-            for( int i = 0; i < indentLevel; i++ ) {
+            for( var i = 0; i < indentLevel; i++ ) {
                 sb.Append( indentString );
             }
             sb.Append( "TAG_Int_Array" );

@@ -45,7 +45,7 @@ namespace fNbt {
             if( tags == null )
                 throw new ArgumentNullException( "tags" );
             Name = tagName;
-            foreach( NbtTag tag in tags ) {
+            foreach( var tag in tags ) {
                 Add( tag );
             }
         }
@@ -160,9 +160,9 @@ namespace fNbt {
         /// <returns> Array of NbtTags. </returns>
         [NotNull, Pure]
         public NbtTag[] ToArray() {
-            NbtTag[] array = new NbtTag[tags.Count];
-            int i = 0;
-            foreach( NbtTag tag in tags.Values ) {
+            var array = new NbtTag[tags.Count];
+            var i = 0;
+            foreach( var tag in tags.Values ) {
                 array[i++] = tag;
             }
             return array;
@@ -173,9 +173,9 @@ namespace fNbt {
         /// <returns> Array of strings (tag names). </returns>
         [NotNull, Pure]
         public string[] ToNameArray() {
-            string[] array = new string[tags.Count];
-            int i = 0;
-            foreach( NbtTag tag in tags.Values ) {
+            var array = new string[tags.Count];
+            var i = 0;
+            foreach( var tag in tags.Values ) {
                 array[i++] = tag.Name;
             }
             return array;
@@ -190,7 +190,7 @@ namespace fNbt {
         public void AddRange( [NotNull] IEnumerable<NbtTag> newTags ) {
             if( newTags == null )
                 throw new ArgumentNullException( "newTags" );
-            foreach( NbtTag tag in newTags ) {
+            foreach( var tag in newTags ) {
                 Add( tag );
             }
         }
@@ -272,7 +272,7 @@ namespace fNbt {
             }
 
             while( true ) {
-                NbtTagType nextTag = readStream.ReadTagType();
+                var nextTag = readStream.ReadTagType();
                 NbtTag newTag;
                 switch( nextTag ) {
                     case NbtTagType.End:
@@ -339,7 +339,7 @@ namespace fNbt {
 
         internal override void SkipTag( NbtBinaryReader readStream ) {
             while( true ) {
-                NbtTagType nextTag = readStream.ReadTagType();
+                var nextTag = readStream.ReadTagType();
                 NbtTag newTag;
                 switch( nextTag ) {
                     case NbtTagType.End:
@@ -411,7 +411,7 @@ namespace fNbt {
 
 
         internal override void WriteData( NbtBinaryWriter writeStream ) {
-            foreach( NbtTag tag in tags.Values ) {
+            foreach( var tag in tags.Values ) {
                 tag.WriteTag( writeStream, true );
             }
             writeStream.Write( NbtTagType.End );
@@ -460,7 +460,7 @@ namespace fNbt {
 
         /// <summary> Removes all tags from this NbtCompound. </summary>
         public void Clear() {
-            foreach( NbtTag tag in tags.Values ) {
+            foreach( var tag in tags.Values ) {
                 tag.Parent = null;
             }
             tags.Clear();
@@ -580,7 +580,7 @@ namespace fNbt {
 
 
         internal override void PrettyPrint( StringBuilder sb, string indentString, int indentLevel ) {
-            for( int i = 0; i < indentLevel; i++ ) {
+            for( var i = 0; i < indentLevel; i++ ) {
                 sb.Append( indentString );
             }
             sb.Append( "TAG_Compound" );
@@ -591,11 +591,11 @@ namespace fNbt {
 
             if( Count > 0 ) {
                 sb.Append( '\n' );
-                foreach( NbtTag tag in tags.Values ) {
+                foreach( var tag in tags.Values ) {
                     tag.PrettyPrint( sb, indentString, indentLevel + 1 );
                     sb.Append( '\n' );
                 }
-                for( int i = 0; i < indentLevel; i++ ) {
+                for( var i = 0; i < indentLevel; i++ ) {
                     sb.Append( indentString );
                 }
             }

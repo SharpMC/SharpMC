@@ -58,7 +58,7 @@ namespace SharpMC.Core.Networking.Packages
 							{
 								if (old.ItemCount < 64)
 								{
-									if ((old.ItemCount + slot.ItemCount) <= 64)
+									if (old.ItemCount + slot.ItemCount <= 64)
 									{
 										Client.Player.Inventory.SetSlot(Slot, slot.ItemId, slot.MetaData, (byte) (old.ItemCount + slot.ItemCount));
 										Client.Player.Inventory.ClickedItem = null;

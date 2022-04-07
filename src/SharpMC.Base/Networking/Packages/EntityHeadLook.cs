@@ -22,7 +22,7 @@ namespace SharpMC.Core.Networking.Packages
 			{
 				Buffer.WriteVarInt(SendId);
 				Buffer.WriteVarInt(EntityId);
-				Buffer.WriteByte((byte)((HeadYaw / 360) * 256));
+				Buffer.WriteByte((byte)(HeadYaw / 360 * 256));
 				Buffer.FlushData();
 			}
 		}

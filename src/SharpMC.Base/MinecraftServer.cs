@@ -25,16 +25,17 @@ namespace SharpMC
             Log.LogInformation("Initializing...");
 			MCPacketFactory.Load();
 
-			Server = new NetServer(new NetConfiguration()
-			{
+			Server = new NetServer(new NetConfiguration
+            {
 				Host = IPAddress.Any,
 				Port = 25565,
 				Protocol = ProtocolType.Tcp
-			});
+			})
+            {
+                NetConnectionFactory = new ConnectionFactory(this)
+            };
 
-			Server.NetConnectionFactory = new ConnectionFactory(this);
-
-			PlayerFactory = new DefaultPlayerFactory(this);
+            PlayerFactory = new DefaultPlayerFactory(this);
 
 			LevelManager = new LevelManager();
 

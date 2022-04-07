@@ -47,7 +47,7 @@ namespace SharpMC.Core.Networking.Packages
 				var line3 = Buffer.ReadString();
 				var line4 = Buffer.ReadString();
 
-				Client.Player.Level.UpdateSign(coords, new string[] {line1, line2, line3, line4});
+				Client.Player.Level.UpdateSign(coords, new[] {line1, line2, line3, line4});
 			}
 		}
 	}

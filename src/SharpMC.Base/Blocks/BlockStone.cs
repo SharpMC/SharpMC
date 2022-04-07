@@ -6,7 +6,7 @@ namespace SharpMC.Blocks
     {
         internal BlockStone() : base(1)
         {
-            Drops = new ItemStack[] { new ItemStack(new BlockCobbleStone(), 1), };
+            Drops = new[] { new ItemStack(new BlockCobbleStone(), 1), };
         }
     }
 }

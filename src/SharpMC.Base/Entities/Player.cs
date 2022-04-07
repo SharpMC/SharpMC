@@ -84,7 +84,7 @@ namespace SharpMC
                 }
             }
 
-			ChunkCoordinates cur = new ChunkCoordinates(KnownPosition);
+			var cur = new ChunkCoordinates(KnownPosition);
 			if (cur.DistanceTo(_prevChunkCoordinates) >= 2)
 			{
 				_prevChunkCoordinates = cur;
@@ -107,8 +107,8 @@ namespace SharpMC
 		{
 			foreach (var i in Level.GenerateChunks(this, coords, ChunksUsed, ViewDistance))
 			{
-				Connection.SendPacket(new ChunkDataPacket()
-				{
+				Connection.SendPacket(new ChunkDataPacket
+                {
 					Data = i
 				});
 			}
@@ -116,7 +116,7 @@ namespace SharpMC
 
 		private void SendJoinGame()
 		{
-			JoinGamePacket joinGame = new JoinGamePacket
+			var joinGame = new JoinGamePacket
 			{
 				EntityId = EntityId,
 				Gamemode = (byte) Gamemode,
@@ -131,10 +131,10 @@ namespace SharpMC
 
 		public void SendPlayerPositionAndLook()
 		{
-			PlayerLocation loc = (PlayerLocation) KnownPosition.Clone();
+			var loc = (PlayerLocation) KnownPosition.Clone();
 
-			PlayerPositionAndLookPacket packet = new PlayerPositionAndLookPacket()
-			{
+			var packet = new PlayerPositionAndLookPacket
+            {
 				Flags = 0,
 				TeleportId = 0,
 				X = loc.X,
@@ -149,8 +149,8 @@ namespace SharpMC
 
 		public void UnloadChunk(ChunkCoordinates coordinates)
 		{
-			Connection.SendPacket(new UnloadChunk()
-			{
+			Connection.SendPacket(new UnloadChunk
+            {
 				X = coordinates.X,
 				Z = coordinates.Z
 			});
@@ -182,7 +182,7 @@ namespace SharpMC
 				}
 			}
 
-			PlayerListItemPacket packet = new PlayerListItemPacket
+			var packet = new PlayerListItemPacket
 			{
 				Action = PlayerListAction.AddPlayer,
 				Ping = 0,
@@ -194,7 +194,7 @@ namespace SharpMC
 
 			if (p != null)
 			{
-				packet.Properties = new PlayerListProperty[]
+				packet.Properties = new[]
 				{
 					p
 				};
@@ -202,11 +202,11 @@ namespace SharpMC
 
 			Level.RelayBroadcast(players, packet);
 
-			SpawnPlayerPacket spp = new SpawnPlayerPacket
+			var spp = new SpawnPlayerPacket
 			{
 				EntityId = EntityId,
-				Pitch = (byte) (KnownPosition.Pitch.ToRadians()),
-				Yaw = (byte) (KnownPosition.Yaw.ToRadians()),
+				Pitch = (byte) KnownPosition.Pitch.ToRadians(),
+				Yaw = (byte) KnownPosition.Yaw.ToRadians(),
 				X = KnownPosition.X,
 				Y = KnownPosition.Y,
 				Z = KnownPosition.Z,
@@ -218,7 +218,7 @@ namespace SharpMC
 
 		public override void DespawnFromPlayers(Player[] players)
 		{
-			PlayerListItemPacket packet = new PlayerListItemPacket
+			var packet = new PlayerListItemPacket
 			{
 				Action = PlayerListAction.RemovePlayer,
 				UUID = UUID
@@ -499,11 +499,11 @@ namespace SharpMC
 			if (!Loaded)
 			{
 				LoadPlayer();
-				string savename = ServerSettings.OnlineMode ? Uuid : Username;
+				var savename = ServerSettings.OnlineMode ? Uuid : Username;
 				IsOperator = OperatorLoader.IsOperator(savename);
 			}
 
-			var chunks = Level.Generator.GenerateChunks((ViewDistance * 21), _chunksUsed, this);
+			var chunks = Level.Generator.GenerateChunks(ViewDistance * 21, _chunksUsed, this);
 			new MapChunkBulk(Wrapper) {Chunks = chunks.ToArray()}.Write();
 
 			new PlayerPositionAndLook(Wrapper) {X = KnownPosition.X, Y = KnownPosition.Y, Z = KnownPosition.Z, Yaw = KnownPosition.Yaw, Pitch = KnownPosition.Pitch}.Write();
@@ -530,7 +530,7 @@ namespace SharpMC
 			{
 				foreach (
 					var chunk in
-						Level.Generator.GenerateChunks((ViewDistance * 21),
+						Level.Generator.GenerateChunks(ViewDistance * 21,
 							force ? new List<Tuple<int, int>>() : _chunksUsed, this))
 				{
 					if (Wrapper != null && Wrapper.TcpClient.Client.Connected)
@@ -567,7 +567,7 @@ namespace SharpMC
 				}
 			}
 
-			ChunkColumn chunk = Level.Generator.GenerateChunkColumn(new Vector2(chunkX, chunkZ));
+			var chunk = Level.Generator.GenerateChunkColumn(new Vector2(chunkX, chunkZ));
 			foreach (var raw in chunk.TileEntities)
 			{
 				var nbt = raw.Value;
@@ -650,16 +650,16 @@ namespace SharpMC
 		/// <returns></returns>
 		public bool ToggleOperatorStatus()
 		{
-			string savename = ServerSettings.OnlineMode ? Uuid : Username;
+			var savename = ServerSettings.OnlineMode ? Uuid : Username;
 			IsOperator = OperatorLoader.Toggle(savename.ToLower());
 			return IsOperator;
 		}
 
 		public void SavePlayer()
 		{
-			byte[] health = HealthManager.Export();
-			byte[] inv = Inventory.GetBytes();
-			DataBuffer buffer = new DataBuffer(new byte[0]);
+			var health = HealthManager.Export();
+			var inv = Inventory.GetBytes();
+			var buffer = new DataBuffer(new byte[0]);
 			buffer.WriteDouble(KnownPosition.X);
 			buffer.WriteDouble(KnownPosition.Y);
 			buffer.WriteDouble(KnownPosition.Z);
@@ -668,41 +668,41 @@ namespace SharpMC
 			buffer.WriteBool(KnownPosition.OnGround);
 			buffer.WriteVarInt((int)Gamemode);
 			buffer.WriteVarInt(health.Length);
-			foreach (byte b in health)
+			foreach (var b in health)
 			{
 				buffer.WriteByte(b);
 			}
 			buffer.WriteVarInt(inv.Length);
-			foreach (byte b in inv)
+			foreach (var b in inv)
 			{
 				buffer.WriteByte(b);
 			}
-			byte[] data = buffer.ExportWriter;
+			var data = buffer.ExportWriter;
 			data = Globals.Compress(data);
-			string savename = ServerSettings.OnlineMode ? Uuid : Username;
+			var savename = ServerSettings.OnlineMode ? Uuid : Username;
 			File.WriteAllBytes("Players/" + savename + ".pdata", data);
 		}
 
 		public void LoadPlayer()
 		{
-			string savename = ServerSettings.OnlineMode ? Uuid : Username;
+			var savename = ServerSettings.OnlineMode ? Uuid : Username;
 			if (File.Exists("Players/" + savename + ".pdata"))
 			{
-				byte[] data = File.ReadAllBytes("Players/" + savename + ".pdata");
+				var data = File.ReadAllBytes("Players/" + savename + ".pdata");
 				data = Globals.Decompress(data);
-				DataBuffer reader = new DataBuffer(data);
-				double x = reader.ReadDouble();
-				double y = reader.ReadDouble();
-				double z = reader.ReadDouble();
-				float yaw = reader.ReadFloat();
-				float pitch = reader.ReadFloat();
-				bool onGround = reader.ReadBool();
+				var reader = new DataBuffer(data);
+				var x = reader.ReadDouble();
+				var y = reader.ReadDouble();
+				var z = reader.ReadDouble();
+				var yaw = reader.ReadFloat();
+				var pitch = reader.ReadFloat();
+				var onGround = reader.ReadBool();
 				KnownPosition = new PlayerLocation(x, y, z) {Yaw = yaw, Pitch = pitch, OnGround = onGround};
 				Gamemode = (Gamemode) reader.ReadVarInt();
-				int healthLength = reader.ReadVarInt();
-				byte[] healthData = reader.Read(healthLength);
-				int inventoryLength = reader.ReadVarInt();
-				byte[] inventoryData = reader.Read(inventoryLength);
+				var healthLength = reader.ReadVarInt();
+				var healthData = reader.Read(healthLength);
+				var inventoryLength = reader.ReadVarInt();
+				var inventoryData = reader.Read(inventoryLength);
 				HealthManager.Import(healthData);
 				Inventory.Import(inventoryData);
 			}

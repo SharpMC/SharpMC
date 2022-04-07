@@ -50,7 +50,7 @@ namespace fNbt {
 
         public override void Write( float value ) {
             if( BitConverter.IsLittleEndian == bigEndian ) {
-                byte[] floatBytes = BitConverter.GetBytes( value );
+                var floatBytes = BitConverter.GetBytes( value );
                 Array.Reverse( floatBytes );
                 Write( floatBytes );
             } else {
@@ -61,7 +61,7 @@ namespace fNbt {
 
         public override void Write( double value ) {
             if( BitConverter.IsLittleEndian == bigEndian ) {
-                byte[] doubleBytes = BitConverter.GetBytes( value );
+                var doubleBytes = BitConverter.GetBytes( value );
                 Array.Reverse( doubleBytes );
                 Write( doubleBytes );
             } else {
@@ -87,7 +87,7 @@ namespace fNbt {
 
 
         public static int Swap( int v ) {
-            uint v2 = (uint)v;
+            var v2 = (uint)v;
             return (int)( ( v2 >> 24 ) & 0x000000FF |
                           ( v2 >> 8 ) & 0x0000FF00 |
                           ( v2 << 8 ) & 0x00FF0000 |

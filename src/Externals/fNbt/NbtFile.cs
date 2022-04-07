@@ -160,7 +160,7 @@ namespace fNbt {
             if( fileName == null )
                 throw new ArgumentNullException( "fileName" );
 
-            using( FileStream readFileStream = File.OpenRead( fileName ) ) {
+            using( var readFileStream = File.OpenRead( fileName ) ) {
                 LoadFromStream( readFileStream, compression, selector );
                 FileName = fileName;
                 return (int)readFileStream.Position;
@@ -189,7 +189,7 @@ namespace fNbt {
             if( buffer == null )
                 throw new ArgumentNullException( "buffer" );
 
-            using( MemoryStream ms = new MemoryStream( buffer, index, length ) ) {
+            using( var ms = new MemoryStream( buffer, index, length ) ) {
                 LoadFromStream( ms, compression, selector );
                 FileName = null;
                 return (int)ms.Position;
@@ -215,7 +215,7 @@ namespace fNbt {
             if( buffer == null )
                 throw new ArgumentNullException( "buffer" );
 
-            using( MemoryStream ms = new MemoryStream( buffer, index, length ) ) {
+            using( var ms = new MemoryStream( buffer, index, length ) ) {
                 LoadFromStream( ms, compression, null );
                 FileName = null;
                 return (int)ms.Position;
@@ -249,7 +249,7 @@ namespace fNbt {
                 FileCompression = compression;
             }
 
-            long startPosition = stream.Position;
+            var startPosition = stream.Position;
 
             switch( FileCompression ) {
                 case NbtCompression.GZip:
@@ -310,7 +310,7 @@ namespace fNbt {
                 compression = DetectCompression( stream );
             }
 
-            long startPosition = stream.Position;
+            var startPosition = stream.Position;
 
             switch( compression ) {
                 case NbtCompression.GZip:
@@ -354,7 +354,7 @@ namespace fNbt {
             if( !stream.CanSeek ) {
                 throw new NotSupportedException( "Cannot auto-detect compression on a stream that's not seekable." );
             }
-            int firstByte = stream.ReadByte();
+            var firstByte = stream.ReadByte();
             switch( firstByte ) {
                 case -1:
                     throw new EndOfStreamException();
@@ -389,7 +389,7 @@ namespace fNbt {
             if( stream.ReadByte() != (int)NbtTagType.Compound ) {
                 throw new NbtFormatException( "Given NBT stream does not start with a TAG_Compound" );
             }
-            NbtBinaryReader reader = new NbtBinaryReader( stream, BigEndian ) {
+            var reader = new NbtBinaryReader( stream, BigEndian ) {
                 Selector = tagSelector
             };
 
@@ -419,7 +419,7 @@ namespace fNbt {
             if( fileName == null )
                 throw new ArgumentNullException( "fileName" );
 
-            using( FileStream saveFile = File.Create( fileName ) ) {
+            using( var saveFile = File.Create( fileName ) ) {
                 return SaveToStream( saveFile, compression );
             }
         }
@@ -442,7 +442,7 @@ namespace fNbt {
             if( buffer == null )
                 throw new ArgumentNullException( "buffer" );
 
-            using( MemoryStream ms = new MemoryStream( buffer, index, buffer.Length - index ) ) {
+            using( var ms = new MemoryStream( buffer, index, buffer.Length - index ) ) {
                 SaveToStream( ms, compression );
                 return (int)ms.Position;
             }
@@ -459,7 +459,7 @@ namespace fNbt {
         /// <exception cref="NbtFormatException"> If one of the NbtCompound tags contained unnamed tags;
         /// or if an NbtList tag had Unknown list type and no elements. </exception>
         public byte[] SaveToBuffer( NbtCompression compression ) {
-            using( MemoryStream ms = new MemoryStream() ) {
+            using( var ms = new MemoryStream() ) {
                 SaveToStream( ms, compression );
                 return ms.ToArray();
             }
@@ -502,7 +502,7 @@ namespace fNbt {
                     "Cannot save NbtFile: Root tag is not named. Its name may be an empty string, but not null." );
             }
 
-            long startPosition = stream.Position;
+            var startPosition = stream.Position;
 
             switch( compression ) {
                 case NbtCompression.ZLib:
@@ -510,12 +510,12 @@ namespace fNbt {
                     stream.WriteByte( 0x01 );
                     int checksum;
                     using( var compressStream = new ZLibStream( stream, CompressionMode.Compress, true ) ) {
-                        BufferedStream bufferedStream = new BufferedStream( compressStream, WriteBufferSize );
+                        var bufferedStream = new BufferedStream( compressStream, WriteBufferSize );
                         RootTag.WriteTag( new NbtBinaryWriter( bufferedStream, BigEndian ), true );
                         bufferedStream.Flush();
                         checksum = compressStream.Checksum;
                     }
-                    byte[] checksumBytes = BitConverter.GetBytes( checksum );
+                    var checksumBytes = BitConverter.GetBytes( checksum );
                     if( BitConverter.IsLittleEndian ) {
                         // Adler32 checksum is big-endian
                         Array.Reverse( checksumBytes );
@@ -526,7 +526,7 @@ namespace fNbt {
                 case NbtCompression.GZip:
                     using( var compressStream = new GZipStream( stream, CompressionMode.Compress, true ) ) {
                         // use a buffered stream to avoid gzipping in small increments (which has a lot of overhead)
-                        BufferedStream bufferedStream = new BufferedStream( compressStream, WriteBufferSize );
+                        var bufferedStream = new BufferedStream( compressStream, WriteBufferSize );
                         RootTag.WriteTag( new NbtBinaryWriter( bufferedStream, BigEndian ), true );
                         bufferedStream.Flush();
                     }
@@ -584,7 +584,7 @@ namespace fNbt {
             if( bufferSize < 0 ) {
                 throw new ArgumentOutOfRangeException( "bufferSize", bufferSize, "DefaultBufferSize cannot be negative." );
             }
-            using( FileStream readFileStream = File.OpenRead( fileName ) ) {
+            using( var readFileStream = File.OpenRead( fileName ) ) {
                 return ReadRootTagName( readFileStream, compression, bigEndian, bufferSize );
             }
         }
@@ -652,7 +652,7 @@ namespace fNbt {
         static string GetRootNameInternal( [NotNull] Stream stream, bool bigEndian ) {
             if( stream == null )
                 throw new ArgumentNullException( "stream" );
-            NbtBinaryReader reader = new NbtBinaryReader( stream, bigEndian );
+            var reader = new NbtBinaryReader( stream, bigEndian );
 
             if( reader.ReadTagType() != NbtTagType.Compound ) {
                 throw new NbtFormatException( "Given NBT stream does not start with a TAG_Compound" );

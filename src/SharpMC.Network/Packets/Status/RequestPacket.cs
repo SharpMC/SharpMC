@@ -6,12 +6,10 @@ namespace SharpMC.Network.Packets.Status
 	{
 		public override void Decode(MinecraftStream stream)
 		{
-			
-		}
+        }
 
 		public override void Encode(MinecraftStream stream)
 		{
-			
-		}
+        }
 	}
 }

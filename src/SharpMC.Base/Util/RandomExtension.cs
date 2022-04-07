@@ -25,7 +25,7 @@ namespace SharpMC.Util
 			var minLow = Math.Min((int)min, (int)max);
 			var maxLow = Math.Max((int)min, (int)max);
 			var low = (uint)rnd.Next(minLow, maxLow);
-			ulong result = (ulong)hight;
+			var result = (ulong)hight;
 			result <<= 32;
 			result |= low;
 			return result;

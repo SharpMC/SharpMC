@@ -30,7 +30,7 @@ namespace SharpMC.Core.Networking
 				var client = _serverListener.AcceptTcpClient();
 				ConsoleFunctions.WriteDebugLine("A new connection has been made!");
 
-				new Task((() => { HandleClientCommNew(client); })).Start(); //Task instead of Thread
+				new Task(() => { HandleClientCommNew(client); }).Start(); //Task instead of Thread
 			}
 		}
 
@@ -58,11 +58,11 @@ namespace SharpMC.Core.Networking
 		}
 		private byte[] GetVarIntBytes(int integer)
 		{
-			List<Byte> bytes = new List<byte>();
+			var bytes = new List<byte>();
 			while ((integer & -128) != 0)
 			{
 				bytes.Add((byte)(integer & 127 | 128));
-				integer = (int)(((uint)integer) >> 7);
+				integer = (int)((uint)integer >> 7);
 			}
 			bytes.Add((byte)integer);
 			return bytes.ToArray();
@@ -176,9 +176,9 @@ namespace SharpMC.Core.Networking
 
 					if (ServerSettings.UseCompression && Client.PacketMode == PacketMode.Play)
 					{
-						int packetLength = ReadVarInt(clientStream);
-						int dataLength = ReadVarInt(clientStream);
-						int actualDataLength = packetLength - GetVarIntBytes(dataLength).Length;
+						var packetLength = ReadVarInt(clientStream);
+						var dataLength = ReadVarInt(clientStream);
+						var actualDataLength = packetLength - GetVarIntBytes(dataLength).Length;
 						
 						if (dataLength == 0)
 						{
@@ -191,7 +191,7 @@ namespace SharpMC.Core.Networking
 					}
 					else
 					{
-						int dlength = ReadVarInt(clientStream);
+						var dlength = ReadVarInt(clientStream);
 						if (!ReadUncompressed(Client, clientStream, dlength)) break;
 					}
 				}

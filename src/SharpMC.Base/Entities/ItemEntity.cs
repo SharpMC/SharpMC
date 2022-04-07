@@ -16,7 +16,7 @@ namespace SharpMC.Core.Entity
 			Length = 0.25;
 
 			PickupDelay = 10;
-			TimeToLive = 20*(5*60);
+			TimeToLive = 20 * 5 * 60;
 		}
 
 		public ItemStack Item { get; private set; }

@@ -6,6 +6,7 @@ namespace SharpMC.Network.Events
     {
         internal IncomingConnection Connection { get; }
         public bool ConnectionAccepted { get; private set; }
+
         internal IncomingConnectionEventArgs(IncomingConnection connection)
         {
             Connection = connection;

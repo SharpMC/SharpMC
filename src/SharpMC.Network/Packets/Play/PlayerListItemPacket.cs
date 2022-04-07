@@ -20,8 +20,7 @@ namespace SharpMC.Network.Packets.Play
 
 		public override void Decode(MinecraftStream stream)
 		{
-			
-		}
+        }
 
 		public override void Encode(MinecraftStream stream)
 		{
@@ -52,7 +51,7 @@ namespace SharpMC.Network.Packets.Play
 					}
 					stream.WriteVarInt(Gamemode);
 					stream.WriteVarInt(Ping);
-					bool hasDisplayName = !string.IsNullOrEmpty(Displayname);
+					var hasDisplayName = !string.IsNullOrEmpty(Displayname);
 					stream.WriteBool(hasDisplayName);
 					if (hasDisplayName)
 					{
@@ -66,7 +65,7 @@ namespace SharpMC.Network.Packets.Play
 					stream.WriteVarInt(Ping);
 					break;
 				case PlayerListAction.UpdateDisplayName:
-					bool hdn = !string.IsNullOrEmpty(Displayname);
+					var hdn = !string.IsNullOrEmpty(Displayname);
 					stream.WriteBool(hdn);
 					if (hdn)
 					{
@@ -77,22 +76,5 @@ namespace SharpMC.Network.Packets.Play
 					break;
 			}
 		}
-	}
-
-	public enum PlayerListAction : int
-	{
-		AddPlayer = 0,
-		UpdateGamemode = 1,
-		UpdateLatency = 2,
-		UpdateDisplayName = 3,
-		RemovePlayer = 4
-	}
-
-	public sealed class PlayerListProperty
-	{
-		public string Name;
-		public string Value;
-		public bool IsSigned;
-		public string Signature;
 	}
 }

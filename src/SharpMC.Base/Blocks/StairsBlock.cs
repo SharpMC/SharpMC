@@ -13,8 +13,8 @@ namespace SharpMC.Blocks
 
         public override bool PlaceBlock(Level world, Player player, Vector3 blockCoordinates, BlockFace face, Vector3 mouseLocation)
         {
-            byte direction = player.GetDirection();
-            byte upper = (byte)((mouseLocation.Y >= 8 && face != BlockFace.PositiveY) || face == BlockFace.NegativeY ? 0x04 : 0x00);
+            var direction = player.GetDirection();
+            var upper = (byte)(mouseLocation.Y >= 8 && face != BlockFace.PositiveY || face == BlockFace.NegativeY ? 0x04 : 0x00);
             switch (direction)
             {
                 case 0:

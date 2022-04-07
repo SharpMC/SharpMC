@@ -96,7 +96,7 @@ namespace SharpMC.Plugins
 				sb.Append(commandAttribute.Command);
 				var parameters = method.GetParameters();
 				if (parameters.Length > 0) sb.Append(" ");
-				for (int i = 0; i < parameters.Length; i++)
+				for (var i = 0; i < parameters.Length; i++)
 				{
 					var parameter = parameters[i];
 					if (i == 0 && parameter.ParameterType == typeof (Player)) continue; //source player
@@ -204,15 +204,15 @@ namespace SharpMC.Plugins
 			var parameters = method.GetParameters();
 
 			var addLenght = 0;
-			int requiredParameters = 0;
+			var requiredParameters = 0;
 			if (parameters.Length > 0 && parameters[0].ParameterType == typeof (Player))
 			{
 				addLenght = 1;
 				requiredParameters = -1;
 			}
 
-			bool hasRequiredParameters = true;
-			bool hasStringArray = false;
+			var hasRequiredParameters = true;
+			var hasStringArray = false;
 
 			foreach (var param in parameters)
 			{
@@ -222,7 +222,7 @@ namespace SharpMC.Plugins
 
 			if (args.Length < requiredParameters && !hasStringArray) hasRequiredParameters = false;
 
-			if (!hasRequiredParameters || args.Length > (parameters.Length - addLenght) && !hasStringArray)
+			if (!hasRequiredParameters || args.Length > parameters.Length - addLenght && !hasStringArray)
 			{
 				player.SendChat("Invalid command usage!", ChatColor.Red);
 				player.SendChat(commandAttribute.Usage, ChatColor.Red);
@@ -231,11 +231,11 @@ namespace SharpMC.Plugins
 
 			var objectArgs = new object[parameters.Length];
 
-			bool stringarrayfound = false;
-			int stringarrayposition = 0;
-			List<string> stringarrayvalues = new List<string>();
+			var stringarrayfound = false;
+			var stringarrayposition = 0;
+			var stringarrayvalues = new List<string>();
 
-			int length = args.Length + addLenght;
+			var length = args.Length + addLenght;
 			for (var k = 0; k < length; k++)
 			{
 				var parameter = parameters[k];
@@ -317,7 +317,7 @@ namespace SharpMC.Plugins
 
 				if (parameter.ParameterType == typeof(Player))
 				{
-					Player value = Globals.LevelManager.GetAllPlayers().FirstOrDefault(p => p.Username.ToLower().Equals(args[i].ToLower()));
+					var value = Globals.LevelManager.GetAllPlayers().FirstOrDefault(p => p.Username.ToLower().Equals(args[i].ToLower()));
 					if (value == null)
 					{
 						player.SendChat(String.Format("Player \"{0}\" is not found!", args[i]), ChatColor.Red);
@@ -332,7 +332,7 @@ namespace SharpMC.Plugins
 
 			if (stringarrayfound)
 			{
-				for (int k = stringarrayposition + 1; k <= args.Length; k++)
+				for (var k = stringarrayposition + 1; k <= args.Length; k++)
 				{
 					var i = k - addLenght;
 					stringarrayvalues.Add(args[i]);

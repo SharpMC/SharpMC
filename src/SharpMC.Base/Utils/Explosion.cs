@@ -157,7 +157,7 @@ namespace SharpMC.Core.Utils
 			new PrimedTNTEntity(world)
 			{
 				KnownPosition = blockCoordinates.ToPlayerLocation(),
-				Fuse = (rand.Next(0, 20) + 10)
+				Fuse = rand.Next(0, 20) + 10
 			}.SpawnEntity();
 		}
 	}

@@ -83,7 +83,7 @@ namespace fNbt {
 
 
         internal override void PrettyPrint( StringBuilder sb, string indentString, int indentLevel ) {
-            for( int i = 0; i < indentLevel; i++ ) {
+            for( var i = 0; i < indentLevel; i++ ) {
                 sb.Append( indentString );
             }
             sb.Append( "TAG_Int" );

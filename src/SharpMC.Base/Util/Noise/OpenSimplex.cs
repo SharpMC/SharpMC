@@ -27,9 +27,9 @@ namespace SharpMC.Util.Noise
         {
             _perm = perm;
             _permGradIndex3D = new short[256];
-            for (int I = 0; I < 256; I++)
+            for (var I = 0; I < 256; I++)
             {
-                _permGradIndex3D[I] = (short)((perm[I] % (Gradients3D.Length / 3)) * 3);
+                _permGradIndex3D[I] = (short)(perm[I] % (Gradients3D.Length / 3) * 3);
             }
 
             Octaves = 2;
@@ -53,31 +53,31 @@ namespace SharpMC.Util.Noise
         {
             _perm = new short[256];
             _permGradIndex3D = new short[256];
-            short[] source = new short[256];
+            var source = new short[256];
             for (short I = 0; I < 256; I++)
                 source[I] = I;
             seed = seed * 6364136223846793005L + 1442695040888963407L;
             seed = seed * 6364136223846793005L + 1442695040888963407L;
             seed = seed * 6364136223846793005L + 1442695040888963407L;
-            for (int I = 255; I >= 0; I--)
+            for (var I = 255; I >= 0; I--)
             {
                 seed = seed * 6364136223846793005L + 1442695040888963407L;
-                int r = (int)((seed + 31) % (I + 1));
+                var r = (int)((seed + 31) % (I + 1));
                 if (r < 0)
-                    r += (I + 1);
+                    r += I + 1;
                 _perm[I] = source[r];
-                _permGradIndex3D[I] = (short)((_perm[I] % (Gradients3D.Length / 3)) * 3);
+                _permGradIndex3D[I] = (short)(_perm[I] % (Gradients3D.Length / 3) * 3);
                 source[r] = source[I];
             }
         }
 
         public override double Value2D(double x, double y)
         {
-            double total = 0.0;
-            double frequency = Frequency;
-            double amplitude = Amplitude;
+            var total = 0.0;
+            var frequency = Frequency;
+            var amplitude = Amplitude;
 
-            for (int I = 0; I < Octaves; I++)
+            for (var I = 0; I < Octaves; I++)
             {
                 total += GetValue2D(x * frequency, y * frequency) * amplitude;
                 frequency *= Lacunarity;
@@ -89,29 +89,29 @@ namespace SharpMC.Util.Noise
         private double GetValue2D(double x, double y)
         {
             //Place input coordinates onto grid.
-            double stretchOffset = (x + y) * StretchConstant_2D;
-            double xs = x + stretchOffset;
-            double ys = y + stretchOffset;
+            var stretchOffset = (x + y) * StretchConstant_2D;
+            var xs = x + stretchOffset;
+            var ys = y + stretchOffset;
 
             //Floor to get grid coordinates of rhombus (stretched square) super-cell origin.
-            int xsb = Floor(xs);
-            int ysb = Floor(ys);
+            var xsb = Floor(xs);
+            var ysb = Floor(ys);
 
             //Skew out to get actual coordinates of rhombus origin. We'll need these later.
-            double squishOffset = (xsb + ysb) * SquishConstant_2D;
-            double xb = xsb + squishOffset;
-            double yb = ysb + squishOffset;
+            var squishOffset = (xsb + ysb) * SquishConstant_2D;
+            var xb = xsb + squishOffset;
+            var yb = ysb + squishOffset;
 
             //Compute grid coordinates relative to rhombus origin.
-            double xins = xs - xsb;
-            double yins = ys - ysb;
+            var xins = xs - xsb;
+            var yins = ys - ysb;
 
             //Sum those together to get a value that determines which region we're in.
-            double inSum = xins + yins;
+            var inSum = xins + yins;
 
             //Positions relative to origin point.
-            double dx0 = x - xb;
-            double dy0 = y - yb;
+            var dx0 = x - xb;
+            var dy0 = y - yb;
 
             //We'll be defining these inside the next block and using them afterwards.
             double dxExt, dyExt;
@@ -119,9 +119,9 @@ namespace SharpMC.Util.Noise
             double value = 0;
 
             //Contribution (1,0)
-            double dx1 = dx0 - 1 - SquishConstant_2D;
-            double dy1 = dy0 - 0 - SquishConstant_2D;
-            double attn1 = 2 - dx1 * dx1 - dy1 * dy1;
+            var dx1 = dx0 - 1 - SquishConstant_2D;
+            var dy1 = dy0 - 0 - SquishConstant_2D;
+            var attn1 = 2 - dx1 * dx1 - dy1 * dy1;
             if (attn1 > 0)
             {
                 attn1 *= attn1;
@@ -129,9 +129,9 @@ namespace SharpMC.Util.Noise
             }
 
             //Contribution (0,1)
-            double dx2 = dx0 - 0 - SquishConstant_2D;
-            double dy2 = dy0 - 1 - SquishConstant_2D;
-            double attn2 = 2 - dx2 * dx2 - dy2 * dy2;
+            var dx2 = dx0 - 0 - SquishConstant_2D;
+            var dy2 = dy0 - 1 - SquishConstant_2D;
+            var attn2 = 2 - dx2 * dx2 - dy2 * dy2;
             if (attn2 > 0)
             {
                 attn2 *= attn2;
@@ -140,7 +140,7 @@ namespace SharpMC.Util.Noise
             if (inSum <= 1)
             {
                 //We're inside the triangle (2-Simplex) at (0,0)
-                double zins = 1 - inSum;
+                var zins = 1 - inSum;
                 if (zins > xins || zins > yins)
                 {
                     //(0,0) is one of the closest two triangular vertices
@@ -171,7 +171,7 @@ namespace SharpMC.Util.Noise
             else
             {
                 //We're inside the triangle (2-Simplex) at (1,1)
-                double zins = 2 - inSum;
+                var zins = 2 - inSum;
                 if (zins < xins || zins < yins)
                 {
                     //(0,0) is one of the closest two triangular vertices
@@ -204,14 +204,14 @@ namespace SharpMC.Util.Noise
                 dy0 = dy0 - 1 - 2 * SquishConstant_2D;
             }
             //Contribution (0,0) or (1,1)
-            double attn0 = 2 - dx0 * dx0 - dy0 * dy0;
+            var attn0 = 2 - dx0 * dx0 - dy0 * dy0;
             if (attn0 > 0)
             {
                 attn0 *= attn0;
                 value += attn0 * attn0 * Extrapolate2D(xsb, ysb, dx0, dy0);
             }
             //Extra Vertex
-            double attnExt = 2 - dxExt * dxExt - dyExt * dyExt;
+            var attnExt = 2 - dxExt * dxExt - dyExt * dyExt;
             if (attnExt > 0)
             {
                 attnExt *= attnExt;
@@ -222,11 +222,11 @@ namespace SharpMC.Util.Noise
 
         public override double Value3D(double x, double y, double z)
         {
-            double total = 0.0;
-            double frequency = Frequency;
-            double amplitude = Amplitude;
+            var total = 0.0;
+            var frequency = Frequency;
+            var amplitude = Amplitude;
 
-            for (int I = 0; I < Octaves; I++)
+            for (var I = 0; I < Octaves; I++)
             {
                 total += GetValue3D(x * frequency, y * frequency, z * frequency) * amplitude;
                 frequency *= Lacunarity;
@@ -238,34 +238,34 @@ namespace SharpMC.Util.Noise
         private double GetValue3D(double x, double y, double z)
         {
             //Place input coordinates on simplectic honeycomb.
-            double stretchOffset = (x + y + z) * StretchConstant_3D;
-            double xs = x + stretchOffset;
-            double ys = y + stretchOffset;
-            double zs = z + stretchOffset;
+            var stretchOffset = (x + y + z) * StretchConstant_3D;
+            var xs = x + stretchOffset;
+            var ys = y + stretchOffset;
+            var zs = z + stretchOffset;
 
             //Floor to get simplectic honeycomb coordinates of rhombohedron (stretched cube) super-cell origin.
-            int xsb = Floor(xs);
-            int ysb = Floor(ys);
-            int zsb = Floor(zs);
+            var xsb = Floor(xs);
+            var ysb = Floor(ys);
+            var zsb = Floor(zs);
 
             //Skew out to get actual coordinates of rhombohedron origin. We'll need these later.
-            double squishOffset = (xsb + ysb + zsb) * SquishConstant_3D;
-            double xb = xsb + squishOffset;
-            double yb = ysb + squishOffset;
-            double zb = zsb + squishOffset;
+            var squishOffset = (xsb + ysb + zsb) * SquishConstant_3D;
+            var xb = xsb + squishOffset;
+            var yb = ysb + squishOffset;
+            var zb = zsb + squishOffset;
 
             //Compute simplectic honeycomb coordinates relative to rhombohedral origin.
-            double xins = xs - xsb;
-            double yins = ys - ysb;
-            double zins = zs - zsb;
+            var xins = xs - xsb;
+            var yins = ys - ysb;
+            var zins = zs - zsb;
 
             //Sum those together to get a value that determines which region we're in.
-            double inSum = xins + yins + zins;
+            var inSum = xins + yins + zins;
 
             //Positions relative to origin point.
-            double dx0 = x - xb;
-            double dy0 = y - yb;
-            double dz0 = z - zb;
+            var dx0 = x - xb;
+            var dy0 = y - yb;
+            var dz0 = z - zb;
 
             //We'll be defining these inside the next block and using them afterwards.
             double dxExt0, dyExt0, dzExt0;
@@ -280,9 +280,9 @@ namespace SharpMC.Util.Noise
                  * Determine which two of (0,0,1), (0,1,0), (1,0,0) are closest.
                  */
                 byte aPoint = 0x01;
-                double aScore = xins;
+                var aScore = xins;
                 byte bPoint = 0x02;
-                double bScore = yins;
+                var bScore = yins;
                 if (aScore >= bScore && zins > bScore)
                 {
                     bScore = zins;
@@ -298,11 +298,11 @@ namespace SharpMC.Util.Noise
                  * Now we determine the two lattice points not part of the tetrahedron that may contribute.
                  * This depends on the closest two tetrahedral vertices, including (0,0,0)
                  */
-                double wins = 1 - inSum;
+                var wins = 1 - inSum;
                 if (wins > aScore || wins > bScore)
                 {
                     //(0,0,0) is one of the closest two tetrahedral vertices.
-                    byte c = (bScore > aScore ? bPoint : aPoint); //Our other closest vertex is the closest out of a and b.
+                    var c = bScore > aScore ? bPoint : aPoint; //Our other closest vertex is the closest out of a and b.
                     if ((c & 0x01) == 0)
                     {
                         xsvExt0 = xsb - 1;
@@ -353,7 +353,7 @@ namespace SharpMC.Util.Noise
                 else
                 {
                     //(0,0,0) is not one of the closest two tetrahedral vertices.
-                    byte c = (byte)(aPoint | bPoint); //Our two extra vertices are determined by the closest two.
+                    var c = (byte)(aPoint | bPoint); //Our two extra vertices are determined by the closest two.
                     if ((c & 0x01) == 0)
                     {
                         xsvExt0 = xsb;
@@ -398,7 +398,7 @@ namespace SharpMC.Util.Noise
                 }
 
                 //Contribution (0,0,0)
-                double attn0 = 2 - dx0 * dx0 - dy0 * dy0 - dz0 * dz0;
+                var attn0 = 2 - dx0 * dx0 - dy0 * dy0 - dz0 * dz0;
                 if (attn0 > 0)
                 {
                     attn0 *= attn0;
@@ -406,10 +406,10 @@ namespace SharpMC.Util.Noise
                 }
 
                 //Contribution (1,0,0)
-                double dx1 = dx0 - 1 - SquishConstant_3D;
-                double dy1 = dy0 - 0 - SquishConstant_3D;
-                double dz1 = dz0 - 0 - SquishConstant_3D;
-                double attn1 = 2 - dx1 * dx1 - dy1 * dy1 - dz1 * dz1;
+                var dx1 = dx0 - 1 - SquishConstant_3D;
+                var dy1 = dy0 - 0 - SquishConstant_3D;
+                var dz1 = dz0 - 0 - SquishConstant_3D;
+                var attn1 = 2 - dx1 * dx1 - dy1 * dy1 - dz1 * dz1;
                 if (attn1 > 0)
                 {
                     attn1 *= attn1;
@@ -417,10 +417,10 @@ namespace SharpMC.Util.Noise
                 }
 
                 //Contribution (0,1,0)
-                double dx2 = dx0 - 0 - SquishConstant_3D;
-                double dy2 = dy0 - 1 - SquishConstant_3D;
-                double dz2 = dz1;
-                double attn2 = 2 - dx2 * dx2 - dy2 * dy2 - dz2 * dz2;
+                var dx2 = dx0 - 0 - SquishConstant_3D;
+                var dy2 = dy0 - 1 - SquishConstant_3D;
+                var dz2 = dz1;
+                var attn2 = 2 - dx2 * dx2 - dy2 * dy2 - dz2 * dz2;
                 if (attn2 > 0)
                 {
                     attn2 *= attn2;
@@ -428,10 +428,10 @@ namespace SharpMC.Util.Noise
                 }
 
                 //Contribution (0,0,1)
-                double dx3 = dx2;
-                double dy3 = dy1;
-                double dz3 = dz0 - 1 - SquishConstant_3D;
-                double attn3 = 2 - dx3 * dx3 - dy3 * dy3 - dz3 * dz3;
+                var dx3 = dx2;
+                var dy3 = dy1;
+                var dz3 = dz0 - 1 - SquishConstant_3D;
+                var attn3 = 2 - dx3 * dx3 - dy3 * dy3 - dz3 * dz3;
                 if (attn3 > 0)
                 {
                     attn3 *= attn3;
@@ -445,9 +445,9 @@ namespace SharpMC.Util.Noise
                  * Determine which two tetrahedral vertices are the closest, out of (1,1,0), (1,0,1), (0,1,1) but not (1,1,1).
                  */
                 byte aPoint = 0x06;
-                double aScore = xins;
+                var aScore = xins;
                 byte bPoint = 0x05;
-                double bScore = yins;
+                var bScore = yins;
                 if (aScore <= bScore && zins < bScore)
                 {
                     bScore = zins;
@@ -463,11 +463,11 @@ namespace SharpMC.Util.Noise
                  * Now we determine the two lattice points not part of the tetrahedron that may contribute.
                  * This depends on the closest two tetrahedral vertices, including (1,1,1)
                  */
-                double wins = 3 - inSum;
+                var wins = 3 - inSum;
                 if (wins < aScore || wins < bScore)
                 {
                     //(1,1,1) is one of the closest two tetrahedral vertices.
-                    byte c = (bScore < aScore ? bPoint : aPoint); //Our other closest vertex is the closest out of a and b.
+                    var c = bScore < aScore ? bPoint : aPoint; //Our other closest vertex is the closest out of a and b.
                     if ((c & 0x01) != 0)
                     {
                         xsvExt0 = xsb + 2;
@@ -518,7 +518,7 @@ namespace SharpMC.Util.Noise
                 else
                 {
                     //(1,1,1) is not one of the closest two tetrahedral vertices.
-                    byte c = (byte)(aPoint & bPoint); //Our two extra vertices are determined by the closest two.
+                    var c = (byte)(aPoint & bPoint); //Our two extra vertices are determined by the closest two.
                     if ((c & 0x01) != 0)
                     {
                         xsvExt0 = xsb + 1;
@@ -563,10 +563,10 @@ namespace SharpMC.Util.Noise
                 }
 
                 //Contribution (1,1,0)
-                double dx3 = dx0 - 1 - 2 * SquishConstant_3D;
-                double dy3 = dy0 - 1 - 2 * SquishConstant_3D;
-                double dz3 = dz0 - 0 - 2 * SquishConstant_3D;
-                double attn3 = 2 - dx3 * dx3 - dy3 * dy3 - dz3 * dz3;
+                var dx3 = dx0 - 1 - 2 * SquishConstant_3D;
+                var dy3 = dy0 - 1 - 2 * SquishConstant_3D;
+                var dz3 = dz0 - 0 - 2 * SquishConstant_3D;
+                var attn3 = 2 - dx3 * dx3 - dy3 * dy3 - dz3 * dz3;
                 if (attn3 > 0)
                 {
                     attn3 *= attn3;
@@ -574,10 +574,10 @@ namespace SharpMC.Util.Noise
                 }
 
                 //Contribution (1,0,1)
-                double dx2 = dx3;
-                double dy2 = dy0 - 0 - 2 * SquishConstant_3D;
-                double dz2 = dz0 - 1 - 2 * SquishConstant_3D;
-                double attn2 = 2 - dx2 * dx2 - dy2 * dy2 - dz2 * dz2;
+                var dx2 = dx3;
+                var dy2 = dy0 - 0 - 2 * SquishConstant_3D;
+                var dz2 = dz0 - 1 - 2 * SquishConstant_3D;
+                var attn2 = 2 - dx2 * dx2 - dy2 * dy2 - dz2 * dz2;
                 if (attn2 > 0)
                 {
                     attn2 *= attn2;
@@ -585,10 +585,10 @@ namespace SharpMC.Util.Noise
                 }
 
                 //Contribution (0,1,1)
-                double dx1 = dx0 - 0 - 2 * SquishConstant_3D;
-                double dy1 = dy3;
-                double dz1 = dz2;
-                double attn1 = 2 - dx1 * dx1 - dy1 * dy1 - dz1 * dz1;
+                var dx1 = dx0 - 0 - 2 * SquishConstant_3D;
+                var dy1 = dy3;
+                var dz1 = dz2;
+                var attn1 = 2 - dx1 * dx1 - dy1 * dy1 - dz1 * dz1;
                 if (attn1 > 0)
                 {
                     attn1 *= attn1;
@@ -599,7 +599,7 @@ namespace SharpMC.Util.Noise
                 dx0 = dx0 - 1 - 3 * SquishConstant_3D;
                 dy0 = dy0 - 1 - 3 * SquishConstant_3D;
                 dz0 = dz0 - 1 - 3 * SquishConstant_3D;
-                double attn0 = 2 - dx0 * dx0 - dy0 * dy0 - dz0 * dz0;
+                var attn0 = 2 - dx0 * dx0 - dy0 * dy0 - dz0 * dz0;
                 if (attn0 > 0)
                 {
                     attn0 *= attn0;
@@ -617,7 +617,7 @@ namespace SharpMC.Util.Noise
                 bool bIsFurtherSide;
 
                 //Decide between point (0,0,1) and (1,1,0) as closest
-                double p1 = xins + yins;
+                var p1 = xins + yins;
                 if (p1 > 1)
                 {
                     aScore = p1 - 1;
@@ -632,7 +632,7 @@ namespace SharpMC.Util.Noise
                 }
 
                 //Decide between point (0,1,0) and (1,0,1) as closest
-                double p2 = xins + zins;
+                var p2 = xins + zins;
                 if (p2 > 1)
                 {
                     bScore = p2 - 1;
@@ -647,10 +647,10 @@ namespace SharpMC.Util.Noise
                 }
 
                 //The closest out of the two (1,0,0) and (0,1,1) will replace the furthest out of the two decided above, if closer.
-                double p3 = yins + zins;
+                var p3 = yins + zins;
                 if (p3 > 1)
                 {
-                    double score = p3 - 1;
+                    var score = p3 - 1;
                     if (aScore <= bScore && aScore < score)
                     {
                         aPoint = 0x06;
@@ -664,7 +664,7 @@ namespace SharpMC.Util.Noise
                 }
                 else
                 {
-                    double score = 1 - p3;
+                    var score = 1 - p3;
                     if (aScore <= bScore && aScore < score)
                     {
                         aPoint = 0x01;
@@ -693,7 +693,7 @@ namespace SharpMC.Util.Noise
                         zsvExt0 = zsb + 1;
 
                         //Other extra point is based on the shared axis.
-                        byte c = (byte)(aPoint & bPoint);
+                        var c = (byte)(aPoint & bPoint);
                         if ((c & 0x01) != 0)
                         {
                             dxExt1 = dx0 - 2 - 2 * SquishConstant_3D;
@@ -736,7 +736,7 @@ namespace SharpMC.Util.Noise
                         zsvExt0 = zsb;
 
                         //Other extra point is based on the omitted axis.
-                        byte c = (byte)(aPoint | bPoint);
+                        var c = (byte)(aPoint | bPoint);
                         if ((c & 0x01) == 0)
                         {
                             dxExt1 = dx0 + 1 - SquishConstant_3D;
@@ -835,10 +835,10 @@ namespace SharpMC.Util.Noise
                 }
 
                 //Contribution (1,0,0)
-                double dx1 = dx0 - 1 - SquishConstant_3D;
-                double dy1 = dy0 - 0 - SquishConstant_3D;
-                double dz1 = dz0 - 0 - SquishConstant_3D;
-                double attn1 = 2 - dx1 * dx1 - dy1 * dy1 - dz1 * dz1;
+                var dx1 = dx0 - 1 - SquishConstant_3D;
+                var dy1 = dy0 - 0 - SquishConstant_3D;
+                var dz1 = dz0 - 0 - SquishConstant_3D;
+                var attn1 = 2 - dx1 * dx1 - dy1 * dy1 - dz1 * dz1;
                 if (attn1 > 0)
                 {
                     attn1 *= attn1;
@@ -846,10 +846,10 @@ namespace SharpMC.Util.Noise
                 }
 
                 //Contribution (0,1,0)
-                double dx2 = dx0 - 0 - SquishConstant_3D;
-                double dy2 = dy0 - 1 - SquishConstant_3D;
-                double dz2 = dz1;
-                double attn2 = 2 - dx2 * dx2 - dy2 * dy2 - dz2 * dz2;
+                var dx2 = dx0 - 0 - SquishConstant_3D;
+                var dy2 = dy0 - 1 - SquishConstant_3D;
+                var dz2 = dz1;
+                var attn2 = 2 - dx2 * dx2 - dy2 * dy2 - dz2 * dz2;
                 if (attn2 > 0)
                 {
                     attn2 *= attn2;
@@ -857,10 +857,10 @@ namespace SharpMC.Util.Noise
                 }
 
                 //Contribution (0,0,1)
-                double dx3 = dx2;
-                double dy3 = dy1;
-                double dz3 = dz0 - 1 - SquishConstant_3D;
-                double attn3 = 2 - dx3 * dx3 - dy3 * dy3 - dz3 * dz3;
+                var dx3 = dx2;
+                var dy3 = dy1;
+                var dz3 = dz0 - 1 - SquishConstant_3D;
+                var attn3 = 2 - dx3 * dx3 - dy3 * dy3 - dz3 * dz3;
                 if (attn3 > 0)
                 {
                     attn3 *= attn3;
@@ -868,10 +868,10 @@ namespace SharpMC.Util.Noise
                 }
 
                 //Contribution (1,1,0)
-                double dx4 = dx0 - 1 - 2 * SquishConstant_3D;
-                double dy4 = dy0 - 1 - 2 * SquishConstant_3D;
-                double dz4 = dz0 - 0 - 2 * SquishConstant_3D;
-                double attn4 = 2 - dx4 * dx4 - dy4 * dy4 - dz4 * dz4;
+                var dx4 = dx0 - 1 - 2 * SquishConstant_3D;
+                var dy4 = dy0 - 1 - 2 * SquishConstant_3D;
+                var dz4 = dz0 - 0 - 2 * SquishConstant_3D;
+                var attn4 = 2 - dx4 * dx4 - dy4 * dy4 - dz4 * dz4;
                 if (attn4 > 0)
                 {
                     attn4 *= attn4;
@@ -879,10 +879,10 @@ namespace SharpMC.Util.Noise
                 }
 
                 //Contribution (1,0,1)
-                double dx5 = dx4;
-                double dy5 = dy0 - 0 - 2 * SquishConstant_3D;
-                double dz5 = dz0 - 1 - 2 * SquishConstant_3D;
-                double attn5 = 2 - dx5 * dx5 - dy5 * dy5 - dz5 * dz5;
+                var dx5 = dx4;
+                var dy5 = dy0 - 0 - 2 * SquishConstant_3D;
+                var dz5 = dz0 - 1 - 2 * SquishConstant_3D;
+                var attn5 = 2 - dx5 * dx5 - dy5 * dy5 - dz5 * dz5;
                 if (attn5 > 0)
                 {
                     attn5 *= attn5;
@@ -890,10 +890,10 @@ namespace SharpMC.Util.Noise
                 }
 
                 //Contribution (0,1,1)
-                double dx6 = dx0 - 0 - 2 * SquishConstant_3D;
-                double dy6 = dy4;
-                double dz6 = dz5;
-                double attn6 = 2 - dx6 * dx6 - dy6 * dy6 - dz6 * dz6;
+                var dx6 = dx0 - 0 - 2 * SquishConstant_3D;
+                var dy6 = dy4;
+                var dz6 = dz5;
+                var attn6 = 2 - dx6 * dx6 - dy6 * dy6 - dz6 * dz6;
                 if (attn6 > 0)
                 {
                     attn6 *= attn6;
@@ -902,7 +902,7 @@ namespace SharpMC.Util.Noise
             }
 
             //First extra vertex
-            double attnExt0 = 2 - dxExt0 * dxExt0 - dyExt0 * dyExt0 - dzExt0 * dzExt0;
+            var attnExt0 = 2 - dxExt0 * dxExt0 - dyExt0 * dyExt0 - dzExt0 * dzExt0;
             if (attnExt0 > 0)
             {
                 attnExt0 *= attnExt0;
@@ -910,7 +910,7 @@ namespace SharpMC.Util.Noise
             }
 
             //Second extra vertex
-            double attnExt1 = 2 - dxExt1 * dxExt1 - dyExt1 * dyExt1 - dzExt1 * dzExt1;
+            var attnExt1 = 2 - dxExt1 * dxExt1 - dyExt1 * dyExt1 - dzExt1 * dzExt1;
             if (attnExt1 > 0)
             {
                 attnExt1 *= attnExt1;
@@ -921,7 +921,7 @@ namespace SharpMC.Util.Noise
 
         private double Extrapolate2D(int xs, int ys, double xd, double yd)
         {
-            int index = _perm[(_perm[xs & 0xFF] + ys) & 0xFF] & 0x0E;
+            var index = _perm[(_perm[xs & 0xFF] + ys) & 0xFF] & 0x0E;
             return Gradients2D[index] * xd + Gradients2D[index + 1] * yd;
         }
         private double Extrapolate3D(int xs, int ys, int zs, double xd, double yd, double zd)

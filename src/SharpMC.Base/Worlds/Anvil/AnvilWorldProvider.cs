@@ -107,9 +107,9 @@ namespace SharpMC.Core.Worlds.Anvil
 				var buffer = new byte[8192];
 				regionFile.Read(buffer, 0, buffer.Length);
 
-				var xi = (coordinates.X%width);
+				var xi = coordinates.X%width;
 				if (xi < 0) xi += 32;
-				var zi = (coordinates.Z%depth);
+				var zi = coordinates.Z%depth;
 				if (zi < 0) zi += 32;
 				var tableOffset = (xi + zi*width)*4;
 
@@ -257,9 +257,9 @@ namespace SharpMC.Core.Worlds.Anvil
 
 				regionFile.Read(buffer, 0, 8192);
 
-				var xi = (X%width);
+				var xi = X%width;
 				if (xi < 0) xi += 32;
-				var zi = (Z%depth);
+				var zi = Z%depth;
 				if (zi < 0) zi += 32;
 				var tableOffset = (xi + zi*width)*4;
 
@@ -347,13 +347,13 @@ namespace SharpMC.Core.Worlds.Anvil
 					foreach (var nbtTag in tileEntities)
 					{
 						var blockEntityTag = (NbtCompound)nbtTag;
-						string entityId = blockEntityTag["id"].StringValue;
-						int x = blockEntityTag["x"].IntValue;
-						int y = blockEntityTag["y"].IntValue - _waterOffsetY;
-						int z = blockEntityTag["z"].IntValue;
+						var entityId = blockEntityTag["id"].StringValue;
+						var x = blockEntityTag["x"].IntValue;
+						var y = blockEntityTag["y"].IntValue - _waterOffsetY;
+						var z = blockEntityTag["z"].IntValue;
 						blockEntityTag["y"] = new NbtInt("y", y);
 
-						TileEntity blockEntity = TileEntityFactory.GetBlockEntityById(entityId);
+						var blockEntity = TileEntityFactory.GetBlockEntityById(entityId);
 						if (blockEntity != null)
 						{
 							blockEntityTag.Name = string.Empty;

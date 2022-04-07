@@ -17,7 +17,7 @@ namespace SharpMC.Blocks
             var prevblock = world.GetBlock(Coordinates);
             if (prevblock.Id == Id && prevblock.Metadata == Metadata)
             {
-                DoubleSlab ds = new DoubleSlab(Metadata) { Coordinates = Coordinates };
+                var ds = new DoubleSlab(Metadata) { Coordinates = Coordinates };
                 world.SetBlock(ds);
             }
             else if (prevblock.Id == Id && prevblock.Metadata != Metadata)
@@ -30,9 +30,11 @@ namespace SharpMC.Blocks
             }
             else
             {
-                bool upper = ((mouseLocation.Y >= 8 && face != BlockFace.PositiveY) || face == BlockFace.NegativeY);
-                BitArray b = new BitArray(new byte[] { Metadata });
-                b[3] = upper;
+                var upper = mouseLocation.Y >= 8 && face != BlockFace.PositiveY || face == BlockFace.NegativeY;
+                var b = new BitArray(new[] { Metadata })
+                {
+                    [3] = upper
+                };
                 Metadata = ConvertToByte(b);
                 world.SetBlock(this);
             }

@@ -30,14 +30,14 @@
         {
             var n = ((int)x * 1619 + (int)y * 31337 * 1013 * Seed) & 0x7fffffff;
             n = (n << 13) ^ n;
-            return (1.0 - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);
+            return 1.0 - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0;
         }
 
         private double Noise3D(double x, double y, double z)
         {
             var n = ((int)x * 1619 + (int)y * 31337 + (int)z * 52591 * 1013 * Seed) & 0x7fffffff;
             n = (n << 13) ^ n;
-            return (1.0 - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0);
+            return 1.0 - ((n * (n * n * 15731 + 789221) + 1376312589) & 0x7fffffff) / 1073741824.0;
         }
 
         /*
@@ -46,11 +46,11 @@
 
         public override double Value2D(double x, double y)
         {
-            double total = 0.0;
-            double frequency = Frequency;
-            double amplitude = Amplitude;
+            var total = 0.0;
+            var frequency = Frequency;
+            var amplitude = Amplitude;
 
-            for (int I = 0; I < Octaves; I++)
+            for (var I = 0; I < Octaves; I++)
             {
                 total += Interpolated2D(x * frequency, y * frequency) * amplitude;
                 frequency *= Lacunarity;
@@ -61,11 +61,11 @@
 
         public override double Value3D(double x, double y, double z)
         {
-            double total = 0.0;
-            double frequency = Frequency;
-            double amplitude = Amplitude;
+            var total = 0.0;
+            var frequency = Frequency;
+            var amplitude = Amplitude;
 
-            for (int I = 0; I < Octaves; I++)
+            for (var I = 0; I < Octaves; I++)
             {
                 total += Interpolated3D(x * frequency, y * frequency, z * frequency) * amplitude;
                 frequency *= Lacunarity;
@@ -80,14 +80,14 @@
 
         private double Smooth2D(double x, double y)
         {
-            double x0 = x - 1;
-            double x1 = x + 1;
-            double y0 = y - 1;
-            double y1 = y + 1;
+            var x0 = x - 1;
+            var x1 = x + 1;
+            var y0 = y - 1;
+            var y1 = y + 1;
 
-            double corners = (Noise2D(x0, y0) + Noise2D(x1, y0) + Noise2D(x0, y1) + Noise2D(x1, y1)) / 16;
-            double sides = (Noise2D(x0, y) + Noise2D(x1, y) + Noise2D(x, y0) + Noise2D(x, y1)) / 8;
-            double center = Noise2D(x, y) / 4;
+            var corners = (Noise2D(x0, y0) + Noise2D(x1, y0) + Noise2D(x0, y1) + Noise2D(x1, y1)) / 16;
+            var sides = (Noise2D(x0, y) + Noise2D(x1, y) + Noise2D(x, y0) + Noise2D(x, y1)) / 8;
+            var center = Noise2D(x, y) / 4;
 
             return corners + sides + center;
         }
@@ -104,7 +104,7 @@
             corners += Noise3D(x - 1, y, z) + Noise3D(x - 1, y, z) + Noise3D(x, y + 1, z);
             corners += Noise3D(x, y - 1, z) + Noise3D(x, y, z + 1) + Noise3D(x, y, z - 1);
             corners /= 16;
-            double center = Noise3D(x, y, z) / 8;
+            var center = Noise3D(x, y, z) / 8;
             return corners + center;
         }
 
@@ -115,55 +115,55 @@
         public double Interpolated2D(double x, double y)
         {
             //Grid Cell Coordinates
-            int x0 = Floor(x);
-            int x1 = x0 + 1;
-            int y0 = Floor(y);
-            int y1 = y0 + 1;
+            var x0 = Floor(x);
+            var x1 = x0 + 1;
+            var y0 = Floor(y);
+            var y1 = y0 + 1;
 
             //Interpolation weights
-            double sx = x - x0;
-            double sy = y - y0;
+            var sx = x - x0;
+            var sy = y - y0;
 
             //Interpolate
-            double n0 = Smooth2D(x0, y0);
-            double n1 = Smooth2D(x1, y0);
-            double n2 = Smooth2D(x0, y1);
-            double n3 = Smooth2D(x1, y1);
-            double ix0 = Interpolate(n0, n1, sx, Interpolation);
-            double ix1 = Interpolate(n2, n3, sx, Interpolation);
+            var n0 = Smooth2D(x0, y0);
+            var n1 = Smooth2D(x1, y0);
+            var n2 = Smooth2D(x0, y1);
+            var n3 = Smooth2D(x1, y1);
+            var ix0 = Interpolate(n0, n1, sx, Interpolation);
+            var ix1 = Interpolate(n2, n3, sx, Interpolation);
             return Interpolate(ix0, ix1, sy, Interpolation);
         }
 
         public double Interpolated3D(double x, double y, double z)
         {
             //Grid Cell Coordinates
-            int x0 = Floor(x);
-            int x1 = x0 + 1;
-            int y0 = Floor(y);
-            int y1 = y0 + 1;
-            int z0 = Floor(z);
-            int z1 = z0 + 1;
+            var x0 = Floor(x);
+            var x1 = x0 + 1;
+            var y0 = Floor(y);
+            var y1 = y0 + 1;
+            var z0 = Floor(z);
+            var z1 = z0 + 1;
 
             //Interpolation weights
-            double sx = x - x0;
-            double sy = y - y0;
-            double sz = z - z0;
+            var sx = x - x0;
+            var sy = y - y0;
+            var sz = z - z0;
 
             //Interpolate
-            double n0 = Smooth3D(x0, y0, z0);
-            double n1 = Smooth3D(x1, y0, z0);
-            double n2 = Smooth3D(x0, y1, z0);
-            double n3 = Smooth3D(x1, y1, z0);
-            double n4 = Smooth3D(x0, y0, z1);
-            double n5 = Smooth3D(x1, y0, z1);
-            double n6 = Smooth3D(x0, y1, z1);
-            double n7 = Smooth3D(x1, y1, z1);
-            double ix0 = Interpolate(n0, n1, sx, Interpolation);
-            double ix1 = Interpolate(n2, n3, sx, Interpolation);
-            double ix2 = Interpolate(n4, n5, sx, Interpolation);
-            double ix3 = Interpolate(n6, n7, sx, Interpolation);
-            double iy0 = Interpolate(ix0, ix1, sy, Interpolation);
-            double iy1 = Interpolate(ix2, ix3, sy, Interpolation);
+            var n0 = Smooth3D(x0, y0, z0);
+            var n1 = Smooth3D(x1, y0, z0);
+            var n2 = Smooth3D(x0, y1, z0);
+            var n3 = Smooth3D(x1, y1, z0);
+            var n4 = Smooth3D(x0, y0, z1);
+            var n5 = Smooth3D(x1, y0, z1);
+            var n6 = Smooth3D(x0, y1, z1);
+            var n7 = Smooth3D(x1, y1, z1);
+            var ix0 = Interpolate(n0, n1, sx, Interpolation);
+            var ix1 = Interpolate(n2, n3, sx, Interpolation);
+            var ix2 = Interpolate(n4, n5, sx, Interpolation);
+            var ix3 = Interpolate(n6, n7, sx, Interpolation);
+            var iy0 = Interpolate(ix0, ix1, sy, Interpolation);
+            var iy1 = Interpolate(ix2, ix3, sy, Interpolation);
             return Interpolate(iy0, iy1, sz, Interpolation);
         }
     }

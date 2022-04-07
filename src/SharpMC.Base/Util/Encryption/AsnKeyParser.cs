@@ -14,10 +14,10 @@ namespace SharpMC.Util.Encryption
 
     internal AsnKeyParser(String pathname)
     {
-      using (BinaryReader reader = new BinaryReader(
+      using (var reader = new BinaryReader(
           new FileStream(pathname, FileMode.Open, FileAccess.Read)))
       {
-        FileInfo info = new FileInfo(pathname);
+        var info = new FileInfo(pathname);
 
         parser = new AsnParser(reader.ReadBytes((int)info.Length));
       }
@@ -26,7 +26,7 @@ namespace SharpMC.Util.Encryption
     internal static byte[] TrimLeadingZero(byte[] values)
     {
       byte[] r = null;
-      if ((0x00 == values[0]) && (values.Length > 1))
+      if (0x00 == values[0] && values.Length > 1)
       {
         r = new byte[values.Length - 1];
         Array.Copy(values, 1, r, 0, values.Length - 1);
@@ -45,7 +45,7 @@ namespace SharpMC.Util.Encryption
       if (first.Length != second.Length)
       { return false; }
 
-      for (int i = 0; i < first.Length; i++)
+      for (var i = 0; i < first.Length; i++)
       {
         if (first[i] != second[i])
         { return false; }
@@ -56,22 +56,22 @@ namespace SharpMC.Util.Encryption
 
     internal RSAParameters ParseRSAPublicKey()
     {
-      RSAParameters parameters = new RSAParameters();
+      var parameters = new RSAParameters();
 
       // Current value
       byte[] value = null;
 
       // Sanity Check
-      int length = 0;
+      var length = 0;
 
       // Checkpoint
-      int position = parser.CurrentPosition();
+      var position = parser.CurrentPosition();
 
       // Ignore Sequence - PublicKeyInfo
       length = parser.NextSequence();
       if (length != parser.RemainingBytes())
       {
-        StringBuilder sb = new StringBuilder("Incorrect Sequence RenderSize. ");
+        var sb = new StringBuilder("Incorrect Sequence RenderSize. ");
         sb.AppendFormat("Specified: {0}, Remaining: {1}",
           length.ToString(CultureInfo.InvariantCulture),
           parser.RemainingBytes().ToString(CultureInfo.InvariantCulture));
@@ -85,7 +85,7 @@ namespace SharpMC.Util.Encryption
       length = parser.NextSequence();
       if (length > parser.RemainingBytes())
       {
-        StringBuilder sb = new StringBuilder("Incorrect AlgorithmIdentifier RenderSize. ");
+        var sb = new StringBuilder("Incorrect AlgorithmIdentifier RenderSize. ");
         sb.AppendFormat("Specified: {0}, Remaining: {1}",
           length.ToString(CultureInfo.InvariantCulture),
           parser.RemainingBytes().ToString(CultureInfo.InvariantCulture));
@@ -119,10 +119,10 @@ namespace SharpMC.Util.Encryption
       length = parser.NextBitString();
       if (length > parser.RemainingBytes())
       {
-        StringBuilder sb = new StringBuilder("Incorrect PublicKey RenderSize. ");
+        var sb = new StringBuilder("Incorrect PublicKey RenderSize. ");
         sb.AppendFormat("Specified: {0}, Remaining: {1}",
           length.ToString(CultureInfo.InvariantCulture),
-          (parser.RemainingBytes()).ToString(CultureInfo.InvariantCulture));
+          parser.RemainingBytes().ToString(CultureInfo.InvariantCulture));
         throw new BerDecodeException(sb.ToString(), position);
       }
 
@@ -133,7 +133,7 @@ namespace SharpMC.Util.Encryption
       length = parser.NextSequence();
       if (length < parser.RemainingBytes())
       {
-        StringBuilder sb = new StringBuilder("Incorrect RSAPublicKey RenderSize. ");
+        var sb = new StringBuilder("Incorrect RSAPublicKey RenderSize. ");
         sb.AppendFormat("Specified: {0}, Remaining: {1}",
           length.ToString(CultureInfo.InvariantCulture),
           parser.RemainingBytes().ToString(CultureInfo.InvariantCulture));
@@ -150,22 +150,22 @@ namespace SharpMC.Util.Encryption
 
     internal RSAParameters ParseRSAPrivateKey()
     {
-      RSAParameters parameters = new RSAParameters();
+      var parameters = new RSAParameters();
 
       // Current value
       byte[] value = null;
 
       // Checkpoint
-      int position = parser.CurrentPosition();
+      var position = parser.CurrentPosition();
 
       // Sanity Check
-      int length = 0;
+      var length = 0;
 
       // Ignore Sequence - PrivateKeyInfo
       length = parser.NextSequence();
       if (length != parser.RemainingBytes())
       {
-        StringBuilder sb = new StringBuilder("Incorrect Sequence RenderSize. ");
+        var sb = new StringBuilder("Incorrect Sequence RenderSize. ");
         sb.AppendFormat("Specified: {0}, Remaining: {1}",
           length.ToString(CultureInfo.InvariantCulture), parser.RemainingBytes().ToString(CultureInfo.InvariantCulture));
         throw new BerDecodeException(sb.ToString(), position);
@@ -177,8 +177,8 @@ namespace SharpMC.Util.Encryption
       value = parser.NextInteger();
       if (0x00 != value[0])
       {
-        StringBuilder sb = new StringBuilder("Incorrect PrivateKeyInfo Version. ");
-        BigInteger v = new BigInteger(value);
+        var sb = new StringBuilder("Incorrect PrivateKeyInfo Version. ");
+        var v = new BigInteger(value);
         sb.AppendFormat("Expected: 0, Specified: {0}", v.ToString(10));
         throw new BerDecodeException(sb.ToString(), position);
       }
@@ -190,7 +190,7 @@ namespace SharpMC.Util.Encryption
       length = parser.NextSequence();
       if (length > parser.RemainingBytes())
       {
-        StringBuilder sb = new StringBuilder("Incorrect AlgorithmIdentifier RenderSize. ");
+        var sb = new StringBuilder("Incorrect AlgorithmIdentifier RenderSize. ");
         sb.AppendFormat("Specified: {0}, Remaining: {1}",
           length.ToString(CultureInfo.InvariantCulture),
           parser.RemainingBytes().ToString(CultureInfo.InvariantCulture));
@@ -225,7 +225,7 @@ namespace SharpMC.Util.Encryption
       length = parser.NextOctetString();
       if (length > parser.RemainingBytes())
       {
-        StringBuilder sb = new StringBuilder("Incorrect PrivateKey RenderSize. ");
+        var sb = new StringBuilder("Incorrect PrivateKey RenderSize. ");
         sb.AppendFormat("Specified: {0}, Remaining: {1}",
           length.ToString(CultureInfo.InvariantCulture),
           parser.RemainingBytes().ToString(CultureInfo.InvariantCulture));
@@ -239,7 +239,7 @@ namespace SharpMC.Util.Encryption
       length = parser.NextSequence();
       if (length < parser.RemainingBytes())
       {
-        StringBuilder sb = new StringBuilder("Incorrect RSAPrivateKey RenderSize. ");
+        var sb = new StringBuilder("Incorrect RSAPrivateKey RenderSize. ");
         sb.AppendFormat("Specified: {0}, Remaining: {1}",
           length.ToString(CultureInfo.InvariantCulture),
           parser.RemainingBytes().ToString(CultureInfo.InvariantCulture));
@@ -252,8 +252,8 @@ namespace SharpMC.Util.Encryption
       value = parser.NextInteger();
       if (0x00 != value[0])
       {
-        StringBuilder sb = new StringBuilder("Incorrect RSAPrivateKey Version. ");
-        BigInteger v = new BigInteger(value);
+        var sb = new StringBuilder("Incorrect RSAPrivateKey Version. ");
+        var v = new BigInteger(value);
         sb.AppendFormat("Expected: 0, Specified: {0}", v.ToString(10));
         throw new BerDecodeException(sb.ToString(), position);
       }
@@ -274,21 +274,21 @@ namespace SharpMC.Util.Encryption
 
     internal DSAParameters ParseDSAPublicKey()
     {
-      DSAParameters parameters = new DSAParameters();
+      var parameters = new DSAParameters();
 
       // Current value
       byte[] value = null;
 
       // Current RenderPosition
-      int position = parser.CurrentPosition();
+      var position = parser.CurrentPosition();
       // Sanity Checks
-      int length = 0;
+      var length = 0;
 
       // Ignore Sequence - PublicKeyInfo
       length = parser.NextSequence();
       if (length != parser.RemainingBytes())
       {
-        StringBuilder sb = new StringBuilder("Incorrect Sequence RenderSize. ");
+        var sb = new StringBuilder("Incorrect Sequence RenderSize. ");
         sb.AppendFormat("Specified: {0}, Remaining: {1}",
           length.ToString(CultureInfo.InvariantCulture), parser.RemainingBytes().ToString(CultureInfo.InvariantCulture));
         throw new BerDecodeException(sb.ToString(), position);
@@ -301,7 +301,7 @@ namespace SharpMC.Util.Encryption
       length = parser.NextSequence();
       if (length > parser.RemainingBytes())
       {
-        StringBuilder sb = new StringBuilder("Incorrect AlgorithmIdentifier RenderSize. ");
+        var sb = new StringBuilder("Incorrect AlgorithmIdentifier RenderSize. ");
         sb.AppendFormat("Specified: {0}, Remaining: {1}",
           length.ToString(CultureInfo.InvariantCulture), parser.RemainingBytes().ToString(CultureInfo.InvariantCulture));
         throw new BerDecodeException(sb.ToString(), position);
@@ -324,7 +324,7 @@ namespace SharpMC.Util.Encryption
       length = parser.NextSequence();
       if (length > parser.RemainingBytes())
       {
-        StringBuilder sb = new StringBuilder("Incorrect DSS-Params RenderSize. ");
+        var sb = new StringBuilder("Incorrect DSS-Params RenderSize. ");
         sb.AppendFormat("Specified: {0}, Remaining: {1}",
           length.ToString(CultureInfo.InvariantCulture), parser.RemainingBytes().ToString(CultureInfo.InvariantCulture));
         throw new BerDecodeException(sb.ToString(), position);
@@ -348,21 +348,21 @@ namespace SharpMC.Util.Encryption
 
     internal DSAParameters ParseDSAPrivateKey()
     {
-      DSAParameters parameters = new DSAParameters();
+      var parameters = new DSAParameters();
 
       // Current value
       byte[] value = null;
 
       // Current RenderPosition
-      int position = parser.CurrentPosition();
+      var position = parser.CurrentPosition();
       // Sanity Checks
-      int length = 0;
+      var length = 0;
 
       // Ignore Sequence - PrivateKeyInfo
       length = parser.NextSequence();
       if (length != parser.RemainingBytes())
       {
-        StringBuilder sb = new StringBuilder("Incorrect Sequence RenderSize. ");
+        var sb = new StringBuilder("Incorrect Sequence RenderSize. ");
         sb.AppendFormat("Specified: {0}, Remaining: {1}",
           length.ToString(CultureInfo.InvariantCulture), parser.RemainingBytes().ToString(CultureInfo.InvariantCulture));
         throw new BerDecodeException(sb.ToString(), position);
@@ -384,7 +384,7 @@ namespace SharpMC.Util.Encryption
       length = parser.NextSequence();
       if (length > parser.RemainingBytes())
       {
-        StringBuilder sb = new StringBuilder("Incorrect AlgorithmIdentifier RenderSize. ");
+        var sb = new StringBuilder("Incorrect AlgorithmIdentifier RenderSize. ");
         sb.AppendFormat("Specified: {0}, Remaining: {1}",
           length.ToString(CultureInfo.InvariantCulture), parser.RemainingBytes().ToString(CultureInfo.InvariantCulture));
         throw new BerDecodeException(sb.ToString(), position);
@@ -405,7 +405,7 @@ namespace SharpMC.Util.Encryption
       length = parser.NextSequence();
       if (length > parser.RemainingBytes())
       {
-        StringBuilder sb = new StringBuilder("Incorrect DSS-Params RenderSize. ");
+        var sb = new StringBuilder("Incorrect DSS-Params RenderSize. ");
         sb.AppendFormat("Specified: {0}, Remaining: {1}",
           length.ToString(CultureInfo.InvariantCulture), parser.RemainingBytes().ToString(CultureInfo.InvariantCulture));
         throw new BerDecodeException(sb.ToString(), position);
@@ -453,21 +453,21 @@ namespace SharpMC.Util.Encryption
 
     private int GetLength()
     {
-      int length = 0;
+      var length = 0;
 
       // Checkpoint
-      int position = CurrentPosition();
+      var position = CurrentPosition();
 
       try
       {
-        byte b = GetNextOctet();
+        var b = GetNextOctet();
 
         if (b == (b & 0x7f)) { return b; }
-        int i = b & 0x7f;
+        var i = b & 0x7f;
 
         if (i > 4)
         {
-          StringBuilder sb = new StringBuilder("Invalid Length Encoding. ");
+          var sb = new StringBuilder("Invalid Length Encoding. ");
           sb.AppendFormat("Length uses {0} octets",
             i.ToString(CultureInfo.InvariantCulture));
           throw new BerDecodeException(sb.ToString(), position);
@@ -489,16 +489,16 @@ namespace SharpMC.Util.Encryption
 
     internal byte[] Next()
     {
-      int position = CurrentPosition();
+      var position = CurrentPosition();
 
       try
       {
-        byte b = GetNextOctet();
+        var b = GetNextOctet();
 
-        int length = GetLength();
+        var length = GetLength();
         if (length > RemainingBytes())
         {
-          StringBuilder sb = new StringBuilder("Incorrect RenderSize. ");
+          var sb = new StringBuilder("Incorrect RenderSize. ");
           sb.AppendFormat("Specified: {0}, Remaining: {1}",
             length.ToString(CultureInfo.InvariantCulture),
             RemainingBytes().ToString(CultureInfo.InvariantCulture));
@@ -514,36 +514,36 @@ namespace SharpMC.Util.Encryption
 
     internal byte GetNextOctet()
     {
-      int position = CurrentPosition();
+      var position = CurrentPosition();
 
       if (0 == RemainingBytes())
       {
-        StringBuilder sb = new StringBuilder("Incorrect RenderSize. ");
+        var sb = new StringBuilder("Incorrect RenderSize. ");
         sb.AppendFormat("Specified: {0}, Remaining: {1}",
           1.ToString(CultureInfo.InvariantCulture),
           RemainingBytes().ToString(CultureInfo.InvariantCulture));
         throw new BerDecodeException(sb.ToString(), position);
       }
 
-      byte b = GetOctets(1)[0];
+      var b = GetOctets(1)[0];
 
       return b;
     }
 
     internal byte[] GetOctets(int octetCount)
     {
-      int position = CurrentPosition();
+      var position = CurrentPosition();
 
       if (octetCount > RemainingBytes())
       {
-        StringBuilder sb = new StringBuilder("Incorrect RenderSize. ");
+        var sb = new StringBuilder("Incorrect RenderSize. ");
         sb.AppendFormat("Specified: {0}, Remaining: {1}",
           octetCount.ToString(CultureInfo.InvariantCulture),
           RemainingBytes().ToString(CultureInfo.InvariantCulture));
         throw new BerDecodeException(sb.ToString(), position);
       }
 
-      byte[] values = new byte[octetCount];
+      var values = new byte[octetCount];
 
       try
       {
@@ -564,14 +564,14 @@ namespace SharpMC.Util.Encryption
 
     internal int NextNull()
     {
-      int position = CurrentPosition();
+      var position = CurrentPosition();
 
       try
       {
-        byte b = GetNextOctet();
+        var b = GetNextOctet();
         if (0x05 != b)
         {
-          StringBuilder sb = new StringBuilder("Expected Null. ");
+          var sb = new StringBuilder("Expected Null. ");
           sb.AppendFormat("Specified Identifier: {0}", b.ToString(CultureInfo.InvariantCulture));
           throw new BerDecodeException(sb.ToString(), position);
         }
@@ -580,7 +580,7 @@ namespace SharpMC.Util.Encryption
         b = GetNextOctet();
         if (0x00 != b)
         {
-          StringBuilder sb = new StringBuilder("Null has non-zero size. ");
+          var sb = new StringBuilder("Null has non-zero size. ");
           sb.AppendFormat("RenderSize: {0}", b.ToString(CultureInfo.InvariantCulture));
           throw new BerDecodeException(sb.ToString(), position);
         }
@@ -599,23 +599,23 @@ namespace SharpMC.Util.Encryption
 
     internal int NextSequence()
     {
-      int position = CurrentPosition();
+      var position = CurrentPosition();
 
       try
       {
-        byte b = GetNextOctet();
+        var b = GetNextOctet();
         if (0x30 != b)
         {
-          StringBuilder sb = new StringBuilder("Expected Sequence. ");
+          var sb = new StringBuilder("Expected Sequence. ");
           sb.AppendFormat("Specified Identifier: {0}",
             b.ToString(CultureInfo.InvariantCulture));
           throw new BerDecodeException(sb.ToString(), position);
         }
 
-        int length = GetLength();
+        var length = GetLength();
         if (length > RemainingBytes())
         {
-          StringBuilder sb = new StringBuilder("Incorrect Sequence RenderSize. ");
+          var sb = new StringBuilder("Incorrect Sequence RenderSize. ");
           sb.AppendFormat("Specified: {0}, Remaining: {1}",
             length.ToString(CultureInfo.InvariantCulture),
             RemainingBytes().ToString(CultureInfo.InvariantCulture));
@@ -636,22 +636,22 @@ namespace SharpMC.Util.Encryption
 
     internal int NextOctetString()
     {
-      int position = CurrentPosition();
+      var position = CurrentPosition();
 
       try
       {
-        byte b = GetNextOctet();
+        var b = GetNextOctet();
         if (0x04 != b)
         {
-          StringBuilder sb = new StringBuilder("Expected Octet String. ");
+          var sb = new StringBuilder("Expected Octet String. ");
           sb.AppendFormat("Specified Identifier: {0}", b.ToString(CultureInfo.InvariantCulture));
           throw new BerDecodeException(sb.ToString(), position);
         }
 
-        int length = GetLength();
+        var length = GetLength();
         if (length > RemainingBytes())
         {
-          StringBuilder sb = new StringBuilder("Incorrect Octet String RenderSize. ");
+          var sb = new StringBuilder("Incorrect Octet String RenderSize. ");
           sb.AppendFormat("Specified: {0}, Remaining: {1}",
             length.ToString(CultureInfo.InvariantCulture),
             RemainingBytes().ToString(CultureInfo.InvariantCulture));
@@ -672,19 +672,19 @@ namespace SharpMC.Util.Encryption
 
     internal int NextBitString()
     {
-      int position = CurrentPosition();
+      var position = CurrentPosition();
 
       try
       {
-        byte b = GetNextOctet();
+        var b = GetNextOctet();
         if (0x03 != b)
         {
-          StringBuilder sb = new StringBuilder("Expected Bit String. ");
+          var sb = new StringBuilder("Expected Bit String. ");
           sb.AppendFormat("Specified Identifier: {0}", b.ToString(CultureInfo.InvariantCulture));
           throw new BerDecodeException(sb.ToString(), position);
         }
 
-        int length = GetLength();
+        var length = GetLength();
 
         // We need to consume unused bits, which is the first
         //   octet of the remaing values
@@ -709,22 +709,22 @@ namespace SharpMC.Util.Encryption
 
     internal byte[] NextInteger()
     {
-      int position = CurrentPosition();
+      var position = CurrentPosition();
 
       try
       {
-        byte b = GetNextOctet();
+        var b = GetNextOctet();
         if (0x02 != b)
         {
-          StringBuilder sb = new StringBuilder("Expected Integer. ");
+          var sb = new StringBuilder("Expected Integer. ");
           sb.AppendFormat("Specified Identifier: {0}", b.ToString(CultureInfo.InvariantCulture));
           throw new BerDecodeException(sb.ToString(), position);
         }
 
-        int length = GetLength();
+        var length = GetLength();
         if (length > RemainingBytes())
         {
-          StringBuilder sb = new StringBuilder("Incorrect Integer RenderSize. ");
+          var sb = new StringBuilder("Incorrect Integer RenderSize. ");
           sb.AppendFormat("Specified: {0}, Remaining: {1}",
             length.ToString(CultureInfo.InvariantCulture),
             RemainingBytes().ToString(CultureInfo.InvariantCulture));
@@ -740,32 +740,32 @@ namespace SharpMC.Util.Encryption
 
     internal byte[] NextOID()
     {
-      int position = CurrentPosition();
+      var position = CurrentPosition();
 
       try
       {
-        byte b = GetNextOctet();
+        var b = GetNextOctet();
         if (0x06 != b)
         {
-          StringBuilder sb = new StringBuilder("Expected Object Identifier. ");
+          var sb = new StringBuilder("Expected Object Identifier. ");
           sb.AppendFormat("Specified Identifier: {0}",
             b.ToString(CultureInfo.InvariantCulture));
           throw new BerDecodeException(sb.ToString(), position);
         }
 
-        int length = GetLength();
+        var length = GetLength();
         if (length > RemainingBytes())
         {
-          StringBuilder sb = new StringBuilder("Incorrect Object Identifier RenderSize. ");
+          var sb = new StringBuilder("Incorrect Object Identifier RenderSize. ");
           sb.AppendFormat("Specified: {0}, Remaining: {1}",
             length.ToString(CultureInfo.InvariantCulture),
             RemainingBytes().ToString(CultureInfo.InvariantCulture));
           throw new BerDecodeException(sb.ToString(), position);
         }
 
-        byte[] values = new byte[length];
+        var values = new byte[length];
 
-        for (int i = 0; i < length; i++)
+        for (var i = 0; i < length; i++)
         {
           values[i] = octets[0];
           octets.RemoveAt(0);

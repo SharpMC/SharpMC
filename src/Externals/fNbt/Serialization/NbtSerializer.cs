@@ -82,7 +82,7 @@ namespace fNbt.Serialization
                     listType = NbtTagType.String;
                 var list = new NbtList(tagName, listType);
                 var innerSerializer = new NbtSerializer(elementType);
-                for (int i = 0; i < array.Length; i++)
+                for (var i = 0; i < array.Length; i++)
                     list.Add(innerSerializer.Serialize(array.GetValue(i)));
                 return list;
             }
@@ -108,7 +108,7 @@ namespace fNbt.Serialization
 
                     NbtTag tag = null;
 
-                    string name = property.Name;
+                    var name = property.Name;
                     nameAttributes = Attribute.GetCustomAttributes(property, typeof (TagNameAttribute));
                     var ignoreOnNullAttribute = Attribute.GetCustomAttribute(property, typeof(IgnoreOnNullAttribute));
                     if (nameAttributes.Length != 0)
@@ -195,7 +195,7 @@ namespace fNbt.Serialization
                     throw new NotSupportedException("The NBT list type '" + list.TagType + "' is not supported.");
                 var array = Array.CreateInstance(type, list.Count);
                 var innerSerializer = new NbtSerializer(type);
-                for (int i = 0; i < array.Length; i++)
+                for (var i = 0; i < array.Length; i++)
                     array.SetValue(innerSerializer.Deserialize(list[i]), i);
                 return array;
             }
@@ -209,7 +209,7 @@ namespace fNbt.Serialization
                 {
                     if (!property.CanWrite)
                         continue;
-                    string name = property.Name;
+                    var name = property.Name;
                     var nameAttributes = Attribute.GetCustomAttributes(property, typeof(TagNameAttribute));
 
                     if (nameAttributes.Length != 0)

@@ -59,9 +59,9 @@ namespace SharpMC.Core.Entity
 
 			Ttl--;
 
-			Entities.Entity entityCollided = CheckEntityCollide(KnownPosition.ToVector3(), Velocity);
+			var entityCollided = CheckEntityCollide(KnownPosition.ToVector3(), Velocity);
 
-			bool collided = false;
+			var collided = false;
 			if (entityCollided != null)
 			{
 				entityCollided.HealthManager.TakeHit(Shooter, 2, DamageCause.Projectile);
@@ -75,19 +75,19 @@ namespace SharpMC.Core.Entity
 					var velocity2 = Velocity;
                     velocity2 = velocity2.Mult(1.0d - Drag);
 					velocity2 -= new Vector3(0, (float) Gravity, 0);
-					double distance = velocity2.Distance();
+					var distance = velocity2.Distance();
 					velocity2 = velocity2.Normalize() / 2;
 
-					for (int i = 0; i < Math.Ceiling(distance) * 2; i++)
+					for (var i = 0; i < Math.Ceiling(distance) * 2; i++)
 					{
-						PlayerLocation nextPos = (PlayerLocation)KnownPosition.Clone();
+						var nextPos = (PlayerLocation)KnownPosition.Clone();
 						nextPos.X += (float)velocity2.X * i;
 						nextPos.Y += (float)velocity2.Y * i;
 						nextPos.Z += (float)velocity2.Z * i;
 
-						Vector3 coord = nextPos.ToVector3().Copy();
-						Block block = Level.GetBlock(coord);
-						collided = block.Id != 0 && (block.GetBoundingBox()).Contains(nextPos.ToVector3());
+						var coord = nextPos.ToVector3().Copy();
+						var block = Level.GetBlock(coord);
+						collided = block.Id != 0 && block.GetBoundingBox().Contains(nextPos.ToVector3());
 						if (collided)
 						{
 							var substBlock = new Block(57) { Coordinates = block.Coordinates };
@@ -114,7 +114,7 @@ namespace SharpMC.Core.Entity
 				Velocity = Velocity.Mult(1.0 - Drag);
 				Velocity -= new Vector3(0, (float) Gravity, 0);
 
-				var k = Math.Sqrt((Velocity.X * Velocity.X) + (Velocity.Z * Velocity.Z));
+				var k = Math.Sqrt(Velocity.X * Velocity.X + Velocity.Z * Velocity.Z);
 				KnownPosition.Yaw = (float)(Math.Atan2(Velocity.X, Velocity.Z) * 180f / Math.PI);
 				KnownPosition.Pitch = (float)(Math.Atan2(Velocity.Y, k) * 180f / Math.PI);
 			}
@@ -126,7 +126,7 @@ namespace SharpMC.Core.Entity
 		{
 			var players = Level.GetOnlinePlayers.OrderBy(player =>
                 position.DistanceTo(player.KnownPosition.ToVector3()));
-			Ray2 ray = new Ray2
+			var ray = new Ray2
 			{
 				x = position,
 				d = direction.Normalize()
@@ -140,7 +140,7 @@ namespace SharpMC.Core.Entity
 				{
 					if (ray.tNear < direction.Distance()) break;
 
-					Vector3 p = ray.x + ray.d.Mult(ray.tNear);
+					var p = ray.x + ray.d.Mult(ray.tNear);
 					KnownPosition = new PlayerLocation((float)p.X, (float)p.Y, (float)p.Z);
 					return entity;
 				}
@@ -156,7 +156,7 @@ namespace SharpMC.Core.Entity
 				{
 					if (ray.tNear < direction.Distance()) break;
 
-					Vector3 p = ray.x + ray.d.Mult(ray.tNear);
+					var p = ray.x + ray.d.Mult(ray.tNear);
 					KnownPosition = new PlayerLocation((float)p.X, (float)p.Y, (float)p.Z);
 					return entity;
 				}
@@ -182,7 +182,7 @@ namespace SharpMC.Core.Entity
 			double iy = ray.x.Y;
 			double iz = ray.x.Z;
 			double t, u, v;
-			bool hit = false;
+			var hit = false;
 
 			ray.tNear = Double.MaxValue;
 

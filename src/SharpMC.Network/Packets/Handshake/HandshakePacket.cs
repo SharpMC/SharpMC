@@ -19,7 +19,6 @@ namespace SharpMC.Network.Packets.Handshake
 
 		public override void Encode(MinecraftStream stream)
 		{
-			
-		}
+        }
 	}
 }

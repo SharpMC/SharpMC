@@ -326,8 +326,7 @@ namespace SharpMC.Blocks
 		{
 			var block = world.GetBlock(new Vector3(x, y, z));
 
-			return !IsSameMaterial(block) && (!(block is BlockFlowingLava) && !(block is BlockStationaryLava)) &&
-				   !BlocksFluid(block);
+			return !IsSameMaterial(block) && !(block is BlockFlowingLava) && !(block is BlockStationaryLava) && !BlocksFluid(block);
 		}
 
 		private bool BlocksFluid(Level world, int x, int y, int z)
@@ -390,7 +389,7 @@ namespace SharpMC.Blocks
 
 		private int TickRate()
 		{
-			return this is BlockFlowingWater ? 5 : (this is BlockFlowingLava ? 30 : 0);
+			return this is BlockFlowingWater ? 5 : this is BlockFlowingLava ? 30 : 0;
 		}
 
 		private void CheckForHarden(Level world, int x, int y, int z)

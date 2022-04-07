@@ -10,7 +10,7 @@ namespace SharpMC.Network
 
 		internal NetConnection CreateConnection(Direction direction, Socket socket, ConnectionConfirmed confirmedAction = null)
 		{
-			NetConnection connection = Create(direction, socket, confirmedAction);
+			var connection = Create(direction, socket, confirmedAction);
 
 			if (connection == null) return null;
 
@@ -20,7 +20,7 @@ namespace SharpMC.Network
 
 		protected virtual NetConnection Create(Direction direction, Socket socket, ConnectionConfirmed confirmedAction = null)
 		{
-			NetConnection conn = new NetConnection(direction, socket, confirmedAction);
+			var conn = new NetConnection(direction, socket, confirmedAction);
 			return conn;
 		}
 	}

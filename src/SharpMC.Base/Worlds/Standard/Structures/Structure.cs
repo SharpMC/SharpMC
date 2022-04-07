@@ -36,7 +36,7 @@ namespace SharpMC.Core.Worlds.Standard.Structures
 		protected void GenerateVanillaLeaves(ChunkColumn chunk, Vector3 location, int radius, Block block)
 		{
 			var radiusOffset = radius;
-			for (var yOffset = -radius; yOffset <= radius; yOffset = (yOffset + 1))
+			for (var yOffset = -radius; yOffset <= radius; yOffset = yOffset + 1)
 			{
 				var y = location.Y + yOffset;
 				if (y > 256)
@@ -49,11 +49,11 @@ namespace SharpMC.Core.Worlds.Standard.Structures
 
 		protected void GenerateVanillaCircle(ChunkColumn chunk, Vector3 location, int radius, Block block, double corner = 0)
 		{
-			for (var I = -radius; I <= radius; I = (I + 1))
+			for (var I = -radius; I <= radius; I = I + 1)
 			{
-				for (var j = -radius; j <= radius; j = (j + 1))
+				for (var j = -radius; j <= radius; j = j + 1)
 				{
-					var max = (int) Math.Sqrt((I*I) + (j*j));
+					var max = (int) Math.Sqrt(I*I + j*j);
 					if (max <= radius)
 					{
 						if (I.Equals(-radius) && j.Equals(-radius) || I.Equals(-radius) && j.Equals(radius) ||
@@ -86,11 +86,11 @@ namespace SharpMC.Core.Worlds.Standard.Structures
 
 		protected void GenerateCircle(ChunkColumn chunk, Vector3 location, int radius, Block block)
 		{
-			for (var I = -radius; I <= radius; I = (I + 1))
+			for (var I = -radius; I <= radius; I = I + 1)
 			{
-				for (var j = -radius; j <= radius; j = (j + 1))
+				for (var j = -radius; j <= radius; j = j + 1)
 				{
-					var max = (int) Math.Sqrt((I*I) + (j*j));
+					var max = (int) Math.Sqrt(I*I + j*j);
 					if (max <= radius)
 					{
 						var X = location.X + I;

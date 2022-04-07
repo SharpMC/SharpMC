@@ -11,6 +11,7 @@ namespace SharpMC.Network.Packets.Play
 
 		public int X;
 		public int Z;
+
 		public override void Decode(MinecraftStream stream)
 		{
 			

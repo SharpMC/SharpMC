@@ -8,6 +8,7 @@ namespace SharpMC.Network
         public NetServer Owner { get; }
         public Socket Socket { get; }
         public DateTime RequestTime { get; }
+
         public IncomingConnection(NetServer owner, Socket socket)
         {
             Owner = owner;

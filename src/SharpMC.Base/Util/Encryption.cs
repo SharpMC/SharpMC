@@ -14,7 +14,7 @@ namespace SharpMC.Util
 
 		public EncryptionHolder()
 		{
-			CspParameters csp = new CspParameters
+			var csp = new CspParameters
 			{
 				KeyContainerName = "SharpMC",
 				ProviderType = 1,
@@ -41,7 +41,7 @@ namespace SharpMC.Util
 			{
 				byte[] encryptedData;
 				//Create a new instance of RSACryptoServiceProvider.
-				using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
+				using (var rsa = new RSACryptoServiceProvider())
 				{
 
 					//Import the RSA Key information. This only needs
@@ -72,7 +72,7 @@ namespace SharpMC.Util
 			{
 				byte[] decryptedData;
 				//Create a new instance of RSACryptoServiceProvider.
-				using (RSACryptoServiceProvider rsa = new RSACryptoServiceProvider())
+				using (var rsa = new RSACryptoServiceProvider())
 				{
 					//Import the RSA Key information. This needs
 					//to include the private key information.

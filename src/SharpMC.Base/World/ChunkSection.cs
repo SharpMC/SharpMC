@@ -25,7 +25,7 @@ namespace SharpMC.World
 			BlockLight = new NibbleArray(TotalBlocks);
 
 			Types = new VariableValueArray(13, TotalBlocks);
-			for (int i = 0; i < TotalBlocks; i++)
+			for (var i = 0; i < TotalBlocks; i++)
 			{
 				Types[i] = 0;
 				SkyLight[i] = 0xff;
@@ -39,10 +39,10 @@ namespace SharpMC.World
 
 		public void ReCalculateAirBlocks()
 		{
-			int airCounter = 0;
-			for (int i = 0; i < TotalBlocks; i++)
+			var airCounter = 0;
+			for (var i = 0; i < TotalBlocks; i++)
 			{
-				if ((Types[i] >> 4) == 0) airCounter++;
+				if (Types[i] >> 4 == 0) airCounter++;
 			}
 			AirBlocks = airCounter;
 		}
@@ -71,8 +71,8 @@ namespace SharpMC.World
 			var index = GetIndex(x, y, z);
 			var data = Types[index];
 
-			int type = data >> 4;
-			int metadata = data & 15;
+			var type = data >> 4;
+			var metadata = data & 15;
 
 			if (type == 0 && id > 0)
 			{
@@ -83,30 +83,30 @@ namespace SharpMC.World
 				AirBlocks++;
 			}
 
-			Types[index] = (id << 4 | (metadata & 15));
+			Types[index] = id << 4 | (metadata & 15);
 		}
 
 		public void SetBlockData(int x, int y, int z, byte meta)
 		{
 			var index = GetIndex(x, y, z);
 			var data = Types[index];
-			int type = data >> 4;
+			var type = data >> 4;
 			//int metadata = data & 15;
 
-			Types[index] = (type << 4 | (meta & 15));
+			Types[index] = type << 4 | (meta & 15);
 		}
 
 
 
 		public void WriteTo(MinecraftStream stream, bool writeSkylight = true)
 		{
-			long[] types = Types.Backing;
+			var types = Types.Backing;
 
 			stream.WriteByte(13); //Bits Per Block
 			stream.WriteVarInt(0); //Palette Length
 			
 			stream.WriteVarInt(types.Length);
-			for (int i = 0; i < types.Length; i++)
+			for (var i = 0; i < types.Length; i++)
 			{
 				stream.WriteLong(types[i]);
 			}

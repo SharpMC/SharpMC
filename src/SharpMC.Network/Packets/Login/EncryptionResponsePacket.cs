@@ -14,9 +14,9 @@ namespace SharpMC.Network.Packets.Login
 
 		public override void Decode(MinecraftStream stream)
 		{
-			int sharedSecretLength = stream.ReadVarInt();
+			var sharedSecretLength = stream.ReadVarInt();
 			SharedSecret = stream.Read(sharedSecretLength);
-			int verifyTokenLength = stream.ReadVarInt();
+			var verifyTokenLength = stream.ReadVarInt();
 			VerifyToken = stream.Read(verifyTokenLength);
 		}
 

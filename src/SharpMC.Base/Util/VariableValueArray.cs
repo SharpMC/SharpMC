@@ -23,7 +23,7 @@ namespace SharpMC.Util
 			{
 				throw new ArgumentException($"bitsPerValue {bitsPerValue} must not be greater then 64");
 			}
-			Backing = new long[(int) Math.Ceiling((bitsPerValue*capacity)/64.0)];
+			Backing = new long[(int) Math.Ceiling(bitsPerValue*capacity/64.0)];
 			this.BitsPerValue = bitsPerValue;
 			_valueMask = (1L << bitsPerValue) - 1L;
 			this.Capacity = capacity;
@@ -36,11 +36,11 @@ namespace SharpMC.Util
 				CheckIndex(index);
 
 				index *= BitsPerValue;
-				int i0 = index >> 6;
-				int i1 = index & 0x3f;
+				var i0 = index >> 6;
+				var i1 = index & 0x3f;
 
-				long value = Backing[i0] >> i1;
-				int i2 = i1 + BitsPerValue;
+				var value = Backing[i0] >> i1;
+				var i2 = i1 + BitsPerValue;
 				// The value is divided over two long values
 				if (i2 > 64)
 				{
@@ -63,11 +63,11 @@ namespace SharpMC.Util
 				}
 
 				index *= BitsPerValue;
-				int i0 = index >> 6;
-				int i1 = index & 0x3f;
+				var i0 = index >> 6;
+				var i1 = index & 0x3f;
 
 				Backing[i0] = this.Backing[i0] & ~(this._valueMask << i1) | (value & _valueMask) << i1;
-				int i2 = i1 + BitsPerValue;
+				var i2 = i1 + BitsPerValue;
 				// The value is divided over two long values
 				if (i2 > 64)
 				{

@@ -12,7 +12,7 @@
 			_octaves = octaves;
 
 			_generators = new OpenSimplex[octaves];
-			for (int i = 0; i < _generators.Length; i++)
+			for (var i = 0; i < _generators.Length; i++)
 			{
 				_generators[i] = new OpenSimplex(seed);
 			}

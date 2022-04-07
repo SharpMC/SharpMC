@@ -16,7 +16,7 @@ namespace SharpMC.Util.Encryption
     {
       get
       {
-        StringBuilder sb = new StringBuilder(base.Message);
+        var sb = new StringBuilder(base.Message);
 
         sb.AppendFormat(" (RenderPosition {0}){1}",
           m_position, Environment.NewLine);

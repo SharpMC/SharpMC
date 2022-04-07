@@ -7,7 +7,7 @@ namespace SharpMC.Blocks
         internal DoubleSlab(byte metadata) : base(43)
         {
             Metadata = metadata;
-            Drops = new ItemStack[] { new ItemStack(44, 2, metadata) };
+            Drops = new[] { new ItemStack(44, 2, metadata) };
         }
     }
 }

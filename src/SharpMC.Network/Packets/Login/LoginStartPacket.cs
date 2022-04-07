@@ -5,6 +5,7 @@ namespace SharpMC.Network.Packets.Login
 	public class LoginStartPacket : Packet<LoginStartPacket>
 	{
 		public string Username;
+
 		public override void Decode(MinecraftStream stream)
 		{
 			Username = stream.ReadString();

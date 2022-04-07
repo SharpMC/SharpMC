@@ -13,14 +13,14 @@ namespace fNbt {
 
         public int Checksum {
             get {
-                return ( ( adler32B * 65536 ) + adler32A );
+                return adler32B * 65536 + adler32A;
             }
         }
 
 
         void UpdateChecksum( IList<byte> data, int offset, int length ) {
-            for( int counter = 0; counter < length; ++counter ) {
-                adler32A = ( adler32A + ( data[offset + counter] ) ) % ChecksumModulus;
+            for( var counter = 0; counter < length; ++counter ) {
+                adler32A = ( adler32A + data[offset + counter] ) % ChecksumModulus;
                 adler32B = ( adler32B + adler32A ) % ChecksumModulus;
             }
         }

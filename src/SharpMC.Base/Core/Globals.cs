@@ -167,9 +167,11 @@ namespace SharpMC.Core
         public static void StopServer(string stopMsg = "Shutting down server...")
         {
             ConsoleFunctions.WriteInfoLine("Shutting down...");
-			Disconnect d = new Disconnect(null);
-			d.Reason = new McChatMessage("§f" + stopMsg);
-			BroadcastPacket(d);
+			var d = new Disconnect(null)
+            {
+                Reason = new McChatMessage("§f" + stopMsg)
+            };
+            BroadcastPacket(d);
 	        ConsoleFunctions.WriteInfoLine("Saving all player data...");
 	        foreach (var player in LevelManager.GetAllPlayers())
 	        {

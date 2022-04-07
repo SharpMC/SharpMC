@@ -1,28 +1,4 @@
-﻿// Distributed under the MIT license
-// ===================================================
-// SharpMC uses the permissive MIT license.
-// 
-// Permission is hereby granted, free of charge, to any person obtaining a copy
-// of this software and associated documentation files (the “Software”), to deal
-// in the Software without restriction, including without limitation the rights
-// to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-// copies of the Software, and to permit persons to whom the Software is
-// furnished to do so, subject to the following conditions:
-// 
-// The above copyright notice and this permission notice shall be included in
-// all copies or substantial portions of the Software
-// 
-// THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-// IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-// FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-// AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-// LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-// OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
-// THE SOFTWARE.
-// 
-// ©Copyright Kenny van Vulpen - 2015
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Net;
@@ -299,7 +275,7 @@ namespace SharpMC.Core.Utils
 			while ((integer & -128) != 0)
 			{
 				_bffr.Add((byte) (integer & 127 | 128));
-				integer = (int) (((uint) integer) >> 7);
+				integer = (int) ((uint) integer >> 7);
 			}
 			_bffr.Add((byte) integer);
 		}
@@ -378,11 +354,11 @@ namespace SharpMC.Core.Utils
 
 		private byte[] GetVarIntBytes(int integer)
 		{
-			List<Byte> bytes = new List<byte>();
+			var bytes = new List<byte>();
 			while ((integer & -128) != 0)
 			{
 				bytes.Add((byte)(integer & 127 | 128));
-				integer = (int)(((uint)integer) >> 7);
+				integer = (int)((uint)integer >> 7);
 			}
 			bytes.Add((byte)integer);
 			return bytes.ToArray();
@@ -400,15 +376,15 @@ namespace SharpMC.Core.Utils
 
 				if (ServerSettings.UseCompression && _client.PacketMode == PacketMode.Play && _client.SetCompressionSend)
 				{
-					bool isOver = (allData.Length >= ServerSettings.CompressionThreshold);
-					int dataLength = isOver ? allData.Length : 0;
+					var isOver = allData.Length >= ServerSettings.CompressionThreshold;
+					var dataLength = isOver ? allData.Length : 0;
 
 					//Calculate length of 'Data Length'
-					byte[] dLength = GetVarIntBytes(dataLength);
+					var dLength = GetVarIntBytes(dataLength);
 
 					//Create all data
 					var compressedBytes = ZlibStream.CompressBuffer(allData);
-					int packetlength = compressedBytes.Length + dLength.Length;
+					var packetlength = compressedBytes.Length + dLength.Length;
 					var dataToSend = isOver ? compressedBytes : allData;
 
 					var compressed = new DataBuffer(_client);

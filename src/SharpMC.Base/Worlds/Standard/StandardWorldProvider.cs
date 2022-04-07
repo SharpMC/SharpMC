@@ -114,7 +114,7 @@ namespace SharpMC.Core.Worlds.Standard
 			ChunkColumn c;
 			if (ChunkCache.TryGetValue(chunkCoordinates.ToTuple(), out c)) return c;
 
-			if (File.Exists((_folder + "/" + chunkCoordinates.X + "." + chunkCoordinates.Y + ".cfile")))
+			if (File.Exists(_folder + "/" + chunkCoordinates.X + "." + chunkCoordinates.Y + ".cfile"))
 			{
 				var cd = LoadChunk((int) chunkCoordinates.X, (int) chunkCoordinates.Y);
 				lock (ChunkCache)
@@ -162,11 +162,11 @@ namespace SharpMC.Core.Worlds.Standard
 
 					var bottomHeight =
 						(int)
-							((bottom.Noise(ox, oz, BottomsFrequency, BottomsAmplitude)*BottomsMagnitude) + BottomOffset + cBiome.BaseHeight);
+							(bottom.Noise(ox, oz, BottomsFrequency, BottomsAmplitude)*BottomsMagnitude + BottomOffset + cBiome.BaseHeight);
 
 					var maxHeight =
 						(int)
-							((overhang.Noise(ox, oz, OverhangFrequency, OverhangAmplitude)*OverhangsMagnitude) + bottomHeight +
+							(overhang.Noise(ox, oz, OverhangFrequency, OverhangAmplitude)*OverhangsMagnitude + bottomHeight +
 							 OverhangOffset);
 					maxHeight = Math.Max(1, maxHeight);
 

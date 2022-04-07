@@ -95,15 +95,15 @@ namespace SharpMC.Network.Util
 			//Read(d, 0, d.Length);
 			//return d;
 
-			SpinWait s = new SpinWait();
-			int read = 0;
+			var s = new SpinWait();
+			var read = 0;
 
 			var buffer = new byte[length];
 			while (read < buffer.Length && !CancelationToken.IsCancellationRequested && s.Count < 25) //Give the network some time to catch up on sending data, but really 25 cycles should be enough.
 			{
-				int oldRead = read;
+				var oldRead = read;
 
-				int r = this.Read(buffer, read, length - read);
+				var r = this.Read(buffer, read, length - read);
 				if (r < 0) //No data read?
 				{
 					break;
@@ -152,20 +152,20 @@ namespace SharpMC.Network.Util
 
 		public int ReadVarInt()
 		{
-			int read = 0;
+			var read = 0;
 			return ReadVarInt(out read);
 		}
 
 		public int ReadVarInt(out int bytesRead)
 		{
-			int numRead = 0;
-			int result = 0;
+			var numRead = 0;
+			var result = 0;
 			byte read;
 			do
 			{
 				read = (byte)ReadByte();
-				int value = (read & 0x7f);
-				result |= (value << (7 * numRead));
+				var value = read & 0x7f;
+				result |= value << (7 * numRead);
 
 				numRead++;
 				if (numRead > 5)
@@ -179,14 +179,14 @@ namespace SharpMC.Network.Util
 
 		public long ReadVarLong()
 		{
-			int numRead = 0;
+			var numRead = 0;
 			long result = 0;
 			byte read;
 			do
 			{
 				read = (byte)ReadByte();
-				int value = (read & 0x7f);
-				result |= (value << (7 * numRead));
+				var value = read & 0x7f;
+				result |= value << (7 * numRead);
 
 				numRead++;
 				if (numRead > 10)
@@ -272,7 +272,7 @@ namespace SharpMC.Network.Util
 			var val = ReadLong();
 			var x = Convert.ToSingle(val >> 38);
 			var y = Convert.ToSingle(val & 0xFFF);
-			var z = Convert.ToSingle((val << 38 >> 38) >> 12);
+			var z = Convert.ToSingle(val << 38 >> 38 >> 12);
 
 			/*if (x >= (2^25))
 			{
@@ -372,7 +372,7 @@ namespace SharpMC.Network.Util
 			var x = Convert.ToInt64(position.X);
 			var y = Convert.ToInt64(position.Y);
 			var z = Convert.ToInt64(position.Z);
-			long toSend = ((x & 0x3FFFFFF) << 38) | ((z & 0x3FFFFFF) << 12) | (y & 0xFFF);
+			var toSend = ((x & 0x3FFFFFF) << 38) | ((z & 0x3FFFFFF) << 12) | (y & 0xFFF);
 			WriteLong(toSend);
 		}
 
@@ -383,10 +383,10 @@ namespace SharpMC.Network.Util
 
 		public int WriteVarInt(int value)
 		{
-			int write = 0;
+			var write = 0;
 			do
 			{
-				byte temp = (byte)(value & 127);
+				var temp = (byte)(value & 127);
 				value >>= 7;
 				if (value != 0)
 				{
@@ -400,10 +400,10 @@ namespace SharpMC.Network.Util
 
 		public int WriteVarLong(long value)
 		{
-			int write = 0;
+			var write = 0;
 			do
 			{
-				byte temp = (byte)(value & 127);
+				var temp = (byte)(value & 127);
 				value >>= 7;
 				if (value != 0)
 				{

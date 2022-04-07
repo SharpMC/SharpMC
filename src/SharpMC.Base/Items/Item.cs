@@ -154,7 +154,7 @@ namespace SharpMC.Items
 			{
 				throw new ArgumentException("bits");
 			}
-			byte[] bytes = new byte[1];
+			var bytes = new byte[1];
 			bits.CopyTo(bytes, 0);
 			return bytes[0];
 		}

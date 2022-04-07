@@ -26,7 +26,7 @@ namespace SharpMC.Core.Utils
 
 		public override bool Equals(object obj)
 		{
-			return (obj is Ray) && Equals((Ray) obj);
+			return obj is Ray && Equals((Ray) obj);
 		}
 
 

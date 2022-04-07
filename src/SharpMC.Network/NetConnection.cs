@@ -14,7 +14,6 @@ using SharpMC.Network.Util;
 
 namespace SharpMC.Network
 {
-    public delegate void ConnectionConfirmed(NetConnection conn);
     public class NetConnection
     {
         private static readonly ILogger Log = LogManager.GetLogger(typeof(NetConnection));
@@ -120,9 +119,9 @@ namespace SharpMC.Network
         {
             try
             {
-                using (NetworkStream ns = new NetworkStream(Socket))
+                using (var ns = new NetworkStream(Socket))
                 {
-                    using (MinecraftStream ms = new MinecraftStream(ns))
+                    using (var ms = new MinecraftStream(ns))
                     {
 	                    _readerStream = ms;
 
@@ -134,7 +133,7 @@ namespace SharpMC.Network
 
 							if (!CompressionEnabled)
 	                        {
-		                        int length = ms.ReadVarInt();
+		                        var length = ms.ReadVarInt();
 
 		                        int packetIdLength;
 		                        packetId = ms.ReadVarInt(out packetIdLength);
@@ -158,10 +157,10 @@ namespace SharpMC.Network
 	                        }
 	                        else
 							{
-								int packetLength = ms.ReadVarInt();
+								var packetLength = ms.ReadVarInt();
 
 								int br;
-								int dataLength = ms.ReadVarInt(out br);
+								var dataLength = ms.ReadVarInt(out br);
 
 								int readMore;
 								if (dataLength == 0)
@@ -171,13 +170,13 @@ namespace SharpMC.Network
 								}
 								else
 								{
-									byte[] data = ms.Read(packetLength - br);
+									var data = ms.Read(packetLength - br);
 									byte[] decompressed;
 									DecompressData(data, out decompressed);
 
-									using (MemoryStream b = new MemoryStream(decompressed))
+									using (var b = new MemoryStream(decompressed))
 									{
-										using (MinecraftStream a = new MinecraftStream(b))
+										using (var a = new MinecraftStream(b))
 										{
 											int l;
 											packetId = a.ReadVarInt(out l);
@@ -216,14 +215,14 @@ namespace SharpMC.Network
 
 	    protected virtual void HandlePacket(Packets.Packet packet)
 	    {
-			PacketReceivedEventArgs args = new PacketReceivedEventArgs(packet);
+			var args = new PacketReceivedEventArgs(packet);
 		    OnPacketReceived?.BeginInvoke(this, args, PacketReceivedCallback, args);
 	    }
 
         private void PacketReceivedCallback(IAsyncResult ar)
         {
             OnPacketReceived.EndInvoke(ar);
-            PacketReceivedEventArgs args = (PacketReceivedEventArgs)ar.AsyncState;
+            var args = (PacketReceivedEventArgs)ar.AsyncState;
             if (args.IsInvalid)
             {
                 Log.LogWarning("Packet reported as invalid!");
@@ -233,7 +232,7 @@ namespace SharpMC.Network
         private void SendDataInternal(byte[] buffer)
         {
 	        if (CancellationToken.IsCancellationRequested) return;
-            SendData sendData = new SendData(buffer);
+            var sendData = new SendData(buffer);
             Socket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, SendCallback, sendData);
         }
 
@@ -242,9 +241,9 @@ namespace SharpMC.Network
 	        try
 	        {
 		        SocketError result;
-		        int sent = Socket.EndSend(ar, out result);
+		        var sent = Socket.EndSend(ar, out result);
 
-		        SendData data = (SendData) ar.AsyncState;
+		        var data = (SendData) ar.AsyncState;
 
 		        if (result == SocketError.Success)
 		        {
@@ -266,9 +265,9 @@ namespace SharpMC.Network
 			if (packet.PacketId == -1) throw new Exception();
 
 		    byte[] encodedPacket;
-			using (MemoryStream ms = new MemoryStream())
+			using (var ms = new MemoryStream())
 		    {
-			    using (MinecraftStream mc = new MinecraftStream(ms))
+			    using (var mc = new MinecraftStream(ms))
 			    {
 					mc.WriteVarInt(packet.PacketId);
 					packet.Encode(mc);
@@ -319,16 +318,16 @@ namespace SharpMC.Network
 	    private MinecraftStream _sendStream;
 	    private void SendQueue()
 	    {
-		    using (NetworkStream ms = new NetworkStream(Socket))
+		    using (var ms = new NetworkStream(Socket))
 		    {
-			    using (MinecraftStream mc = new MinecraftStream(ms))
+			    using (var mc = new MinecraftStream(ms))
 			    {
 				    _sendStream = mc;
 				    while (!CancellationToken.IsCancellationRequested)
 				    {
 					    try
 					    {
-						    byte[] data = PacketWriteQueue.Take(CancellationToken.Token);
+						    var data = PacketWriteQueue.Take(CancellationToken.Token);
 							mc.WriteVarInt(data.Length);
 							mc.Write(data);
 						}
@@ -343,9 +342,9 @@ namespace SharpMC.Network
 
 	    public static void CompressData(byte[] inData, out byte[] outData)
 	    {
-		    using (MemoryStream outMemoryStream = new MemoryStream())
+		    using (var outMemoryStream = new MemoryStream())
 		    {
-			    using (ZlibStream outZStream = new ZlibStream(outMemoryStream, CompressionMode.Compress, CompressionLevel.Default, true))
+			    using (var outZStream = new ZlibStream(outMemoryStream, CompressionMode.Compress, CompressionLevel.Default, true))
 			    {
 				    outZStream.Write(inData, 0, inData.Length);
 			    }
@@ -355,9 +354,9 @@ namespace SharpMC.Network
 
 	    public static void DecompressData(byte[] inData, out byte[] outData)
 	    {
-		    using (MemoryStream outMemoryStream = new MemoryStream())
+		    using (var outMemoryStream = new MemoryStream())
 		    {
-			    using (ZlibStream outZStream = new ZlibStream(outMemoryStream, CompressionMode.Decompress, CompressionLevel.Default, true))
+			    using (var outZStream = new ZlibStream(outMemoryStream, CompressionMode.Decompress, CompressionLevel.Default, true))
 			    {
 				    outZStream.Write(inData, 0, inData.Length);
 			    }
@@ -367,7 +366,7 @@ namespace SharpMC.Network
 
 		public static void CopyStream(System.IO.Stream input, System.IO.Stream output)
 		{
-			byte[] buffer = new byte[2000];
+			var buffer = new byte[2000];
 			int len;
 			while ((len = input.Read(buffer, 0, 2000)) > 0)
 			{
@@ -378,38 +377,12 @@ namespace SharpMC.Network
 
 		private bool SocketConnected(Socket s)
         {
-            bool part1 = s.Poll(1000, SelectMode.SelectRead);
-            bool part2 = (s.Available == 0);
+            var part1 = s.Poll(1000, SelectMode.SelectRead);
+            var part2 = s.Available == 0;
             if (part1 && part2)
                 return false;
             else
                 return true;
-        }
-    }
-
-    internal struct ReceivedData
-    {
-        public byte[] OldBuffer;
-        public byte[] Buffer;
-        public DateTime Time;
-
-        public ReceivedData(byte[] buffer, byte[] oldBuffer)
-        {
-            Buffer = buffer;
-            OldBuffer = oldBuffer;
-            Time = DateTime.UtcNow;
-        }
-    }
-
-    internal struct SendData
-    {
-        public byte[] Buffer;
-        public DateTime Time;
-
-        public SendData(byte[] buffer)
-        {
-            Buffer = buffer;
-            Time = DateTime.UtcNow;
         }
     }
 }

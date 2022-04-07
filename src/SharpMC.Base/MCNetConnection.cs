@@ -74,7 +74,7 @@ namespace SharpMC
 		{
 			if (packet is HandshakePacket)
 			{
-				HandshakePacket handshake = (HandshakePacket)packet;
+				var handshake = (HandshakePacket)packet;
 				ConnectionState = handshake.NextState;
 			}
 		}
@@ -83,8 +83,8 @@ namespace SharpMC
 		{
 			if (packet is RequestPacket)
 			{
-				SendPacket(new ResponsePacket()
-				{
+				SendPacket(new ResponsePacket
+                {
 					ResponseMsg = Server.Info.GetMotd()
 				});
 			}
@@ -110,8 +110,8 @@ namespace SharpMC
 
 		private void HandleEncryptionResponse(EncryptionResponsePacket packet)
 		{
-			byte[] decrypted = Server.RsaEncryption.Decrypt(packet.VerifyToken);
-			for (int i = 0; i < _encryptionVerification.Length; i++)
+			var decrypted = Server.RsaEncryption.Decrypt(packet.VerifyToken);
+			for (var i = 0; i < _encryptionVerification.Length; i++)
 			{
 				if (!decrypted[i].Equals(_encryptionVerification[i]))
 				{
@@ -120,7 +120,7 @@ namespace SharpMC
 				}
 			}
 
-			byte[] decryptedSharedSecret = Server.RsaEncryption.Decrypt(packet.SharedSecret);
+			var decryptedSharedSecret = Server.RsaEncryption.Decrypt(packet.SharedSecret);
 			Array.Resize(ref decryptedSharedSecret, 16);
 
 			InitEncryption(decryptedSharedSecret);
@@ -141,11 +141,11 @@ namespace SharpMC
 			if (Server.RsaEncryption != null) //We use encryption
 			{
 				_encryptionVerification = new byte[4];
-				Random r = new Random(Environment.TickCount);
+				var r = new Random(Environment.TickCount);
 				r.NextBytes(_encryptionVerification);
 
-				SendPacket(new EncryptionRequestPacket()
-				{
+				SendPacket(new EncryptionRequestPacket
+                {
 					ServerId = "",
 					PublicKey = Server.RsaEncryption.PublicKey,
 					VerifyToken = _encryptionVerification
@@ -159,15 +159,15 @@ namespace SharpMC
 
 		private void ChangeToPlay()
 		{
-			SendPacket(new SetCompressionPacket()
-			{
+			SendPacket(new SetCompressionPacket
+            {
 				Threshold = CompressionThreshold
 			});
 		
 			CompressionEnabled = true;
 
-			SendPacket(new LoginSuccessPacket()
-			{
+			SendPacket(new LoginSuccessPacket
+            {
 				Username = Player.Username,
 				UUID = Player.UUID.ToString()
 			});
@@ -179,9 +179,9 @@ namespace SharpMC
 		private bool AuthMojang()
 		{
 			string serverHash;
-			using (MemoryStream ms = new MemoryStream())
+			using (var ms = new MemoryStream())
 			{
-				byte[] ascii = Encoding.ASCII.GetBytes("");
+				var ascii = Encoding.ASCII.GetBytes("");
 				ms.Write(ascii,	0, ascii.Length);
 				ms.Write(SharedSecret, 0, 16);
 				ms.Write(Server.RsaEncryption.PublicKey, 0, Server.RsaEncryption.PublicKey.Length);
@@ -189,12 +189,12 @@ namespace SharpMC
 				serverHash = JavaHexDigest(ms.ToArray());
 			}
 
-			using (WebClient wc = new WebClient())
+			using (var wc = new WebClient())
 			{
-				string r = wc.DownloadString(string.Format("https://sessionserver.mojang.com/session/minecraft/hasJoined?username={0}&serverId={1}", Player.Username, serverHash));
+				var r = wc.DownloadString(string.Format("https://sessionserver.mojang.com/session/minecraft/hasJoined?username={0}&serverId={1}", Player.Username, serverHash));
 				if (r.Length <= 10) return false;
 
-				AuthResponse auth = JsonConvert.DeserializeObject<AuthResponse>(r);
+				var auth = JsonConvert.DeserializeObject<AuthResponse>(r);
 				Player.Username = auth.Name;
 				Player.DisplayName = auth.Name;
 				Player.UUID = new Guid(auth.ID);
@@ -230,12 +230,12 @@ namespace SharpMC
 		private static string JavaHexDigest(byte[] input)
 		{
 			var sha1 = SHA1.Create();
-			byte[] hash = sha1.ComputeHash(input);
-			bool negative = (hash[0] & 0x80) == 0x80;
+			var hash = sha1.ComputeHash(input);
+			var negative = (hash[0] & 0x80) == 0x80;
 			if (negative) // check for negative hashes
 				hash = TwosCompliment(hash);
 			// Create the string and trim away the zeroes
-			string digest = GetHexString(hash).TrimStart('0');
+			var digest = GetHexString(hash).TrimStart('0');
 			if (negative)
 				digest = "-" + digest;
 			return digest;
@@ -243,8 +243,8 @@ namespace SharpMC
 
 		private static string GetHexString(byte[] p)
 		{
-			string result = string.Empty;
-			for (int i = 0; i < p.Length; i++)
+			var result = string.Empty;
+			for (var i = 0; i < p.Length; i++)
 				result += p[i].ToString("x2"); // Converts to hex string
 			return result;
 		}
@@ -252,7 +252,7 @@ namespace SharpMC
 		private static byte[] TwosCompliment(byte[] p) // little endian
 		{
 			int i;
-			bool carry = true;
+			var carry = true;
 			for (i = p.Length - 1; i >= 0; i--)
 			{
 				p[i] = (byte)~p[i];
@@ -297,8 +297,8 @@ namespace SharpMC
 
 		private void HandleChatMessage(ChatMessagePacket packet)
 		{
-			Player.Level.RelayBroadcast(new ChatMessagePacket()
-			{
+			Player.Level.RelayBroadcast(new ChatMessagePacket
+            {
 				Message = ChatHelper.EncodeChatMessage($"<{Player.Username}> {packet.Message}")
 			});
 		}
@@ -344,7 +344,7 @@ namespace SharpMC
 		{
 			KeepAliveReady = false;
 			_lastKeepAlive = Rnd.Next();
-			SendPacket(new KeepAlivePacket() {KeepAliveid = _lastKeepAlive});
+			SendPacket(new KeepAlivePacket {KeepAliveid = _lastKeepAlive});
 		}
 	}
 }

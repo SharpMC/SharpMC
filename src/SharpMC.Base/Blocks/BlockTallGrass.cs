@@ -9,7 +9,7 @@ namespace SharpMC.Blocks
         {
             Metadata = 1;
             IsSolid = false;
-            Drops = new ItemStack[] { new ItemWheatSeeds().GetItemStack() };
+            Drops = new[] { new ItemWheatSeeds().GetItemStack() };
         }
     }
 }

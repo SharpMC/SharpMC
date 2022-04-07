@@ -15,6 +15,7 @@ namespace SharpMC.Network.Packets.Play
 
 		public string Message;
 		public byte Position = Chat;
+
 		public override void Decode(MinecraftStream stream)
 		{
 			Message = stream.ReadString();

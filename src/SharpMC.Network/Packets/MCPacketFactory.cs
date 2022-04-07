@@ -62,7 +62,7 @@ namespace SharpMC.Network.Packets
 
 		public static TPacket CreatePacket<TPacket>(ConnectionState state) where TPacket : Packet
 		{
-			Type type = typeof (TPacket);
+			var type = typeof (TPacket);
 			switch (state)
 			{
 				case ConnectionState.Handshake:
@@ -133,8 +133,8 @@ namespace SharpMC.Network.Packets
 
 		private static void RegisterPlay()
 		{
-			Register(ConnectionState.Play, 0x0B, () => new KeepAlivePacket()
-			{
+			Register(ConnectionState.Play, 0x0B, () => new KeepAlivePacket
+            {
 				PacketId = 0x0B
 			});
 			Register(ConnectionState.Play, 0x0c, () => new PlayerPosition());
