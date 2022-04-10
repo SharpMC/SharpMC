@@ -108,9 +108,9 @@ namespace SharpMC.Network
 			}
 		}
 
-        private void ConfirmedAction(NetConnection conn)
+        private void ConfirmedAction(object _, ConnectionConfirmedArgs a)
         {
-            OnConnectionAccepted?.Invoke(this, new ConnectionAcceptedArgs(conn));
+            OnConnectionAccepted?.Invoke(this, new ConnectionAcceptedArgs(a.Connection));
         }
     }
 }

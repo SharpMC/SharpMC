@@ -19,17 +19,18 @@ namespace SharpMC.Network
         private static readonly ILogger Log = LogManager.GetLogger(typeof(NetConnection));
         
         private CancellationTokenSource CancellationToken { get; }
-        private ConnectionConfirmed ConnectionConfirmed { get; }
+        private EventHandler<ConnectionConfirmedArgs> ConnectionConfirmed { get; }
         private Direction Direction { get; }
         private Socket Socket { get; }
 
-        public NetConnection(Direction direction, Socket socket, ConnectionConfirmed confirmdAction = null)
+        public NetConnection(Direction direction, Socket socket,
+			EventHandler<ConnectionConfirmedArgs> confirmedAction = null)
         {
             Direction = direction;
             Socket = socket;
             RemoteEndPoint = Socket.RemoteEndPoint;
 
-            ConnectionConfirmed = confirmdAction;
+            ConnectionConfirmed = confirmedAction;
 
             CancellationToken = new CancellationTokenSource();
 
