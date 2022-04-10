@@ -13,7 +13,7 @@ namespace SharpMC.Network
     {
         private static readonly ILogger Log = LogManager.GetLogger(typeof(NetServer));
         
-		public NetConnectionFactory NetConnectionFactory { get; set; }
+		public NetConnectionFactory NetConnectionFactory { get; }
 
 		private CancellationTokenSource CancellationToken { get; set; }
         private ConcurrentDictionary<EndPoint, NetConnection> Connections { get; set; }
@@ -21,9 +21,10 @@ namespace SharpMC.Network
 		internal NetConfiguration Configuration { get; }
         private Socket ListenerSocket { get; set; }
         
-        public NetServer(NetConfiguration configuration)
+        public NetServer(NetConfiguration configuration, NetConnectionFactory factory)
         {
             Configuration = configuration;
+            NetConnectionFactory = factory;
             SetDefaults();
             Configure();
         }
@@ -33,9 +34,7 @@ namespace SharpMC.Network
         private void SetDefaults()
         {
             CancellationToken = new CancellationTokenSource();
-
             Connections = new ConcurrentDictionary<EndPoint, NetConnection>();
-			NetConnectionFactory = new NetConnectionFactory();
         }
 
         private void Configure()

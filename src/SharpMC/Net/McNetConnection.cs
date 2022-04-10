@@ -10,7 +10,7 @@ using SharpMC.Logging;
 using SharpMC.Network;
 using SharpMC.Network.Events;
 using SharpMC.Network.Packets;
-using SharpMC.Network.Packets.Handshaking.ToServer;
+using SharpMC.Network.Packets.Handshake.ToServer;
 using SharpMC.Network.Packets.Login.ToClient;
 using SharpMC.Network.Packets.Login.ToServer;
 using SharpMC.Network.Packets.Play.ToBoth;

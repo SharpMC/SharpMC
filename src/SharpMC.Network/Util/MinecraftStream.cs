@@ -377,7 +377,12 @@ namespace SharpMC.Network.Util
             throw new NotImplementedException();
         }
 
-		public int WriteVarInt(int value)
+        void IMinecraftWriter.WriteVarInt(int value)
+        {
+            WriteVarInt(value);
+        }
+
+        public int WriteVarInt(int value)
 		{
             var write = 0;
             do

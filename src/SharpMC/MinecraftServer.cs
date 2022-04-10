@@ -58,7 +58,7 @@ namespace SharpMC
             LoadPlugins();
 
             Log.LogInformation("Loading packets...");
-            McPacketFactory.Load();
+            MCPacketFactory.Load();
 
             Server = new NetServer(netConfig, new McConnectionFactory(this));
             PlayerFactory = new DefaultPlayerFactory(this);
