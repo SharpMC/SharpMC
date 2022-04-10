@@ -1,6 +1,5 @@
 ﻿using System;
 using System.IO;
-using NJsonSchema.CodeGeneration.CSharp;
 using SharpMC.Generator.Pakkit;
 using SharpMC.Generator.Prismarine;
 

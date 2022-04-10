@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using Microsoft.Extensions.Logging;
-using SharpMC.Log;
 using SharpMC.Network.Events;
 
 namespace SharpMC.Network

@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ionic.Zlib;
 using Microsoft.Extensions.Logging;
-using SharpMC.Log;
 using SharpMC.Network.Events;
 using SharpMC.Network.Packets;
 using SharpMC.Network.Util;

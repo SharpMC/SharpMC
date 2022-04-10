@@ -1,8 +1,5 @@
 ﻿using System;
 using Microsoft.Extensions.Logging;
-using SharpCore;
-using SharpMC.Log;
-using TestPlugin;
 using L = Microsoft.Extensions.Logging.LoggerFactory;
 
 namespace SharpMC
