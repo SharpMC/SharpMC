@@ -110,7 +110,7 @@ namespace SharpMC.Network
 
         private void ConfirmedAction(NetConnection conn)
         {
-            OnConnectionAccepted?.Invoke(this, new ConnectionAcceptedEventArgs(conn));
+            OnConnectionAccepted?.Invoke(this, new ConnectionAcceptedArgs(conn));
         }
     }
 }

@@ -101,7 +101,7 @@ namespace SharpMC.Network
             Socket.Shutdown(SocketShutdown.Both);
             Socket.Close();
 
-            OnConnectionClosed?.Invoke(this, new ConnectionClosedEventArgs(this, notified));
+            OnConnectionClosed?.Invoke(this, new ConnectionClosedArgs(this, notified));
 
 	        IsConnected = false;
         }
@@ -215,14 +215,14 @@ namespace SharpMC.Network
 
 	    protected virtual void HandlePacket(Packets.Packet packet)
 	    {
-			var args = new PacketReceivedEventArgs(packet);
+			var args = new PacketReceivedArgs(packet);
 		    OnPacketReceived?.BeginInvoke(this, args, PacketReceivedCallback, args);
 	    }
 
         private void PacketReceivedCallback(IAsyncResult ar)
         {
             OnPacketReceived.EndInvoke(ar);
-            var args = (PacketReceivedEventArgs)ar.AsyncState;
+            var args = (PacketReceivedArgs)ar.AsyncState;
             if (args.IsInvalid)
             {
                 Log.LogWarning("Packet reported as invalid!");
