@@ -1,4 +1,0 @@
-﻿This will be the wrapper for SharpMC.Core.
-It will give you acces the Official API Functions.
-This way when making a plugin it should stay compatible over time as the API functions
-in here shouldn't change. 
