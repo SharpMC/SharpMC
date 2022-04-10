@@ -29,14 +29,10 @@ namespace SharpMC.Network
             Direction = direction;
             Socket = socket;
             RemoteEndPoint = Socket.RemoteEndPoint;
-
             ConnectionConfirmed = confirmedAction;
-
             CancellationToken = new CancellationTokenSource();
-
 			ConnectionState = ConnectionState.Handshake;
 	        IsConnected = true;
-
 			PacketWriteQueue = new BlockingCollection<byte[]>();
         }
 
@@ -57,7 +53,8 @@ namespace SharpMC.Network
 
 		private Task NetworkProcessing { get; set; }
 		private Task NetworkWriting { get; set; }
-        internal void Initialize()
+		
+        public void Initialize()
         {
 	        Socket.Blocking = true;
 
@@ -70,12 +67,11 @@ namespace SharpMC.Network
 
         public void Stop()
         {
-            if (CancellationToken.IsCancellationRequested) return;
+            if (CancellationToken.IsCancellationRequested)
+            	return;
             CancellationToken.Cancel();
-
             if (SocketConnected(Socket))
             {
-                //TODO
                 Disconnected(true);
             }
             else
@@ -90,20 +86,17 @@ namespace SharpMC.Network
         {
             lock (_disconnectSync)
             {
-                if ((bool) _disconnectSync) return;
+                if ((bool) _disconnectSync) 
+                	return;
                 _disconnectSync = true;
             }
-
             if (!CancellationToken.IsCancellationRequested)
             {
                 CancellationToken.Cancel();
             }
-
             Socket.Shutdown(SocketShutdown.Both);
             Socket.Close();
-
             OnConnectionClosed?.Invoke(this, new ConnectionClosedArgs(this, notified));
-
 	        IsConnected = false;
         }
 
@@ -116,6 +109,8 @@ namespace SharpMC.Network
 	    }
 
 	    private MinecraftStream _readerStream;
+	    private MinecraftStream _sendStream;
+	    
 		private void ProcessNetwork()
         {
             try
@@ -125,30 +120,17 @@ namespace SharpMC.Network
                     using (var ms = new MinecraftStream(ns))
                     {
 	                    _readerStream = ms;
-
                         while (!CancellationToken.IsCancellationRequested)
                         {
-	                        Packets.Packet packet = null;
+	                        Packet packet;
 	                        int packetId;
 							byte[] packetData;
-
 							if (!CompressionEnabled)
 	                        {
 		                        var length = ms.ReadVarInt();
-
-		                        int packetIdLength;
-		                        packetId = ms.ReadVarInt(out packetIdLength);
-
+		                        packetId = ms.ReadVarInt(out var packetIdLength);
 		                        if (length - packetIdLength > 0)
 		                        {
-			                        /*packetData = new byte[length - packetIdLength];
-			                        int read = 0;
-			                        while (read < packetData.Length)
-			                        {
-				                        read += ms.Read(packetData, read, packetData.Length - read);
-
-				                        if (CancellationToken.IsCancellationRequested) throw new OperationCanceledException();
-			                        }*/
 			                        packetData = ms.Read(length - packetIdLength);
 		                        }
 		                        else
@@ -159,38 +141,30 @@ namespace SharpMC.Network
 	                        else
 							{
 								var packetLength = ms.ReadVarInt();
-
-								int br;
-								var dataLength = ms.ReadVarInt(out br);
-
-								int readMore;
+								var dataLength = ms.ReadVarInt(out var br);
 								if (dataLength == 0)
 								{
-									packetId = ms.ReadVarInt(out readMore);
+									packetId = ms.ReadVarInt(out var readMore);
 									packetData = ms.Read(packetLength - (br + readMore));
 								}
 								else
 								{
 									var data = ms.Read(packetLength - br);
-									byte[] decompressed;
-									DecompressData(data, out decompressed);
-
+									DecompressData(data, out var decompressed);
 									using (var b = new MemoryStream(decompressed))
 									{
 										using (var a = new MinecraftStream(b))
 										{
-											int l;
-											packetId = a.ReadVarInt(out l);
+											packetId = a.ReadVarInt(out var l);
 											packetData = a.Read(dataLength - l);
 										}
 									}
 								}
 							}
-
 							packet = MCPacketFactory.GetPacket(ConnectionState, packetId);
 							if (packet == null)
 							{
-								Log.LogWarning($"Unhandled package! 0x{packetId.ToString("x2")}");
+								Log.LogWarning($"Unhandled package! 0x{packetId:x2}");
 								continue;
 							}
 							packet.Decode(new MinecraftStream(new MemoryStream(packetData)));
@@ -199,14 +173,16 @@ namespace SharpMC.Network
                     }
                 }
             }
-            catch(Exception ex)
+            catch (Exception ex)
             {
-	            Log.LogWarning("OH NO", ex);
-                if (ex is OperationCanceledException) return;
-                if (ex is EndOfStreamException) return;
-                if (ex is IOException) return;
-
-                Log.LogError("An unhandled exception occurred while processing network!", ex);
+	            Log.LogWarning(ex, "OH NO");
+                if (ex is OperationCanceledException) 
+                	return;
+                if (ex is EndOfStreamException) 
+                	return;
+                if (ex is IOException) 
+                	return;
+                Log.LogError(ex, "An unhandled exception occurred while processing network!"); 
             }
             finally
             {
@@ -214,7 +190,7 @@ namespace SharpMC.Network
             }
         }
 
-	    protected virtual void HandlePacket(Packets.Packet packet)
+	    protected virtual void HandlePacket(Packet packet)
 	    {
 			var args = new PacketReceivedArgs(packet);
 		    OnPacketReceived?.BeginInvoke(this, args, PacketReceivedCallback, args);
@@ -223,7 +199,7 @@ namespace SharpMC.Network
         private void PacketReceivedCallback(IAsyncResult ar)
         {
             OnPacketReceived.EndInvoke(ar);
-            var args = (PacketReceivedArgs)ar.AsyncState;
+            var args = (PacketReceivedArgs) ar.AsyncState;
             if (args.IsInvalid)
             {
                 Log.LogWarning("Packet reported as invalid!");
@@ -232,7 +208,8 @@ namespace SharpMC.Network
 
         private void SendDataInternal(byte[] buffer)
         {
-	        if (CancellationToken.IsCancellationRequested) return;
+	        if (CancellationToken.IsCancellationRequested) 
+	        	return;
             var sendData = new SendData(buffer);
             Socket.BeginSend(buffer, 0, buffer.Length, SocketFlags.None, SendCallback, sendData);
         }
@@ -241,30 +218,31 @@ namespace SharpMC.Network
         {
 	        try
 	        {
-		        SocketError result;
-		        var sent = Socket.EndSend(ar, out result);
-
+		        var sent = Socket.EndSend(ar, out var result);
 		        var data = (SendData) ar.AsyncState;
-
 		        if (result == SocketError.Success)
 		        {
 			        if (sent != data.Buffer.Length)
 			        {
-				        Log.LogWarning("Sent {0} out of {1} bytes!", sent, data.Buffer.Length);
+				        Log.LogWarning($"Sent {sent} out of {data.Buffer.Length} bytes!");
 			        }
 		        }
 		        else
 		        {
-			        Log.LogWarning("Failed to send data! (Reason: {0})", result);
+					Log.LogWarning($"Failed to send data! (Reason: {result})");
 		        }
 			}
-			catch { }
+			catch
+			{
+			}
         }
 
 	    public void SendPacket(Packet packet)
 	    {
-			if (packet.PacketId == -1) throw new Exception();
-
+			if (packet.PacketId == -1 && packet is IToClient toClient)
+				packet.PacketId = toClient.ClientId;
+			if (packet.PacketId == -1)
+				throw new Exception();
 		    byte[] encodedPacket;
 			using (var ms = new MemoryStream())
 		    {
@@ -272,51 +250,30 @@ namespace SharpMC.Network
 			    {
 					mc.WriteVarInt(packet.PacketId);
 					packet.Encode(mc);
-
 					encodedPacket = ms.ToArray();
-
 				    mc.Position = 0;
 					mc.SetLength(0);
-
 					if (CompressionEnabled)
 					{
 						if (encodedPacket.Length >= CompressionThreshold)
 						{
-							byte[] compressed;
-							CompressData(encodedPacket, out compressed);
-
+							CompressData(encodedPacket, out var compressed);
 							mc.WriteVarInt(encodedPacket.Length);
 							mc.Write(compressed);
 						}
-						else //Uncompressed
+						else 
 						{
+							// Uncompressed
 							mc.WriteVarInt(0);
 							mc.Write(encodedPacket);
 						}
-
 						encodedPacket = ms.ToArray();
 					}
 				}
 		    }
-
 			PacketWriteQueue.Add(encodedPacket);
-		    /*using (MemoryStream ms = new MemoryStream())
-		    {
-			    using (MinecraftStream mc = new MinecraftStream(ms))
-			    {
-				    if (EncryptionInitiated)
-				    {
-					    mc.InitEncryption(SharedSecret);
-				    }
-
-					mc.WriteVarInt(encodedPacket.Length);
-					mc.Write(encodedPacket);
-				}
-				SendDataInternal(ms.ToArray());
-		    }*/
 	    }
 
-	    private MinecraftStream _sendStream;
 	    private void SendQueue()
 	    {
 		    using (var ms = new NetworkStream(Socket))
@@ -365,7 +322,7 @@ namespace SharpMC.Network
 		    }
 	    }
 
-		public static void CopyStream(System.IO.Stream input, System.IO.Stream output)
+		public static void CopyStream(Stream input, Stream output)
 		{
 			var buffer = new byte[2000];
 			int len;
@@ -382,8 +339,7 @@ namespace SharpMC.Network
             var part2 = s.Available == 0;
             if (part1 && part2)
                 return false;
-            else
-                return true;
+            return true;
         }
     }
 }
