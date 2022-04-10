@@ -1,0 +1,17 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Exe</OutputType>
+    <TargetFramework>net6.0</TargetFramework>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SharpMC.API\SharpMC.API.csproj" />
+    <ProjectReference Include="..\SharpMC.Logging\SharpMC.Logging.csproj" />
+    <ProjectReference Include="..\SharpMC.Plugin.Admin\SharpMC.Plugin.Admin.csproj" />
+    <ProjectReference Include="..\SharpMC.Plugin.Pets\SharpMC.Plugin.Pets.csproj" />
+    <ProjectReference Include="..\SharpMC.Plugin.Test\SharpMC.Plugin.Test.csproj" />
+    <ProjectReference Include="..\SharpMC\SharpMC.csproj" />
+  </ItemGroup>
+
+</Project>
