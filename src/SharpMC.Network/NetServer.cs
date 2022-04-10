@@ -14,16 +14,15 @@ namespace SharpMC.Network
         private static readonly ILogger Log = LogManager.GetLogger(typeof(NetServer));
         
 		public NetConnectionFactory NetConnectionFactory { get; }
+        internal NetConfiguration Configuration { get; }
 
 		private CancellationTokenSource CancellationToken { get; set; }
         private ConcurrentDictionary<EndPoint, NetConnection> Connections { get; set; }
-
-		internal NetConfiguration Configuration { get; }
         private Socket ListenerSocket { get; set; }
         
-        public NetServer(NetConfiguration configuration, NetConnectionFactory factory)
+        public NetServer(NetConfiguration config, NetConnectionFactory factory)
         {
-            Configuration = configuration;
+            Configuration = config;
             NetConnectionFactory = factory;
             SetDefaults();
             Configure();
@@ -42,8 +41,7 @@ namespace SharpMC.Network
             if (Configuration.Protocol == ProtocolType.Tcp)
             {
                 ListenerSocket = new Socket(AddressFamily.InterNetwork,
-                                      SocketType.Stream,
-                                      System.Net.Sockets.ProtocolType.Tcp);
+                    SocketType.Stream, System.Net.Sockets.ProtocolType.Tcp);
             }
             else
             {
@@ -57,7 +55,6 @@ namespace SharpMC.Network
             {
                 ListenerSocket.Bind(new IPEndPoint(Configuration.Host, Configuration.Port));
                 ListenerSocket.Listen(10);
-
                 ListenerSocket.BeginAccept(ConnectionCallback, null);
             }
         }
@@ -65,7 +62,6 @@ namespace SharpMC.Network
         public void Stop()
         {
             CancellationToken.Cancel();
-
             foreach (var i in Connections)
             {
                 i.Value.Stop();
@@ -83,20 +79,17 @@ namespace SharpMC.Network
             {
                 Log.LogWarning("Failed to accept connection!");
             }
-
             ListenerSocket.BeginAccept(ConnectionCallback, null);
-
-            if (socket == null) return;
-			
+            if (socket == null) 
+            	return;
 			var conn = NetConnectionFactory.CreateConnection(Direction.Client, socket, ConfirmedAction);
-
 			if (Connections.TryAdd(socket.RemoteEndPoint, conn))
 			{
 				conn.OnConnectionClosed += (sender, args) =>
 				{
 					if (Connections.TryRemove(args.Connection.RemoteEndPoint, out var nc))
 					{
-						Log.LogInformation("Client disconnected!");
+                        Log.LogInformation($"Client disconnected: {nc.RemoteEndPoint}");
 					}
 				};
 				conn.Initialize();
