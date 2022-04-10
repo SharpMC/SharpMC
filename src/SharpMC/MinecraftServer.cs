@@ -144,19 +144,7 @@ namespace SharpMC
         }
 
         public void Start()
-        {
-            var ProtocolName = "?";
-            var Protocol = "??";
-            var MaxPlayers = 3;
-            var Players = 1;
-            var Motd = "?";
-            var x = 
-                $"{{\"version\":{{\"name\":\"{ProtocolName}\",\"protocol\":{Protocol}}},\"players\":{{\"max\":{MaxPlayers},\"online\":{Players}}},\"description\":{{\"text\":\"{Motd}\"}}}}";
-            
-            
-            Console.WriteLine(x);
-            
-            
+        {            
             if (!_initiated)
                 throw new Exception("Server not initiated!");
             try
