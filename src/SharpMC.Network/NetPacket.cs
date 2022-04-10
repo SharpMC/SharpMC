@@ -1,4 +1,4 @@
-﻿namespace SharpMC.Network
+namespace SharpMC.Network
 {
     public class NetPacket
     {
