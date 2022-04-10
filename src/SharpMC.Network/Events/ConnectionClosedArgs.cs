@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 
 namespace SharpMC.Network.Events
 {
-    public sealed class ConnectionClosedEventArgs : EventArgs
+    public class ConnectionClosedArgs : EventArgs
     {
         public NetConnection Connection { get; }
         public bool Graceful { get; }
 
-        internal ConnectionClosedEventArgs(NetConnection connection, bool requested)
+        internal ConnectionClosedArgs(NetConnection connection, bool requested)
         {
             Connection = connection;
             Graceful = requested;

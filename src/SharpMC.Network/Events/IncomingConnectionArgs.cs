@@ -1,13 +1,13 @@
-﻿using System;
+using System;
 
 namespace SharpMC.Network.Events
 {
-    public sealed class IncomingConnectionEventArgs : EventArgs
+    public sealed class IncomingConnectionArgs : EventArgs
     {
         internal IncomingConnection Connection { get; }
         public bool ConnectionAccepted { get; private set; }
 
-        internal IncomingConnectionEventArgs(IncomingConnection connection)
+        internal IncomingConnectionArgs(IncomingConnection connection)
         {
             Connection = connection;
             ConnectionAccepted = false;

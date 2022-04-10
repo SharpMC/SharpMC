@@ -1,13 +1,14 @@
-﻿using System;
+using System;
+using SharpMC.Network.Packets;
 
 namespace SharpMC.Network.Events
 {
-    public class PacketReceivedEventArgs : EventArgs
+    public class PacketReceivedArgs : EventArgs
     {
-        public Packets.Packet Packet { get; }
+        public Packet Packet { get; }
         internal bool IsInvalid { get; set; } = false;
 
-        internal PacketReceivedEventArgs(Packets.Packet netPacket)
+        internal PacketReceivedArgs(Packet netPacket)
         {
             Packet = netPacket;
         }
