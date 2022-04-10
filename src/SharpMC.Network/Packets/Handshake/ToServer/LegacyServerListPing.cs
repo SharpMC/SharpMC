@@ -1,6 +1,6 @@
 ﻿using SharpMC.Network.Util;
 
-namespace SharpMC.Network.Packets.Handshaking.ToServer
+namespace SharpMC.Network.Packets.Handshake.ToServer
 {
     public class LegacyServerListPing : Packet<LegacyServerListPing>, IToServer
     {

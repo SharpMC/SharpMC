@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using SharpMC.Network.Framework;
+using SharpMC.Network.Packets;
 
 namespace SharpMC.Network.Util
 {
 	public class PacketFactory<TType, TStream, TPacket> 
         where TType : IComparable<TType> 
-        where TStream : Stream
+        where TStream : IMinecraftStream
         where TPacket : IPacket<TStream>
 	{
 		private Dictionary<Type, TType> IdMap { get; }

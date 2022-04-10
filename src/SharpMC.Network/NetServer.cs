@@ -28,7 +28,7 @@ namespace SharpMC.Network
             Configure();
         }
 
-        public EventHandler<ConnectionAcceptedEventArgs> OnConnectionAccepted;
+        public EventHandler<ConnectionAcceptedArgs> OnConnectionAccepted;
 
         private void SetDefaults()
         {

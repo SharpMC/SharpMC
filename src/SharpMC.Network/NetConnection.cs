@@ -39,8 +39,8 @@ namespace SharpMC.Network
 			PacketWriteQueue = new BlockingCollection<byte[]>();
         }
 
-        public EventHandler<PacketReceivedEventArgs> OnPacketReceived;
-        public EventHandler<ConnectionClosedEventArgs> OnConnectionClosed;
+        public EventHandler<PacketReceivedArgs> OnPacketReceived;
+        public EventHandler<ConnectionClosedArgs> OnConnectionClosed;
 
         public EndPoint RemoteEndPoint { get; private set; }
 		public ConnectionState ConnectionState { get; protected set; }

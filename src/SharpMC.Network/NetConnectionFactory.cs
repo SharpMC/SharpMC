@@ -6,7 +6,7 @@ namespace SharpMC.Network
 {
 	public class NetConnectionFactory
 	{
-		public EventHandler<NetConnectionCreatedEventArgs> OnConnectionCreated;
+		public EventHandler<ConnectionCreatedArgs> OnConnectionCreated;
 
 		internal NetConnection CreateConnection(Direction direction, Socket socket, ConnectionConfirmed confirmedAction = null)
 		{
@@ -14,7 +14,7 @@ namespace SharpMC.Network
 
 			if (connection == null) return null;
 
-			OnConnectionCreated?.Invoke(null, new NetConnectionCreatedEventArgs(connection));
+			OnConnectionCreated?.Invoke(null, new ConnectionCreatedArgs(connection));
 			return connection;
 		}
 
