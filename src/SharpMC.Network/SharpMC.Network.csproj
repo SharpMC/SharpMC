@@ -10,7 +10,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SharpMC.Log\SharpMC.Log.csproj" />
+    <ProjectReference Include="..\SharpMC.Logging\SharpMC.Logging.csproj" />
   </ItemGroup>
 
 </Project>
