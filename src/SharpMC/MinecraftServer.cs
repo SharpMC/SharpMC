@@ -20,7 +20,7 @@ namespace SharpMC
     {
         private static readonly ILogger Log = LogManager.GetLogger(typeof(MinecraftServer));
 
-        private bool _initiated = false;
+        private bool _initiated;
         private NetServer Server { get; }
         public ServerInfo Info { get; }
         public EncryptionHolder RsaEncryption { get; }

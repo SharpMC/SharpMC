@@ -44,7 +44,7 @@ namespace SharpMC.Network
 		public bool CompressionEnabled { get; protected set; }
 		protected int CompressionThreshold = 256;
 
-	    public bool EncryptionInitiated { get; private set; } = false;
+	    public bool EncryptionInitiated { get; private set; }
 		protected byte[] SharedSecret { get; private set; }
 
 		public bool IsConnected { get; private set; }

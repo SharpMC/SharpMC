@@ -10,13 +10,13 @@ using SharpMC.API.Attributes;
 using SharpMC.API.Entities;
 using SharpMC.API.Enums;
 using SharpMC.API.Plugins;
-using SharpMC.API.Worlds;
 using SharpMC.Logging;
 using SharpMC.Players;
+using SharpMC.World;
 
 namespace SharpMC.Plugins
 {
-    public class PluginManager : IPluginManager
+    public class PluginManager
     {
         private static readonly ILogger Log = LogManager.GetLogger(typeof(PluginManager));
 
@@ -132,7 +132,7 @@ namespace SharpMC.Plugins
             }
         }
 
-        public void EnablePlugins(ILevelManager manager)
+        public void EnablePlugins(LevelManager manager)
         {
             foreach (var plugin in _plugins)
             {
@@ -166,7 +166,7 @@ namespace SharpMC.Plugins
             }
         }
 
-        public void HandleCommand(string message, IPlayer player)
+        public void HandleCommand(string message, Player player)
         {
             try
             {
@@ -203,7 +203,7 @@ namespace SharpMC.Plugins
             player.SendChat("Unknown command.", ChatColor.Red);
         }
 
-        private bool ExecuteCommand(MethodInfo method, IPlayer player, string[] args, CommandAttribute commandAttribute)
+        private bool ExecuteCommand(MethodInfo method, Player player, string[] args, CommandAttribute commandAttribute)
         {
             var parameters = method.GetParameters();
             var addLength = 0;
@@ -302,7 +302,7 @@ namespace SharpMC.Plugins
                     objectArgs[k] = value;
                     continue;
                 }
-                if (parameter.ParameterType == typeof(Player))
+                if (parameter.ParameterType == typeof(IPlayer))
                 {
                     var value = Globals.Instance.LevelManager.GetAllPlayers()
                         .FirstOrDefault(p => p.Username.ToLower().Equals(args[i].ToLower()));

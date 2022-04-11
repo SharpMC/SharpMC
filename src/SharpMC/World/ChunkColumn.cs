@@ -12,11 +12,11 @@ namespace SharpMC.World
 
         public byte[] HeightMap = new byte[Width * Depth];
         public ChunkCoordinates Coordinates { get; }
-        public bool IsDirty { get; private set; } = false;
+        public bool IsDirty { get; private set; }
 
         private ChunkSection[] Sections { get; }
         private byte[] Biomes { get; }
-        private byte[] Cache { get; set; } = null;
+        private byte[] Cache { get; set; }
 
         public ChunkColumn(ChunkCoordinates coordinates)
         {

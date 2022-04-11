@@ -1,6 +1,6 @@
 using System;
 using System.Threading;
-using SharpMC.API.Entities;
+using SharpMC.Entities;
 
 namespace SharpMC.World
 {
@@ -10,7 +10,7 @@ namespace SharpMC.World
 
         private int _entityId = 1;
 
-        public int AddEntity(IEntity entity)
+        public int AddEntity(Entity entity)
         {
             if (entity.EntityId == EntityIdUndefined)
             {
@@ -19,7 +19,7 @@ namespace SharpMC.World
             return entity.EntityId;
         }
 
-        public void RemoveEntity(IEntity caller, IEntity entity)
+        public void RemoveEntity(Entity caller, Entity entity)
         {
             if (entity == caller)
                 throw new Exception("Tried to REMOVE entity for self");

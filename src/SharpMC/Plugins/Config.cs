@@ -10,7 +10,7 @@ namespace SharpMC.Plugins
         public static string[] InitialValue;
         
         private static string _fileContents = string.Empty;
-        private static bool _configChanged = false;
+        private static bool _configChanged;
 
         public static bool Check()
         {

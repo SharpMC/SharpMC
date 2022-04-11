@@ -9,23 +9,20 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 using System.Threading;
-using SharpMC.API.Entities;
 using SharpMC.API.Enums;
-using SharpMC.API.Utils;
-using SharpMC.API.Worlds;
 using SharpMC.Network.Packets;
 using SharpMC.Util;
 
 namespace SharpMC.World
 {
-    public class Level : IDisposable, ILevel
+    public class Level : IDisposable
     {
         private static readonly ILogger Log = LogManager.GetLogger(typeof(Level));
 
         public string Name { get; set; }
         public PlayerLocation SpawnPoint { get; set; }
         
-        public void CalculateTps(IPlayer player)
+        public void CalculateTps(Player player)
         {
             throw new NotImplementedException();
         }
@@ -35,7 +32,7 @@ namespace SharpMC.World
             throw new NotImplementedException();
         }
 
-        public void RemovePlayer(IPlayer player)
+        public void RemovePlayer(Player player)
         {
             throw new NotImplementedException();
         }
@@ -49,27 +46,21 @@ namespace SharpMC.World
         public int WorldTime { get; set; }
         public string LvlName { get; }
         public GameMode DefaultGamemode { get; set; } = GameMode.Creative;
-
-        IPosition ILevel.SpawnPoint
-        {
-            get => SpawnPoint;
-            set => SpawnPoint = (PlayerLocation) value;
-        }
-
+        
         public int PlayerCount => Players.Count;
         public IWorldGenerator WorldGenerator { get; }
 
         private EntityManager EntityManager { get; }
-        private ConcurrentDictionary<int, IPlayer> Players { get; }
-        private ConcurrentDictionary<int, IEntity> Entities { get; }
+        private ConcurrentDictionary<int, Player> Players { get; }
+        private ConcurrentDictionary<int, Entity> Entities { get; }
 
         public Level(string name, IWorldGenerator worldGenerator)
         {
             Name = name;
             WorldGenerator = worldGenerator;
             EntityManager = new EntityManager();
-            Players = new ConcurrentDictionary<int, IPlayer>();
-            Entities = new ConcurrentDictionary<int, IEntity>();
+            Players = new ConcurrentDictionary<int, Player>();
+            Entities = new ConcurrentDictionary<int, Entity>();
             SpawnPoint = worldGenerator.GetSpawnPoint();
         }
 
@@ -118,7 +109,7 @@ namespace SharpMC.World
             RelayBroadcast(players, packet);
         }
 
-        public void RelayBroadcast(IEnumerable<IPlayer> players, Packet packet)
+        public void RelayBroadcast(IEnumerable<Player> players, Packet packet)
         {
             foreach (var i in players)
             {
@@ -134,7 +125,7 @@ namespace SharpMC.World
         {
         }
 
-        public virtual void AddPlayer(IPlayer newPlayer, bool spawn)
+        public virtual void AddPlayer(Player newPlayer, bool spawn)
         {
             EntityManager.AddEntity(newPlayer);
             if (Players.TryAdd(newPlayer.EntityId, newPlayer))
@@ -148,7 +139,7 @@ namespace SharpMC.World
             newPlayer.IsSpawned = spawn;
         }
 
-        public void SpawnToAll(IPlayer newPlayer)
+        public void SpawnToAll(Player newPlayer)
         {
             var players = Players.Values.ToArray();
             newPlayer.SpawnToPlayers(players);
@@ -172,7 +163,7 @@ namespace SharpMC.World
             player.IsSpawned = !despawn;
         }
 
-        public void DespawnFromAll(IPlayer newPlayer)
+        public void DespawnFromAll(Player newPlayer)
         {
             var players = Players.Values.ToArray();
             newPlayer.DespawnFromPlayers(players);

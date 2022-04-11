@@ -1,5 +1,4 @@
 using System;
-using SharpMC.API.Utils;
 using SharpMC.Players;
 
 namespace SharpMC.Util
@@ -20,11 +19,11 @@ namespace SharpMC.Util
 			Z = z;
 		}
 		
-		public ChunkCoordinates(IPosition v)
+		/* public ChunkCoordinates(IPosition v)
 		{
 			X = (int) v.X;
 			Z = (int) v.Z;
-		}
+		} */ // TODO ?!
 
 		public ChunkCoordinates(ChunkCoordinates v)
 		{

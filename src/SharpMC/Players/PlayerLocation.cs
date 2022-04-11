@@ -1,4 +1,3 @@
-using SharpMC.API.Utils;
 using System;
 using System.Numerics;
 using SharpMC.Util;
@@ -6,7 +5,7 @@ using SharpMC.Util;
 namespace SharpMC.Players
 {
 	// Credits to https://github.com/NiclasOlofsson/MiNET
-	public class PlayerLocation : ICloneable, IPosition
+	public class PlayerLocation : ICloneable
 	{
 		public float X { get; set; }
 		public float Y { get; set; }
@@ -78,7 +77,7 @@ namespace SharpMC.Players
 			return vector;
 		}
 
-		Vector3 IPosition.ToVector3()
+		public Vector3 ToVector3()
 		{
 			return new Vector3(X, Y, Z);
 		}
@@ -88,10 +87,10 @@ namespace SharpMC.Players
 			return MemberwiseClone();
 		}
 
-		IPosition IPosition.Clone()
+		/* IPosition IPosition.Clone()
 		{
 			return new PlayerLocation(X, Y, Z);
-		}
+		} */
 
 		public override string ToString()
 		{

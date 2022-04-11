@@ -7,7 +7,7 @@ namespace SharpMC.API.Worlds
 {
     public interface IWorld
     {
-        IEnumerable<IEntity> GetNearbyEntities(ILocation loc, int x, int y, int z, 
+        IEnumerable<IEntity> GetNearbyEntities(ILocation loc, int x, int y, int z,
             Func<IEntity, bool> acceptor);
     }
 }

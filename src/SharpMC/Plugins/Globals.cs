@@ -1,35 +1,34 @@
 using System;
-using SharpMC.API.Admin;
-using SharpMC.API.Entities;
-using SharpMC.API.Plugins;
-using SharpMC.API.Worlds;
+using SharpMC.Players;
+using SharpMC.Plugins.Channel;
+using SharpMC.World;
 
 namespace SharpMC.Plugins
 {
-    public class Globals : IGlobals
+    public class Globals
     {
-        public void StopServer(string message)
+        public void StopServer(string message = null)
         {
             throw new NotImplementedException();
         }
 
-        public void BroadcastChat(string message, IPlayer player)
+        public void BroadcastChat(string message, Player player)
         {
             throw new NotImplementedException();
         }
 
-        public ILevelManager LevelManager { get; set; }
+        public LevelManager LevelManager { get; set; }
 
-        public IPermissionManager PermissionManager { get; set; }
+        public PermissionManager PermissionManager { get; set; }
 
-        public IPluginManager PluginManager { get; set; }
+        public PluginManager PluginManager { get; set; }
 
         public Random Rand { get; set; }
 
-        public IMessageFactory MessageFactory { get; set; }
+        public MessageFactory MessageFactory { get; set; }
 
-        public IPlayer ConsolePlayer { get; set; }
+        public Player ConsolePlayer { get; set; }
 
-        public static IGlobals Instance { get; } = new Globals();
+        public static Globals Instance { get; } = new Globals();
     }
 }

@@ -11,6 +11,8 @@ namespace SharpMC.Network.Packets.Play.ToClient
         public byte[] Heightmaps { get; set; }
         public bool TrustEdges { get; set; }
 
+        public byte[] Data { get; set; }
+
         public override void Decode(IMinecraftStream stream)
         {
             X = stream.ReadInt();
@@ -21,6 +23,11 @@ namespace SharpMC.Network.Packets.Play.ToClient
 
         public override void Encode(IMinecraftStream stream)
         {
+            if (Data != null)
+            {
+                stream.Write(Data);
+                return;
+            }
             stream.WriteInt(X);
             stream.WriteInt(Z);
             stream.WriteNbt(Heightmaps);

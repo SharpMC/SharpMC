@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Concurrent;
 using System.Linq;
 using SharpMC.Players;
@@ -33,6 +34,14 @@ namespace SharpMC.World
         public Level[] GetLevels()
         {
             return Levels.Values.ToArray();
+        }
+
+        public Level MainLevel { get; set; }
+
+        public Player[] GetAllPlayers()
+        {
+            // TODO ?!
+            return Array.Empty<Player>();
         }
     }
 }

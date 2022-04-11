@@ -188,7 +188,6 @@ namespace SharpMC.Network.Util
 				read = (byte)ReadByte();
 				var value = read & 0x7f;
 				result |= value << (7 * numRead);
-
 				numRead++;
 				if (numRead > 5)
 				{
@@ -208,8 +207,7 @@ namespace SharpMC.Network.Util
 			{
 				read = (byte)ReadByte();
 				var value = read & 0x7f;
-				result |= value << (7 * numRead);
-
+				result |= (uint) (value << (7 * numRead));
 				numRead++;
 				if (numRead > 10)
 				{
@@ -531,7 +529,7 @@ namespace SharpMC.Network.Util
         #endregion
 
         private object _disposeLock = new object();
-		private bool _disposed = false;
+		private bool _disposed;
 
 		protected override void Dispose(bool disposing)
 		{

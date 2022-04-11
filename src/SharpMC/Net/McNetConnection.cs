@@ -6,7 +6,6 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
-using SharpMC.API.Entities;
 using SharpMC.Logging;
 using SharpMC.Network;
 using SharpMC.Network.Events;
@@ -24,7 +23,7 @@ using EncryptionBegin = SharpMC.Network.Packets.Login.ToServer.EncryptionBegin;
 
 namespace SharpMC.Net
 {
-    public class McNetConnection : NetConnection, IConnection
+    public class McNetConnection : NetConnection
     {
         private static readonly ILogger Log = LogManager.GetLogger(typeof(McNetConnection));
 

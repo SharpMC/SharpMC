@@ -1,21 +1,19 @@
 using System;
 using Microsoft.Extensions.Logging;
-using SharpMC.API.Entities;
-using SharpMC.API.Enums;
-using SharpMC.API.Utils;
-using SharpMC.API.Worlds;
 using SharpMC.Entities;
 using SharpMC.Logging;
 using SharpMC.Net;
 using SharpMC.Util;
 using System.Collections.Generic;
 using System.Numerics;
-using SharpMC.API.Custom;
+using SharpMC.API.Enums;
+using SharpMC.Network.Packets.Play.ToBoth;
 using SharpMC.Network.Packets.Play.ToClient;
+using SharpMC.World;
 
 namespace SharpMC.Players
 {
-    public class Player : Entity, IPlayer
+    public class Player : Entity
     {
         private static readonly ILogger Log = LogManager.GetLogger(typeof(Player));
 
@@ -30,8 +28,8 @@ namespace SharpMC.Players
 
         private MinecraftServer Server { get; }
         private Dictionary<Tuple<int, int>, byte[]> ChunksUsed = new Dictionary<Tuple<int, int>, byte[]>();
-        private long _timeSinceLastKeepAlive = 0;
-        private ChunkCoordinates _prevChunkCoordinates = new ChunkCoordinates();
+        private long _timeSinceLastKeepAlive;
+        private ChunkCoordinates _prevChunkCoordinates;
 
         public Player(McNetConnection connection, MinecraftServer server, string username) : base(null)
         {
@@ -79,16 +77,15 @@ namespace SharpMC.Players
 
         private void SendChunksForKnownPosition(ChunkCoordinates coords)
         {
-            // TODO ?!
-            /* foreach (var i in Level.GenerateChunks(this, coords, ChunksUsed, ViewDistance))
+            foreach (var i in Level.GenerateChunks(this, coords, ChunksUsed, ViewDistance))
             {
-                Connection.SendPacket(new CustomPayload
+                Connection.SendPacket(new MapChunk
                 {
                     Data = i
                 });
-            } */ 
+            }
         }
-
+        
         private void SendJoinGame()
         {
             var joinGame = new Login
@@ -105,7 +102,7 @@ namespace SharpMC.Players
 
         public void SendPlayerPositionAndLook()
         {
-            var loc = KnownPosition.Clone();
+            var loc = (PlayerLocation) KnownPosition.Clone();
             var packet = new Position
             {
                 Flags = 0,
@@ -148,39 +145,17 @@ namespace SharpMC.Players
             throw new NotImplementedException();
         }
 
-        public ILevel Level { get; set; }
-        public IPosition KnownPosition { get; set; }
         public Guid Uuid { get; set; }
         public bool IsOperator { get; set; }
         public Guid UniqueId { get; set; }
         public string Name { get; set; }
         public double Health { get; set; }
-        public ILocation Location { get; }
         
-        public void SpawnToPlayers(IPlayer[] players)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void DespawnFromPlayers(IPlayer[] players)
-        {
-            throw new NotImplementedException();
-        }
-        
-        public IWorld World { get; }
-
-        IConnection IPlayer.Connection => Connection;
-
         public void PositionChanged(Vector3 vector, double value)
         {
             throw new NotImplementedException();
         }
-
-        public void SpawnToPlayers(IPlayer[][] players)
-        {
-            throw new NotImplementedException();
-        }
-
+        
         public override void DespawnFromPlayers(Player[] players)
         {
             // TODO ?!
@@ -243,11 +218,6 @@ namespace SharpMC.Players
                 Uuid = UUID
             };
             Level.RelayBroadcast(players, spp); */
-        }
-
-        public AttributeInstance GetAttribute(AttributeNames name)
-        {
-            throw new NotImplementedException();
         }
     }
 }

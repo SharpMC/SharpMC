@@ -1,7 +1,9 @@
+using System;
 using Microsoft.Extensions.Logging;
 using SharpMC.API.Plugins;
 using SharpMC.API.Worlds;
 using SharpMC.Logging;
+using SharpMC.World;
 using G = SharpMC.Plugins.Globals;
 
 namespace SharpMC.Plugins
@@ -15,9 +17,11 @@ namespace SharpMC.Plugins
 
         public PluginManager PluginManager { get; }
 
-        public ILevelManager LevelManager => G.Instance.LevelManager;
+        ILevelManager IPluginContext.LevelManager => throw new NotImplementedException();
+        IGlobals IPluginContext.Globals => throw new NotImplementedException();
 
-        public IGlobals Globals => G.Instance;
+        public LevelManager LevelManager => G.Instance.LevelManager;
+        public Globals Globals => G.Instance;
 
         public ILogger GetLogger(IPlugin plugin)
         {

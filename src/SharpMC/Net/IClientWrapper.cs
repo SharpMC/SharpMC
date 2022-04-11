@@ -1,9 +1,9 @@
-using SharpMC.API.Entities;
+using SharpMC.Players;
 
 namespace SharpMC.Net
 {
     public interface IClientWrapper
     {
-        IPlayer Player { get; }
+        Player Player { get; }
     }
 }
