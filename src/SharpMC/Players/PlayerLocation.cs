@@ -58,8 +58,8 @@ namespace SharpMC.Players
 		public Vector3 GetDirection()
 		{
 			var vector = new Vector3();
-			double pitch = Pitch.ToRadians();
-			double yaw = Yaw.ToRadians();
+			var pitch = Pitch.ToRadians();
+			var yaw = Yaw.ToRadians();
 			vector.X = (float) (-Math.Sin(yaw) * Math.Cos(pitch));
 			vector.Y = (float) -Math.Sin(pitch);
 			vector.Z = (float) (Math.Cos(yaw) * Math.Cos(pitch));
@@ -69,8 +69,8 @@ namespace SharpMC.Players
 		public Vector3 GetHeadDirection()
 		{
 			var vector = new Vector3();
-			double pitch = Pitch.ToRadians();
-			double yaw = HeadYaw.ToRadians();
+			var pitch = Pitch.ToRadians();
+			var yaw = HeadYaw.ToRadians();
 			vector.X = (float) (-Math.Sin(yaw) * Math.Cos(pitch));
 			vector.Y = (float) -Math.Sin(pitch);
 			vector.Z = (float) (Math.Cos(yaw) * Math.Cos(pitch));

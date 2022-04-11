@@ -5,11 +5,8 @@ using SharpMC.Logging;
 using SharpMC.Net;
 using SharpMC.Util;
 using System.Collections.Generic;
-using System.Numerics;
 using SharpMC.API.Enums;
-using SharpMC.Network.Packets.Play.ToBoth;
 using SharpMC.Network.Packets.Play.ToClient;
-using SharpMC.World;
 
 namespace SharpMC.Players
 {
@@ -85,7 +82,7 @@ namespace SharpMC.Players
                 });
             }
         }
-        
+
         private void SendJoinGame()
         {
             var joinGame = new Login
@@ -135,16 +132,15 @@ namespace SharpMC.Players
         public Guid UniqueId { get; set; }
         public string Name { get; set; }
         public double Health { get; set; }
-               
+
         public override void DespawnFromPlayers(Player[] players)
         {
-            // TODO ?!
-            /* PlayerListItemPacket packet = new PlayerListItemPacket
+            var packet = new PlayerInfo
             {
                 Action = PlayerListAction.RemovePlayer,
                 UUID = UUID
             };
-            Level.RelayBroadcast(players, packet); */
+            Level.RelayBroadcast(players, packet);
         }
 
         public override void DespawnEntity()
@@ -155,8 +151,7 @@ namespace SharpMC.Players
 
         public override void SpawnToPlayers(Player[] players)
         {
-            // TODO ?!
-            /* PlayerListProperty p = null;
+            PlayerListProperty p = null;
             if (AuthResponse != null)
             {
                 foreach (var i in AuthResponse.Properties)
@@ -174,7 +169,7 @@ namespace SharpMC.Players
                     }
                 }
             }
-            PlayerListItemPacket packet = new PlayerListItemPacket
+            var packet = new PlayerInfo
             {
                 Action = PlayerListAction.AddPlayer,
                 Ping = 0,
@@ -184,20 +179,20 @@ namespace SharpMC.Players
             };
             if (p != null)
             {
-                packet.Properties = new PlayerListProperty[] { p };
+                packet.Properties = new[] {p};
             }
             Level.RelayBroadcast(players, packet);
-            SpawnPlayerPacket spp = new SpawnPlayerPacket
+            var spp = new NamedEntitySpawn
             {
                 EntityId = EntityId,
-                Pitch = (byte) (KnownPosition.Pitch.ToRadians()),
-                Yaw = (byte) (KnownPosition.Yaw.ToRadians()),
+                Pitch = (sbyte) (KnownPosition.Pitch.ToRadians()),
+                Yaw = (sbyte) (KnownPosition.Yaw.ToRadians()),
                 X = KnownPosition.X,
                 Y = KnownPosition.Y,
                 Z = KnownPosition.Z,
-                Uuid = UUID
+                PlayerUUID = UUID
             };
-            Level.RelayBroadcast(players, spp); */
+            Level.RelayBroadcast(players, spp);
         }
 
         public void SendChat(string name, ChatColor color = null)
