@@ -1,4 +1,5 @@
 using System;
+using System.Numerics;
 using SharpMC.API.Enums;
 using SharpMC.API.Plugins;
 using SharpMC.API.Utils;

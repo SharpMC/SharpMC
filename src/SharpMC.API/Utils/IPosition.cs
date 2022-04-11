@@ -1,3 +1,5 @@
+using System.Numerics;
+
 namespace SharpMC.API.Utils
 {
     public interface IPosition
