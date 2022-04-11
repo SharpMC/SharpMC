@@ -426,8 +426,9 @@ namespace SharpMC.Network.Util
         }
 
         public void WriteString(string data)
-		{
-			var stringData = Encoding.UTF8.GetBytes(data);
+        {
+            var txt = data ?? string.Empty;
+			var stringData = Encoding.UTF8.GetBytes(txt);
 			WriteVarInt(stringData.Length);
 			Write(stringData);
 		}
