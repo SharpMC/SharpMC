@@ -130,32 +130,12 @@ namespace SharpMC.Players
             Log.LogWarning("Kicking player {0} with reason: {1}", Username, reason);
         }
 
-        public void Kick(string message)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SendChat(string message, ChatColor color = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public bool ToggleOperatorStatus()
-        {
-            throw new NotImplementedException();
-        }
-
         public Guid Uuid { get; set; }
         public bool IsOperator { get; set; }
         public Guid UniqueId { get; set; }
         public string Name { get; set; }
         public double Health { get; set; }
-        
-        public void PositionChanged(Vector3 vector, double value)
-        {
-            throw new NotImplementedException();
-        }
-        
+               
         public override void DespawnFromPlayers(Player[] players)
         {
             // TODO ?!
@@ -218,6 +198,11 @@ namespace SharpMC.Players
                 Uuid = UUID
             };
             Level.RelayBroadcast(players, spp); */
+        }
+
+        public void SendChat(string name, ChatColor color = null)
+        {
+            throw new NotImplementedException();
         }
     }
 }

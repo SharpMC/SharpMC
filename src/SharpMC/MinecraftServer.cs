@@ -202,10 +202,5 @@ namespace SharpMC
         {
             Globals.Instance.PluginManager.DisablePlugins();
         }
-
-        private void ConsoleOnCancelKeyPress(object sender, ConsoleCancelEventArgs consoleCancelEventArgs)
-        {
-            Globals.Instance.StopServer();
-        }
     }
 }

@@ -169,7 +169,7 @@ namespace SharpMC.Network.Util
 
         public sbyte ReadSByte()
         {
-            throw new NotImplementedException();
+			return (sbyte) ReadByte();
         }
 
 		public int ReadVarInt()
@@ -422,7 +422,7 @@ namespace SharpMC.Network.Util
 
         public void WriteBuffer(byte[] data)
         {
-            throw new NotImplementedException();
+            Write(data);
         }
 
         public void WriteString(string data)

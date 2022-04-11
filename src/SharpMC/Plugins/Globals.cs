@@ -7,16 +7,6 @@ namespace SharpMC.Plugins
 {
     public class Globals
     {
-        public void StopServer(string message = null)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void BroadcastChat(string message, Player player)
-        {
-            throw new NotImplementedException();
-        }
-
         public LevelManager LevelManager { get; set; }
 
         public PermissionManager PermissionManager { get; set; }

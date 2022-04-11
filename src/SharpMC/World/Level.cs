@@ -21,27 +21,7 @@ namespace SharpMC.World
 
         public string Name { get; set; }
         public PlayerLocation SpawnPoint { get; set; }
-        
-        public void CalculateTps(Player player)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void SaveChunks()
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RemovePlayer(Player player)
-        {
-            throw new NotImplementedException();
-        }
-
-        public void RelayBroadcast(object packet)
-        {
-            throw new NotImplementedException();
-        }
-        
+                
         public int Timetorain { get; set; }
         public int WorldTime { get; set; }
         public string LvlName { get; }
