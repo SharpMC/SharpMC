@@ -1,4 +1,5 @@
 ﻿using SharpMC.Network.Util;
+using static SharpMC.Network.Util.BinaryTool;
 
 namespace SharpMC.Network.Packets.Play.ToClient
 {
@@ -10,10 +11,18 @@ namespace SharpMC.Network.Packets.Play.ToClient
         public bool IsHardcore { get; set; }
         public byte GameMode { get; set; }
         public sbyte PreviousGameMode { get; set; }
-        public int DimensionCodec { get; set; }
-        public int Dimension { get; set; }
+        public string[] WorldNames { get; set; }
+        public byte[] DimensionCodec { get; set; }
+        public byte[] Dimension { get; set; }
         public string WorldName { get; set; }
         public long HashedSeed { get; set; }
+
+        public int[] HashedSeeds
+        {
+            get => ToIntArray(HashedSeed);
+            set => HashedSeed = ToLong(value);
+        }
+
         public int MaxPlayers { get; set; }
         public int ViewDistance { get; set; }
         public int SimulationDistance { get; set; }
@@ -28,8 +37,9 @@ namespace SharpMC.Network.Packets.Play.ToClient
             IsHardcore = stream.ReadBool();
             GameMode = stream.ReadByte();
             PreviousGameMode = stream.ReadSByte();
-            DimensionCodec = stream.ReadInt();
-            Dimension = stream.ReadInt();
+            WorldNames = stream.ReadStringArray();
+            DimensionCodec = stream.ReadNbt();
+            Dimension = stream.ReadNbt();
             WorldName = stream.ReadString();
             HashedSeed = stream.ReadLong();
             MaxPlayers = stream.ReadVarInt();
@@ -47,8 +57,9 @@ namespace SharpMC.Network.Packets.Play.ToClient
             stream.WriteBool(IsHardcore);
             stream.WriteByte(GameMode);
             stream.WriteSByte(PreviousGameMode);
-            stream.WriteInt(DimensionCodec);
-            stream.WriteInt(Dimension);
+            stream.WriteStringArray(WorldNames);
+            stream.WriteNbt(DimensionCodec);
+            stream.WriteNbt(Dimension);
             stream.WriteString(WorldName);
             stream.WriteLong(HashedSeed);
             stream.WriteVarInt(MaxPlayers);

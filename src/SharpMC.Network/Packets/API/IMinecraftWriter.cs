@@ -6,6 +6,7 @@ namespace SharpMC.Network.Util
     public interface IMinecraftWriter
     {
         void WriteString(string text);
+        void WriteStringArray(string[] texts);
         void WriteSByte(sbyte value);
         void WriteVarInt(int value);
         void WriteBool(bool value);

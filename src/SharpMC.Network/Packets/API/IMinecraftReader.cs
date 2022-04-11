@@ -6,6 +6,7 @@ namespace SharpMC.Network.Util
     public interface IMinecraftReader
     {
         string ReadString();
+        string[] ReadStringArray();
         sbyte ReadSByte();
         int ReadVarInt();
         bool ReadBool();

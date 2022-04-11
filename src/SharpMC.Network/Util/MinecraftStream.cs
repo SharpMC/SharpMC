@@ -89,7 +89,9 @@ namespace SharpMC.Network.Util
 
         public byte[] ReadNbt()
         {
-            throw new NotImplementedException();
+			// TODO NBT !!!
+
+            return new byte[0];
         }
 
 		public byte[] Read(int length)
@@ -165,6 +167,17 @@ namespace SharpMC.Network.Util
         public byte[] ReadBuffer()
         {
             throw new NotImplementedException();
+        }
+
+        public string[] ReadStringArray()
+        {
+            var length = ReadVarInt(out _);
+            var result = new string[length];
+            for (var i = 0; i < length; i++)
+            {
+                result[i] = ReadString();
+            }
+            return result;
         }
 
         public sbyte ReadSByte()
@@ -370,6 +383,15 @@ namespace SharpMC.Network.Util
 			WriteLong(toSend);
 		}
 
+        public void WriteStringArray(string[] texts)
+        {
+            WriteVarInt(texts.Length);
+            foreach (var text in texts)
+            {
+                WriteString(text);
+            }
+        }
+
         public void WriteSByte(sbyte value)
         {
 	        WriteByte((byte) value);
@@ -477,7 +499,9 @@ namespace SharpMC.Network.Util
 
         public void WriteNbt(byte[] data)
         {
-            throw new NotImplementedException();
+
+            // TODO Write NBT ?!
+            
         }
 
 		public void WriteULong(ulong data)
