@@ -7,8 +7,7 @@ namespace SharpMC.World
 {
     public class LevelManager
     {
-        private ConcurrentDictionary<string, Level> Levels { get; }
-            = new ConcurrentDictionary<string, Level>();
+        private ConcurrentDictionary<string, Level> Levels { get; } = new ConcurrentDictionary<string, Level>();
 
         public virtual Level GetLevel(Player player, string name)
         {
@@ -17,7 +16,8 @@ namespace SharpMC.World
 
         private Level CreateLevel(string name)
         {
-            var level = new Level(name, new FlatWorldGenerator());
+            var generator = new FlatWorldGenerator();
+            var level = new Level(name, generator);
             level.Initialize();
             return level;
         }

@@ -20,14 +20,12 @@ namespace SharpMC.World
         {
             SkyLight = new NibbleArray(TotalBlocks);
             BlockLight = new NibbleArray(TotalBlocks);
-
             Types = new VariableValueArray(13, TotalBlocks);
             for (var i = 0; i < TotalBlocks; i++)
             {
                 Types[i] = 0;
                 SkyLight[i] = 0xff;
             }
-
             AirBlocks = TotalBlocks;
         }
 
@@ -39,7 +37,8 @@ namespace SharpMC.World
             var airCounter = 0;
             for (var i = 0; i < TotalBlocks; i++)
             {
-                if ((Types[i] >> 4) == 0) airCounter++;
+                if ((Types[i] >> 4) == 0)
+                    airCounter++;
             }
             AirBlocks = airCounter;
         }
@@ -48,7 +47,6 @@ namespace SharpMC.World
         {
             if (x < 0 || z < 0 || y < 0 || x >= Width || z >= Depth || y >= Height)
                 throw new IndexOutOfRangeException("Coords (x=" + x + ",y=" + y + ",z=" + z + ") invalid");
-
             return (y << 8) | (z << 4) | x;
         }
 
@@ -66,10 +64,8 @@ namespace SharpMC.World
         {
             var index = GetIndex(x, y, z);
             var data = Types[index];
-
             var type = data >> 4;
             var metadata = data & 15;
-
             if (type == 0 && id > 0)
             {
                 AirBlocks--;
@@ -78,7 +74,6 @@ namespace SharpMC.World
             {
                 AirBlocks++;
             }
-
             Types[index] = (id << 4 | (metadata & 15));
         }
 
@@ -93,18 +88,16 @@ namespace SharpMC.World
         public void WriteTo(MinecraftStream stream, bool writeSkylight = true)
         {
             var types = Types.Backing;
-
-            stream.WriteByte(13); //Bits Per Block
-            stream.WriteVarInt(0); //Palette Length
-
+            // Bits Per Block
+            stream.WriteByte(13);
+            // Bits Per Block
+            stream.WriteVarInt(0);
             stream.WriteVarInt(types.Length);
             foreach (var t in types)
             {
                 stream.WriteLong(t);
             }
-
             stream.Write(BlockLight.Data);
-
             if (writeSkylight)
                 stream.Write(SkyLight.Data);
         }

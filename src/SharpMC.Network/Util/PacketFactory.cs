@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.IO;
 using SharpMC.Network.Packets;
 
 namespace SharpMC.Network.Util
@@ -37,8 +36,7 @@ namespace SharpMC.Network.Util
 
 		public bool TryGetPacket(TType packetId, out TPacket packet) 
 		{
-			Func<TPacket> p;
-			if (!Packets.TryGetValue(packetId, out p))
+			if (!Packets.TryGetValue(packetId, out var p))
 			{
 				packet = default;
 				return false;
@@ -59,8 +57,7 @@ namespace SharpMC.Network.Util
 
 		public bool TryGetPacket<TPacketType>(out TPacketType packet) where TPacketType : TPacket
 		{
-			TType id;
-			if (TryGetPacketId(typeof(TPacketType), out id))
+			if (TryGetPacketId(typeof(TPacketType), out var id))
 			{
 				packet = (TPacketType) Packets[id]();
 				return true;

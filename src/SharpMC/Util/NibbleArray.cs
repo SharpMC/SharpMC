@@ -2,7 +2,7 @@
 
 namespace SharpMC.Util
 {
-    //Credits to https://github.com/NiclasOlofsson/MiNET
+    // Credits to https://github.com/NiclasOlofsson/MiNET
     public class NibbleArray : ICloneable
     {
         public byte[] Data { get; set; }

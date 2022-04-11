@@ -374,7 +374,7 @@ namespace SharpMC.Network.Util
 
         public void WriteSByte(sbyte value)
         {
-            throw new NotImplementedException();
+	        WriteByte((byte) value);
         }
 
         void IMinecraftWriter.WriteVarInt(int value)

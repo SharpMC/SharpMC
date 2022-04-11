@@ -48,11 +48,9 @@ namespace SharpMC.Network.Packets
 		private static TPacket CreatePacket<TPacket>(Type type, PacketFactory<int, IMinecraftStream, Packet> factory)
 			where TPacket : Packet
 		{
-			int packetId;
-			if (factory.TryGetPacketId(type, out packetId))
+			if (factory.TryGetPacketId(type, out var packetId))
 			{
-				Packet packet;
-				if (factory.TryGetPacket(packetId, out packet))
+				if (factory.TryGetPacket(packetId, out var packet))
 				{
 					packet.PacketId = packetId;
 					return (TPacket)packet;

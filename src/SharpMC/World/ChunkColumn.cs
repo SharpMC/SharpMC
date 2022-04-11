@@ -10,9 +10,9 @@ namespace SharpMC.World
         public const int Width = 16;
         public const int Depth = 16;
 
+        public byte[] HeightMap = new byte[Width * Depth];
         public ChunkCoordinates Coordinates { get; }
         public bool IsDirty { get; private set; } = false;
-        public byte[] HeightMap = new byte[Width * Depth];
 
         private ChunkSection[] Sections { get; }
         private byte[] Biomes { get; }
@@ -23,17 +23,14 @@ namespace SharpMC.World
             Coordinates = coordinates;
             Sections = new ChunkSection[16];
             Biomes = new byte[Depth * Width];
-
             for (var i = 0; i < Sections.Length; i++)
             {
                 Sections[i] = new ChunkSection();
             }
-
             for (var i = 0; i < Biomes.Length; i++)
             {
-                Biomes[i] = 1; //Plains
+                Biomes[i] = (byte) BiomeIds.Plains;
             }
-
             for (var i = 0; i < HeightMap.Length; i++)
             {
                 HeightMap[i] = 0;
@@ -53,7 +50,6 @@ namespace SharpMC.World
         public void SetBlockId(int x, int y, int z, short id)
         {
             GetChunkSection(y).SetBlockId(x, y - 16 * (y >> 4), z, id);
-
             Cache = null;
             IsDirty = true;
         }
@@ -66,7 +62,6 @@ namespace SharpMC.World
         public void SetBlockData(int x, int y, int z, byte meta)
         {
             GetChunkSection(y).SetBlockData(x, y - 16 * (y >> 4), z, meta);
-
             Cache = null;
             IsDirty = true;
         }
@@ -74,7 +69,6 @@ namespace SharpMC.World
         public void SetBiome(int x, int z, byte biome)
         {
             Biomes[(z << 4) + (x)] = biome;
-
             Cache = null;
             IsDirty = true;
         }
@@ -90,12 +84,11 @@ namespace SharpMC.World
             {
                 for (var z = 0; z < 16; z++)
                 {
-                    for (byte y = 127; y > 0; y--)
+                    for (var y = 127; y > 0; y--)
                     {
                         if (GetBlockId(x, y, z) != 0)
                         {
                             HeightMap[(x << 4) + z] = (byte) (y + 1);
-                            //..SetHeight(x, z, (byte)(y + 1));
                             break;
                         }
                     }
@@ -122,7 +115,6 @@ namespace SharpMC.World
                 stream.Write(Cache);
                 return;
             }
-
             byte[] sectionData;
             var sectionBitmask = 0;
             using (var ms = new MemoryStream())
@@ -132,37 +124,31 @@ namespace SharpMC.World
                     for (var i = 0; i < Sections.Length; i++)
                     {
                         var section = Sections[i];
-                        if (section.IsAllAir) continue;
-
+                        if (section.IsAllAir)
+                            continue;
                         sectionBitmask |= 1 << i;
-
                         section.WriteTo(mc, true);
                     }
                 }
                 sectionData = ms.ToArray();
             }
-
             using (var ms = new MemoryStream())
             {
                 using (var mc = new MinecraftStream(ms))
                 {
                     mc.WriteInt(Coordinates.X);
                     mc.WriteInt(Coordinates.Z);
-
                     mc.WriteBool(true);
-
-                    mc.WriteVarInt(sectionBitmask); //Primary Bitmask
-
+                    // Primary Bitmask
+                    mc.WriteVarInt(sectionBitmask);
                     mc.WriteVarInt(sectionData.Length + 256);
                     mc.Write(sectionData, 0, sectionData.Length);
-                    mc.Write(Biomes);
-
-                    mc.WriteVarInt(0); //No block entities for now
+                    mc.Write(Biomes); 
+                    // No block entities for now
+                    mc.WriteVarInt(0);
                 }
-
                 Cache = ms.ToArray();
             }
-
             stream.Write(Cache);
         }
     }

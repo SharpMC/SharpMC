@@ -6,6 +6,7 @@ using System.Security.Cryptography;
 using System.Text;
 using Microsoft.Extensions.Logging;
 using Newtonsoft.Json;
+using SharpMC.API.Entities;
 using SharpMC.Logging;
 using SharpMC.Network;
 using SharpMC.Network.Events;
@@ -23,7 +24,7 @@ using EncryptionBegin = SharpMC.Network.Packets.Login.ToServer.EncryptionBegin;
 
 namespace SharpMC.Net
 {
-    public class McNetConnection : NetConnection
+    public class McNetConnection : NetConnection, IConnection
     {
         private static readonly ILogger Log = LogManager.GetLogger(typeof(McNetConnection));
 
@@ -317,5 +318,10 @@ namespace SharpMC.Net
             SendPacket(new KeepAlive {KeepAliveId = _lastKeepAlive});
         }
         #endregion
+
+        public void SendPacket(object packet)
+        {
+            base.SendPacket((Packet) packet);
+        }
     }
 }

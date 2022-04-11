@@ -10,7 +10,7 @@ namespace SharpMC.Plugins.Channel
 
         public MessageFactory()
         {
-            Messages = new Dictionary<string, PluginMessage>()
+            Messages = new Dictionary<string, PluginMessage>
             {
                 {"MC", new BrandMessage()}
             };

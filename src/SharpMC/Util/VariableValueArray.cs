@@ -35,11 +35,9 @@ namespace SharpMC.Util
             get
             {
                 CheckIndex(index);
-
                 index *= BitsPerValue;
                 var i0 = index >> 6;
                 var i1 = index & 0x3f;
-
                 var value = Backing[i0] >> i1;
                 var i2 = i1 + BitsPerValue;
                 // The value is divided over two long values
@@ -47,13 +45,11 @@ namespace SharpMC.Util
                 {
                     value |= Backing[++i0] << 64 - i1;
                 }
-
                 return (int) (value & _valueMask);
             }
             set
             {
                 CheckIndex(index);
-
                 if (value < 0)
                 {
                     throw new ArgumentException($"value {value} must not be negative");
@@ -62,11 +58,9 @@ namespace SharpMC.Util
                 {
                     throw new ArgumentException($"value {value} must not be greater then {_valueMask}");
                 }
-
                 index *= BitsPerValue;
                 var i0 = index >> 6;
                 var i1 = index & 0x3f;
-
                 Backing[i0] = Backing[i0] & ~(_valueMask << i1) | (value & _valueMask) << i1;
                 var i2 = i1 + BitsPerValue;
                 // The value is divided over two long values

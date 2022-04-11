@@ -10,12 +10,12 @@ namespace SharpMC.Plugins
     {
         public void StopServer(string message)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public void BroadcastChat(string message, IPlayer player)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
 
         public ILevelManager LevelManager { get; set; }
