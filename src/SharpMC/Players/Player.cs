@@ -6,6 +6,8 @@ using SharpMC.Net;
 using SharpMC.Util;
 using System.Collections.Generic;
 using SharpMC.API.Enums;
+using SharpMC.Data;
+using SharpMC.Network.Binary;
 using SharpMC.Network.Packets.Play.ToClient;
 
 namespace SharpMC.Players
@@ -87,12 +89,25 @@ namespace SharpMC.Players
         {
             var joinGame = new Login
             {
-                EntityId = EntityId,
-                GameMode = (byte) Gamemode,
+                EntityId = 167,
                 IsHardcore = false,
-                // TODO ?! Dimension = 0,
-                WorldName = "flat",
-                ReducedDebugInfo = false
+                GameMode = (byte)Gamemode,
+                PreviousGameMode = -1,
+                WorldNames = Defaults.WorldNames,
+                WorldName = Defaults.WorldName, // WorldName = "flat"
+                HashedSeeds = new[] { -660566458, -1901654650 },
+                MaxPlayers = 20,
+                ViewDistance = 10,
+                SimulationDistance = 10,
+                ReducedDebugInfo = false,
+                EnableRespawnScreen = true,
+                IsDebug = false,
+                IsFlat = false,
+                DimensionCodec = new LoginDimCodec
+                {
+                    Realms = Defaults.Realms, Biomes = Defaults.Biomes
+                },
+                Dimension = Defaults.CurrentDim
             };
             Connection.SendPacket(joinGame);
         }
