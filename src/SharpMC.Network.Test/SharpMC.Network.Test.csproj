@@ -14,6 +14,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SharpMC.Network\SharpMC.Network.csproj" />
+    <ProjectReference Include="..\SharpMC\SharpMC.csproj" />
   </ItemGroup>
 
 </Project>

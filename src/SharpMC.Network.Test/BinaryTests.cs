@@ -1,3 +1,5 @@
+using Newtonsoft.Json.Serialization;
+using SharpMC.Data;
 using SharpMC.Network.Binary;
 using SharpMC.Network.Packets.Play.ToClient;
 using Xunit;
@@ -79,8 +81,17 @@ namespace SharpMC.Network.Test
                 EnableRespawnScreen = true,
                 IsDebug = false,
                 IsFlat = false,
-                DimensionCodec = new LoginDimCodec(),
-                Dimension = new LoginDim()
+                DimensionCodec = new LoginDimCodec
+                {
+                    Realms = Defaults.Realms, Biomes = Defaults.Biomes
+                },
+                Dimension = new LoginDim
+                {
+                    Natural = 1, HasSkylight = 1, BedWorks = 1, HasRaids = 1,
+                    InfiniBurn = "#minecraft:infiniburn_overworld",
+                    Effects = "minecraft:overworld", LogicalHeight = 384,
+                    CoordinateScale = 1, MinY = -64, Height = 384
+                }
             };
 
             var actual = Write(packet, 0x26);

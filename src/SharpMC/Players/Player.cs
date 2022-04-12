@@ -90,7 +90,7 @@ namespace SharpMC.Players
                 EntityId = EntityId,
                 GameMode = (byte) Gamemode,
                 IsHardcore = false,
-                Dimension = 0,
+                // TODO ?! Dimension = 0,
                 WorldName = "flat",
                 ReducedDebugInfo = false
             };
