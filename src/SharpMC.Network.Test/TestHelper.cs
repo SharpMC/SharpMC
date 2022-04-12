@@ -1,5 +1,7 @@
 ﻿using System.IO;
+using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using SharpMC.Network.Packets;
 using SharpMC.Network.Util;
 
@@ -28,6 +30,17 @@ namespace SharpMC.Network.Test
             return ms.ToArray();
         }
 
+        public static string ToJson(Packet packet)
+        {
+            var cfg = new JsonSerializerSettings
+            {
+                Formatting = Formatting.Indented,
+                NullValueHandling = NullValueHandling.Ignore,
+                Converters = {new StringEnumConverter()}
+            };
+            return JsonConvert.SerializeObject(packet, cfg);
+        }
+
         public static string ToJson(byte[] bytes)
         {
             return JsonConvert.SerializeObject(bytes);
@@ -37,6 +50,11 @@ namespace SharpMC.Network.Test
         {
             File.WriteAllBytes($"{prefix}_e.bin", expected);
             File.WriteAllBytes($"{prefix}_a.bin", actual);
+        }
+
+        public static void WriteTexts(string prefix, string actual)
+        {
+            File.WriteAllText($"{prefix}_a.json", actual, Encoding.UTF8);
         }
     }
 }
