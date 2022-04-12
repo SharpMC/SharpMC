@@ -50,7 +50,7 @@ namespace SharpMC.Players
             Gamemode = Level.DefaultGamemode;
             SendJoinGame();
             _prevChunkCoordinates = new ChunkCoordinates(KnownPosition);
-            SendChunksForKnownPosition(_prevChunkCoordinates);
+            // SendChunksForKnownPosition(_prevChunkCoordinates); // TODO
             SendPlayerPositionAndLook();
             Level.AddPlayer(this, true);
         }
@@ -110,6 +110,29 @@ namespace SharpMC.Players
                 Dimension = Defaults.CurrentDim
             };
             Connection.SendPacket(joinGame);
+
+            SendJoinSuffix();
+        }
+
+        private void SendJoinSuffix()
+        {
+            var diff = new Difficulty
+            {
+                _Difficulty = 1, DifficultyLocked = false
+            };
+            Connection.SendPacket(diff);
+
+            var able = new Abilities
+            {
+                Flags = 0, FlyingSpeed = 0.05000000074505806f, WalkingSpeed = 0.10000000149011612f
+            };
+            Connection.SendPacket(able);
+
+            var slot = new HeldItemSlot
+            {
+                Slot = 4
+            };
+            Connection.SendPacket(slot);
         }
 
         public void SendPlayerPositionAndLook()

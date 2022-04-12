@@ -167,7 +167,8 @@ namespace SharpMC.Network
 								Log.LogWarning($"Unhandled package! 0x{packetId:x2}");
 								continue;
 							}
-							packet.Decode(new MinecraftStream(new MemoryStream(packetData)));
+                            Log.LogInformation($" << Receiving packet 0x{packet.PacketId:x2} ({packet.GetType().Name})");
+                            packet.Decode(new MinecraftStream(new MemoryStream(packetData)));
 							HandlePacket(packet);
 						}
                     }
@@ -243,6 +244,7 @@ namespace SharpMC.Network
 				packet.PacketId = toClient.ClientId;
 			if (packet.PacketId == -1)
 				throw new Exception();
+            Log.LogInformation($" >> Sending packet 0x{packet.PacketId:x2} ({packet.GetType().Name})");
 		    byte[] encodedPacket;
 			using (var ms = new MemoryStream())
 		    {
