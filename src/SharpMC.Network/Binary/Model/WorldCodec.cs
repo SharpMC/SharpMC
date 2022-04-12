@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using SharpNBT;
 
@@ -59,7 +60,7 @@ namespace SharpMC.Network.Binary
 
         public void ToObject(CompoundTag tag)
         {
-            throw new System.NotImplementedException();
+            throw new NotImplementedException();
         }
     }
 }
