@@ -46,16 +46,25 @@ namespace SharpMC.Network.Binary
 
         public CompoundTag ToCompound()
         {
-
-
-
-
-            // TODO ?!
-
-
-
-
-            return new CompoundTag(null);
+            var tag = new CompoundTag(null)
+            {
+                new ByteTag("piglin_safe", PiglinSafe),
+                new ByteTag("natural", Natural),
+                new FloatTag("ambient_light", AmbientLight),
+                new StringTag("infiniburn", InfiniBurn),
+                new ByteTag("respawn_anchor_works", RespawnWorks),
+                new ByteTag("has_skylight", HasSkylight),
+                new ByteTag("bed_works", BedWorks),
+                new StringTag("effects", Effects),
+                new ByteTag("has_raids", HasRaids),
+                new IntTag("logical_height", LogicalHeight),
+                new DoubleTag("coordinate_scale", CoordinateScale),
+                new IntTag("min_y", MinY),
+                new ByteTag("has_ceiling", HasCeiling),
+                new ByteTag("ultrawarm", UltraWarm),
+                new IntTag("height", Height)
+            };
+            return tag;
         }
     }
 }
