@@ -10,6 +10,8 @@ using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.IO;
 using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Parameters;
+using SharpMC.Network.Binary;
+using SharpNBT;
 
 namespace SharpMC.Network.Util
 {
@@ -89,7 +91,7 @@ namespace SharpMC.Network.Util
 
         public byte[] ReadNbt()
         {
-			// TODO NBT !!!
+            // TODO NBT !!!
 
             return new byte[0];
         }

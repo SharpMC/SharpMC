@@ -1,4 +1,8 @@
-﻿using SharpMC.Network.Util;
+﻿using System.Collections.Generic;
+using System.IO;
+using SharpMC.Network.Binary;
+using SharpMC.Network.Util;
+using SharpNBT;
 using static SharpMC.Network.Util.BinaryTool;
 
 namespace SharpMC.Network.Packets.Play.ToClient
@@ -58,8 +62,13 @@ namespace SharpMC.Network.Packets.Play.ToClient
             stream.WriteByte(GameMode);
             stream.WriteSByte(PreviousGameMode);
             stream.WriteStringArray(WorldNames);
-            stream.WriteNbt(DimensionCodec);
-            stream.WriteNbt(Dimension);
+
+            // TODO stream.WriteNbt(DimensionCodec);
+            stream.Write(DefaultData.GenerateDimCodec().ToBytes());
+
+            // TODO stream.WriteNbt(Dimension);
+            stream.Write(DefaultData.GenerateDim().ToBytes());
+
             stream.WriteString(WorldName);
             stream.WriteLong(HashedSeed);
             stream.WriteVarInt(MaxPlayers);
