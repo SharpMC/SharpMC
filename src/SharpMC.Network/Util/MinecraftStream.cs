@@ -11,7 +11,6 @@ using Org.BouncyCastle.Crypto.IO;
 using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Parameters;
 using SharpMC.Network.Binary;
-using SharpNBT;
 
 namespace SharpMC.Network.Util
 {

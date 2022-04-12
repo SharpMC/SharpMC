@@ -1,5 +1,4 @@
-﻿using System;
-using System.Linq;
+﻿using System.Linq;
 using SharpNBT;
 
 namespace SharpMC.Network.Binary

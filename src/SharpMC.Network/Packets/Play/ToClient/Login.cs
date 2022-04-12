@@ -1,8 +1,5 @@
-﻿using System.Collections.Generic;
-using System.IO;
-using SharpMC.Network.Binary;
+﻿using SharpMC.Network.Binary;
 using SharpMC.Network.Util;
-using SharpNBT;
 using static SharpMC.Network.Util.BinaryTool;
 
 namespace SharpMC.Network.Packets.Play.ToClient

@@ -1,4 +1,3 @@
-using Newtonsoft.Json.Serialization;
 using SharpMC.Data;
 using SharpMC.Network.Binary;
 using SharpMC.Network.Packets.Play.ToClient;

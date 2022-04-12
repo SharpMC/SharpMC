@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SharpNBT;
+﻿using SharpNBT;
 using static SharpMC.Network.Binary.NbtUtil;
 
 namespace SharpMC.Network.Binary
