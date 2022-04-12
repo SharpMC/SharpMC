@@ -265,7 +265,7 @@ namespace SharpMC.Net
 
         private void HandleChatMessage(Chat packet)
         {
-            Player.Level.RelayBroadcast(new Chat
+            Player.Level.RelayBroadcast(new Network.Packets.Play.ToClient.Chat
             {
                 Message = ChatHelper.EncodeChatMessage($"<{Player.Username}> {packet.Message}")
             });
