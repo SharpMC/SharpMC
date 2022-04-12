@@ -8,10 +8,11 @@ namespace SharpMC.Network.Binary
         public CompoundTag ToCompound()
         {
 
+            // TODO ?!
 
 
 
-            throw new NotImplementedException();
+            return new CompoundTag(null);
         }
 
         public void ToObject(CompoundTag tag)

@@ -50,12 +50,12 @@ namespace SharpMC.Network.Binary
 
 
 
+            // TODO ?!
 
 
 
 
-
-            throw new NotImplementedException();
+            return new CompoundTag(null);
         }
     }
 }
