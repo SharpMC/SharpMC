@@ -11,6 +11,8 @@ using Org.BouncyCastle.Crypto.IO;
 using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Parameters;
 using SharpMC.Network.Binary;
+using SharpMC.Network.Binary.Special;
+using SharpNBT;
 
 namespace SharpMC.Network.Util
 {
@@ -134,9 +136,11 @@ namespace SharpMC.Network.Util
 			return IPAddress.NetworkToHostOrder(value);
 		}
 
-        public byte ReadSlot()
+        public SlotData ReadSlot()
         {
-            throw new NotImplementedException();
+            var slot = new SlotData();
+            slot.Decode(this);
+            return slot;
         }
 
 		public float ReadFloat()
@@ -304,9 +308,10 @@ namespace SharpMC.Network.Util
             throw new NotImplementedException();
         }
 
-        public byte[] ReadOptNbt()
+        public object ReadOptNbt()
         {
-            throw new NotImplementedException();
+            var tag = this.ToCompound();
+            return tag;
         }
 
         public ulong ReadULong()
@@ -471,9 +476,9 @@ namespace SharpMC.Network.Util
 			Write(shortData);
 		}
 
-        public void WriteSlot(byte value)
+        public void WriteSlot(SlotData value)
         {
-            throw new NotImplementedException();
+            value.Encode(this);
         }
 
 		public void WriteUShort(ushort data)
@@ -502,9 +507,23 @@ namespace SharpMC.Network.Util
 			Write(BitConverter.GetBytes(IPAddress.HostToNetworkOrder(data)));
 		}
 
-        public void WriteOptNbt(byte[] data)
+        public void WriteOptNbt(object data)
         {
-            throw new NotImplementedException();
+            if (data == null)
+            {
+                WriteByte(0);
+                return;
+            }
+            byte[] bytes;
+            if (data is INbtSerializable s)
+            {
+                bytes = s.ToBytes();
+            }
+            else
+            {
+                bytes = ((CompoundTag) data).ToBytes();
+            }
+            Write(bytes);
         }
 
         public void WriteNbt(INbtSerializable data)

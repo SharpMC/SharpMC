@@ -1,4 +1,5 @@
-﻿using SharpMC.Network.Util;
+﻿using SharpMC.Network.Binary.Special;
+using SharpMC.Network.Util;
 
 namespace SharpMC.Network.Packets.Play.ToServer
 {
@@ -11,7 +12,7 @@ namespace SharpMC.Network.Packets.Play.ToServer
         public short Slot { get; set; }
         public sbyte MouseButton { get; set; }
         public int Mode { get; set; }
-        public byte CursorItem { get; set; }
+        public SlotData CursorItem { get; set; }
 
         public override void Decode(IMinecraftStream stream)
         {

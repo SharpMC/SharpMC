@@ -7,7 +7,7 @@ namespace SharpMC.Network.Packets.Play.ToClient
         public byte ClientId => 0x60;
 
         public int TransactionId { get; set; }
-        public byte[] Nbt { get; set; }
+        public object Nbt { get; set; }
 
         public override void Decode(IMinecraftStream stream)
         {

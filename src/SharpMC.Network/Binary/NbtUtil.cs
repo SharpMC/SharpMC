@@ -13,7 +13,8 @@ namespace SharpMC.Network.Binary
         public static CompoundTag ToCompound(this Stream stream)
         {
             using var reader = new TagReader(stream, Format, true);
-            var compound = (CompoundTag) reader.ReadTag();
+            var raw = reader.ReadTag();
+            var compound = raw is EndTag ? null : (CompoundTag)raw;
             return compound;
         }
 

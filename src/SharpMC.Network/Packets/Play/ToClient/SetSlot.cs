@@ -1,4 +1,5 @@
-﻿using SharpMC.Network.Util;
+﻿using SharpMC.Network.Binary.Special;
+using SharpMC.Network.Util;
 
 namespace SharpMC.Network.Packets.Play.ToClient
 {
@@ -9,7 +10,7 @@ namespace SharpMC.Network.Packets.Play.ToClient
         public sbyte WindowId { get; set; }
         public int StateId { get; set; }
         public short Slot { get; set; }
-        public byte Item { get; set; }
+        public SlotData Item { get; set; }
 
         public override void Decode(IMinecraftStream stream)
         {

@@ -8,7 +8,7 @@ namespace SharpMC.Network.Packets.Play.ToClient
 
         public System.Numerics.Vector3 Location { get; set; }
         public int Action { get; set; }
-        public byte[] NbtData { get; set; }
+        public object NbtData { get; set; }
 
         public override void Decode(IMinecraftStream stream)
         {

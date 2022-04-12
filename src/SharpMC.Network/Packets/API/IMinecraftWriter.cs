@@ -1,6 +1,7 @@
 using System;
 using System.Numerics;
 using SharpMC.Network.Binary;
+using SharpMC.Network.Binary.Special;
 
 namespace SharpMC.Network.Util
 {
@@ -13,7 +14,7 @@ namespace SharpMC.Network.Util
         void WriteBool(bool value);
         void WriteByte(byte value);
         void WriteShort(short value);
-        void WriteSlot(byte value);
+        void WriteSlot(SlotData value);
         void WriteFloat(float value);
         void WriteUuid(Guid value);
         void WritePosition(Vector3 value);
@@ -22,7 +23,7 @@ namespace SharpMC.Network.Util
         void WriteInt(int value);
         void WriteBuffer(byte[] data);
         void WriteLong(long value);
-        void WriteOptNbt(byte[] data);
+        void WriteOptNbt(object data);
         void WriteNbt(INbtSerializable data);
         void WriteMetadata(byte[] data);
         void Write(byte[] data);
