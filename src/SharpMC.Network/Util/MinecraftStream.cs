@@ -386,6 +386,11 @@ namespace SharpMC.Network.Util
 
         public void WriteStringArray(string[] texts)
         {
+            if (texts == null)
+            {
+                WriteVarInt(0);
+				return;
+            }
             WriteVarInt(texts.Length);
             foreach (var text in texts)
             {
