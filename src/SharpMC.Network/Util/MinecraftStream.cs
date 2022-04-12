@@ -167,7 +167,11 @@ namespace SharpMC.Network.Util
 
         public byte[] ReadBuffer()
         {
-            throw new NotImplementedException();
+            var length = ReadVarInt(out _);
+            var array = new byte[length + 1];
+            array[0] = (byte)length;
+            _ = Read(array, 1, length);
+            return array;
         }
 
         public string[] ReadStringArray()

@@ -8,6 +8,7 @@ using System.Collections.Generic;
 using SharpMC.API.Enums;
 using SharpMC.Data;
 using SharpMC.Network.Binary;
+using SharpMC.Network.Packets.Play.ToBoth;
 using SharpMC.Network.Packets.Play.ToClient;
 
 namespace SharpMC.Players
@@ -133,6 +134,13 @@ namespace SharpMC.Players
                 Slot = 4
             };
             Connection.SendPacket(slot);
+
+            var brand = new CustomPayload
+            {
+                Channel = "minecraft:brand",
+                Data = new byte[] {7, 118, 97, 110, 105, 108, 108, 97}
+            };
+            Connection.SendPacket(brand);
         }
 
         public void SendPlayerPositionAndLook()

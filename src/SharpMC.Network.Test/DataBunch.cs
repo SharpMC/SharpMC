@@ -2,6 +2,12 @@ namespace SharpMC.Network.Test
 {
     internal static class DataBunch
     {
+        internal static byte[] PlayCustomPayload =
+        {
+            10, 15, 109, 105, 110, 101, 99, 114, 97, 102, 116, 58, 98,
+            114, 97, 110, 100, 7, 118, 97, 110, 105, 108, 108, 97
+        };
+
         internal static byte[] PlayLogin =
         {
             38, 0, 0, 0, 167, 0, 0, 255, 3, 19, 109, 105, 110, 101, 99, 114, 97, 102, 116, 58, 111, 118, 101, 114, 119,

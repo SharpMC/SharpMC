@@ -1,5 +1,6 @@
 using SharpMC.Data;
 using SharpMC.Network.Binary;
+using SharpMC.Network.Packets.Play.ToBoth;
 using SharpMC.Network.Packets.Play.ToClient;
 using Xunit;
 using static SharpMC.Network.Test.TestHelper;
@@ -8,6 +9,20 @@ namespace SharpMC.Network.Test
 {
     public class BinaryTests
     {
+        [Fact]
+        public void ShouldReadCustomPayload()
+        {
+            var input = DataBunch.PlayCustomPayload;
+            Assert.Equal(25, input.Length);
+
+            var packet = Read<CustomPayload>(input, out var packetId);
+            Assert.Equal(0x0a, packetId);
+
+            Assert.Equal(0x0a, packet.ServerId);
+            Assert.Equal("minecraft:brand", packet.Channel);
+            Assert.Equal(new byte[] {7, 118, 97, 110, 105, 108, 108, 97}, packet.Data);
+        }
+
         [Fact]
         public void ShouldReadPlayLogin()
         {
@@ -29,7 +44,7 @@ namespace SharpMC.Network.Test
             }, packet.WorldNames);
             Assert.Equal("minecraft:overworld", packet.WorldName);
             Assert.Equal(-2837111331551244922, packet.HashedSeed);
-            Assert.Equal(new[] {-660566458, -1901654650}, packet.HashedSeeds);
+            Assert.Equal(new[] { -660566458, -1901654650 }, packet.HashedSeeds);
             Assert.Equal(0, packet.Dimension.PiglinSafe);
             Assert.Equal(384, packet.Dimension.Height);
             Assert.Equal(0, packet.Dimension.UltraWarm);
@@ -56,6 +71,23 @@ namespace SharpMC.Network.Test
         }
 
         [Fact]
+        public void ShouldWriteCustomPayload()
+        {
+            var expected = DataBunch.PlayCustomPayload;
+            Assert.Equal(25, expected.Length);
+
+            var packet = new CustomPayload
+            {
+                Channel = "minecraft:brand",
+                Data = new byte[] { 7, 118, 97, 110, 105, 108, 108, 97 }
+            };
+
+            var actual = Write(packet, 0x0a);
+            WriteBytes(nameof(ShouldWriteCustomPayload), expected, actual);
+            Assert.Equal(ToJson(expected), ToJson(actual));
+        }
+
+        [Fact]
         public void ShouldWritePlayLogin()
         {
             var expected = DataBunch.PlayLogin;
@@ -69,7 +101,7 @@ namespace SharpMC.Network.Test
                 PreviousGameMode = -1,
                 WorldNames = Defaults.WorldNames,
                 WorldName = Defaults.WorldName,
-                HashedSeeds = new[] {-660566458, -1901654650},
+                HashedSeeds = new[] { -660566458, -1901654650 },
                 MaxPlayers = 20,
                 ViewDistance = 10,
                 SimulationDistance = 10,
