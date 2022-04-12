@@ -449,5 +449,26 @@ namespace SharpMC.Data
                 Raids = 1, LogicalHeight = 256, Scale = 1, Height = 256
             }
         };
+
+        public static string[] WorldNames =
+        {
+            "minecraft:overworld", "minecraft:the_nether", "minecraft:the_end"
+        };
+
+        public static string WorldName = "minecraft:overworld";
+
+        public static LoginDim CurrentDim => new LoginDim
+        {
+            BedWorks = 1,
+            CoordinateScale = 1,
+            Effects = "minecraft:overworld",
+            HasRaids = 1,
+            HasSkylight = 1,
+            Height = 384,
+            InfiniBurn = "#minecraft:infiniburn_overworld",
+            LogicalHeight = 384,
+            MinY = -64,
+            Natural = 1
+        };
     }
 }

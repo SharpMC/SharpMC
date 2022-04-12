@@ -68,11 +68,8 @@ namespace SharpMC.Network.Test
                 IsHardcore = false,
                 GameMode = 0,
                 PreviousGameMode = -1,
-                WorldNames = new[]
-                {
-                    "minecraft:overworld", "minecraft:the_nether", "minecraft:the_end"
-                },
-                WorldName = "minecraft:overworld",
+                WorldNames = Defaults.WorldNames,
+                WorldName = Defaults.WorldName,
                 HashedSeeds = new[] {-660566458, -1901654650},
                 MaxPlayers = 20,
                 ViewDistance = 10,
@@ -85,13 +82,7 @@ namespace SharpMC.Network.Test
                 {
                     Realms = Defaults.Realms, Biomes = Defaults.Biomes
                 },
-                Dimension = new LoginDim
-                {
-                    Natural = 1, HasSkylight = 1, BedWorks = 1, HasRaids = 1,
-                    InfiniBurn = "#minecraft:infiniburn_overworld",
-                    Effects = "minecraft:overworld", LogicalHeight = 384,
-                    CoordinateScale = 1, MinY = -64, Height = 384
-                }
+                Dimension = Defaults.CurrentDim
             };
 
             var actual = Write(packet, 0x26);
