@@ -117,5 +117,10 @@ namespace SharpMC.Network.Binary
             };
             return tag;
         }
+
+        public void ToObject(CompoundTag tag)
+        {
+            throw new System.NotImplementedException();
+        }
     }
 }

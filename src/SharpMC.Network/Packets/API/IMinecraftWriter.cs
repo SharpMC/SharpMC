@@ -1,5 +1,6 @@
 using System;
 using System.Numerics;
+using SharpMC.Network.Binary;
 
 namespace SharpMC.Network.Util
 {
@@ -22,7 +23,7 @@ namespace SharpMC.Network.Util
         void WriteBuffer(byte[] data);
         void WriteLong(long value);
         void WriteOptNbt(byte[] data);
-        void WriteNbt(byte[] data);
+        void WriteNbt(INbtSerializable data);
         void WriteMetadata(byte[] data);
         void Write(byte[] data);
     }

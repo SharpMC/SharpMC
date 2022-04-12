@@ -16,8 +16,8 @@ namespace SharpMC.Network.Packets.Play.ToClient
         public byte GameMode { get; set; }
         public sbyte PreviousGameMode { get; set; }
         public string[] WorldNames { get; set; }
-        public byte[] DimensionCodec { get; set; }
-        public byte[] Dimension { get; set; }
+        public LoginDimCodec DimensionCodec { get; set; }
+        public LoginDim Dimension { get; set; }
         public string WorldName { get; set; }
         public long HashedSeed { get; set; }
 
@@ -42,8 +42,8 @@ namespace SharpMC.Network.Packets.Play.ToClient
             GameMode = stream.ReadByte();
             PreviousGameMode = stream.ReadSByte();
             WorldNames = stream.ReadStringArray();
-            DimensionCodec = stream.ReadNbt();
-            Dimension = stream.ReadNbt();
+            DimensionCodec = stream.ReadNbt<LoginDimCodec>();
+            Dimension = stream.ReadNbt<LoginDim>();
             WorldName = stream.ReadString();
             HashedSeed = stream.ReadLong();
             MaxPlayers = stream.ReadVarInt();
@@ -62,13 +62,8 @@ namespace SharpMC.Network.Packets.Play.ToClient
             stream.WriteByte(GameMode);
             stream.WriteSByte(PreviousGameMode);
             stream.WriteStringArray(WorldNames);
-
-            // TODO stream.WriteNbt(DimensionCodec);
-            stream.Write(DefaultData.GenerateDimCodec().ToBytes());
-
-            // TODO stream.WriteNbt(Dimension);
-            stream.Write(DefaultData.GenerateDim().ToBytes());
-
+            stream.WriteNbt(DimensionCodec);
+            stream.WriteNbt(Dimension);
             stream.WriteString(WorldName);
             stream.WriteLong(HashedSeed);
             stream.WriteVarInt(MaxPlayers);

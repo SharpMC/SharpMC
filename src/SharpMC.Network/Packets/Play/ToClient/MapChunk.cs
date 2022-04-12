@@ -17,7 +17,7 @@ namespace SharpMC.Network.Packets.Play.ToClient
         {
             X = stream.ReadInt();
             Z = stream.ReadInt();
-            Heightmaps = stream.ReadNbt();
+            // TODO Heightmaps = stream.ReadNbt();
             TrustEdges = stream.ReadBool();
         }
 
@@ -30,7 +30,7 @@ namespace SharpMC.Network.Packets.Play.ToClient
             }
             stream.WriteInt(X);
             stream.WriteInt(Z);
-            stream.WriteNbt(Heightmaps);
+            // TODO stream.WriteNbt(Heightmaps);
             stream.WriteBool(TrustEdges);
         }
     }

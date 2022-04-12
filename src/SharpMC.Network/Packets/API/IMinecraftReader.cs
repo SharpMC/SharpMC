@@ -1,5 +1,6 @@
 using System;
 using System.Numerics;
+using SharpMC.Network.Binary;
 
 namespace SharpMC.Network.Util
 {
@@ -23,7 +24,7 @@ namespace SharpMC.Network.Util
         long ReadLong();
         byte[] ReadMetadata();
         byte[] ReadOptNbt();
-        byte[] ReadNbt();
+        T ReadNbt<T>() where T : INbtSerializable, new();
         byte[] Read(int length);
     }
 }

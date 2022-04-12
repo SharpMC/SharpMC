@@ -89,14 +89,14 @@ namespace SharpMC.Network.Util
 			return BaseStream.ReadByte();
 		}
 
-        public byte[] ReadNbt()
+        public T ReadNbt<T>() where T : INbtSerializable, new()
         {
-            // TODO NBT !!!
-
-            return new byte[0];
+            var tag = this.ToCompound();
+            var obj = tag.ToObject<T>();
+            return obj;
         }
 
-		public byte[] Read(int length)
+        public byte[] Read(int length)
 		{
             var s = new SpinWait();
 			var read = 0;
@@ -499,11 +499,10 @@ namespace SharpMC.Network.Util
             throw new NotImplementedException();
         }
 
-        public void WriteNbt(byte[] data)
+        public void WriteNbt(INbtSerializable data)
         {
-
-            // TODO Write NBT ?!
-            
+            var bytes = data.ToBytes();
+			Write(bytes);
         }
 
 		public void WriteULong(ulong data)

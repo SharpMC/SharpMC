@@ -17,7 +17,7 @@ namespace SharpMC.Network.Packets.Play.ToClient
 
         public override void Decode(IMinecraftStream stream)
         {
-            Dimension = stream.ReadNbt();
+            // TODO Dimension = stream.ReadNbt();
             WorldName = stream.ReadString();
             HashedSeed = stream.ReadLong();
             Gamemode = stream.ReadByte();
@@ -29,7 +29,7 @@ namespace SharpMC.Network.Packets.Play.ToClient
 
         public override void Encode(IMinecraftStream stream)
         {
-            stream.WriteNbt(Dimension);
+            // TODO stream.WriteNbt(Dimension);
             stream.WriteString(WorldName);
             stream.WriteLong(HashedSeed);
             stream.WriteByte(Gamemode);

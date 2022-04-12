@@ -1,14 +1,16 @@
 ﻿using System;
+using System.ComponentModel;
 using System.Linq;
 
 namespace SharpMC.Network.Util
 {
     public static class BinaryTool
     {
-        public static int[] ToIntArray(long hashedSeed)
+        public static int[] ToIntArray(long value)
         {
-            var first = (int) hashedSeed;
-            var second = (int) hashedSeed;
+            var bytes = BitConverter.GetBytes(value);
+            var first = BitConverter.ToInt32(bytes, 4);
+            var second = BitConverter.ToInt32(bytes, 0);
             return new[] {first, second};
         }
 
