@@ -12,6 +12,7 @@ using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Parameters;
 using SharpMC.Network.Binary;
 using SharpMC.Network.Binary.Special;
+using SharpMC.Network.Packets;
 using SharpNBT;
 
 namespace SharpMC.Network.Util
@@ -95,6 +96,13 @@ namespace SharpMC.Network.Util
             var tag = this.ToCompound();
             var obj = tag.ToObject<T>();
             return obj;
+        }
+
+        public T ReadBitField<T>() where T : IPacket, new()
+        {
+            var bits = new T();
+			bits.Decode(this);
+            return bits;
         }
 
         public byte[] Read(int length)
@@ -185,6 +193,50 @@ namespace SharpMC.Network.Util
             for (var i = 0; i < length; i++)
             {
                 result[i] = ReadString();
+            }
+            return result;
+        }
+
+        public T[] ReadBitFieldArray<T>() where T : IPacket, new()
+        {
+            var length = ReadVarInt(out _);
+            var result = new T[length];
+            for (var i = 0; i < length; i++)
+            {
+                result[i] = ReadBitField<T>();
+            }
+            return result;
+        }
+
+        public long[] ReadLongArray()
+        {
+            var length = ReadVarInt(out _);
+            var result = new long[length];
+            for (var i = 0; i < length; i++)
+            {
+                result[i] = ReadLong();
+            }
+            return result;
+        }
+
+        public byte[] ReadByteArray()
+        {
+            var length = ReadVarInt(out _);
+            var result = new byte[length];
+            for (var i = 0; i < length; i++)
+            {
+                result[i] = (byte) ReadByte();
+            }
+            return result;
+        }
+
+        public byte[][] ReadByteArrays()
+        {
+            var length = ReadVarInt(out _);
+            var result = new byte[length][];
+            for (var i = 0; i < length; i++)
+            {
+                result[i] = ReadByteArray();
             }
             return result;
         }
@@ -379,7 +431,12 @@ namespace SharpMC.Network.Util
             throw new NotImplementedException();
         }
 
-		public void Write(byte[] data)
+        public void WriteBitField(IPacket value)
+        {
+            value.Encode(this);
+        }
+
+        public void Write(byte[] data)
 		{
 			Write(data, 0, data.Length);
 		}
@@ -402,9 +459,55 @@ namespace SharpMC.Network.Util
             }
             WriteVarInt(texts.Length);
             foreach (var text in texts)
-            {
                 WriteString(text);
+        }
+
+        public void WriteBitFieldArray<T>(T[] values) where T : IPacket, new()
+        {
+            if (values == null)
+            {
+                WriteVarInt(0);
+                return;
             }
+            WriteVarInt(values.Length);
+            foreach (var value in values)
+                WriteBitField(value);
+        }
+
+        public void WriteLongArray(long[] values)
+        {
+            if (values == null)
+            {
+                WriteVarInt(0);
+                return;
+            }
+            WriteVarInt(values.Length);
+            foreach (var value in values)
+                WriteLong(value);
+        }
+
+		public void WriteByteArray(byte[] values)
+        {
+            if (values == null)
+            {
+                WriteVarInt(0);
+                return;
+            }
+            WriteVarInt(values.Length);
+            foreach (var value in values)
+                WriteByte(value);
+        }
+
+        public void WriteByteArrays(byte[][] values)
+        {
+            if (values == null)
+            {
+                WriteVarInt(0);
+                return;
+            }
+            WriteVarInt(values.Length);
+            foreach (var value in values)
+                WriteByteArray(value);
         }
 
         public void WriteSByte(sbyte value)

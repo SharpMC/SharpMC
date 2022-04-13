@@ -28,8 +28,8 @@ namespace SharpMC.Network.Binary
 
         public static byte[] ToBytes(this INbtSerializable obj)
         {
-            var tag = obj.ToCompound();
-            return ToBytes(tag);
+            var tag = obj?.ToCompound();
+            return tag == null ? Array.Empty<byte>() : ToBytes(tag);
         }
 
         public static T ToObject<T>(this CompoundTag tag) where T : INbtSerializable, new()

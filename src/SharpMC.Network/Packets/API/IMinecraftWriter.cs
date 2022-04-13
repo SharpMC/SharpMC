@@ -2,6 +2,7 @@ using System;
 using System.Numerics;
 using SharpMC.Network.Binary;
 using SharpMC.Network.Binary.Special;
+using SharpMC.Network.Packets;
 
 namespace SharpMC.Network.Util
 {
@@ -22,10 +23,15 @@ namespace SharpMC.Network.Util
         void WriteDouble(double value);
         void WriteInt(int value);
         void WriteBuffer(byte[] data);
+        void WriteByteArray(byte[] values);
+        void WriteByteArrays(byte[][] values);
         void WriteLong(long value);
+        void WriteLongArray(long[] values);
         void WriteOptNbt(object data);
         void WriteNbt(INbtSerializable data);
         void WriteMetadata(byte[] data);
+        void WriteBitField(IPacket value);
+        void WriteBitFieldArray<T>(T[] entities) where T : IPacket, new();
         void Write(byte[] data);
     }
 }

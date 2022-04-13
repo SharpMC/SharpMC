@@ -81,7 +81,7 @@ namespace SharpMC.Players
             {
                 Connection.SendPacket(new MapChunk
                 {
-                    Data = i
+                    ChunkData = i
                 });
             }
         }

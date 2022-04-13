@@ -1,4 +1,6 @@
-﻿using SharpMC.Network.Util;
+﻿using SharpMC.Network.Binary.Model;
+using SharpMC.Network.Binary.Special;
+using SharpMC.Network.Util;
 
 namespace SharpMC.Network.Packets.Play.ToClient
 {
@@ -8,30 +10,47 @@ namespace SharpMC.Network.Packets.Play.ToClient
 
         public int X { get; set; }
         public int Z { get; set; }
-        public byte[] Heightmaps { get; set; }
+        public HeightMaps HeightMaps { get; set; }
+        public byte[] ChunkData { get; set; }
+        public ChunkBlockEntity[] BlockEntities { get; set; }
         public bool TrustEdges { get; set; }
-
-        public byte[] Data { get; set; }
+        public long[] SkyLightMask { get; set; }
+        public long[] BlockLightMask { get; set; }
+        public long[] EmptySkyLightMask { get; set; }
+        public long[] EmptyBlockLightMask { get; set; }
+        public byte[][] SkyLight { get; set; }
+        public byte[][] BlockLight { get; set; }
 
         public override void Decode(IMinecraftStream stream)
         {
             X = stream.ReadInt();
             Z = stream.ReadInt();
-            // TODO Heightmaps = stream.ReadNbt();
+            HeightMaps = stream.ReadNbt<HeightMaps>();
+            ChunkData = stream.ReadByteArray();
+            BlockEntities = stream.ReadBitFieldArray<ChunkBlockEntity>();
             TrustEdges = stream.ReadBool();
+            SkyLightMask = stream.ReadLongArray();
+            BlockLightMask = stream.ReadLongArray();
+            EmptySkyLightMask = stream.ReadLongArray();
+            EmptyBlockLightMask = stream.ReadLongArray();
+            SkyLight = stream.ReadByteArrays();
+            BlockLight = stream.ReadByteArrays();
         }
 
         public override void Encode(IMinecraftStream stream)
         {
-            if (Data != null)
-            {
-                stream.Write(Data);
-                return;
-            }
             stream.WriteInt(X);
             stream.WriteInt(Z);
-            // TODO stream.WriteNbt(Heightmaps);
+            stream.WriteNbt(HeightMaps);
+            stream.WriteByteArray(ChunkData);
+            stream.WriteBitFieldArray(BlockEntities);
             stream.WriteBool(TrustEdges);
+            stream.WriteLongArray(SkyLightMask);
+            stream.WriteLongArray(BlockLightMask);
+            stream.WriteLongArray(EmptySkyLightMask);
+            stream.WriteLongArray(EmptyBlockLightMask);
+            stream.WriteByteArrays(SkyLight);
+            stream.WriteByteArrays(BlockLight);
         }
     }
 }

@@ -1,12 +1,19 @@
+using System.Linq;
 using SharpMC.Data;
 using SharpMC.Network.Binary;
+using SharpMC.Network.Binary.Model;
 using SharpMC.Network.Binary.Special;
 using SharpMC.Network.Packets.Play.ToBoth;
 using SharpMC.Network.Packets.Play.ToClient;
 using SharpMC.Network.Packets.Play.ToServer;
 using SharpNBT;
 using Xunit;
+using static SharpMC.Network.Test.DataBunch;
+using static SharpMC.Network.Test.DataBunch2;
+using static SharpMC.Network.Test.DataBunch3;
+using static SharpMC.Network.Test.DataBunch4;
 using static SharpMC.Network.Test.TestHelper;
+using static SharpMC.Network.Util.BinaryTool;
 
 namespace SharpMC.Network.Test
 {
@@ -17,7 +24,7 @@ namespace SharpMC.Network.Test
         [InlineData(7, new byte[] {0x28, 0x00, 0x29, 0x01, 0x0D, 0x01, 0x00})]
         [InlineData(19, new byte[]
         {
-            0x28, 0x00, 0x29, 0x01, 0x0D, 0x01, 0x0a, 0x00, 0x00, 0x09, 
+            0x28, 0x00, 0x29, 0x01, 0x0D, 0x01, 0x0a, 0x00, 0x00, 0x09,
             0x00, 0x01, 0x45, 0x02, 0x00, 0x00, 0x00, 0x00, 0x00
         })]
         public void ShouldReadCreativeSlot(int count, byte[] input)
@@ -43,7 +50,7 @@ namespace SharpMC.Network.Test
                 return;
             }
             var meta = (CompoundTag) packet.Item.Optional;
-            Assert.Equal(1, meta.Count);
+            Assert.Single(meta);
             var opt = (ListTag) meta[0];
             Assert.Equal("E", opt.Name);
             Assert.Equal(TagType.Short, opt.ChildType);
@@ -53,7 +60,7 @@ namespace SharpMC.Network.Test
         [Fact]
         public void ShouldReadCustomPayload()
         {
-            var input = DataBunch.PlayCustomPayload;
+            var input = PlayCustomPayload;
             Assert.Equal(25, input.Length);
 
             var packet = Read<CustomPayload>(input, out var packetId);
@@ -64,10 +71,26 @@ namespace SharpMC.Network.Test
             Assert.Equal(new byte[] {7, 118, 97, 110, 105, 108, 108, 97}, packet.Data);
         }
 
+        [Theory]
+        [InlineData(1, 32457)]
+        [InlineData(2, 26319)]
+        [InlineData(3, 27594)]
+        public void ShouldReadMapChunk(int idx, int size)
+        {
+            var input = idx switch {1 => PlayMapChunk1, 2 => PlayMapChunk2, _ => PlayMapChunk3};
+            Assert.Equal(size, input.Length);
+
+            var packet = Read<MapChunk>(input, out var packetId);
+            WriteTexts($"{nameof(ShouldReadMapChunk)}{idx}", ToJson(packet));
+            Assert.Equal(0x22, packetId);
+
+            Assert.Equal(0x22, packet.ClientId);
+        }
+
         [Fact]
         public void ShouldReadPlayLogin()
         {
-            var input = DataBunch.PlayLogin;
+            var input = PlayLogin;
             Assert.Equal(23992, input.Length);
 
             var packet = Read<Login>(input, out var packetId);
@@ -85,7 +108,7 @@ namespace SharpMC.Network.Test
             }, packet.WorldNames);
             Assert.Equal("minecraft:overworld", packet.WorldName);
             Assert.Equal(-2837111331551244922, packet.HashedSeed);
-            Assert.Equal(new[] { -660566458, -1901654650 }, packet.HashedSeeds);
+            Assert.Equal(new[] {-660566458, -1901654650}, packet.HashedSeeds);
             Assert.Equal(0, packet.Dimension.PiglinSafe);
             Assert.Equal(384, packet.Dimension.Height);
             Assert.Equal(0, packet.Dimension.UltraWarm);
@@ -112,8 +135,8 @@ namespace SharpMC.Network.Test
         }
 
         [Theory]
-        [InlineData(4, new byte[] { 0x28, 0x00, 0x29, 0x00 })]
-        [InlineData(7, new byte[] { 0x28, 0x00, 0x29, 0x01, 0x0D, 0x01, 0x00 })]
+        [InlineData(4, new byte[] {0x28, 0x00, 0x29, 0x00})]
+        [InlineData(7, new byte[] {0x28, 0x00, 0x29, 0x01, 0x0D, 0x01, 0x00})]
         [InlineData(19, new byte[]
         {
             0x28, 0x00, 0x29, 0x01, 0x0D, 0x01, 0x0a, 0x00, 0x00, 0x09,
@@ -148,13 +171,13 @@ namespace SharpMC.Network.Test
         [Fact]
         public void ShouldWriteCustomPayload()
         {
-            var expected = DataBunch.PlayCustomPayload;
+            var expected = PlayCustomPayload;
             Assert.Equal(25, expected.Length);
 
             var packet = new CustomPayload
             {
                 Channel = "minecraft:brand",
-                Data = new byte[] { 7, 118, 97, 110, 105, 108, 108, 97 }
+                Data = new byte[] {7, 118, 97, 110, 105, 108, 108, 97}
             };
 
             var actual = Write(packet, 0x0a);
@@ -162,10 +185,71 @@ namespace SharpMC.Network.Test
             Assert.Equal(ToJson(expected), ToJson(actual));
         }
 
+        [Theory]
+        [InlineData(1, 32457)]
+        [InlineData(2, 26319)]
+        [InlineData(3, 27594)]
+        public void ShouldWriteMapChunk(int idx, int size)
+        {
+            var expected = idx switch {1 => PlayMapChunk1, 2 => PlayMapChunk2, _ => PlayMapChunk3};
+            Assert.Equal(size, expected.Length);
+
+            var packet = idx switch
+            {
+                1 => new MapChunk
+                {
+                    X = -9, Z = -13, TrustEdges = true, SkyLightMask = new long[] {768},
+                    BlockLightMask = new long[] {62}, EmptySkyLightMask = new long[] {255},
+                    EmptyBlockLightMask = new long[] {961}, ChunkData = MapChunkData1,
+                    HeightMaps = new HeightMaps
+                    {
+                        MotionBlocking = GetLongs(36, 2292305770412047999, 17079008895),
+                        WorldSurface = GetLongs(36, 2292305770412047999, 17079008895)
+                    },
+                    SkyLight = new[] { Chunk1Sky1, GetBytes(2048, 255) },
+                    BlockLight = new[] { Chunk1Block1, Chunk1Block2, Chunk1Block3, Chunk1Block4, Chunk1Block5 }
+                },
+                2 => new MapChunk
+                {
+                    X = -7, Z = -12, TrustEdges = true, SkyLightMask = new long[] {768},
+                    BlockLightMask = new long[] {12}, EmptySkyLightMask = new long[] {255},
+                    EmptyBlockLightMask = new long[] {1011}, ChunkData = MapChunkData2,
+                    HeightMaps = new HeightMaps
+                    {
+                        MotionBlocking = GetLongs(36, 2292305770412047999, 17079008895),
+                        WorldSurface = GetLongs(36, 2292305770412047999, 17079008895)
+                    },
+                    SkyLight = new[] { Chunk2Sky1, GetBytes(2048, 255) },
+                    BlockLight = new[] { Chunk2Block1, Chunk2Block2 }
+                },
+                _ => new MapChunk
+                {
+                    X = -6, Z = -5, TrustEdges = true, SkyLightMask = new long[] {768},
+                    BlockLightMask = new long[] {48}, EmptySkyLightMask = new long[] {255},
+                    EmptyBlockLightMask = new long[] {975}, ChunkData = MapChunkData3,
+                    HeightMaps = new HeightMaps
+                    {
+                        MotionBlocking = GetLongs(36, 2292305770412047999, 17079008895),
+                        WorldSurface = GetLongs(36, 2292305770412047999, 17079008895)
+                    },
+                    BlockEntities = new ChunkBlockEntity[]
+                    {
+                        new() {Coordinates = new PackedCoordinates {BlockX = 4, BlockZ = 8}, Y = 49, Type = 1}
+                    },
+                    SkyLight = new[] {Chunk3Sky1, GetBytes(2048, 255)},
+                    BlockLight = new[] {Chunk3Block1, Chunk3Block2}
+                }
+            };
+
+            var actual = Write(packet, 0x22);
+            WriteBytes($"{nameof(ShouldWriteMapChunk)}{idx}", expected, actual);
+            Assert.Equal(ToJson(expected), ToJson(actual));
+        }
+
         [Fact]
         public void ShouldWritePlayLogin()
         {
-            var expected = DataBunch.PlayLogin;
+            var expected = PlayLogin;
             Assert.Equal(23992, expected.Length);
 
             var packet = new Login
@@ -176,7 +260,7 @@ namespace SharpMC.Network.Test
                 PreviousGameMode = -1,
                 WorldNames = Defaults.WorldNames,
                 WorldName = Defaults.WorldName,
-                HashedSeeds = new[] { -660566458, -1901654650 },
+                HashedSeeds = new[] {-660566458, -1901654650},
                 MaxPlayers = 20,
                 ViewDistance = 10,
                 SimulationDistance = 10,

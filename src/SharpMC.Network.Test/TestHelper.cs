@@ -1,9 +1,11 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using SharpMC.Network.Packets;
 using SharpMC.Network.Util;
+using static SharpMC.Network.Util.BinaryTool;
 
 namespace SharpMC.Network.Test
 {
@@ -56,5 +58,23 @@ namespace SharpMC.Network.Test
         {
             File.WriteAllText($"{prefix}_a.json", actual, Encoding.UTF8);
         }
+
+        public static byte[] GetBytes(int count, byte num, params byte[] suffix)
+            => Enumerable.Range(1, count)
+                .Select(_ => num)
+                .Concat(suffix)
+                .ToArray();
+
+        public static long[] GetLongs(int count, long num, params long[] suffix)
+            => Enumerable.Range(1, count)
+                .Select(_ => num)
+                .Concat(suffix)
+                .ToArray();
+
+        public static long[] GetLongs(int count, int[] num, params int[][] suffix)
+            => Enumerable.Range(1, count)
+                .Select(_ => ToLong(num))
+                .Concat(suffix.Select(ToLong))
+                .ToArray();
     }
 }
