@@ -5,7 +5,6 @@ using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
 using SharpMC.Network.Packets;
 using SharpMC.Network.Util;
-using static SharpMC.Network.Util.BinaryTool;
 
 namespace SharpMC.Network.Test
 {
@@ -69,12 +68,6 @@ namespace SharpMC.Network.Test
             => Enumerable.Range(1, count)
                 .Select(_ => num)
                 .Concat(suffix)
-                .ToArray();
-
-        public static long[] GetLongs(int count, int[] num, params int[][] suffix)
-            => Enumerable.Range(1, count)
-                .Select(_ => ToLong(num))
-                .Concat(suffix.Select(ToLong))
                 .ToArray();
     }
 }

@@ -1,7 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Text;
-using SharpMC.Network.Packets;
+﻿using SharpMC.Network.Packets;
 using SharpMC.Network.Util;
 
 namespace SharpMC.Network.Binary.Special

@@ -1,4 +1,3 @@
-using System.Linq;
 using SharpMC.Data;
 using SharpMC.Network.Binary;
 using SharpMC.Network.Binary.Model;
@@ -13,7 +12,6 @@ using static SharpMC.Network.Test.DataBunch2;
 using static SharpMC.Network.Test.DataBunch3;
 using static SharpMC.Network.Test.DataBunch4;
 using static SharpMC.Network.Test.TestHelper;
-using static SharpMC.Network.Util.BinaryTool;
 
 namespace SharpMC.Network.Test
 {
