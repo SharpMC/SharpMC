@@ -1,3 +1,4 @@
+using System.Linq;
 using SharpMC.Data;
 using SharpMC.Network.Binary;
 using SharpMC.Network.Binary.Model;
@@ -83,6 +84,14 @@ namespace SharpMC.Network.Test
             Assert.Equal(0x22, packetId);
 
             Assert.Equal(0x22, packet.ClientId);
+            var entity = packet.BlockEntities?.SingleOrDefault();
+            if (entity == null)
+                return;
+            Assert.Equal(49, entity.Y);
+            Assert.Equal(1, entity.Type);
+            Assert.Null(entity.Optional);
+            Assert.Equal(4, entity.Coordinates.BlockX);
+            Assert.Equal(8, entity.Coordinates.BlockZ);
         }
 
         [Fact]
