@@ -13,6 +13,7 @@ using static SharpMC.Network.Test.DataBunch2;
 using static SharpMC.Network.Test.DataBunch3;
 using static SharpMC.Network.Test.DataBunch4;
 using static SharpMC.Network.Test.TestHelper;
+using static SharpMC.Util.Numbers;
 
 namespace SharpMC.Network.Test
 {

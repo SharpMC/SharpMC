@@ -299,6 +299,12 @@ namespace SharpMC.Network.Util
 			return IPAddress.NetworkToHostOrder(d);
 		}
 
+        public uint ReadUInt()
+        {
+            var da = Read(4);
+            return NetworkToHostOrder(BitConverter.ToUInt32(da, 0));
+        }
+
 		public ushort ReadUShort()
 		{
 			var da = Read(2);
@@ -415,7 +421,15 @@ namespace SharpMC.Network.Util
 			return BitConverter.ToUInt16(net, 0);
 		}
 
-		private ulong NetworkToHostOrder(ulong network)
+        private uint NetworkToHostOrder(uint network)
+        {
+            var net = BitConverter.GetBytes(network);
+            if (BitConverter.IsLittleEndian)
+                Array.Reverse(net);
+            return BitConverter.ToUInt32(net, 0);
+        }
+
+        private ulong NetworkToHostOrder(ulong network)
 		{
 			var net = BitConverter.GetBytes(network);
 			if (BitConverter.IsLittleEndian)

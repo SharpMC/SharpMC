@@ -136,6 +136,7 @@ namespace SharpMC.World
             {
                 using (var mc = new MinecraftStream(ms))
                 {
+                    // TODO: Fix structure ?! packet_map_chunk
                     mc.WriteInt(Coordinates.X);
                     mc.WriteInt(Coordinates.Z);
                     mc.WriteBool(true);

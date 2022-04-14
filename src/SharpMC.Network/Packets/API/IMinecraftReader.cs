@@ -20,6 +20,7 @@ namespace SharpMC.Network.Util
         Guid ReadUuid();
         Vector3 ReadPosition();
         ushort ReadUShort();
+        uint ReadUInt();
         int ReadInt();
         double ReadDouble();
         byte[] ReadBuffer();

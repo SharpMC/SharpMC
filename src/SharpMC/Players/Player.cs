@@ -8,8 +8,10 @@ using System.Collections.Generic;
 using SharpMC.API.Enums;
 using SharpMC.Data;
 using SharpMC.Network.Binary;
+using SharpMC.Network.Binary.Model;
 using SharpMC.Network.Packets.Play.ToBoth;
 using SharpMC.Network.Packets.Play.ToClient;
+using static SharpMC.Util.Numbers;
 
 namespace SharpMC.Players
 {
@@ -51,7 +53,7 @@ namespace SharpMC.Players
             Gamemode = Level.DefaultGamemode;
             SendJoinGame();
             _prevChunkCoordinates = new ChunkCoordinates(KnownPosition);
-            // SendChunksForKnownPosition(_prevChunkCoordinates); // TODO
+            SendChunksForKnownPosition(_prevChunkCoordinates);
             SendPlayerPositionAndLook();
             Level.AddPlayer(this, true);
         }
@@ -81,7 +83,12 @@ namespace SharpMC.Players
             {
                 Connection.SendPacket(new MapChunk
                 {
-                    ChunkData = i
+                    ChunkData = i,
+                    HeightMaps = new HeightMaps
+                    {
+                        MotionBlocking = GetLongs(36, 2292305770412047999, 17079008895),
+                        WorldSurface = GetLongs(36, 2292305770412047999, 17079008895)
+                    }
                 });
             }
         }
