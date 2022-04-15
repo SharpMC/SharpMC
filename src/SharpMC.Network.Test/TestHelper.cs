@@ -31,7 +31,7 @@ namespace SharpMC.Network.Test
             return ms.ToArray();
         }
 
-        public static string ToJson(Packet packet)
+        public static string ToJson(object packet)
         {
             var cfg = new JsonSerializerSettings
             {
