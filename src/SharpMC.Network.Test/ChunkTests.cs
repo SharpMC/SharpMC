@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using SharpMC.Chunky;
 using SharpMC.Chunky.Palette;
 using SharpMC.Network.Util;
@@ -13,17 +14,28 @@ namespace SharpMC.Network.Test
     public class ChunkTests
     {
         [Theory]
-        [InlineData(1, 17417)]
-        [InlineData(2, 17429)]
-        [InlineData(3, 18699)]
-        public void ShouldReadChunk(int idx, int size)
+        [InlineData(1, 17417, -9, -13, new[] {33, 18684, 18684, 0, 18684, 1, 6, 34})]
+        [InlineData(2, 17429, -7, -12, new[] {33, 18684, 18684, 3955, 4, 1, 1, 1})]
+        [InlineData(3, 18699, -6, -5, new[] {33, 18684, 17714, 18684, 18684, 2, 1, 1})]
+        public void ShouldReadChunk(int idx, int size, int x, int z, int[] array)
         {
             var input = idx switch {1 => MapChunkData1, 2 => MapChunkData2, _ => MapChunkData3};
             Assert.Equal(size, input.Length);
 
-            var b = PaletteType.Biome;
+            using var cache = new ChunkCache {ChunkHeightY = 384, ChunkMinY = -64};
+            var chunkSize = cache.ChunkHeightY;
+            var sections = Chunks.ReadAll(input, chunkSize).ToArray();
+            var javaChunks = sections.Select(c => c.ChunkData).ToArray();
+            cache.AddToCache(x, z, javaChunks);
 
-            // TODO
+            const int offset = 4;
+            var states = new int[array.Length];
+            for (var i = -offset; i < array.Length - offset; i++)
+            {
+                var block = cache.GetBlockAt(x * 16, i * 16, z * 16);
+                states[i + offset] = block;
+            }
+            Assert.Equal(array, states);
         }
 
         [Theory]
@@ -32,7 +44,7 @@ namespace SharpMC.Network.Test
         [InlineData(3, 18699)]
         public void ShouldWriteChunk(int idx, int size)
         {
-            var expected = idx switch {1 => MapChunkData1, 2 => MapChunkData2, _ => MapChunkData3};
+            var expected = idx switch { 1 => MapChunkData1, 2 => MapChunkData2, _ => MapChunkData3 };
             Assert.Equal(size, expected.Length);
 
             var b = PaletteType.Chunk;
@@ -42,7 +54,7 @@ namespace SharpMC.Network.Test
 
         private static IList<ChunkSection> Setup()
         {
-            var chunkSectionsToTest = new List<ChunkSection> {new()};
+            var chunkSectionsToTest = new List<ChunkSection> { new() };
             var section = new ChunkSection();
             section.SetBlock(0, 0, 0, 10);
             chunkSectionsToTest.Add(section);
@@ -62,14 +74,15 @@ namespace SharpMC.Network.Test
             var chunkSectionsToTest = Setup();
             foreach (var section in chunkSectionsToTest)
             {
-                var stream = new MemoryStream();
-                var output = new MinecraftStream(stream);
-                ChunkSection.Write(output, section, 4);
-                var input = new MinecraftStream(new MemoryStream(stream.ToArray()));
+                using var stream = new MemoryStream();
+                using var output = new MinecraftStream(stream);
+                ChunkSection.Write(output, section);
+                using var raw = new MemoryStream(stream.ToArray());
+                using var input = new MinecraftStream(raw);
                 ChunkSection decoded;
                 try
                 {
-                    decoded = ChunkSection.Read(input, 4);
+                    decoded = ChunkSection.Read(input);
                 }
                 catch (Exception e)
                 {

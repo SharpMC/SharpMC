@@ -1,9 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using SharpMC.Network.Chunky.Utils;
 
 namespace SharpMC.Chunky
 {
-    public sealed class ChunkCache
+    public sealed class ChunkCache : IDisposable
     {
         private readonly IDictionary<long, ChunkContainer> _chunks;
 
@@ -87,14 +88,21 @@ namespace SharpMC.Chunky
             _chunks.Clear();
         }
 
-        public int GetChunkMinY()
+        public int ChunkMinY
         {
-            return _minY >> 4;
+            get => _minY >> 4;
+            set => _minY = value;
         }
 
-        public int GetChunkHeightY()
+        public int ChunkHeightY
         {
-            return _heightY >> 4;
+            get => _heightY >> 4;
+            set => _heightY = value;
+        }
+
+        public void Dispose()
+        {
+            Clear();
         }
     }
 }

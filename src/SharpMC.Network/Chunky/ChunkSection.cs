@@ -1,4 +1,5 @@
 ﻿using SharpMC.Chunky.Palette;
+using SharpMC.Network.Binary;
 using SharpMC.Network.Util;
 
 namespace SharpMC.Chunky
@@ -23,18 +24,17 @@ namespace SharpMC.Chunky
             BiomeData = biomeData;
         }
 
-        public static ChunkSection Read(IMinecraftReader input, int globalBiomePaletteBits)
+        public static ChunkSection Read(IMinecraftReader input)
         {
             int blockCount = input.ReadShort();
-            var chunkPalette = DataPalette.Read(input, PaletteType.Chunk,
-                DataPalette.GlobalPaletteBitsPerEntry);
-            var biomePalette = DataPalette.Read(input, PaletteType.Biome,
-                globalBiomePaletteBits);
+            const int chunkBits = DataPalette.GlobalPaletteBitsPerEntry;
+            const int biomeBits = 4;
+            var chunkPalette = DataPalette.Read(input, PaletteType.Chunk, chunkBits);
+            var biomePalette = DataPalette.Read(input, PaletteType.Biome, biomeBits);
             return new ChunkSection(blockCount, chunkPalette, biomePalette);
         }
 
-        public static void Write(IMinecraftWriter output, ChunkSection section,
-            int globalBiomePaletteBits)
+        public static void Write(IMinecraftWriter output, ChunkSection section)
         {
             output.WriteShort((short) section.BlockCount);
             DataPalette.Write(output, section.ChunkData);
