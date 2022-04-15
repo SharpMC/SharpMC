@@ -25,17 +25,18 @@ namespace SharpMC.Network.Test
             using var cache = new ChunkCache {ChunkHeightY = 384, ChunkMinY = -64};
             var chunkSize = cache.ChunkHeightY;
             var sections = Chunks.ReadAll(input, chunkSize).ToArray();
+            Assert.Equal(24, sections.Length);
             var javaChunks = sections.Select(c => c.ChunkData).ToArray();
             cache.AddToCache(x, z, javaChunks);
 
             const int offset = 4;
-            var states = new int[array.Length];
+            var stateIds = new int[array.Length];
             for (var i = -offset; i < array.Length - offset; i++)
             {
                 var block = cache.GetBlockAt(x * 16, i * 16, z * 16);
-                states[i + offset] = block;
+                stateIds[i + offset] = block;
             }
-            Assert.Equal(array, states);
+            Assert.Equal(array, stateIds);
         }
 
         [Theory]
