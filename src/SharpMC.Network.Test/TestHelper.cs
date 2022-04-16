@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
@@ -29,6 +30,11 @@ namespace SharpMC.Network.Test
             mc.WriteVarInt(id);
             packet.Encode(mc);
             return ms.ToArray();
+        }
+
+        public static string AsList<T>(IEnumerable<T> items)
+        {
+            return string.Join("|", items);
         }
 
         public static string ToJson(object packet)

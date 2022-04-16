@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using SharpMC.Chunky;
 using SharpMC.Chunky.Palette;
+using SharpMC.Data;
 using SharpMC.Network.Util;
 using Xunit;
 using static SharpMC.Network.Test.DataBunch3;
@@ -14,10 +15,16 @@ namespace SharpMC.Network.Test
     public class ChunkTests
     {
         [Theory]
-        [InlineData(1, 17417, -9, -13, new[] {33, 18684, 18684, 0, 18684, 1, 6, 34})]
-        [InlineData(2, 17429, -7, -12, new[] {33, 18684, 18684, 3955, 4, 1, 1, 1})]
-        [InlineData(3, 18699, -6, -5, new[] {33, 18684, 17714, 18684, 18684, 2, 1, 1})]
-        public void ShouldReadChunk(int idx, int size, int x, int z, int[] array)
+        [InlineData(1, 17417, -9, -13, new[] {33, 18684, 18684, 0, 18684, 1, 6, 34}, 
+            new [] { "bedrock", "deepslate", "deepslate", "air", 
+                "deepslate", "stone", "andesite", "water" })]
+        [InlineData(2, 17429, -7, -12, new[] {33, 18684, 18684, 3955, 4, 1, 1, 1},
+            new[] { "bedrock", "deepslate", "deepslate", "deepslate_redstone_ore",
+                "diorite", "stone", "stone", "stone" })] 
+        [InlineData(3, 18699, -6, -5, new[] {33, 18684, 17714, 18684, 18684, 2, 1, 1},
+            new[] { "bedrock", "deepslate", "tuff", "deepslate", 
+                "deepslate", "granite", "stone", "stone" })]
+        public void ShouldReadChunk(int idx, int size, int x, int z, int[] array, string[] n)
         {
             var input = idx switch {1 => MapChunkData1, 2 => MapChunkData2, _ => MapChunkData3};
             Assert.Equal(size, input.Length);
@@ -34,13 +41,16 @@ namespace SharpMC.Network.Test
             cache.AddToCache(x, z, javaChunks);
 
             const int offset = 4;
-            var stateIds = new int[array.Length];
+            var states = new int[array.Length];
+            var blocks = new string[array.Length];
             for (var i = -offset; i < array.Length - offset; i++)
             {
                 var block = cache.GetBlockAt(x * 16, i * 16, z * 16);
-                stateIds[i + offset] = block;
+                states[i + offset] = block;
+                blocks[i + offset] = Finder.FindBlockByState(block).Name;
             }
-            Assert.Equal(array, stateIds);
+            Assert.Equal(AsList(array), AsList(states));
+            Assert.Equal(AsList(n), AsList(blocks));
         }
 
         [Theory]
