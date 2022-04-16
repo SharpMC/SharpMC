@@ -1,5 +1,4 @@
 ﻿using SharpMC.Chunky.Palette;
-using SharpMC.Network.Binary;
 using SharpMC.Network.Util;
 
 namespace SharpMC.Chunky

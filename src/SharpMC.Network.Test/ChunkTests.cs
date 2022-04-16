@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using SharpMC.Chunky;
 using SharpMC.Chunky.Palette;
+using SharpMC.Network.Chunky.Palette;
 using SharpMC.Network.Util;
 using Xunit;
 using static SharpMC.Network.Test.DataBunch3;
@@ -26,6 +27,10 @@ namespace SharpMC.Network.Test
             var chunkSize = cache.ChunkHeightY;
             var sections = Chunks.ReadAll(input, chunkSize).ToArray();
             Assert.Equal(24, sections.Length);
+            foreach (var section in sections)
+            {
+                Assert.Equal(64, section.BiomeData.PaletteType.StorageSize);
+            }
             var javaChunks = sections.Select(c => c.ChunkData).ToArray();
             cache.AddToCache(x, z, javaChunks);
 

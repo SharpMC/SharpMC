@@ -1,3 +1,4 @@
+using System.IO;
 using System.Text;
 
 namespace SharpMC.Generator.Tools
@@ -17,6 +18,11 @@ namespace SharpMC.Generator.Tools
             }
             var txt = bld.ToString();
             return txt;
+        }
+
+        public static void CreateDir(string dest)
+        {
+            Directory.CreateDirectory(Path.GetDirectoryName(dest));
         }
     }
 }

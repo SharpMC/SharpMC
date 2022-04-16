@@ -2,6 +2,7 @@
 using System.IO;
 using SharpMC.Generator.Pakkit;
 using SharpMC.Generator.Prismarine;
+using SharpMC.Generator.Prismarine.Data;
 
 namespace SharpMC.Generator
 {
@@ -24,6 +25,10 @@ namespace SharpMC.Generator
             if (mode == 'j')
             {
                 PrismarineReader.Start(source, target);
+            }
+            else if (mode == 'd')
+            {
+                DataPriReader.Start(source, target);
             }
             else if (mode == 'p')
             {
