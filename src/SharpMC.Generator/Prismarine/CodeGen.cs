@@ -8,7 +8,7 @@ namespace SharpMC.Generator.Prismarine
 {
     internal static class CodeGen
     {
-        private const string Sp = "    ";
+        internal const string Sp = "    ";
 
         public static void WriteDown((OneUnit c, OneUnit s) t, string target, string dir)
         {

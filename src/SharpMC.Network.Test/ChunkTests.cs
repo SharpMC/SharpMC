@@ -4,7 +4,6 @@ using System.IO;
 using System.Linq;
 using SharpMC.Chunky;
 using SharpMC.Chunky.Palette;
-using SharpMC.Network.Chunky.Palette;
 using SharpMC.Network.Util;
 using Xunit;
 using static SharpMC.Network.Test.DataBunch3;

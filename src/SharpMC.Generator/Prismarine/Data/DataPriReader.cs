@@ -31,6 +31,7 @@ namespace SharpMC.Generator.Prismarine.Data
             var recipes = LoadSimple<Dictionary<int, Recipe[]>>(version, source, "recipes");
 
             // TODO ?!
+            DataPriWriter.WriteBlocks(blocks, target);
 
             Console.WriteLine();
         }

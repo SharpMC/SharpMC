@@ -10,6 +10,8 @@ namespace SharpMC.Generator.Prismarine
         
         public string Name { get; set; }
 
+        public string Constant { get; set; }
+
         public override string ToString() => $"{Name} ({NativeType})";
     }
 }
