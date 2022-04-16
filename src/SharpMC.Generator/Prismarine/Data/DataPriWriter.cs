@@ -110,5 +110,36 @@ namespace SharpMC.Generator.Prismarine.Data
             Console.WriteLine($" * {item.Class}");
             Write(item, target);
         }
+
+        public static void WriteItems(Item[] items, string target)
+        {
+            const string fieldType = "Item";
+            var f = new List<OneField>();
+            foreach (var one in items)
+            {
+                var fieldName = ToTitleCase(one.Name);
+                var v = $" = new {fieldType} {{ Id = {one.Id}, " +
+                        $"DisplayName = \"{one.DisplayName}\", Name = \"{one.Name}\", " +
+                        $"StackSize = {one.StackSize} " +
+                        "}";
+                f.Add(new OneField
+                {
+                    Name = fieldName, TypeName = $"readonly {fieldType}", Constant = v
+                });
+            }
+            f = f.OrderBy(x => x.Name).ToList();
+            var allNames = f.Select(e => e.Name);
+            f.Insert(0, new OneField
+            {
+                Name = "All", TypeName = $"readonly {fieldType}[]",
+                Constant = $" = {{ {string.Join(", ", allNames)} }}"
+            });
+            var item = new OneUnit
+            {
+                Class = "KnownItems", Namespace = $"{nameof(SharpMC)}.Items", Fields = f
+            };
+            Console.WriteLine($" * {item.Class}");
+            Write(item, target);
+        }
     }
 }
