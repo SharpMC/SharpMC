@@ -30,7 +30,7 @@ namespace SharpMC.Chunky
             return CreateEmpty(PaletteType.Chunk, globalPaletteBits);
         }
 
-        public static DataPalette CreateForBiome(int globalPaletteBits)
+        public static DataPalette CreateForBiome(int globalPaletteBits = 4)
         {
             return CreateEmpty(PaletteType.Biome, globalPaletteBits);
         }

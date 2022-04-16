@@ -15,12 +15,7 @@ namespace SharpMC.Chunky
         private readonly long _divideAdd;
         private readonly int _divideShift;
 
-        public BitStorage(int bitsPerEntry, int size)
-            : this(bitsPerEntry, size, null)
-        {
-        }
-
-        public BitStorage(int bitsPerEntry, int size, long[] data)
+        public BitStorage(int bitsPerEntry, int size, long[] data = null)
         {
             if (bitsPerEntry < 1 || bitsPerEntry > 32)
             {
@@ -44,8 +39,8 @@ namespace SharpMC.Chunky
                 Data = new long[expectedLength];
             }
             var magicIndex = 3 * (_valuesPerLong - 1);
-            _divideMultiply = MagicValues[magicIndex];
-            _divideAdd = MagicValues[magicIndex + 1];
+            _divideMultiply = MagicValuesLong[magicIndex];
+            _divideAdd = MagicValuesLong[magicIndex + 1];
             _divideShift = MagicValues[magicIndex + 2];
         }
 
@@ -98,8 +93,7 @@ namespace SharpMC.Chunky
 
         private int CellIndex(int index)
         {
-            long i = index;
-            return (int) (i * _divideMultiply + _divideAdd >> 32 >> _divideShift);
+            return (int) ((index * _divideMultiply) + _divideAdd >> 32 >> _divideShift);
         }
 
         private int BitIndex(int index, int cellIndex)
