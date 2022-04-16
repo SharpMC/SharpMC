@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
-using Newtonsoft.Json;
 using static SharpMC.Generator.Prismarine.CodeGen;
 using static SharpMC.Generator.Tools.Helpers;
 
