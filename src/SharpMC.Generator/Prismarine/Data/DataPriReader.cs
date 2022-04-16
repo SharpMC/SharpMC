@@ -32,6 +32,7 @@ namespace SharpMC.Generator.Prismarine.Data
 
             // TODO ?!
             DataPriWriter.WriteBlocks(blocks, target);
+            DataPriWriter.WriteEntities(entity, target);
 
             Console.WriteLine();
         }

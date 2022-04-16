@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
+using Newtonsoft.Json;
 using static SharpMC.Generator.Prismarine.CodeGen;
 using static SharpMC.Generator.Tools.Helpers;
 
@@ -73,6 +74,41 @@ namespace SharpMC.Generator.Prismarine.Data
             lines.Add($"{Sp}}}");
             lines.Add("}");
             File.WriteAllLines(outPath, lines, Encoding.UTF8);
+        }
+
+        public static void WriteEntities(Entity[] entity, string target)
+        {
+            const string fieldType = "Entity";
+            var f = new List<OneField>();
+            foreach (var one in entity)
+            {
+                var fieldName = ToTitleCase(one.Name);
+                var v = $" = new {fieldType} {{ Id = {one.Id}, " +
+                        $"Type = EntityType.{one.Type}, " +
+                        $"DisplayName = \"{one.DisplayName}\", Name = \"{one.Name}\", " +
+                        $"Width = {one.Width}, Height = {one.Height}, " +
+                        "}";
+                f.Add(new OneField
+                {
+                    Name = fieldName, TypeName = $"readonly {fieldType}", Constant = v
+                });
+            }
+            f = f.OrderBy(x => x.Name).ToList();
+            var allNames = f.Select(e => e.Name);
+            f.Insert(0, new OneField
+            {
+                Name = "All",
+                TypeName = $"readonly {fieldType}[]",
+                Constant = $" = {{ {string.Join(", ", allNames)} }}"
+            });
+            var item = new OneUnit
+            {
+                Class = "KnownEntities",
+                Namespace = $"{nameof(SharpMC)}.Entities",
+                Fields = f
+            };
+            Console.WriteLine($" * {item.Class}");
+            Write(item, target);
         }
     }
 }
