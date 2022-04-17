@@ -55,16 +55,16 @@ namespace SharpMC.Chunky
             return BlockStateValues.JavaAirId;
         }
 
-        public void UpdateBlock(int x, int y, int z, int block)
+        public bool UpdateBlock(int x, int y, int z, int block)
         {
             var chunk = GetChunk(x >> 4, z >> 4);
             if (chunk == null)
             {
-                return;
+                return false;
             }
             if (y < _minY || ((y - _minY) >> 4) > chunk.Sections.Length - 1)
             {
-                return;
+                return false;
             }
             var palette = chunk.Sections[(y - _minY) >> 4];
             if (palette == null)
@@ -77,10 +77,11 @@ namespace SharpMC.Chunky
                 }
                 else
                 {
-                    return;
+                    return false;
                 }
             }
             palette.Set(x & 0xF, y & 0xF, z & 0xF, block);
+            return true;
         }
 
         public void Clear()

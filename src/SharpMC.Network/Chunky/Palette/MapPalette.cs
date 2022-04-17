@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Linq;
 using SharpMC.Network.Chunky.Palette;
 using SharpMC.Network.Chunky.Utils;
 using SharpMC.Network.Util;
@@ -13,8 +14,12 @@ namespace SharpMC.Chunky.Palette
         private readonly int _maxId;
         private readonly int[] _idToState;
 
+        public int BitsPerEntry { get; }
+
         public MapPalette(int bitsPerEntry)
         {
+            BitsPerEntry = bitsPerEntry;
+
             _maxId = (1 << bitsPerEntry) - 1;
             _idToState = new int[_maxId + 1];
         }
@@ -58,5 +63,7 @@ namespace SharpMC.Chunky.Palette
             }
             return 0;
         }
+
+        public int[] States => _stateToId.Keys.ToArray();
     }
 }

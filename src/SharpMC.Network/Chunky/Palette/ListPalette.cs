@@ -5,13 +5,17 @@ namespace SharpMC.Chunky.Palette
 {
     public class ListPalette : IPalette
     {
+        public int BitsPerEntry { get; }
+
         private readonly int _maxId;
-        private readonly int[] _data;
+        public int[] Data { get; }
 
         public ListPalette(int bitsPerEntry)
         {
+            BitsPerEntry = bitsPerEntry;
+
             _maxId = (1 << bitsPerEntry) - 1;
-            _data = new int[_maxId + 1];
+            Data = new int[_maxId + 1];
         }
 
         public ListPalette(int bitsPerEntry, IMinecraftReader input)
@@ -20,7 +24,7 @@ namespace SharpMC.Chunky.Palette
             var paletteLength = input.ReadVarInt();
             for (var i = 0; i < paletteLength; i++)
             {
-                _data[i] = input.ReadVarInt();
+                Data[i] = input.ReadVarInt();
             }
             Size = paletteLength;
         }
@@ -32,7 +36,7 @@ namespace SharpMC.Chunky.Palette
             var id = -1;
             for (var i = 0; i < Size; i++)
             {
-                if (_data[i] == state)
+                if (Data[i] == state)
                 {
                     id = i;
                     break;
@@ -41,7 +45,7 @@ namespace SharpMC.Chunky.Palette
             if (id == -1 && Size < _maxId + 1)
             {
                 id = Size++;
-                _data[id] = state;
+                Data[id] = state;
             }
             return id;
         }
@@ -50,7 +54,7 @@ namespace SharpMC.Chunky.Palette
         {
             if (id >= 0 && id < Size)
             {
-                return _data[id];
+                return Data[id];
             }
             return 0;
         }

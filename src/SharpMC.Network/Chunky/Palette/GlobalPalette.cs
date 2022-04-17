@@ -15,5 +15,7 @@ namespace SharpMC.Chunky.Palette
         {
             return id;
         }
+
+        public int BitsPerEntry => 0;
     }
 }

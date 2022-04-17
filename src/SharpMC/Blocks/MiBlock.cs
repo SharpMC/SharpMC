@@ -1,4 +1,6 @@
-﻿namespace SharpMC.Blocks
+﻿using SharpMC.Data;
+
+namespace SharpMC.Blocks
 {
     public class MiBlock
     {
@@ -9,5 +11,15 @@
         public int MaxStateId { get; set; }
         public int DefaultState { get; set; }
         public string Material { get; set; }
+
+        public override string ToString() => Name;
+
+        #region Helpers
+        public static MiBlock operator +(MiBlock b, int m)
+            => Finder.FindBlockByState(b.DefaultState + m);
+
+        public static MiBlock operator -(MiBlock b, int m)
+            => Finder.FindBlockByState(b.DefaultState - m);
+        #endregion
     }
 }

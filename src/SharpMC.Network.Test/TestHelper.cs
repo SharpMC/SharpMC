@@ -1,9 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using System.Linq;
 using System.Text;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
+using SharpMC.Chunky;
+using SharpMC.Data;
 using SharpMC.Network.Packets;
 using SharpMC.Network.Util;
 
@@ -69,5 +72,14 @@ namespace SharpMC.Network.Test
                 .Select(_ => num)
                 .Concat(suffix)
                 .ToArray();
+
+        public static string ToDebugStr(ChunkSection[] sections)
+        {
+            var index = new int[1];
+            return string.Join(Environment.NewLine, sections.Select(s =>
+                $"{++index[0]:D2} ({s.BlockCount}|{s.ChunkData.Palette.GetType().Name[0]}|" +
+                $"{s.ChunkData.Palette.BitsPerEntry}b|{s.ChunkData.Palette.Size}x): " +
+                $"{string.Join(", ", s.ReadPalette(out var k).Select((b, i) => k == null ? b.ToString() : $"{k[i]}/{b}"))}"));
+        }
     }
 }

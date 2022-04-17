@@ -7,12 +7,12 @@ namespace SharpMC.Chunky
     {
         public const int Air = 0;
 
-        public int BlockCount { get; private set; }
+        public int BlockCount { get; set; }
         public DataPalette ChunkData { get; }
         public DataPalette BiomeData { get; }
 
         public ChunkSection()
-            : this(0, DataPalette.CreateForChunk(), DataPalette.CreateForBiome(4))
+            : this(0, DataPalette.CreateForChunk(), DataPalette.CreateForBiome())
         {
         }
 

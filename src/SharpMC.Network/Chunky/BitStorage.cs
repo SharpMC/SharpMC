@@ -46,9 +46,10 @@ namespace SharpMC.Chunky
 
         public int Get(int index)
         {
-            if (index < 0 || index > _size - 1)
+            var limit = _size - 1;
+            if (index < 0 || index > limit)
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(index), index, $"{limit} !");
             }
             var cellIndex = CellIndex(index);
             var bitIndex = BitIndex(index, cellIndex);
@@ -57,9 +58,10 @@ namespace SharpMC.Chunky
 
         public void Set(int index, int value)
         {
-            if (index < 0 || index > _size - 1)
+            var limit = _size - 1;
+            if (index < 0 || index > limit)
             {
-                throw new ArgumentOutOfRangeException();
+                throw new ArgumentOutOfRangeException(nameof(index), index, $"{limit} !");
             }
             if (value < 0 || value > _maxValue)
             {

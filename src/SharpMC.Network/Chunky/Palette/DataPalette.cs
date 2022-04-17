@@ -9,7 +9,7 @@ namespace SharpMC.Chunky
     {
         public const int GlobalPaletteBitsPerEntry = 14;
 
-        public IPalette Palette { get; private set; }
+        public IPalette Palette { get; set; }
         public BitStorage Storage { get; private set; }
 
         public PaletteType PaletteType { get; }
