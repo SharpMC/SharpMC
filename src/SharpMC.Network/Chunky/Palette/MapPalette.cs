@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SharpMC.Network.Chunky.Palette;
 using SharpMC.Network.Chunky.Utils;
@@ -6,22 +7,17 @@ using SharpMC.Network.Util;
 
 namespace SharpMC.Chunky.Palette
 {
-    public class MapPalette : IPalette
+    public class MapPalette : IPalette, IEquatable<MapPalette>
     {
-        private readonly Dictionary<int, int?> _stateToId = new Dictionary<int, int?>();
-        private int _nextId;
-
-        private readonly int _maxId;
-        private readonly int[] _idToState;
-
-        public int BitsPerEntry { get; }
+        public int MaxId { get; }
+        public int[] IdsToState { get; }
+        public IDictionary<int, int> StatesToId { get; } = new SortedDictionary<int, int>();
+        public int NextId { get; set; }
 
         public MapPalette(int bitsPerEntry)
         {
-            BitsPerEntry = bitsPerEntry;
-
-            _maxId = (1 << bitsPerEntry) - 1;
-            _idToState = new int[_maxId + 1];
+            MaxId = (1 << bitsPerEntry) - 1;
+            IdsToState = new int[MaxId + 1];
         }
 
         public MapPalette(int bitsPerEntry, IMinecraftReader input)
@@ -31,22 +27,25 @@ namespace SharpMC.Chunky.Palette
             for (var i = 0; i < paletteLength; i++)
             {
                 var state = input.ReadVarInt();
-                _idToState[i] = state;
-                _stateToId.PutIfAbsent(state, i);
+                IdsToState[i] = state;
+                if (!StatesToId.ContainsKey(state))
+                    StatesToId[state] = i;
             }
-            _nextId = paletteLength;
+            NextId = paletteLength;
         }
 
-        public int Size => _nextId;
+        public int Size => NextId;
 
         public int StateToId(int state)
         {
-            var id = _stateToId.GetOrDefault(state);
-            if (id == null && Size < _maxId + 1)
+            var id = StatesToId.TryGetValue(state, out var value)
+                ? value
+                : default(int?);
+            if (id == null && Size < MaxId + 1)
             {
-                id = _nextId++;
-                _idToState[id.Value] = state;
-                _stateToId[state] = id;
+                id = NextId++;
+                IdsToState[id.Value] = state;
+                StatesToId[state] = id.Value;
             }
             if (id != null)
             {
@@ -59,11 +58,38 @@ namespace SharpMC.Chunky.Palette
         {
             if (id >= 0 && id < Size)
             {
-                return _idToState[id];
+                return IdsToState[id];
             }
             return 0;
         }
 
-        public int[] States => _stateToId.Keys.ToArray();
+        #region Hashcode
+
+        public bool Equals(MapPalette other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return MaxId == other.MaxId && Equals(IdsToState, other.IdsToState) &&
+                   Equals(StatesToId, other.StatesToId) && NextId == other.NextId;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((MapPalette) obj);
+        }
+
+        public override int GetHashCode() 
+            => HashCode.Combine(MaxId, IdsToState, StatesToId, NextId);
+
+        public static bool operator ==(MapPalette left, MapPalette right) 
+            => Equals(left, right);
+
+        public static bool operator !=(MapPalette left, MapPalette right) 
+            => !Equals(left, right);
+
+        #endregion
     }
 }

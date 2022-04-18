@@ -8,9 +8,9 @@
         public static readonly PaletteType Chunk
             = new PaletteType(4, 8, 4096);
 
-        public readonly int MinBitsPerEntry;
-        public readonly int MaxBitsPerEntry;
-        public readonly int StorageSize;
+        public int MinBitsPerEntry { get; }
+        public int MaxBitsPerEntry { get; }
+        public int StorageSize { get; }
 
         private PaletteType(int minBitsPerEntry, int maxBitsPerEntry, int storageSize)
         {

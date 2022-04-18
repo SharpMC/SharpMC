@@ -7,7 +7,5 @@
         int StateToId(int state);
 
         int IdToState(int id);
-
-        int BitsPerEntry { get; }
     }
 }
