@@ -2,7 +2,7 @@ namespace SharpMC.Network.Test
 {
     internal static class DataBunch2
     {
-        internal static byte[] PlayMapChunk1 =
+        internal static readonly byte[] PlayMapChunk1 =
         {
             34, 255, 255, 255, 247, 255, 255, 255, 243, 10, 0, 0, 12, 0, 15, 77, 79, 84, 73, 79, 78, 95, 66, 76, 79, 67,
             75, 73, 78, 71, 0, 0, 0, 37, 31, 207, 231, 243, 249, 252, 254, 127, 31, 207, 231, 243, 249, 252, 254, 127,
@@ -1102,7 +1102,7 @@ namespace SharpMC.Network.Test
             0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
         };
 
-        internal static byte[] PlayMapChunk2 =
+        internal static readonly byte[] PlayMapChunk2 =
         {
             34, 255, 255, 255, 249, 255, 255, 255, 244, 10, 0, 0, 12, 0, 15, 77, 79, 84, 73, 79, 78, 95, 66, 76, 79, 67,
             75, 73, 78, 71, 0, 0, 0, 37, 31, 207, 231, 243, 249, 252, 254, 127, 31, 207, 231, 243, 249, 252, 254, 127,
@@ -2014,7 +2014,7 @@ namespace SharpMC.Network.Test
             0, 0, 0, 0, 0, 0, 0, 0, 0
         };
 
-        internal static byte[] PlayMapChunk3 =
+        internal static readonly byte[] PlayMapChunk3 =
         {
             34, 255, 255, 255, 250, 255, 255, 255, 251, 10, 0, 0, 12, 0, 15, 77, 79, 84, 73, 79, 78, 95, 66, 76, 79, 67,
             75, 73, 78, 71, 0, 0, 0, 37, 31, 207, 231, 243, 249, 252, 254, 127, 31, 207, 231, 243, 249, 252, 254, 127,
