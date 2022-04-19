@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using SharpMC.Network.Chunky.Palette;
 using SharpMC.Network.Util;
 
@@ -28,8 +29,7 @@ namespace SharpMC.Chunky.Palette
             {
                 var state = input.ReadVarInt();
                 IdsToState[i] = state;
-                if (!StatesToId.ContainsKey(state))
-                    StatesToId[state] = i;
+                StatesToId[state] = i;
             }
             NextId = paletteLength;
         }
@@ -66,7 +66,6 @@ namespace SharpMC.Chunky.Palette
         public int BitsPerEntry { get; }
 
         #region Hashcode
-
         public bool Equals(MapPalette other)
         {
             if (ReferenceEquals(null, other)) return false;
@@ -83,15 +82,14 @@ namespace SharpMC.Chunky.Palette
             return Equals((MapPalette) obj);
         }
 
-        public override int GetHashCode() 
+        public override int GetHashCode()
             => HashCode.Combine(MaxId, IdsToState, StatesToId, NextId);
 
-        public static bool operator ==(MapPalette left, MapPalette right) 
+        public static bool operator ==(MapPalette left, MapPalette right)
             => Equals(left, right);
 
-        public static bool operator !=(MapPalette left, MapPalette right) 
+        public static bool operator !=(MapPalette left, MapPalette right)
             => !Equals(left, right);
-
         #endregion
     }
 }

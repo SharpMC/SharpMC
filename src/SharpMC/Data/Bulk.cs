@@ -93,7 +93,7 @@ namespace SharpMC.Data
                 section.ChunkData.Storage = null;
             }
         }
-        
+
         public static DataPalette CreateBiome(int state = 44, int bits = 4)
         {
             var singleton = new SingletonPalette(state);
@@ -106,12 +106,20 @@ namespace SharpMC.Data
             data.Palette = new SingletonPalette(state);
         }
 
-        public static ChunkSection NewSection(int? singleBiome = null)
+        private static ChunkSection NewSection(int? singleBiome = null)
         {
             var section = new ChunkSection();
             if (singleBiome != null)
                 SetSingleton(section.BiomeData, singleBiome.Value);
             return section;
+        }
+
+        public static ChunkSection[] NewSections(int count, int? singleBiome = null)
+        {
+            var sections = new ChunkSection[count];
+            for (var i = 0; i < sections.Length; i++)
+                sections[i] = NewSection(singleBiome);
+            return sections;
         }
     }
 }
