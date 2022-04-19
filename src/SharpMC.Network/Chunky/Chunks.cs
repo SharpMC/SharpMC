@@ -15,13 +15,28 @@ namespace SharpMC.Chunky
             return sections.ToArray();
         }
 
-        public static IEnumerable<ChunkSection> ReadAll(IMinecraftReader input, int chunkSize)
+        private static IEnumerable<ChunkSection> ReadAll(IMinecraftReader input, int chunkSize)
         {
             for (var sectionY = 0; sectionY < chunkSize; sectionY++)
             {
                 var section = ChunkSection.Read(input);
                 yield return section;
             }
+        }
+
+        public static byte[] WriteAll(IEnumerable<ChunkSection> sections)
+        {
+            using var mem = new MemoryStream();
+            using var output = new MinecraftStream(mem);
+            WriteAll(output, sections);
+            return mem.ToArray();
+        }
+
+        private static void WriteAll(IMinecraftWriter output, IEnumerable<ChunkSection> sections)
+        {
+            foreach (var section in sections)
+                if (section != null)
+                    ChunkSection.Write(output, section);
         }
     }
 }

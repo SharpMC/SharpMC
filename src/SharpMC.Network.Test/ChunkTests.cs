@@ -18,15 +18,21 @@ namespace SharpMC.Network.Test
     public class ChunkTests
     {
         [Theory]
-        [InlineData(1, 17417)]
-        [InlineData(2, 17429)]
-        [InlineData(3, 18699)]
-        public void ShouldReadChunk(int idx, int size)
+        [InlineData(1, 17417, 34804)]
+        [InlineData(2, 17429, 33810)]
+        [InlineData(3, 18699, 36517)]
+        public void ShouldReadChunk(int idx, int size, int blocks)
         {
             var input = idx switch {1 => MapChunkData1, 2 => MapChunkData2, _ => MapChunkData3};
             Assert.Equal(size, input.Length);
 
+            const int count = 24;
+            var sections = Chunks.ReadAll(input, count);
+            Assert.Equal(count, sections.Length);
 
+            WriteTexts($"{nameof(ShouldReadChunk)}{idx}", null, ToJson(sections));
+            var foundBlocks = sections.Sum(s => s.BlockCount);
+            Assert.Equal(blocks, foundBlocks);
         }
 
         [Theory]
@@ -38,7 +44,17 @@ namespace SharpMC.Network.Test
             var expected = idx switch {1 => MapChunkData1, 2 => MapChunkData2, _ => MapChunkData3};
             Assert.Equal(size, expected.Length);
 
+            const int count = 24;
+            var sections = new ChunkSection[count];
 
+            var original = Chunks.ReadAll(expected, count);
+            WriteTexts($"{nameof(ShouldWriteChunk)}{idx}", ToJson(original), ToJson(sections));
+
+            var actual = Chunks.WriteAll(sections);
+            WriteBytes($"{nameof(ShouldWriteChunk)}{idx}", expected, actual);
+
+            Assert.Equal(ToJson(original), ToJson(sections));
+            Assert.Equal(ToJson(expected), ToJson(actual));
         }
 
         [Fact]

@@ -58,15 +58,19 @@ namespace SharpMC.Network.Test
 
         public static void WriteBytes(string prefix, byte[] expected, byte[] actual)
         {
-            File.WriteAllBytes($"{prefix}_e.bin", expected);
-            File.WriteAllBytes($"{prefix}_a.bin", actual);
+            File.WriteAllBytes($"{prefix}_e.bin", expected ?? Array.Empty<byte>());
+            File.WriteAllBytes($"{prefix}_a.bin", actual ?? Array.Empty<byte>());
         }
 
-        public static void WriteTexts(string prefix, string actual)
+        public static void WriteTexts(string prefix, string expected, string actual)
         {
-            File.WriteAllText($"{prefix}_a.json", actual, Encoding.UTF8);
+            var enc = Encoding.UTF8;
+            if (expected != null)
+                File.WriteAllText($"{prefix}_e.json", expected, enc);
+            if (actual != null)
+                File.WriteAllText($"{prefix}_a.json", actual, enc);
         }
-
+        
         public static byte[] GetBytes(int count, byte num, params byte[] suffix)
             => Enumerable.Range(1, count)
                 .Select(_ => num)

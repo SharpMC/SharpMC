@@ -81,7 +81,7 @@ namespace SharpMC.Network.Test
             Assert.Equal(size, input.Length);
 
             var packet = Read<MapChunk>(input, out var packetId);
-            WriteTexts($"{nameof(ShouldReadMapChunk)}{idx}", ToJson(packet));
+            WriteTexts($"{nameof(ShouldReadMapChunk)}{idx}", null, ToJson(packet));
             Assert.Equal(0x22, packetId);
 
             Assert.Equal(0x22, packet.ClientId);
@@ -102,7 +102,7 @@ namespace SharpMC.Network.Test
             Assert.Equal(23992, input.Length);
 
             var packet = Read<Login>(input, out var packetId);
-            WriteTexts(nameof(ShouldReadPlayLogin), ToJson(packet));
+            WriteTexts(nameof(ShouldReadPlayLogin), null, ToJson(packet));
             Assert.Equal(0x26, packetId);
 
             Assert.Equal(0x26, packet.ClientId);
