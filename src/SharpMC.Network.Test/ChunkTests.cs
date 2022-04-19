@@ -47,6 +47,57 @@ namespace SharpMC.Network.Test
             const int count = 24;
             var sections = new ChunkSection[count];
 
+            sections[0] = Bulk.NewSection(44);
+            sections[0].AddToPalette(Bedrock, Deepslate, DeepslateRedstoneOre, Tuff,
+                Gravel, Lava, DeepslateDiamondOre, DeepslateGoldOre, Air, DeepslateIronOre);
+
+            sections[1] = Bulk.NewSection(44);
+            sections[1].AddToPalette(Deepslate, DeepslateIronOre, Air, Gravel,
+                DeepslateDiamondOre, DeepslateRedstoneOre, DeepslateLapisOre);
+
+            sections[2] = Bulk.NewSection(44);
+            sections[2].AddToPalette(Deepslate, Lava + 8, Lava + 2, Lava + 4, Lava + 6,
+                Air, Lava, DeepslateGoldOre, Tuff, DeepslateRedstoneOre);
+
+            sections[3] = Bulk.NewSection(44);
+            sections[3].AddToPalette(Air, Tuff, Deepslate, DeepslateIronOre,
+                Gravel, DeepslateCopperOre, Dirt);
+
+            sections[4] = Bulk.NewSection(44);
+            sections[4].AddToMapPalette(5, Deepslate, Dirt, DeepslateIronOre,
+                DeepslateGoldOre, Air, GlowLichen - 1, Stone, GoldOre, IronOre, Diorite, CopperOre,
+                DeepslateCopperOre, LapisOre, Granite, DeepslateLapisOre, CoalOre, Gravel, Water);
+
+            sections[5] = Bulk.NewSection(44);
+            sections[5].AddToPalette(Stone, CoalOre, Gravel, CopperOre, Dirt, Andesite,
+                Water, Air, Granite, IronOre, LapisOre, Diorite);
+
+            sections[6] = Bulk.NewSection(44);
+            sections[6].AddToPalette(Andesite, Stone, IronOre, CopperOre, Diorite, Granite,
+                Dirt, LapisOre, Water, CoalOre, Gravel, Seagrass);
+
+            sections[7] = Bulk.NewSection(44);
+            sections[7].AddToPalette(Water, Gravel, Stone, Granite, Dirt, Seagrass, Sand,
+                Clay, TallSeagrass, TallSeagrass - 1, Air);
+
+            sections[8] = Bulk.NewSection(44);
+            sections[9] = Bulk.NewSection(44);
+            sections[10] = Bulk.NewSection(44);
+            sections[11] = Bulk.NewSection(44);
+            sections[12] = Bulk.NewSection(44);
+            sections[13] = Bulk.NewSection(44);
+            sections[14] = Bulk.NewSection(44);
+            sections[15] = Bulk.NewSection(44);
+            sections[16] = Bulk.NewSection(44);
+            sections[17] = Bulk.NewSection(44);
+            sections[18] = Bulk.NewSection(44);
+            sections[19] = Bulk.NewSection(44);
+            sections[20] = Bulk.NewSection(44);
+            sections[21] = Bulk.NewSection(44);
+            sections[22] = Bulk.NewSection(44);
+            sections[23] = Bulk.NewSection(44);
+            sections.CompactAirPalette();
+
             var original = Chunks.ReadAll(expected, count);
             WriteTexts($"{nameof(ShouldWriteChunk)}{idx}", ToJson(original), ToJson(sections));
 

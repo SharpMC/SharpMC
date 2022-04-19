@@ -4,6 +4,9 @@ using System.Linq;
 using SharpMC.Blocks;
 using SharpMC.Chunky;
 using SharpMC.Chunky.Palette;
+using SharpMC.Network.Chunky.Palette;
+using SharpMC.World;
+using ChunkSection = SharpMC.Chunky.ChunkSection;
 
 namespace SharpMC.Data
 {
@@ -39,14 +42,16 @@ namespace SharpMC.Data
             int? bitsPerEntry = null, params MiBlock[] blocks)
         {
             var data = section.ChunkData;
-            if (forceMap && data.Palette is ListPalette && bitsPerEntry != null)
+            if (forceMap && data.Palette?.BitsPerEntry != bitsPerEntry)
             {
-                data.Palette = new MapPalette(bitsPerEntry.Value);
+                var bits = bitsPerEntry ?? data.Palette.BitsPerEntry;
+                data.Palette = new MapPalette(bits);
+                data.Storage = new BitStorage(bits, data.Storage.Size);
             }
             foreach (var block in blocks)
             {
                 var state = block.DefaultState;
-                data.Palette.StateToId(state);
+                data.Palette!.StateToId(state);
             }
         }
 
@@ -82,15 +87,31 @@ namespace SharpMC.Data
             foreach (var section in sections)
             {
                 var blocks = ReadPalette(section, out _);
-                if (blocks.All(block => block.DefaultState == 0))
-                    section.ChunkData.Palette = new SingletonPalette(0);
+                if (blocks.Any(block => block.DefaultState != 0))
+                    continue;
+                section.ChunkData.Palette = new SingletonPalette(0);
+                section.ChunkData.Storage = null;
             }
         }
-
+        
         public static DataPalette CreateBiome(int state = 44, int bits = 4)
         {
             var singleton = new SingletonPalette(state);
             return new DataPalette(singleton, null, PaletteType.Biome, bits);
+        }
+
+        public static void SetSingleton(this DataPalette data, int state)
+        {
+            data.Storage = null;
+            data.Palette = new SingletonPalette(state);
+        }
+
+        public static ChunkSection NewSection(int? singleBiome = null)
+        {
+            var section = new ChunkSection();
+            if (singleBiome != null)
+                SetSingleton(section.BiomeData, singleBiome.Value);
+            return section;
         }
     }
 }
