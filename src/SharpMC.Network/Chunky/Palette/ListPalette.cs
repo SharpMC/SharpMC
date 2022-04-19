@@ -1,5 +1,6 @@
 ﻿using System;
 using SharpMC.Network.Chunky.Palette;
+using SharpMC.Network.Chunky.Utils;
 using SharpMC.Network.Util;
 
 namespace SharpMC.Chunky.Palette
@@ -61,13 +62,18 @@ namespace SharpMC.Chunky.Palette
 
         public int BitsPerEntry { get; }
 
+        public override string ToString()
+        {
+            return $"L(max={MaxId}, data={Data.ToArrayString()}, next={NextId}, bits={BitsPerEntry})";
+        }
+
         #region Hashcode
 
         public bool Equals(ListPalette other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return MaxId == other.MaxId && Equals(Data, other.Data) && NextId == other.NextId;
+            return MaxId == other.MaxId && Data.ArrayEquals(other.Data) && NextId == other.NextId;
         }
 
         public override bool Equals(object obj)
@@ -78,13 +84,13 @@ namespace SharpMC.Chunky.Palette
             return Equals((ListPalette) obj);
         }
 
-        public override int GetHashCode() 
-            => HashCode.Combine(MaxId, Data, NextId);
+        public override int GetHashCode()
+            => HashCode.Combine(MaxId, Data, NextId, BitsPerEntry);
 
-        public static bool operator ==(ListPalette left, ListPalette right) 
+        public static bool operator ==(ListPalette left, ListPalette right)
             => Equals(left, right);
 
-        public static bool operator !=(ListPalette left, ListPalette right) 
+        public static bool operator !=(ListPalette left, ListPalette right)
             => !Equals(left, right);
 
         #endregion

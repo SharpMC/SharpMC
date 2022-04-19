@@ -78,7 +78,7 @@ namespace SharpMC.Chunky
 
         public override string ToString()
         {
-            return $"NibbleArray3d(data={Data.ToDebugString()})";
+            return $"NibbleArray3d(data={Data.ToArrayString()})";
         }
 
         #region Hashcode
@@ -87,7 +87,7 @@ namespace SharpMC.Chunky
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Equals(Data, other.Data);
+            return Data.ArrayEquals(other.Data);
         }
 
         public override bool Equals(object obj)

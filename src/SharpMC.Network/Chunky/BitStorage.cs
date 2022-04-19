@@ -1,4 +1,5 @@
 ﻿using System;
+using SharpMC.Network.Chunky.Utils;
 using static SharpMC.Network.Chunky.Utils.Constants;
 
 namespace SharpMC.Chunky
@@ -107,13 +108,19 @@ namespace SharpMC.Chunky
             return (index - cellIndex * ValuesPerLong) * BitsPerEntry;
         }
 
+        public override string ToString()
+        {
+            return $"{nameof(BitStorage)}({nameof(Data)}: {Data}, {nameof(BitsPerEntry)}: {BitsPerEntry}, " +
+                   $"{nameof(Size)}: {Size}, {nameof(MaxValue)}: {MaxValue}, {nameof(ValuesPerLong)}: {ValuesPerLong})";
+        }
+
         #region Hashcode
 
         public bool Equals(BitStorage other)
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return Equals(Data, other.Data) && BitsPerEntry == other.BitsPerEntry &&
+            return Data.ArrayEquals(other.Data) && BitsPerEntry == other.BitsPerEntry &&
                    Size == other.Size && MaxValue == other.MaxValue &&
                    ValuesPerLong == other.ValuesPerLong &&
                    DivideMultiply == other.DivideMultiply &&
