@@ -129,8 +129,10 @@ namespace SharpMC.Network.Test
         private static IList<ChunkSection> Setup()
         {
             var chunkSectionsToTest = new List<ChunkSection> {new()};
-            var section = new ChunkSection();
-            section.SetBlock(0, 0, 0, 10);
+            var section = new ChunkSection
+            {
+                [(0, 0, 0)] = 10
+            };
             chunkSectionsToTest.Add(section);
             var singletonPalette = new SingletonPalette(20);
             var dataPalette = new DataPalette(singletonPalette, null,

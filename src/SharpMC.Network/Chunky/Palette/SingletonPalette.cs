@@ -30,6 +30,8 @@ namespace SharpMC.Chunky.Palette
             return id == 0 ? State : 0;
         }
 
+        public int BitsPerEntry => 0;
+
         #region Hashcode
 
         public bool Equals(SingletonPalette other)

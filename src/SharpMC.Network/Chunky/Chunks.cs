@@ -1,16 +1,18 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using SharpMC.Network.Util;
 
 namespace SharpMC.Chunky
 {
     public static class Chunks
     {
-        public static IEnumerable<ChunkSection> ReadAll(byte[] chunkData, int chunkSize)
+        public static ChunkSection[] ReadAll(byte[] chunkData, int chunkSize)
         {
-            var mem = new MemoryStream(chunkData);
-            var input = new MinecraftStream(mem);
-            return ReadAll(input, chunkSize);
+            using var mem = new MemoryStream(chunkData);
+            using var input = new MinecraftStream(mem);
+            var sections = ReadAll(input, chunkSize);
+            return sections.ToArray();
         }
 
         public static IEnumerable<ChunkSection> ReadAll(IMinecraftReader input, int chunkSize)

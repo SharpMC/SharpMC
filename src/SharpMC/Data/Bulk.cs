@@ -4,7 +4,6 @@ using System.Linq;
 using SharpMC.Blocks;
 using SharpMC.Chunky;
 using SharpMC.Chunky.Palette;
-using SharpNBT;
 
 namespace SharpMC.Data
 {
@@ -15,18 +14,7 @@ namespace SharpMC.Data
             foreach (var (y, block) in pairs)
             {
                 var state = block.DefaultState;
-                section.SetBlock(x, y, z, state);
-            }
-        }
-
-        public static void SetBlocks(this ChunkCache cache, int x, int z, params (int y, MiBlock block)[] pairs)
-        {
-            foreach (var (y, block) in pairs)
-            {
-                var state = block.DefaultState;
-                if (cache.UpdateBlock(x, y, z, state))
-                    continue;
-                throw new InvalidOperationException($"Could not update {(x, y, z)} !");
+                section[(x, y, z)] = state;
             }
         }
 
@@ -41,15 +29,6 @@ namespace SharpMC.Data
             }
         }
 
-        public static ChunkSection[] Allocate(this ChunkCache cache, int x, int z, int count,
-            Func<DataPalette> biome = null)
-        {
-            var sections = Allocate(count, biome).ToArray();
-            var data = sections.Select(s => s.ChunkData).ToArray();
-            cache.AddToCache(x, z, data);
-            return sections;
-        }
-
         public static void AddToMapPalette(this ChunkSection section, int bitsPerEntry, params MiBlock[] blocks)
             => AddToMyPalette(section, forceMap: true, bitsPerEntry, blocks);
 
@@ -60,9 +39,9 @@ namespace SharpMC.Data
             int? bitsPerEntry = null, params MiBlock[] blocks)
         {
             var data = section.ChunkData;
-            if (forceMap && data.Palette is ListPalette lp)
+            if (forceMap && data.Palette is ListPalette && bitsPerEntry != null)
             {
-                data.Palette = new MapPalette(bitsPerEntry ?? lp.BitsPerEntry);
+                data.Palette = new MapPalette(bitsPerEntry.Value);
             }
             foreach (var block in blocks)
             {
@@ -86,7 +65,7 @@ namespace SharpMC.Data
             }
             if (palette is MapPalette m)
             {
-                var data = m.States;
+                var data = m.StatesToId.Keys;
                 keys = data.Select(w => m.StateToId(w)).ToArray();
                 return data.Select(Finder.FindBlockByState).ToArray();
             }

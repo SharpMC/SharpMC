@@ -12,6 +12,8 @@ namespace SharpMC.Chunky.Palette
 
         public ListPalette(int bitsPerEntry)
         {
+            BitsPerEntry = bitsPerEntry;
+
             MaxId = (1 << bitsPerEntry) - 1;
             Data = new int[MaxId + 1];
         }
@@ -56,6 +58,8 @@ namespace SharpMC.Chunky.Palette
             }
             return 0;
         }
+
+        public int BitsPerEntry { get; }
 
         #region Hashcode
 

@@ -1,69 +1,112 @@
-﻿using SharpMC.Network.Util;
+﻿using System;
+using SharpMC.Network.Chunky.Utils;
+using SharpMC.Network.Util;
 
 namespace SharpMC.Chunky
 {
-    public class NibbleArray3d
+    public class NibbleArray3d : IEquatable<NibbleArray3d>
     {
-        private readonly byte[] _data;
+        public byte[] Data { get; }
 
         public NibbleArray3d(byte[] data)
         {
-            _data = data;
+            Data = data ?? throw new ArgumentException("data is marked non-null but is null");
         }
 
-        public NibbleArray3d(int size) 
+        public NibbleArray3d(int size)
             : this(new byte[size >> 1])
         {
         }
 
-        public NibbleArray3d(IMinecraftReader input, int size) 
+        public NibbleArray3d(IMinecraftReader input, int size)
             : this(input.Read(size))
         {
+            if (input == null)
+                throw new ArgumentException("in is marked non-null but is null");
         }
 
         public void Write(IMinecraftWriter output)
         {
-            output.Write(_data);
+            if (output == null)
+                throw new ArgumentException("out is marked non-null but is null");
+            output.Write(Data);
         }
 
-        public int Get(int x, int y, int z)
+        public int this[(int x, int y, int z) index]
         {
-            var key = y << 8 | z << 4 | x;
-            var index = key >> 1;
-            var part = key & 1;
-            return part == 0 ? _data[index] & 15 : _data[index] >> 4 & 15;
-        }
-
-        public void Set(int x, int y, int z, int val)
-        {
-            var key = y << 8 | z << 4 | x;
-            var index = key >> 1;
-            var part = key & 1;
-            if (part == 0)
+            get
             {
-                _data[index] = (byte) (_data[index] & 240 | val & 15);
+                var (x, y, z) = index;
+                var key = y << 8 | z << 4 | x;
+                var myIndex = key >> 1;
+                var part = key & 0x1;
+                return part == 0 ? Data[myIndex] & 0xF : Data[myIndex] >> 4 & 0xF;
             }
-            else
+            set
             {
-                _data[index] = (byte) (_data[index] & 15 | (val & 15) << 4);
+                var (x, y, z) = index;
+                var key = y << 8 | z << 4 | x;
+                var myIndex = key >> 1;
+                var part = key & 0x1;
+                if (part == 0)
+                {
+                    Data[myIndex] = (byte) (Data[myIndex] & 0xF0 | value & 0xF);
+                }
+                else
+                {
+                    Data[myIndex] = (byte) (Data[myIndex] & 0xF | (value & 0xF) << 4);
+                }
             }
         }
 
         public void Fill(int val)
         {
-            for (var index = 0; index < _data.Length << 1; index++)
+            for (var index = 0; index < Data.Length << 1; index++)
             {
                 var ind = index >> 1;
-                var part = index & 1;
+                var part = index & 0x1;
                 if (part == 0)
                 {
-                    _data[ind] = (byte) (_data[ind] & 240 | val & 15);
+                    Data[ind] = (byte) (Data[ind] & 0xF0 | val & 0xF);
                 }
                 else
                 {
-                    _data[ind] = (byte) (_data[ind] & 15 | (val & 15) << 4);
+                    Data[ind] = (byte) (Data[ind] & 0xF | (val & 0xF) << 4);
                 }
             }
         }
+
+        public override string ToString()
+        {
+            return $"NibbleArray3d(data={Data.ToDebugString()})";
+        }
+
+        #region Hashcode
+
+        public bool Equals(NibbleArray3d other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Equals(Data, other.Data);
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((NibbleArray3d) obj);
+        }
+
+        public override int GetHashCode()
+            => Data != null ? Data.GetHashCode() : 0;
+
+        public static bool operator ==(NibbleArray3d left, NibbleArray3d right)
+            => Equals(left, right);
+
+        public static bool operator !=(NibbleArray3d left, NibbleArray3d right)
+            => !Equals(left, right);
+
+        #endregion
     }
 }

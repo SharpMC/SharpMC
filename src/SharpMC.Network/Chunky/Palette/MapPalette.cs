@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using SharpMC.Network.Chunky.Palette;
-using SharpMC.Network.Chunky.Utils;
 using SharpMC.Network.Util;
 
 namespace SharpMC.Chunky.Palette
@@ -16,6 +14,8 @@ namespace SharpMC.Chunky.Palette
 
         public MapPalette(int bitsPerEntry)
         {
+            BitsPerEntry = bitsPerEntry;
+
             MaxId = (1 << bitsPerEntry) - 1;
             IdsToState = new int[MaxId + 1];
         }
@@ -62,6 +62,8 @@ namespace SharpMC.Chunky.Palette
             }
             return 0;
         }
+
+        public int BitsPerEntry { get; }
 
         #region Hashcode
 

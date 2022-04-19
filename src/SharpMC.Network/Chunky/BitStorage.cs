@@ -3,34 +3,35 @@ using static SharpMC.Network.Chunky.Utils.Constants;
 
 namespace SharpMC.Chunky
 {
-    public class BitStorage
+    public class BitStorage : IEquatable<BitStorage>
     {
         public long[] Data { get; }
         public int BitsPerEntry { get; }
-        private readonly int _size;
-
-        private readonly long _maxValue;
-        private readonly int _valuesPerLong;
-        private readonly long _divideMultiply;
-        private readonly long _divideAdd;
-        private readonly int _divideShift;
+        public int Size { get; }
+        public long MaxValue { get; }
+        public int ValuesPerLong { get; }
+        public long DivideMultiply { get; }
+        public long DivideAdd { get; }
+        public int DivideShift { get; }
 
         public BitStorage(int bitsPerEntry, int size, long[] data = null)
         {
             if (bitsPerEntry < 1 || bitsPerEntry > 32)
             {
-                throw new ArgumentException("bitsPerEntry must be between 1 and 32, inclusive.");
+                throw new ArgumentOutOfRangeException(nameof(bitsPerEntry), bitsPerEntry,
+                    "bits per entry must be between 1 and 32 (inclusive)");
             }
             BitsPerEntry = bitsPerEntry;
-            _size = size;
-            _maxValue = (1L << bitsPerEntry) - 1L;
-            _valuesPerLong = (char) (64 / bitsPerEntry);
-            var expectedLength = (size + _valuesPerLong - 1) / _valuesPerLong;
+            Size = size;
+            MaxValue = (1L << bitsPerEntry) - 1L;
+            ValuesPerLong = (char) (64 / bitsPerEntry);
+            var expectedLength = (size + ValuesPerLong - 1) / ValuesPerLong;
             if (data != null)
             {
                 if (data.Length != expectedLength)
                 {
-                    throw new ArgumentException($"Expected {expectedLength} longs but got {data.Length} longs");
+                    throw new ArgumentOutOfRangeException(nameof(data), data.Length,
+                        $"Expected {expectedLength} longs but got {data.Length} longs");
                 }
                 Data = data;
             }
@@ -38,53 +39,56 @@ namespace SharpMC.Chunky
             {
                 Data = new long[expectedLength];
             }
-            var magicIndex = 3 * (_valuesPerLong - 1);
-            _divideMultiply = MagicValuesLong[magicIndex];
-            _divideAdd = MagicValuesLong[magicIndex + 1];
-            _divideShift = MagicValues[magicIndex + 2];
+            var magicIndex = 3 * (ValuesPerLong - 1);
+            DivideMultiply = MagicValuesLong[magicIndex];
+            DivideAdd = MagicValuesLong[magicIndex + 1];
+            DivideShift = MagicValues[magicIndex + 2];
         }
 
-        public int Get(int index)
+        public int this[int index]
         {
-            var limit = _size - 1;
-            if (index < 0 || index > limit)
+            get
             {
-                throw new ArgumentOutOfRangeException(nameof(index), index, $"{limit} !");
+                if (index < 0 || index > Size - 1)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index),
+                        index, "Index out of bounds!");
+                }
+                var cellIndex = GetCellIndex(index);
+                var bitIndex = GetBitIndex(index, cellIndex);
+                return (int) (Data[cellIndex] >> bitIndex & MaxValue);
             }
-            var cellIndex = CellIndex(index);
-            var bitIndex = BitIndex(index, cellIndex);
-            return (int) (Data[cellIndex] >> bitIndex & _maxValue);
+            set
+            {
+                if (index < 0 || index > Size - 1)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(index),
+                        index, "Index out of bounds!");
+                }
+                if (value < 0 || value > MaxValue)
+                {
+                    throw new ArgumentOutOfRangeException(nameof(value),
+                        value, "Value cannot be outside of accepted range.");
+                }
+                var cellIndex = GetCellIndex(index);
+                var bitIndex = GetBitIndex(index, cellIndex);
+                Data[cellIndex] = Data[cellIndex] & ~(MaxValue << bitIndex)
+                                  | (value & MaxValue) << bitIndex;
+            }
         }
 
-        public void Set(int index, int value)
+        public int[] ToArray()
         {
-            var limit = _size - 1;
-            if (index < 0 || index > limit)
-            {
-                throw new ArgumentOutOfRangeException(nameof(index), index, $"{limit} !");
-            }
-            if (value < 0 || value > _maxValue)
-            {
-                throw new ArgumentException("Value cannot be outside of accepted range.");
-            }
-            var cellIndex = CellIndex(index);
-            var bitIndex = BitIndex(index, cellIndex);
-            Data[cellIndex] = Data[cellIndex] & ~(_maxValue << bitIndex) |
-                               (value & _maxValue) << bitIndex;
-        }
-
-        public int[] ToIntArray()
-        {
-            var result = new int[_size];
+            var result = new int[Size];
             var index = 0;
             foreach (var rawCell in Data)
             {
                 var cell = rawCell;
-                for (var bitIndex = 0; bitIndex < _valuesPerLong; bitIndex++)
+                for (var bitIndex = 0; bitIndex < ValuesPerLong; bitIndex++)
                 {
-                    result[index++] = (int) (cell & _maxValue);
+                    result[index++] = (int) (cell & MaxValue);
                     cell >>= BitsPerEntry;
-                    if (index >= _size)
+                    if (index >= Size)
                     {
                         return result;
                     }
@@ -93,14 +97,47 @@ namespace SharpMC.Chunky
             return result;
         }
 
-        private int CellIndex(int index)
+        private int GetCellIndex(int index)
         {
-            return (int) ((index * _divideMultiply) + _divideAdd >> 32 >> _divideShift);
+            return (int) (index * DivideMultiply + DivideAdd >> 32 >> DivideShift);
         }
 
-        private int BitIndex(int index, int cellIndex)
+        private int GetBitIndex(int index, int cellIndex)
         {
-            return (index - cellIndex * _valuesPerLong) * BitsPerEntry;
+            return (index - cellIndex * ValuesPerLong) * BitsPerEntry;
         }
+
+        #region Hashcode
+
+        public bool Equals(BitStorage other)
+        {
+            if (ReferenceEquals(null, other)) return false;
+            if (ReferenceEquals(this, other)) return true;
+            return Equals(Data, other.Data) && BitsPerEntry == other.BitsPerEntry &&
+                   Size == other.Size && MaxValue == other.MaxValue &&
+                   ValuesPerLong == other.ValuesPerLong &&
+                   DivideMultiply == other.DivideMultiply &&
+                   DivideAdd == other.DivideAdd && DivideShift == other.DivideShift;
+        }
+
+        public override bool Equals(object obj)
+        {
+            if (ReferenceEquals(null, obj)) return false;
+            if (ReferenceEquals(this, obj)) return true;
+            if (obj.GetType() != GetType()) return false;
+            return Equals((BitStorage) obj);
+        }
+
+        public override int GetHashCode()
+            => HashCode.Combine(Data, BitsPerEntry, Size, MaxValue, ValuesPerLong,
+                DivideMultiply, DivideAdd, DivideShift);
+
+        public static bool operator ==(BitStorage left, BitStorage right)
+            => Equals(left, right);
+
+        public static bool operator !=(BitStorage left, BitStorage right)
+            => !Equals(left, right);
+
+        #endregion
     }
 }
