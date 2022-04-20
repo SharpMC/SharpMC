@@ -10,6 +10,7 @@ using Xunit;
 using static SharpMC.Blocks.KnownBlocks;
 using static SharpMC.Chunky.DataPalette;
 using static SharpMC.Chunky.Palette.PaletteType;
+using static SharpMC.Data.Copier;
 using static SharpMC.Network.Test.DataBunch3;
 using static SharpMC.Network.Test.TestHelper;
 
@@ -36,10 +37,13 @@ namespace SharpMC.Network.Test
         }
 
         [Theory]
-        [InlineData(1, 17417)]
-        [InlineData(2, 17429)]
-        [InlineData(3, 18699)]
-        public void ShouldWriteChunk(int idx, int size)
+        [InlineData(1, 17417, CopyMode.Direct)]
+        [InlineData(1, 17417, CopyMode.Indexed)]
+        [InlineData(2, 17429, CopyMode.Direct)]
+        [InlineData(2, 17429, CopyMode.Indexed)]
+        [InlineData(3, 18699, CopyMode.Direct)]
+        [InlineData(3, 18699, CopyMode.Indexed)]
+        public void ShouldWriteChunk(int idx, int size, CopyMode mode)
         {
             var expected = idx switch {1 => MapChunkData1, 2 => MapChunkData2, _ => MapChunkData3};
             Assert.Equal(size, expected.Length);
@@ -116,12 +120,14 @@ namespace SharpMC.Network.Test
                     SpruceFence - 7, SpruceFence - 14, Kelp + 24, Kelp + 22, Air);
             }
             sections.CompactAirPalette();
-            
+
+            var p = mode.ToString()[0];
             var original = Chunks.ReadAll(expected, count);
-            WriteTexts($"{nameof(ShouldWriteChunk)}{idx}", ToJson(original), ToJson(sections));
+            CopyBlocks(original, sections, mode);
+            WriteTexts($"{nameof(ShouldWriteChunk)}{p}{idx}", ToJson(original), ToJson(sections));
 
             var actual = Chunks.WriteAll(sections);
-            WriteBytes($"{nameof(ShouldWriteChunk)}{idx}", expected, actual);
+            WriteBytes($"{nameof(ShouldWriteChunk)}{p}{idx}", expected, actual);
 
             Assert.Equal(ToJson(original), ToJson(sections));
             Assert.Equal(ToJson(expected), ToJson(actual));

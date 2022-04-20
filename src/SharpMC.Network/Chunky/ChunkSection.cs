@@ -46,13 +46,13 @@ namespace SharpMC.Chunky
             get => ChunkData[index];
             set
             {
-                var state = value;
-                var curr = ChunkData[index] = state;
-                if (state != Air && curr == Air)
+                var curr = ChunkData[index];
+                ChunkData[index] = value;
+                if (value != Air && curr == Air)
                 {
                     BlockCount++;
                 }
-                else if (state == Air && curr != Air)
+                else if (value == Air && curr != Air)
                 {
                     BlockCount--;
                 }
@@ -73,7 +73,7 @@ namespace SharpMC.Chunky
         {
             if (ReferenceEquals(null, other)) return false;
             if (ReferenceEquals(this, other)) return true;
-            return BlockCount == other.BlockCount && 
+            return BlockCount == other.BlockCount &&
                    Equals(ChunkData, other.ChunkData) &&
                    Equals(BiomeData, other.BiomeData);
         }
@@ -86,13 +86,13 @@ namespace SharpMC.Chunky
             return Equals((ChunkSection) obj);
         }
 
-        public override int GetHashCode() 
+        public override int GetHashCode()
             => HashCode.Combine(BlockCount, ChunkData, BiomeData);
 
-        public static bool operator ==(ChunkSection left, ChunkSection right) 
+        public static bool operator ==(ChunkSection left, ChunkSection right)
             => Equals(left, right);
 
-        public static bool operator !=(ChunkSection left, ChunkSection right) 
+        public static bool operator !=(ChunkSection left, ChunkSection right)
             => !Equals(left, right);
 
         #endregion

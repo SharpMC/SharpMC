@@ -4,8 +4,6 @@ using System.Linq;
 using SharpMC.Blocks;
 using SharpMC.Chunky;
 using SharpMC.Chunky.Palette;
-using SharpMC.Network.Chunky.Palette;
-using SharpMC.World;
 using ChunkSection = SharpMC.Chunky.ChunkSection;
 
 namespace SharpMC.Data
