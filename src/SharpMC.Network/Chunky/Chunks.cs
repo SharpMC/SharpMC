@@ -29,6 +29,7 @@ namespace SharpMC.Chunky
             using var mem = new MemoryStream();
             using var output = new MinecraftStream(mem);
             WriteAll(output, sections);
+            WriteZeroChunk(output);
             return mem.ToArray();
         }
 
@@ -37,6 +38,12 @@ namespace SharpMC.Chunky
             foreach (var section in sections)
                 if (section != null)
                     ChunkSection.Write(output, section);
+        }
+
+        private static void WriteZeroChunk(IMinecraftWriter output)
+        {
+            for (var i = 0; i < 16; i++)
+                output.WriteByte(0);
         }
     }
 }
