@@ -58,5 +58,26 @@ namespace SharpMC.Data
                 target[j] = sourceBlock.DefaultState;
             }
         }
+
+        public static void RecountBlocks(ChunkSection[] sections)
+        {
+            foreach (var section in sections)
+            {
+                var storage = section.ChunkData.Storage;
+                if (storage == null)
+                    continue;
+                var count = 0;
+                for (var j = 0; j < Pixel * Pixel * Pixel; j++)
+                {
+                    var state = storage[j];
+                    if (state == 0)
+                        continue;
+                    count++;
+                }
+                if (section.BlockCount == count)
+                    continue;
+                section.BlockCount = count;
+            }
+        }
     }
 }

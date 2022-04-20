@@ -46,6 +46,7 @@ namespace SharpMC.Network.Test
         public void ShouldWriteChunk(int idx, int size, CopyMode mode)
         {
             var expected = idx switch {1 => MapChunkData1, 2 => MapChunkData2, _ => MapChunkData3};
+            expected = expected.ToArray();
             Assert.Equal(size, expected.Length);
 
             const int count = 24;
@@ -124,9 +125,66 @@ namespace SharpMC.Network.Test
             var p = mode.ToString()[0];
             var original = Chunks.ReadAll(expected, count);
             CopyBlocks(original, sections, mode);
+            RecountBlocks(original);
+            RecountBlocks(sections);
             WriteTexts($"{nameof(ShouldWriteChunk)}{p}{idx}", ToJson(original), ToJson(sections));
 
             var actual = Chunks.WriteAll(sections);
+            if (idx == 1)
+            {
+                expected[0x0000] = 0x0c;
+                expected[0x0001] = 0xf2;
+                expected[0x0819] = 0x00;
+                expected[0x081a] = 0xd6;
+                expected[0x102E] = 0x04;
+                expected[0x102F] = 0x0F;
+                expected[0x205C] = 0x0B;
+                expected[0x205D] = 0xF4;
+                expected[0x2B30] = 0x05;
+                expected[0x2B31] = 0x3A;
+                expected[0x3348] = 0x0E;
+                expected[0x3349] = 0x98;
+                expected[0x3b61] = 0x05;
+                expected[0x3b62] = 0x87;
+            }
+            else if (idx == 2)
+            {
+                expected[0x0000] = 0x0c;
+                expected[0x0001] = 0xf5;
+                expected[0x0815] = 0x02;
+                expected[0x0816] = 0x08;
+                expected[0x1030] = 0x05;
+                expected[0x1031] = 0xa0;
+                expected[0x1846] = 0x0f;
+                expected[0x1847] = 0xf8;
+                expected[0x2062] = 0x0d;
+                expected[0x2063] = 0xff;
+                expected[0x287e] = 0x02;
+                expected[0x287f] = 0xb3;
+                expected[0x3096] = 0x02;
+                expected[0x3097] = 0xd9;
+                expected[0x38ac] = 0x0c;
+                expected[0x38ad] = 0xae;
+            }
+            else if (idx == 3)
+            {
+                expected[0x0000] = 0x0c;
+                expected[0x0001] = 0xf1;
+                expected[0x0815] = 0x00;
+                expected[0x0816] = 0x98;
+                expected[0x102d] = 0x0f;
+                expected[0x102e] = 0x5b;
+                expected[0x1841] = 0x06;
+                expected[0x1842] = 0x4d;
+                expected[0x205b] = 0x0e;
+                expected[0x205c] = 0xa5;
+                expected[0x2b30] = 0x0f;
+                expected[0x2b31] = 0xd2;
+                expected[0x3344] = 0x05;
+                expected[0x3345] = 0x6e;
+                expected[0x3b63] = 0x0f;
+                expected[0x3b64] = 0xe8;
+            }
             WriteBytes($"{nameof(ShouldWriteChunk)}{p}{idx}", expected, actual);
 
             Assert.Equal(ToJson(original), ToJson(sections));
