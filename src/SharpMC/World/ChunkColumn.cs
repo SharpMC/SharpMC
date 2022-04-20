@@ -1,4 +1,5 @@
 using System.IO;
+using SharpMC.Blocks;
 using SharpMC.Network.Util;
 using SharpMC.Util;
 
@@ -151,6 +152,11 @@ namespace SharpMC.World
                 Cache = ms.ToArray();
             }
             stream.Write(Cache);
+        }
+
+        public void SetBlockId(int x, int y, int z, MiBlock block)
+        {
+            SetBlockId(x, y, z, (short) block.DefaultState);
         }
     }
 }

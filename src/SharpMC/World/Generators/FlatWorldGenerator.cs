@@ -2,6 +2,7 @@ using System.Collections.Concurrent;
 using SharpMC.Blocks;
 using SharpMC.Players;
 using SharpMC.Util;
+using BlockIds = SharpMC.Blocks.KnownBlocks;
 
 namespace SharpMC.World.Generators
 {
@@ -17,10 +18,6 @@ namespace SharpMC.World.Generators
         public ChunkColumn GenerateChunkColumn(ChunkCoordinates coordinates)
         {
             return Chunks.GetOrAdd(coordinates, CreateChunk);
-        }
-
-        public void Initialize()
-        {
         }
 
         public PlayerLocation GetSpawnPoint()

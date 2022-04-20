@@ -7,8 +7,6 @@ namespace SharpMC.World.Generators
     {
         ChunkColumn GenerateChunkColumn(ChunkCoordinates coordinates);
 
-        void Initialize();
-
         PlayerLocation GetSpawnPoint();
     }
 }
