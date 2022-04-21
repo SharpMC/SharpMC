@@ -10,11 +10,11 @@ namespace SharpMC.Network.Binary.Model
 
         public CompoundTag ToCompound()
         {
-            var tag = new CompoundTag(null)
-            {
-                new LongArrayTag("MOTION_BLOCKING", MotionBlocking),
-                new LongArrayTag("WORLD_SURFACE", WorldSurface)
-            };
+            var tag = new CompoundTag(null);
+            if (MotionBlocking != null)
+                tag.Add(new LongArrayTag("MOTION_BLOCKING", MotionBlocking));
+            if (WorldSurface != null)
+                tag.Add(new LongArrayTag("WORLD_SURFACE", WorldSurface));
             return tag;
         }
 
