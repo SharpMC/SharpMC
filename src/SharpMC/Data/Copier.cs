@@ -59,7 +59,7 @@ namespace SharpMC.Data
             }
         }
 
-        public static void RecountBlocks(ChunkSection[] sections)
+        public static void RecountBlocks(this ChunkSection[] sections)
         {
             foreach (var section in sections)
             {

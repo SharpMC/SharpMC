@@ -94,6 +94,8 @@ namespace SharpMC.World
             {
                 return Cache;
             }
+            Sections.CompactAirPalette();
+            Sections.RecountBlocks();
             var bytes = Chunks.WriteAll(Sections);
             Cache = bytes;
             return bytes;
