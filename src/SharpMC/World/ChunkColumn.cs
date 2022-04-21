@@ -7,7 +7,6 @@ namespace SharpMC.World
 {
     public class ChunkColumn
     {
-        public const int Height = 256;
         public const int Width = 16;
         public const int Depth = 16;
 
@@ -99,14 +98,12 @@ namespace SharpMC.World
 
         public byte[] ToArray()
         {
-            using (var ms = new MemoryStream())
+            using var ms = new MemoryStream();
+            using (var m = new MinecraftStream(ms))
             {
-                using (var m = new MinecraftStream(ms))
-                {
-                    WriteTo(m);
-                }
-                return ms.ToArray();
+                WriteTo(m);
             }
+            return ms.ToArray();
         }
 
         public void WriteTo(MinecraftStream stream)
