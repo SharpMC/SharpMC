@@ -2,7 +2,7 @@
 
 namespace SharpMC.Blocks
 {
-    public class Block
+    public class Block : IBlock
     {
         public int Id { get; set; }
         public string Name { get; set; }
@@ -15,11 +15,13 @@ namespace SharpMC.Blocks
         public override string ToString() => Name;
 
         #region Helpers
+
         public static Block operator +(Block b, int m)
             => Finder.FindBlockByState(b.DefaultState + m);
 
         public static Block operator -(Block b, int m)
             => Finder.FindBlockByState(b.DefaultState - m);
+
         #endregion
     }
 }

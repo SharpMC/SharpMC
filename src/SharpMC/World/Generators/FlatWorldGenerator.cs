@@ -1,5 +1,4 @@
 using System.Collections.Concurrent;
-using SharpMC.Blocks;
 using SharpMC.Players;
 using SharpMC.Util;
 using BlockIds = SharpMC.Blocks.KnownBlocks;
@@ -8,14 +7,14 @@ namespace SharpMC.World.Generators
 {
     public class FlatWorldGenerator : IWorldGenerator
     {
-        private ConcurrentDictionary<ChunkCoordinates, ChunkColumn> Chunks { get; }
+        private ConcurrentDictionary<ChunkCoordinates, IChunkColumn> Chunks { get; }
 
         public FlatWorldGenerator()
         {
-            Chunks = new ConcurrentDictionary<ChunkCoordinates, ChunkColumn>();
+            Chunks = new ConcurrentDictionary<ChunkCoordinates, IChunkColumn>();
         }
 
-        public ChunkColumn GenerateChunkColumn(ChunkCoordinates coordinates)
+        public IChunkColumn GenerateChunkColumn(ChunkCoordinates coordinates)
         {
             return Chunks.GetOrAdd(coordinates, CreateChunk);
         }
@@ -25,24 +24,28 @@ namespace SharpMC.World.Generators
             return new PlayerLocation(0.5, 4f, 0.5f);
         }
 
-        private static ChunkColumn CreateChunk(ChunkCoordinates chunkCoordinates)
+        private static IChunkColumn CreateChunk(ChunkCoordinates _)
         {
-            var column = new ChunkColumn(chunkCoordinates);
+            IChunkColumn column = new ChunkColumn();
             for (var y = 0; y < 4; y++)
             {
-                for (var x = 0; x < ChunkColumn.Width; x++)
+                for (var x = 0; x < column.Width; x++)
                 {
-                    for (var z = 0; z < ChunkColumn.Depth; z++)
+                    for (var z = 0; z < column.Depth; z++)
                     {
-                        if (y == 0) column.SetBlockId(x, y, z, BlockIds.Bedrock);
-                        else if (y == 1 || y == 2) column.SetBlockId(x, y, z, BlockIds.Dirt);
-                        else if (y == 3) column.SetBlockId(x, y, z, BlockIds.Grass);
+                        if (y == 0) column.SetBlock(x, y, z, BlockIds.Sand);
+                        else if (y == 1 || y == 2) column.SetBlock(x, y, z, BlockIds.Dirt);
+                        else if (y == 3) column.SetBlock(x, y, z, BlockIds.Grass);
                     }
                 }
             }
-            column.SetBlockId(0, 5, 0, 41);
-            column.SetBlockId(0, 5, 1, 41);
-            column.SetBlockId(0, 5, 2, 7);
+            for (var i = 0; i < 6; i++)
+            {
+                column.SetBlock(0, 5 + i, 0, BlockIds.DiamondBlock);
+            }
+            column.SetBlock(0, 5, 0, BlockIds.GoldBlock);
+            column.SetBlock(0, 5, 1, BlockIds.GoldBlock);
+            column.SetBlock(0, 5, 2, BlockIds.Bedrock);
             return column;
         }
     }

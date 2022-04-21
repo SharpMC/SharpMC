@@ -9,6 +9,7 @@ using SharpMC.API.Enums;
 using SharpMC.Data;
 using SharpMC.Network.Binary;
 using SharpMC.Network.Binary.Model;
+using SharpMC.Network.Binary.Special;
 using SharpMC.Network.Packets.Play.ToBoth;
 using SharpMC.Network.Packets.Play.ToClient;
 using static SharpMC.Util.Numbers;
@@ -79,17 +80,22 @@ namespace SharpMC.Players
 
         private void SendChunksForKnownPosition(ChunkCoordinates coords)
         {
-            foreach (var i in Level.GenerateChunks(this, coords, ChunksUsed, ViewDistance))
+            foreach (var (b, c) in Level.GenerateChunks(this, coords, ChunksUsed, ViewDistance))
             {
-                Connection.SendPacket(new MapChunk
+                var map = new MapChunk
                 {
-                    ChunkData = i,
+                    X = c.X,
+                    Z = c.Z,
+                    TrustEdges = true,
+                    ChunkData = b,
                     HeightMaps = new HeightMaps
                     {
                         MotionBlocking = GetLongs(36, 2292305770412047999, 17079008895),
                         WorldSurface = GetLongs(36, 2292305770412047999, 17079008895)
-                    }
-                });
+                    },
+                    BlockEntities = Array.Empty<ChunkBlockEntity>()
+                };
+                Connection.SendPacket(map);
             }
         }
 

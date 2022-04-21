@@ -22,7 +22,7 @@ namespace SharpMC.World
         public void RemoveEntity(Entity caller, Entity entity)
         {
             if (entity == caller)
-                throw new Exception("Tried to REMOVE entity for self");
+                throw new Exception("Tried to remove entity for self");
             if (entity.EntityId != EntityIdUndefined)
                 entity.EntityId = EntityIdUndefined;
         }

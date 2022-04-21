@@ -72,7 +72,7 @@ namespace SharpMC.World
         {
             var chunkLoading = Stopwatch.StartNew();
             var count = 0;
-            foreach (var i in GenerateChunks(null, new ChunkCoordinates(SpawnPoint),
+            foreach (var _ in GenerateChunks(null, new ChunkCoordinates(SpawnPoint),
                          new Dictionary<Tuple<int, int>, byte[]>(), 8))
             {
                 count++;
@@ -153,7 +153,8 @@ namespace SharpMC.World
             }
         }
 
-        public IEnumerable<byte[]> GenerateChunks(Player player, ChunkCoordinates chunkPosition,
+        public IEnumerable<(byte[], ChunkCoordinates)> GenerateChunks(
+            Player player, ChunkCoordinates chunkPosition,
             Dictionary<Tuple<int, int>, byte[]> chunksUsed, double radius)
         {
             lock (chunksUsed)
@@ -202,7 +203,7 @@ namespace SharpMC.World
                         chunk = chunkColumn.ToArray();
                     }
                     chunksUsed.Add(pair.Key, chunk);
-                    yield return chunk;
+                    yield return (chunk, coordinates);
                 }
             }
         }

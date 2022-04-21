@@ -104,7 +104,7 @@ namespace SharpMC.Data
             data.Palette = new SingletonPalette(state);
         }
 
-        private static ChunkSection NewSection(int? singleBiome = null)
+        public static ChunkSection NewSection(int? singleBiome = null)
         {
             var section = new ChunkSection();
             if (singleBiome != null)

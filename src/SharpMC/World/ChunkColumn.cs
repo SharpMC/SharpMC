@@ -1,159 +1,102 @@
-using System.IO;
 using SharpMC.Blocks;
-using SharpMC.Network.Util;
-using SharpMC.Util;
+using SharpMC.Chunky;
+using SharpMC.Data;
 
 namespace SharpMC.World
 {
-    public class ChunkColumn
+    public class ChunkColumn : IChunkColumn
     {
-        public const int Width = 16;
-        public const int Depth = 16;
-
-        public byte[] HeightMap = new byte[Width * Depth];
-        public ChunkCoordinates Coordinates { get; }
-        public bool IsDirty { get; private set; }
-
-        private ChunkSection[] Sections { get; }
+        public int Offset { get; }
+        public int Height { get; }
+        public int Width { get; }
+        public int Depth { get; }
+        private byte[] HeightMap { get; }
         private byte[] Biomes { get; }
+        private ChunkSection[] Sections { get; }
         private byte[] Cache { get; set; }
 
-        public ChunkColumn(ChunkCoordinates coordinates)
+        public ChunkColumn(int width = 16, int depth = 16, int height = 24, int offset = -16)
         {
-            Coordinates = coordinates;
-            Sections = new ChunkSection[16];
-            Biomes = new byte[Depth * Width];
-            for (var i = 0; i < Sections.Length; i++)
-            {
-                Sections[i] = new ChunkSection();
-            }
-            for (var i = 0; i < Biomes.Length; i++)
-            {
-                Biomes[i] = (byte) BiomeIds.Plains;
-            }
+            Offset = offset;
+            Height = height;
+            Width = width;
+            Depth = depth;
+
+            HeightMap = new byte[Width * Depth];
             for (var i = 0; i < HeightMap.Length; i++)
-            {
                 HeightMap[i] = 0;
-            }
+
+            Biomes = new byte[Depth * Width];
+            for (var i = 0; i < Biomes.Length; i++)
+                Biomes[i] = (byte) BiomeIds.Plains;
+
+            Sections = new ChunkSection[height];
+            for (var i = 0; i < Sections.Length; i++)
+                Sections[i] = Bulk.NewSection(44);
         }
 
-        private ChunkSection GetChunkSection(int y)
+        private ChunkSection GetChunkSection(int y) => Sections[y >> 4];
+
+        private (int x, int, int z) GetIndex(int x, int y, int z)
+            => (x, y + Offset * (y >> 4), z);
+
+        private int GetBlockId(int x, int y, int z)
         {
-            return Sections[y >> 4];
+            var section = GetChunkSection(y);
+            var index = GetIndex(x, y, z);
+            return section[index];
         }
 
-        public short GetBlockId(int x, int y, int z)
+        private void SetBlockId(int x, int y, int z, int id)
         {
-            return GetChunkSection(y).GetBlockId(x, y - 16 * (y >> 4), z);
-        }
-
-        public void SetBlockId(int x, int y, int z, short id)
-        {
-            GetChunkSection(y).SetBlockId(x, y - 16 * (y >> 4), z, id);
+            var section = GetChunkSection(y);
+            var index = GetIndex(x, y, z);
+            section[index] = id;
             Cache = null;
-            IsDirty = true;
         }
 
-        public byte GetBlockData(int x, int y, int z)
+        private void SetBiome(int x, int z, byte biome)
         {
-            return GetChunkSection(y).GetBlockData(x, y - 16 * (y >> 4), z);
-        }
-
-        public void SetBlockData(int x, int y, int z, byte meta)
-        {
-            GetChunkSection(y).SetBlockData(x, y - 16 * (y >> 4), z, meta);
+            Biomes[(z << 4) + x] = biome;
             Cache = null;
-            IsDirty = true;
         }
 
-        public void SetBiome(int x, int z, byte biome)
-        {
-            Biomes[(z << 4) + (x)] = biome;
-            Cache = null;
-            IsDirty = true;
-        }
+        private byte GetBiome(int x, int z) => Biomes[(z << 4) + x];
 
-        public byte GetBiome(int x, int z)
+        private void ReCalcHeight()
         {
-            return Biomes[(z << 4) + (x)];
-        }
-
-        public void RecalcHeight()
-        {
-            for (var x = 0; x < 16; x++)
-            {
-                for (var z = 0; z < 16; z++)
+            for (var x = 0; x < Width; x++)
+            for (var z = 0; z < Depth; z++)
+            for (var y = 127; y > 0; y--)
+                if (GetBlockId(x, y, z) != 0)
                 {
-                    for (var y = 127; y > 0; y--)
-                    {
-                        if (GetBlockId(x, y, z) != 0)
-                        {
-                            HeightMap[(x << 4) + z] = (byte) (y + 1);
-                            break;
-                        }
-                    }
+                    HeightMap[(x << 4) + z] = (byte) (y + 1);
+                    break;
                 }
-            }
+        }
+
+        public IBlock GetBlock(int x, int y, int z)
+        {
+            var state = GetBlockId(x, y, z);
+            var block = Finder.FindBlockByState(state);
+            return block;
+        }
+
+        public void SetBlock(int x, int y, int z, IBlock block)
+        {
+            var state = block.DefaultState;
+            SetBlockId(x, y, z, state);
         }
 
         public byte[] ToArray()
         {
-            using var ms = new MemoryStream();
-            using (var m = new MinecraftStream(ms))
-            {
-                WriteTo(m);
-            }
-            return ms.ToArray();
-        }
-
-        public void WriteTo(MinecraftStream stream)
-        {
             if (Cache != null)
             {
-                stream.Write(Cache);
-                return;
+                return Cache;
             }
-            byte[] sectionData;
-            var sectionBitmask = 0;
-            using (var ms = new MemoryStream())
-            {
-                using (var mc = new MinecraftStream(ms))
-                {
-                    for (var i = 0; i < Sections.Length; i++)
-                    {
-                        var section = Sections[i];
-                        if (section.IsAllAir)
-                            continue;
-                        sectionBitmask |= 1 << i;
-                        section.WriteTo(mc, true);
-                    }
-                }
-                sectionData = ms.ToArray();
-            }
-            using (var ms = new MemoryStream())
-            {
-                using (var mc = new MinecraftStream(ms))
-                {
-                    // TODO: Fix structure ?! packet_map_chunk
-                    mc.WriteInt(Coordinates.X);
-                    mc.WriteInt(Coordinates.Z);
-                    mc.WriteBool(true);
-                    // Primary Bitmask
-                    mc.WriteVarInt(sectionBitmask);
-                    mc.WriteVarInt(sectionData.Length + 256);
-                    mc.Write(sectionData, 0, sectionData.Length);
-                    mc.Write(Biomes); 
-                    // No block entities for now
-                    mc.WriteVarInt(0);
-                }
-                Cache = ms.ToArray();
-            }
-            stream.Write(Cache);
-        }
-
-        public void SetBlockId(int x, int y, int z, Block block)
-        {
-            SetBlockId(x, y, z, (short) block.DefaultState);
+            var bytes = Chunks.WriteAll(Sections);
+            Cache = bytes;
+            return bytes;
         }
     }
 }
