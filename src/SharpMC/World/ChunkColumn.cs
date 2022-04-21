@@ -154,7 +154,7 @@ namespace SharpMC.World
             stream.Write(Cache);
         }
 
-        public void SetBlockId(int x, int y, int z, MiBlock block)
+        public void SetBlockId(int x, int y, int z, Block block)
         {
             SetBlockId(x, y, z, (short) block.DefaultState);
         }

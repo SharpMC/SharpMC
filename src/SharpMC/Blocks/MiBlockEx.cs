@@ -1,11 +1,11 @@
 ﻿namespace SharpMC.Blocks
 {
-    public class MiBlockEx : MiBlock
+    public class MetaBlock : Block
     {
-        public MiBlock Parent { get; }
+        public Block Parent { get; }
         public int Meta { get; }
 
-        public MiBlockEx(MiBlock block, int meta)
+        public MetaBlock(Block block, int meta)
         {
             Parent = block;
             Meta = meta;

@@ -10,7 +10,7 @@ namespace SharpMC.Data
 {
     public static class Bulk
     {
-        public static void SetBlocks(this ChunkSection section, int x, int z, params (int y, MiBlock block)[] pairs)
+        public static void SetBlocks(this ChunkSection section, int x, int z, params (int y, Block block)[] pairs)
         {
             foreach (var (y, block) in pairs)
             {
@@ -30,14 +30,14 @@ namespace SharpMC.Data
             }
         }
 
-        public static void AddToMapPalette(this ChunkSection section, int bitsPerEntry, params MiBlock[] blocks)
+        public static void AddToMapPalette(this ChunkSection section, int bitsPerEntry, params Block[] blocks)
             => AddToMyPalette(section, forceMap: true, bitsPerEntry, blocks);
 
-        public static void AddToPalette(this ChunkSection section, params MiBlock[] blocks)
+        public static void AddToPalette(this ChunkSection section, params Block[] blocks)
             => AddToMyPalette(section, forceMap: false, null, blocks);
 
         private static void AddToMyPalette(this ChunkSection section, bool forceMap,
-            int? bitsPerEntry = null, params MiBlock[] blocks)
+            int? bitsPerEntry = null, params Block[] blocks)
         {
             var data = section.ChunkData;
             if (forceMap && data.Palette?.BitsPerEntry != bitsPerEntry)
@@ -53,13 +53,13 @@ namespace SharpMC.Data
             }
         }
 
-        public static MiBlock[] ReadPalette(this ChunkSection section, out int[] keys)
+        public static Block[] ReadPalette(this ChunkSection section, out int[] keys)
         {
             keys = null;
             var palette = section.ChunkData.Palette;
             if (palette == null)
             {
-                return Array.Empty<MiBlock>();
+                return Array.Empty<Block>();
             }
             if (palette is ListPalette l)
             {

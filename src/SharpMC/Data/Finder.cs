@@ -6,24 +6,24 @@ namespace SharpMC.Data
 {
     public static class Finder
     {
-        private static IDictionary<int, MiBlock> StatesToBlocks { get; } = LoadBlockStates();
+        private static IDictionary<int, Block> StatesToBlocks { get; } = LoadBlockStates();
 
-        public static MiBlock FindBlockByState(int state)
+        public static Block FindBlockByState(int state)
         {
             if (StatesToBlocks.TryGetValue(state, out var block))
                 return block;
             throw new InvalidOperationException($"Could not find block: {state}");
         }
 
-        private static IDictionary<int, MiBlock> LoadBlockStates()
+        private static IDictionary<int, Block> LoadBlockStates()
         {
-            var dict = new SortedDictionary<int, MiBlock>();
+            var dict = new SortedDictionary<int, Block>();
             foreach (var block in KnownBlocks.All)
             {
                 for (var stateId = block.MinStateId; stateId <= block.MaxStateId; stateId++)
                 {
                     var offset = block.DefaultState;
-                    var toAdd = stateId == offset ? block : new MiBlockEx(block, stateId - offset);
+                    var toAdd = stateId == offset ? block : new MetaBlock(block, stateId - offset);
                     dict.Add(stateId, toAdd);
                 }
             }
