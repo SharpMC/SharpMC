@@ -21,6 +21,15 @@ Current Specs
   - Scripting: C# Plugins
   - Platforms: Windows, Mac, Linux under .NET 6
 
+How to run?
+----------------
+* git clone https://github.com/xafero/SharpMC.git
+* cd src
+* cd SharpMC.Server
+* dotnet run
+
+It should now listen on localhost (127.0.0.1).
+
 What is SharpCore?
 ----------------
 SharpCore is the main plugin for SharpMC which provides the basic most basic commands needed for server operation.
