@@ -1,6 +1,7 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 using System.Text;
 using static SharpMC.Generator.Prismarine.CodeGen;
 using static SharpMC.Generator.Tools.Helpers;
@@ -150,8 +151,9 @@ namespace SharpMC.Generator.Prismarine.Data
             var f = new List<OneField>();
             foreach (var one in blockLoots)
             {
+                var dropsTxt = string.Join(", ", one.Drops.Select(ToStr));
                 var v = $" = new {fieldType} {{ BlockName = {one.Block}, " +
-                        $"Drops = new [] {{ \"{one.Drops}\" }} " +
+                        $"Drops = new [] {{ {dropsTxt} }} " +
                         "}";
                 f.Add(new OneField
                 {
@@ -165,6 +167,23 @@ namespace SharpMC.Generator.Prismarine.Data
             };
             Console.WriteLine($" * {item.Class}");
             Write(item, target);
+        }
+
+        private static string ToStr(LootItem item)
+        {
+            var dv = $"new LootItem {{ Item = \"{item.Item}\", " +
+                     $"DropChance = {item.DropChance}, " +
+                     $"StackSizeRange = new [] {{ {string.Join(", ", item.StackSizeRange)} }} ";
+            if (item.BlockAge != null)
+                dv += $", BlockAge = {item.BlockAge} ";
+            if (item.PlayerKill != null)
+                dv += $", PlayerKill = {item.PlayerKill} ";
+            if (item.SilkTouch != null)
+                dv += $", SilkTouch = {item.SilkTouch} ";
+            if (item.NoSilkTouch != null)
+                dv += $", NoSilkTouch = {item.NoSilkTouch} ";
+            dv += "}";
+            return dv;
         }
     }
 }
