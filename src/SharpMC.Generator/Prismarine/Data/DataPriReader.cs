@@ -35,6 +35,7 @@ namespace SharpMC.Generator.Prismarine.Data
             DataPriWriter.WriteEntities(entity, entityLoots, target);
             DataPriWriter.WriteItems(items, target);
             DataPriWriter.WriteBiomes(biomes, target);
+            DataPriWriter.WriteParticles(particles, target);
             
             Console.WriteLine();
         }

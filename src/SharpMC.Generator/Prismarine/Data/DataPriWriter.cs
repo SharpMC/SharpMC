@@ -106,7 +106,31 @@ namespace SharpMC.Generator.Prismarine.Data
             Console.WriteLine($" * {item.Class}");
             Write(item, target);
         }
-
+        
+        public static void WriteParticles(Particle[] items, string target)
+        {
+            const string fieldType = "Particle";
+            var f = new List<OneField>();
+            foreach (var one in items)
+            {
+                var fieldName = ToTitleCase(one.Name);
+                var v = $" = new {fieldType} {{ Id = {one.Id}, " +
+                        $"Name = \"{one.Name}\" " +
+                        "}";
+                f.Add(new OneField
+                {
+                    Name = fieldName, TypeName = $"readonly {fieldType}", Constant = v
+                });
+            }
+            (f = f.SortByName()).AddAllField(fieldType);
+            var item = new OneUnit
+            {
+                Class = "KnownParticles", Namespace = $"{nameof(SharpMC)}.Particles", Fields = f
+            };
+            Console.WriteLine($" * {item.Class}");
+            Write(item, target);
+        }
+        
         public static void WriteItems(Item[] items, string target)
         {
             const string fieldType = "Item";
