@@ -108,8 +108,7 @@ namespace SharpMC.Generator.Prismarine.Data
                     Name = fieldName, TypeName = $"readonly {fieldType}", Constant = v
                 });
             }
-            f = f.SortByName();
-            f.AddAllField(fieldType);
+            (f = f.SortByName()).AddAllField(fieldType);
             var item = new OneUnit
             {
                 Class = "KnownItems", Namespace = $"{nameof(SharpMC)}.Items", Fields = f
