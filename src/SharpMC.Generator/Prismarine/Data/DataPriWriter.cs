@@ -1,7 +1,6 @@
 using System;
 using System.Collections.Generic;
 using System.IO;
-using System.Linq;
 using System.Text;
 using static SharpMC.Generator.Prismarine.CodeGen;
 using static SharpMC.Generator.Tools.Helpers;
@@ -29,18 +28,10 @@ namespace SharpMC.Generator.Prismarine.Data
                     Name = fieldName, TypeName = $"readonly {fieldType}", Constant = v
                 });
             }
-            f = f.OrderBy(x => x.Name).ToList();
-            var allNames = f.Select(e => e.Name);
-            f.Insert(0, new OneField
-            {
-                Name = "All", TypeName = $"readonly {fieldType}[]",
-                Constant = $" = {{ {string.Join(", ", allNames)} }}"
-            });
+            (f = f.SortByName()).AddAllField(fieldType);
             var item = new OneUnit
             {
-                Class = "KnownBlocks",
-                Namespace = $"{nameof(SharpMC)}.Blocks",
-                Fields = f
+                Class = "KnownBlocks", Namespace = $"{nameof(SharpMC)}.Blocks", Fields = f
             };
             Console.WriteLine($" * {item.Class}");
             Write(item, target);
@@ -92,19 +83,10 @@ namespace SharpMC.Generator.Prismarine.Data
                     Name = fieldName, TypeName = $"readonly {fieldType}", Constant = v
                 });
             }
-            f = f.OrderBy(x => x.Name).ToList();
-            var allNames = f.Select(e => e.Name);
-            f.Insert(0, new OneField
-            {
-                Name = "All",
-                TypeName = $"readonly {fieldType}[]",
-                Constant = $" = {{ {string.Join(", ", allNames)} }}"
-            });
+            (f = f.SortByName()).AddAllField(fieldType);
             var item = new OneUnit
             {
-                Class = "KnownEntities",
-                Namespace = $"{nameof(SharpMC)}.Entities",
-                Fields = f
+                Class = "KnownEntities", Namespace = $"{nameof(SharpMC)}.Entities", Fields = f
             };
             Console.WriteLine($" * {item.Class}");
             Write(item, target);
@@ -126,16 +108,61 @@ namespace SharpMC.Generator.Prismarine.Data
                     Name = fieldName, TypeName = $"readonly {fieldType}", Constant = v
                 });
             }
-            f = f.OrderBy(x => x.Name).ToList();
-            var allNames = f.Select(e => e.Name);
-            f.Insert(0, new OneField
-            {
-                Name = "All", TypeName = $"readonly {fieldType}[]",
-                Constant = $" = {{ {string.Join(", ", allNames)} }}"
-            });
+            f = f.SortByName();
+            f.AddAllField(fieldType);
             var item = new OneUnit
             {
                 Class = "KnownItems", Namespace = $"{nameof(SharpMC)}.Items", Fields = f
+            };
+            Console.WriteLine($" * {item.Class}");
+            Write(item, target);
+        }
+
+        public static void WriteBiomes(Biome[] biomes, string target)
+        {
+            const string fieldType = "Biome";
+            var f = new List<OneField>();
+            foreach (var one in biomes)
+            {
+                var v = $" = new {fieldType} {{ Id = {one.Id}, " +
+                        $"DisplayName = \"{one.DisplayName}\", Name = \"{one.Name}\", " +
+                        $"Category = BiomeCategory.{one.Category}, Temperature = {one.Temperature}, " +
+                        $"Precipitation = BiomePrecipitation.{one.Precipitation}, " +
+                        $"Depth = {one.Depth}, Color = {one.Color}, " +
+                        $"Rainfall = {one.Rainfall}, Dimension = BiomeDim.{one.Dimension} " +
+                        "}";
+                f.Add(new OneField
+                {
+                    Name = ToTitleCase(one.Name), TypeName = $"readonly {fieldType}", Constant = v
+                });
+            }
+            (f = f.SortByName()).AddAllField(fieldType);
+            var item = new OneUnit
+            {
+                Class = "KnownBiomes", Namespace = $"{nameof(SharpMC)}.Biomes", Fields = f
+            };
+            Console.WriteLine($" * {item.Class}");
+            Write(item, target);
+        }
+
+        public static void WriteBlockLoots(BlockLoot[] blockLoots, string target)
+        {
+            const string fieldType = "BlockLoots";
+            var f = new List<OneField>();
+            foreach (var one in blockLoots)
+            {
+                var v = $" = new {fieldType} {{ BlockName = {one.Block}, " +
+                        $"Drops = new [] {{ \"{one.Drops}\" }} " +
+                        "}";
+                f.Add(new OneField
+                {
+                    Name = ToTitleCase(one.Block), TypeName = $"readonly {fieldType}", Constant = v
+                });
+            }
+            (f = f.SortByName()).AddAllField(fieldType);
+            var item = new OneUnit
+            {
+                Class = "KnownBlockLoots", Namespace = $"{nameof(SharpMC)}.Blocks", Fields = f
             };
             Console.WriteLine($" * {item.Class}");
             Write(item, target);
