@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Text;
 using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using static SharpMC.Generator.Tools.Helpers;
 
 namespace SharpMC.Generator.Prismarine.Data
@@ -14,6 +15,27 @@ namespace SharpMC.Generator.Prismarine.Data
         {
             const string version = "1.18";
             Start(version, source, target);
+
+            const string oldVersion = "1.17";
+            StartOld(oldVersion, source, target);
+        }
+
+        private static void StartOld(string version, string source, string target)
+        {
+            Console.WriteLine();
+            var foods =  Load<Food>(version, source, "foods");
+            var enchantments = Load<Enchantment>(version, source, "enchantments");
+            var effects = Load<Effect>(version, source, "effects");
+            var blockCollisionShapes = LoadSimple<JObject>(version, source, "blockCollisionShapes");
+            var attributes = Load<Attribute>(version, source, "attributes");
+            
+            /* DataPriWriter.WriteFoods(foods, target);
+            DataPriWriter.WriteEnchantments(enchantments, target);
+            DataPriWriter.WriteEffects(effects, target);
+            DataPriWriter.WriteBlockShapes(blockCollisionShapes, target);
+            DataPriWriter.WriteAttributes(attributes, target); */
+            
+            Console.WriteLine();
         }
 
         private static void Start(string version, string source, string target)
@@ -30,7 +52,6 @@ namespace SharpMC.Generator.Prismarine.Data
             var particles = Load<Particle>(version, source, "particles");
             var recipes = LoadSimple<Dictionary<int, Recipe[]>>(version, source, "recipes");
 
-            // TODO ?!
             DataPriWriter.WriteBlocks(blocks, blockLoots, target);
             DataPriWriter.WriteEntities(entity, entityLoots, target);
             DataPriWriter.WriteItems(items, target);
