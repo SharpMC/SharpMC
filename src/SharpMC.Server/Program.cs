@@ -17,7 +17,7 @@ namespace SharpMC.Server
 
         private static void Main()
         {
-            Log.LogInformation("Initializing...");
+            Log.LogInformation("Loading settings...");
             Config.Check();
             var config = Config.Server.Port;
             var comm = new NetConfiguration

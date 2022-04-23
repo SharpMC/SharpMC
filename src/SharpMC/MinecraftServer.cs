@@ -36,9 +36,6 @@ namespace SharpMC
             var currentDomain = AppDomain.CurrentDomain;
             currentDomain.UnhandledException += UnhandledException;
 
-            Log.LogInformation("Loading settings...");
-            LoadSettings();
-
             Log.LogInformation("Loading variables...");
             InitiateVariables();
 
@@ -68,10 +65,6 @@ namespace SharpMC
                 Directory.CreateDirectory(Globals.Instance.LevelManager.MainLevel.LvlName);
             if (!Directory.Exists("Players"))
                 Directory.CreateDirectory("Players");
-        }
-
-        private void LoadSettings()
-        {
         }
 
         private void LoadPlugins()
