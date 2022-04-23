@@ -31,11 +31,10 @@ namespace SharpMC.Generator.Prismarine.Data
             var recipes = LoadSimple<Dictionary<int, Recipe[]>>(version, source, "recipes");
 
             // TODO ?!
-            DataPriWriter.WriteBlocks(blocks, target);
-            DataPriWriter.WriteEntities(entity, target);
+            DataPriWriter.WriteBlocks(blocks, blockLoots, target);
+            DataPriWriter.WriteEntities(entity, entityLoots, target);
             DataPriWriter.WriteItems(items, target);
             DataPriWriter.WriteBiomes(biomes, target);
-            DataPriWriter.WriteBlockLoots(blockLoots, target);
             
             Console.WriteLine();
         }

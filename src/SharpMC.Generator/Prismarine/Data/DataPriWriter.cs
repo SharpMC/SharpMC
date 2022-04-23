@@ -12,7 +12,7 @@ namespace SharpMC.Generator.Prismarine.Data
 {
     internal static class DataPriWriter
     {
-        public static void WriteBlocks(Block[] blocks, string target)
+        public static void WriteBlocks(Block[] blocks, BlockLoot[] loots, string target)
         {
             const string fieldType = "Block";
             var f = new List<OneField>();
@@ -22,8 +22,14 @@ namespace SharpMC.Generator.Prismarine.Data
                 var v = $" = new {fieldType} {{ Id = {block.Id}, " +
                         $"DisplayName = \"{block.DisplayName}\", Name = \"{block.Name}\", " +
                         $"MinStateId = {block.MinStateId}, MaxStateId = {block.MaxStateId}, " +
-                        $"DefaultState = {block.DefaultState}, Material = \"{block.Material}\" " +
-                        "}";
+                        $"DefaultState = {block.DefaultState}, Material = \"{block.Material}\" ";
+                var loot = loots.SingleOrDefault(l => l.Block == block.Name);
+                if (loot != null && loot.Drops.Count >= 1)
+                {
+                    var dropsTxt = string.Join(", ", loot.Drops.Select(ToStr));
+                    v += $", Drops = new [] {{ {dropsTxt} }} ";
+                }
+                v += "}";
                 f.Add(new OneField
                 {
                     Name = fieldName, TypeName = $"readonly {fieldType}", Constant = v
@@ -67,7 +73,7 @@ namespace SharpMC.Generator.Prismarine.Data
             File.WriteAllLines(outPath, lines, Encoding.UTF8);
         }
 
-        public static void WriteEntities(Entity[] entity, string target)
+        public static void WriteEntities(Entity[] entity, EntityLoot[] loots, string target)
         {
             const string fieldType = "Entity";
             var f = new List<OneField>();
@@ -77,8 +83,14 @@ namespace SharpMC.Generator.Prismarine.Data
                 var v = $" = new {fieldType} {{ Id = {one.Id}, " +
                         $"Type = EntityType.{one.Type}, " +
                         $"DisplayName = \"{one.DisplayName}\", Name = \"{one.Name}\", " +
-                        $"Width = {one.Width}, Height = {one.Height}, " +
-                        "}";
+                        $"Width = {one.Width}, Height = {one.Height} ";
+                var loot = loots.SingleOrDefault(l => l.Entity == one.Name);
+                if (loot != null && loot.Drops.Count >= 1)
+                {
+                    var dropsTxt = string.Join(", ", loot.Drops.Select(ToStr));
+                    v += $", Drops = new [] {{ {dropsTxt} }} ";
+                }
+                v += "}";
                 f.Add(new OneField
                 {
                     Name = fieldName, TypeName = $"readonly {fieldType}", Constant = v
@@ -144,31 +156,7 @@ namespace SharpMC.Generator.Prismarine.Data
             Console.WriteLine($" * {item.Class}");
             Write(item, target);
         }
-
-        public static void WriteBlockLoots(BlockLoot[] blockLoots, string target)
-        {
-            const string fieldType = "BlockLoots";
-            var f = new List<OneField>();
-            foreach (var one in blockLoots)
-            {
-                var dropsTxt = string.Join(", ", one.Drops.Select(ToStr));
-                var v = $" = new {fieldType} {{ BlockName = {one.Block}, " +
-                        $"Drops = new [] {{ {dropsTxt} }} " +
-                        "}";
-                f.Add(new OneField
-                {
-                    Name = ToTitleCase(one.Block), TypeName = $"readonly {fieldType}", Constant = v
-                });
-            }
-            (f = f.SortByName()).AddAllField(fieldType);
-            var item = new OneUnit
-            {
-                Class = "KnownBlockLoots", Namespace = $"{nameof(SharpMC)}.Blocks", Fields = f
-            };
-            Console.WriteLine($" * {item.Class}");
-            Write(item, target);
-        }
-
+        
         private static string ToStr(LootItem item)
         {
             var dv = $"new LootItem {{ Item = \"{item.Item}\", " +
@@ -177,7 +165,7 @@ namespace SharpMC.Generator.Prismarine.Data
             if (item.BlockAge != null)
                 dv += $", BlockAge = {item.BlockAge} ";
             if (item.PlayerKill != null)
-                dv += $", PlayerKill = {item.PlayerKill} ";
+                dv += $", PlayerKill = {item.PlayerKill.ToStr()} ";
             if (item.SilkTouch != null)
                 dv += $", SilkTouch = {item.SilkTouch} ";
             if (item.NoSilkTouch != null)

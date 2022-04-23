@@ -19,5 +19,10 @@ namespace SharpMC.Generator.Prismarine.Data
                 Constant = $" = {{ {string.Join(", ", allNames)} }}"
             });
         }
+
+        public static string ToStr(this bool? value)
+        {
+            return value == null ? "null" : value.Value ? "true" : "false";
+        }
     }
 }
