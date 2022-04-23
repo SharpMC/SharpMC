@@ -22,7 +22,12 @@ namespace SharpMC.Generator.Prismarine.Data
 
         public static string ToStr(this bool? value)
         {
-            return value == null ? "null" : value.Value ? "true" : "false";
+            return value == null ? "null" : value.Value.ToStr();
+        }
+        
+        public static string ToStr(this bool value)
+        {
+            return value ? "true" : "false";
         }
     }
 }

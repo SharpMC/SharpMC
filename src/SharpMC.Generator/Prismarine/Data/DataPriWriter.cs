@@ -22,6 +22,8 @@ namespace SharpMC.Generator.Prismarine.Data
                 var v = $" = new {fieldType} {{ Id = {block.Id}, " +
                         $"DisplayName = \"{block.DisplayName}\", Name = \"{block.Name}\", " +
                         $"MinStateId = {block.MinStateId}, MaxStateId = {block.MaxStateId}, " +
+                        $"Diggable = {block.Diggable.ToStr()}, Hardness = {block.Hardness}, " +
+                        $"Resistance = {block.Resistance}, StackSize = {block.StackSize}, " +
                         $"DefaultState = {block.DefaultState}, Material = \"{block.Material}\" ";
                 var loot = loots.SingleOrDefault(l => l.Block == block.Name);
                 if (loot != null && loot.Drops.Count >= 1)
