@@ -1,4 +1,5 @@
 ﻿using SharpMC.Data;
+using SharpMC.Items;
 
 namespace SharpMC.Blocks
 {
@@ -11,6 +12,11 @@ namespace SharpMC.Blocks
         public int MaxStateId { get; set; }
         public int DefaultState { get; set; }
         public string Material { get; set; }
+        public bool Diggable { get; set; }
+        public LootItem[] Drops { get; set; }
+        public double Resistance { get; set; }
+        public double Hardness { get; set; }
+        public int StackSize { get; set; }
 
         public override string ToString() => Name;
 

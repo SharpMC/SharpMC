@@ -1,4 +1,6 @@
-﻿namespace SharpMC.Entities
+﻿using SharpMC.Items;
+
+namespace SharpMC.Entities
 {
     public class MiEntity
     {
@@ -8,5 +10,6 @@
         public string DisplayName { get; set; }
         public double Width { get; set; }
         public double Height { get; set; }
+        public LootItem[] Drops { get; set; }
     }
 }
