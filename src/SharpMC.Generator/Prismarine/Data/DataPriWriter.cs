@@ -106,7 +106,7 @@ namespace SharpMC.Generator.Prismarine.Data
             Console.WriteLine($" * {item.Class}");
             Write(item, target);
         }
-        
+
         public static void WriteParticles(Particle[] items, string target)
         {
             const string fieldType = "Particle";
@@ -130,7 +130,7 @@ namespace SharpMC.Generator.Prismarine.Data
             Console.WriteLine($" * {item.Class}");
             Write(item, target);
         }
-        
+
         public static void WriteItems(Item[] items, string target)
         {
             const string fieldType = "Item";
@@ -182,7 +182,7 @@ namespace SharpMC.Generator.Prismarine.Data
             Console.WriteLine($" * {item.Class}");
             Write(item, target);
         }
-        
+
         private static string ToStr(LootItem item)
         {
             var dv = $"new LootItem {{ Item = \"{item.Item}\", " +
@@ -198,6 +198,32 @@ namespace SharpMC.Generator.Prismarine.Data
                 dv += $", NoSilkTouch = {item.NoSilkTouch} ";
             dv += "}";
             return dv;
+        }
+
+        public static void WriteFoods(Food[] foods, string target)
+        {
+            const string fieldType = "Food";
+            var f = new List<OneField>();
+            foreach (var one in foods)
+            {
+                var v = $" = new {fieldType} {{ Id = {one.Id}, " +
+                        $"DisplayName = \"{one.DisplayName}\", Name = \"{one.Name}\", " +
+                        $"StackSize = {one.StackSize}, FoodPoints = {one.FoodPoints}, " +
+                        $"Saturation = {one.Saturation}, EffectiveQuality = {one.EffectiveQuality}, " +
+                        $"SaturationRatio = {one.SaturationRatio} " +
+                        "}";
+                f.Add(new OneField
+                {
+                    Name = ToTitleCase(one.Name), TypeName = $"readonly {fieldType}", Constant = v
+                });
+            }
+            (f = f.SortByName()).AddAllField(fieldType);
+            var item = new OneUnit
+            {
+                Class = "KnownFoods", Namespace = $"{nameof(SharpMC)}.Foods", Fields = f
+            };
+            Console.WriteLine($" * {item.Class}");
+            Write(item, target);
         }
     }
 }

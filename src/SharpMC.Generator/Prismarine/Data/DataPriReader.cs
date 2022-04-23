@@ -22,15 +22,14 @@ namespace SharpMC.Generator.Prismarine.Data
 
         private static void StartOld(string version, string source, string target)
         {
-            Console.WriteLine();
             var foods =  Load<Food>(version, source, "foods");
             var enchantments = Load<Enchantment>(version, source, "enchantments");
             var effects = Load<Effect>(version, source, "effects");
             var blockCollisionShapes = LoadSimple<JObject>(version, source, "blockCollisionShapes");
             var attributes = Load<Attribute>(version, source, "attributes");
             
-            /* DataPriWriter.WriteFoods(foods, target);
-            DataPriWriter.WriteEnchantments(enchantments, target);
+            DataPriWriter.WriteFoods(foods, target);
+            /* DataPriWriter.WriteEnchantments(enchantments, target);
             DataPriWriter.WriteEffects(effects, target);
             DataPriWriter.WriteBlockShapes(blockCollisionShapes, target);
             DataPriWriter.WriteAttributes(attributes, target); */
