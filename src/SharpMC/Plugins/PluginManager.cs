@@ -32,7 +32,7 @@ namespace SharpMC.Plugins
 
         public void LoadPlugins()
         {
-            if (Config.GetProperty("PluginDisabled", false))
+            if (Config.Server.PluginDisabled)
                 return;
             var pluginDirectory = GetPluginDirectory();
             if (pluginDirectory == null)
@@ -67,7 +67,7 @@ namespace SharpMC.Plugins
                             is PluginAttribute pluginAttribute)
                         {
                             var key = $"{pluginAttribute.PluginName}.Enabled";
-                            if (!Config.GetProperty(key, true))
+                            if (!Config.Custom.GetProperty(key, true))
                                 continue;
                         }
                     }
@@ -382,10 +382,12 @@ namespace SharpMC.Plugins
 
         private static string GetPluginDirectory()
         {
-            var assemblyPath = new Uri(Assembly.GetExecutingAssembly().CodeBase).LocalPath;
-            var pluginDirectory = Path.GetDirectoryName(assemblyPath);
-            pluginDirectory = Config.GetProperty("PluginDirectory", pluginDirectory);
-            return pluginDirectory;
+            var assembly = Assembly.GetExecutingAssembly();
+            var assemblyPath = new Uri(assembly.CodeBase).LocalPath;
+            var pluginDir = Path.GetDirectoryName(assemblyPath);
+            const string key = "PluginDirectory";
+            pluginDir = Config.Custom.GetProperty(key, pluginDir);
+            return pluginDir;
         }
     }
 }

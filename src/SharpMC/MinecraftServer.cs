@@ -1,5 +1,4 @@
-﻿using System.Net;
-using Microsoft.Extensions.Logging;
+﻿using Microsoft.Extensions.Logging;
 using SharpMC.Logging;
 using SharpMC.Net;
 using SharpMC.Network;
@@ -11,6 +10,7 @@ using System;
 using System.IO;
 using SharpMC.Admin;
 using SharpMC.API.Enums;
+using SharpMC.Network.API;
 using SharpMC.Plugins;
 using SharpMC.Plugins.Channel;
 
@@ -27,16 +27,7 @@ namespace SharpMC
         public IPlayerFactory PlayerFactory { get; set; }
         public LevelManager LevelManager { get; }
 
-        public MinecraftServer() : this(new NetConfiguration
-        {
-            Host = IPAddress.Any,
-            Port = 25565,
-            Protocol = ProtocolType.Tcp
-        })
-        {
-        }
-
-        public MinecraftServer(NetConfiguration netConfig)
+        public MinecraftServer(INetConfiguration netConfig)
         {
             Info = new ServerInfo(this);
             Log.LogInformation($"Initiating {ServerInfo.ProtocolName}");
@@ -70,23 +61,6 @@ namespace SharpMC
             _initiated = true;
         }
 
-        private void LoadSettings()
-        {
-            Config.ConfigFile = "server.properties";
-            Config.InitialValue = new[]
-            {
-                "#DO NOT REMOVE THIS LINE - SharpMC Config",
-                "Port=25565",
-                "MaxPlayers=10",
-                "LevelType=standard",
-                "WorldName=world",
-                "Online-mode=false",
-                "Seed=SharpMC",
-                "Motd=A SharpMC Powered Server"
-            };
-            Config.Check();
-        }
-
         private void CheckDirectoriesAndFiles()
         {
             if (Globals.Instance.LevelManager != null &&
@@ -94,6 +68,10 @@ namespace SharpMC
                 Directory.CreateDirectory(Globals.Instance.LevelManager.MainLevel.LvlName);
             if (!Directory.Exists("Players"))
                 Directory.CreateDirectory("Players");
+        }
+
+        private void LoadSettings()
+        {
         }
 
         private void LoadPlugins()
@@ -113,16 +91,9 @@ namespace SharpMC
 
             globals.Rand = new Random();
             Console.Title = ServerInfo.ProtocolName;
-            ServerSettings.Debug = Config.GetProperty("debug", false);
-            ServerSettings.DisplayPacketErrors = Config.GetProperty("ShowNetworkErrors", false);
-            ServerSettings.Debug = true;
-            ServerSettings.MaxPlayers = Config.GetProperty("MaxPlayers", 10);
-            ServerSettings.Seed = Config.GetProperty("Seed", "SharpMC");
-            ServerSettings.Motd = Config.GetProperty("motd", "A SharpMC Powered Server");
 
             // TODO : globals.LevelManager = new LevelManager(LoadLevel());
             // TODO : globals.LevelManager.AddLevel("nether", new NetherLevel("nether"));
-            ServerSettings.OnlineMode = Config.GetProperty("Online-mode", false);
             // TODO : globals.ChatHandler = new Synchronized<ChatHandler>(new ChatHandler());
             // TODO : globals.ServerKey = PacketCryptography.GenerateKeyPair();
             // TODO : globals.ClientManager = new ClientManager();
@@ -172,17 +143,17 @@ namespace SharpMC
 
         private Level LoadLevel()
         {
-            var lvlType = Config.GetProperty("LevelType", "standard");
+            var lvlType = Config.Server.LevelType;
             Level lvl;
-            switch (lvlType.ToLower())
+            switch (lvlType)
             {
-                case "flatland":
+                case LevelType.Flatland:
                     // TODO : lvl = new FlatLandLevel(Config.GetProperty("WorldName", "world"));
                     break;
-                case "standard":
+                case LevelType.Standard:
                     // TODO : lvl = new StandardLevel(Config.GetProperty("WorldName", "world"));
                     break;
-                case "anvil":
+                case LevelType.Anvil:
                     // TODO : lvl = new AnvilLevel(Config.GetProperty("WorldName", "world"));
                     break;
                 default:

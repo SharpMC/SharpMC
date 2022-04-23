@@ -1,4 +1,4 @@
-﻿namespace SharpMC.Network
+namespace SharpMC.Network.API
 {
     public enum ProtocolType
     {

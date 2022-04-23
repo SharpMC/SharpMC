@@ -5,7 +5,9 @@ using System.Net.Sockets;
 using System.Threading;
 using Microsoft.Extensions.Logging;
 using SharpMC.Logging;
+using SharpMC.Network.API;
 using SharpMC.Network.Events;
+using ProtocolType = SharpMC.Network.API.ProtocolType;
 
 namespace SharpMC.Network
 {
@@ -14,13 +16,13 @@ namespace SharpMC.Network
         private static readonly ILogger Log = LogManager.GetLogger(typeof(NetServer));
         
 		public NetConnectionFactory NetConnectionFactory { get; }
-        internal NetConfiguration Configuration { get; }
+        internal INetConfiguration Configuration { get; }
 
 		private CancellationTokenSource CancellationToken { get; set; }
         private ConcurrentDictionary<EndPoint, NetConnection> Connections { get; set; }
         private Socket ListenerSocket { get; set; }
         
-        public NetServer(NetConfiguration config, NetConnectionFactory factory)
+        public NetServer(INetConfiguration config, NetConnectionFactory factory)
         {
             Configuration = config;
             NetConnectionFactory = factory;
@@ -53,7 +55,8 @@ namespace SharpMC.Network
         {
             if (Configuration.Protocol == ProtocolType.Tcp)
             {
-                ListenerSocket.Bind(new IPEndPoint(Configuration.Host, Configuration.Port));
+                var endpoint = new IPEndPoint(Configuration.Host, Configuration.Port);
+                ListenerSocket.Bind(endpoint);
                 ListenerSocket.Listen(10);
                 ListenerSocket.BeginAccept(ConnectionCallback, null);
             }

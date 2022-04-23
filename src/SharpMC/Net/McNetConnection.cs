@@ -20,6 +20,7 @@ using SharpMC.Network.Packets.Status.ToServer;
 using SharpMC.Players;
 using SharpMC.Util;
 using EncryptionBegin = SharpMC.Network.Packets.Login.ToServer.EncryptionBegin;
+using SettingsPk = SharpMC.Network.Packets.Play.ToServer.Settings;
 
 namespace SharpMC.Net
 {
@@ -253,9 +254,9 @@ namespace SharpMC.Net
             {
                 HandlePlayerLook((Look) packet);
             }
-            else if (packet is Settings)
+            else if (packet is SettingsPk)
             {
-                HandleClientSettings((Settings) packet);
+                HandleClientSettings((SettingsPk) packet);
             }
             else if (packet is Chat)
             {
@@ -271,7 +272,7 @@ namespace SharpMC.Net
             });
         }
 
-        private void HandleClientSettings(Settings packet)
+        private void HandleClientSettings(SettingsPk packet)
         {
             Player.ViewDistance = Math.Min((int) packet.ViewDistance, 12);
         }

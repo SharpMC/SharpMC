@@ -125,8 +125,8 @@ namespace SharpMC.Network.Test
             var p = mode.ToString()[0];
             var original = Chunks.ReadAll(expected, count);
             CopyBlocks(original, sections, mode);
-            RecountBlocks(original);
-            RecountBlocks(sections);
+            original.RecountBlocks();
+            sections.RecountBlocks();
             WriteTexts($"{nameof(ShouldWriteChunk)}{p}{idx}", ToJson(original), ToJson(sections));
 
             var actual = Chunks.WriteAll(sections);

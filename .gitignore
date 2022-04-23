@@ -221,3 +221,4 @@ pip-log.txt
 .vs/
 src/SharpMC.Server/operators.txt
 src/SharpMC.Server/server.properties
+src/SharpMC.Server/server.ini

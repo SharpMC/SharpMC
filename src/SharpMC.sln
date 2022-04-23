@@ -23,6 +23,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMC.Plugin.Pets", "Shar
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMC.Network.Test", "SharpMC.Network.Test\SharpMC.Network.Test.csproj", "{8E10A44B-A2F5-40AF-A67D-A5004856936B}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMC.Settings", "SharpMC.Settings\SharpMC.Settings.csproj", "{A10AC5D0-9FAF-43D2-ACD5-F9410A7BC93F}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -72,5 +74,9 @@ Global
 		{8E10A44B-A2F5-40AF-A67D-A5004856936B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{8E10A44B-A2F5-40AF-A67D-A5004856936B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{8E10A44B-A2F5-40AF-A67D-A5004856936B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{A10AC5D0-9FAF-43D2-ACD5-F9410A7BC93F}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{A10AC5D0-9FAF-43D2-ACD5-F9410A7BC93F}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{A10AC5D0-9FAF-43D2-ACD5-F9410A7BC93F}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{A10AC5D0-9FAF-43D2-ACD5-F9410A7BC93F}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

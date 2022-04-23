@@ -8,6 +8,7 @@
     <ProjectReference Include="..\SharpMC.API\SharpMC.API.csproj" />
     <ProjectReference Include="..\SharpMC.Logging\SharpMC.Logging.csproj" />
     <ProjectReference Include="..\SharpMC.Network\SharpMC.Network.csproj" />
+    <ProjectReference Include="..\SharpMC.Settings\SharpMC.Settings.csproj" />
   </ItemGroup>
 
   <ItemGroup>
