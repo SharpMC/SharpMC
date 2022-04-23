@@ -225,5 +225,81 @@ namespace SharpMC.Generator.Prismarine.Data
             Console.WriteLine($" * {item.Class}");
             Write(item, target);
         }
+
+        public static void WriteAttributes(Attribute[] attributes, string target)
+        {
+            const string fieldType = "Attribute";
+            var f = new List<OneField>();
+            foreach (var one in attributes)
+            {
+                var v = $" = new {fieldType} {{ " +
+                        $"Name = \"{one.Name}\", Resource = \"{one.Resource}\", " +
+                        "}";
+                f.Add(new OneField
+                {
+                    Name = ToTitleCase(one.Name), TypeName = $"readonly {fieldType}", Constant = v
+                });
+            }
+            (f = f.SortByName()).AddAllField(fieldType);
+            var item = new OneUnit
+            {
+                Class = "KnownAttributes", Namespace = $"{nameof(SharpMC)}.Attributes", Fields = f
+            };
+            Console.WriteLine($" * {item.Class}");
+            Write(item, target);
+        }
+
+        public static void WriteEffects(Effect[] effects, string target)
+        {
+            const string fieldType = "Effect";
+            var f = new List<OneField>();
+            foreach (var one in effects)
+            {
+                var v = $" = new {fieldType} {{ Id = {one.Id}, " +
+                        $"DisplayName = \"{one.DisplayName}\", Name = \"{one.Name}\", " +
+                        $"Type = EffectType.{one.Type} " +
+                        "}";
+                f.Add(new OneField
+                {
+                    Name = ToTitleCase(one.Name), TypeName = $"readonly {fieldType}", Constant = v
+                });
+            }
+            (f = f.SortByName()).AddAllField(fieldType);
+            var item = new OneUnit
+            {
+                Class = "KnownEffects", Namespace = $"{nameof(SharpMC)}.Effects", Fields = f
+            };
+            Console.WriteLine($" * {item.Class}");
+            Write(item, target);
+        }
+
+        public static void WriteEnchantments(Enchantment[] enchantments, string target)
+        {
+            const string fieldType = "Enchantment";
+            var f = new List<OneField>();
+            foreach (var one in enchantments)
+            {
+                var cat = ToTitleCase(one.Category.ToString());
+                var v = $" = new {fieldType} {{ Id = {one.Id}, " +
+                        $"DisplayName = \"{one.DisplayName}\", Name = \"{one.Name}\", " +
+                        $"MaxLevel = {one.MaxLevel}, TreasureOnly = {one.TreasureOnly.ToStr()}, " +
+                        $"Curse = {one.Curse.ToStr()}, Weight = {one.Weight}, Tradeable = {one.Tradeable.ToStr()}, " +
+                        $"Discoverable = {one.Discoverable.ToStr()}, Category = EnchantCategory.{cat} ";
+                if (one.Exclude.Length >= 1)
+                    v += $", Exclude = new [] {{ {string.Join(", ", one.Exclude.Select(e => $"\"{e}\""))} }} ";
+                v += "}";
+                f.Add(new OneField
+                {
+                    Name = ToTitleCase(one.Name), TypeName = $"readonly {fieldType}", Constant = v
+                });
+            }
+            (f = f.SortByName()).AddAllField(fieldType);
+            var item = new OneUnit
+            {
+                Class = "KnownEnchantments", Namespace = $"{nameof(SharpMC)}.Enchantments", Fields = f
+            };
+            Console.WriteLine($" * {item.Class}");
+            Write(item, target);
+        }
     }
 }

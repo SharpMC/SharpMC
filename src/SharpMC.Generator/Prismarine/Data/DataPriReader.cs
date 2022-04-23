@@ -29,10 +29,9 @@ namespace SharpMC.Generator.Prismarine.Data
             var attributes = Load<Attribute>(version, source, "attributes");
             
             DataPriWriter.WriteFoods(foods, target);
-            /* DataPriWriter.WriteEnchantments(enchantments, target);
             DataPriWriter.WriteEffects(effects, target);
-            DataPriWriter.WriteBlockShapes(blockCollisionShapes, target);
-            DataPriWriter.WriteAttributes(attributes, target); */
+            DataPriWriter.WriteAttributes(attributes, target);
+            DataPriWriter.WriteEnchantments(enchantments, target);
             
             Console.WriteLine();
         }
