@@ -20,14 +20,21 @@ namespace SharpMC.World.Generators
             return Chunks.GetOrAdd(coordinates, CreateChunk);
         }
 
-        public PlayerLocation GetSpawnPoint()
-        {
-            return new PlayerLocation(0.5, 4f, 0.5f);
-        }
+        public PlayerLocation SpawnPoint
+            => new PlayerLocation(0.5, 4f, 0.5f);
+
+        public void PopulateChunk(IChunkColumn chunk)
+            => CreateChunk(chunk, default);
 
         private static IChunkColumn CreateChunk(ChunkCoordinates _)
         {
             IChunkColumn column = new ChunkColumn();
+            CreateChunk(column, _);
+            return column;
+        }
+
+        private static void CreateChunk(IChunkColumn column, ChunkCoordinates _)
+        {
             column.SetBlock(0, 0, 0, Air);
             for (var y = 0; y < 4; y++)
             {
@@ -42,7 +49,6 @@ namespace SharpMC.World.Generators
                 }
             }
             TreeMaker.CreateTree(column, 2, 3, 2);
-            return column;
         }
     }
 }

@@ -1,12 +1,9 @@
-using SharpMC.Players;
 using SharpMC.Util;
 
 namespace SharpMC.World.Generators
 {
-    public interface IWorldGenerator
+    public interface IWorldGenerator : IWorldProvider
     {
         IChunkColumn GenerateChunkColumn(ChunkCoordinates coordinates);
-
-        PlayerLocation GetSpawnPoint();
     }
 }
