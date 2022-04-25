@@ -11,6 +11,6 @@ namespace SharpMC.World.Standard
             throw new System.NotImplementedException();
         }
 
-        public PlayerLocation SpawnPoint { get; }
+        public PlayerLocation SpawnPoint => new(0, 82, 0);
     }
 }

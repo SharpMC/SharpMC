@@ -2,7 +2,6 @@ using System;
 using System.Collections.Concurrent;
 using System.IO;
 using System.Linq;
-using System.Threading.Tasks.Dataflow;
 using Microsoft.Extensions.Logging;
 using SharpMC.Admin;
 using SharpMC.Logging;
@@ -13,7 +12,6 @@ using SharpMC.World.Anvil;
 using SharpMC.World.Common;
 using SharpMC.World.Generators;
 using SharpMC.World.Nether;
-using SharpMC.World.Noises;
 using SharpMC.World.Standard;
 
 namespace SharpMC.World

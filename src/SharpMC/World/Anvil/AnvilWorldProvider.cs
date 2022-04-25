@@ -11,6 +11,7 @@ namespace SharpMC.World.Anvil
             throw new System.NotImplementedException();
         }
 
-        public PlayerLocation SpawnPoint { get; }
+        public PlayerLocation SpawnPoint
+            => throw new System.NotImplementedException();
     }
 }
