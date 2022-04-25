@@ -12,7 +12,7 @@ namespace SharpMC.World
         public int Depth { get; }
         private byte[] HeightMap { get; }
         private byte[] Biomes { get; }
-        private ChunkSection[] Sections { get; }
+        private ChunkSection[] Sections { get; set; }
         private byte[] Cache { get; set; }
 
         public ChunkColumn(int width = 16, int depth = 16, int height = 24, int offset = -16)
@@ -53,6 +53,7 @@ namespace SharpMC.World
             var index = GetIndex(x, y, z);
             section[index] = id;
             Cache = null;
+            IsDirty = true;
         }
 
         private void SetBiome(int x, int z, byte biome)
@@ -98,7 +99,18 @@ namespace SharpMC.World
             Sections.RecountBlocks();
             var bytes = Chunks.WriteAll(Sections);
             Cache = bytes;
+            IsDirty = false;
             return bytes;
         }
+
+        public void FromArray(byte[] bytes)
+        {
+            var count = Sections.Length;
+            Sections = Chunks.ReadAll(bytes, count);
+            Cache = bytes;
+            IsDirty = false;
+        }
+
+        public bool IsDirty { get; private set; }
     }
 }

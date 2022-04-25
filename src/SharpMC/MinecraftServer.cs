@@ -134,29 +134,6 @@ namespace SharpMC
             Log.LogInformation("Server stopped.");
         }
 
-        private Level LoadLevel()
-        {
-            var lvlType = Config.Server.LevelType;
-            Level lvl;
-            switch (lvlType)
-            {
-                case LevelType.Flatland:
-                    // TODO : lvl = new FlatLandLevel(Config.GetProperty("WorldName", "world"));
-                    break;
-                case LevelType.Standard:
-                    // TODO : lvl = new StandardLevel(Config.GetProperty("WorldName", "world"));
-                    break;
-                case LevelType.Anvil:
-                    // TODO : lvl = new AnvilLevel(Config.GetProperty("WorldName", "world"));
-                    break;
-                default:
-                    // TODO : lvl = new StandardLevel(Config.GetProperty("WorldName", "world"));
-                    break;
-            }
-            // TODO : return lvl;
-            throw new InvalidOperationException();
-        }
-
         private void EnablePlugins()
         {
             Globals.Instance.PluginManager.EnablePlugins(Globals.Instance.LevelManager);

@@ -23,8 +23,8 @@ namespace SharpMC.World.Generators
         public PlayerLocation SpawnPoint
             => new PlayerLocation(0.5, 4f, 0.5f);
 
-        public void PopulateChunk(IChunkColumn chunk)
-            => CreateChunk(chunk, default);
+        public void PopulateChunk(IChunkColumn chunk, ChunkCoordinates pos)
+            => CreateChunk(chunk, pos);
 
         private static IChunkColumn CreateChunk(ChunkCoordinates _)
         {

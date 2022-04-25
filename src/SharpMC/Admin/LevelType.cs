@@ -6,6 +6,8 @@
 
         Flatland,
 
-        Anvil
+        Anvil,
+
+        Nether
     }
 }

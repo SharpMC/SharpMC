@@ -41,7 +41,7 @@ namespace SharpMC.World
             EntityManager = new EntityManager();
             Players = new ConcurrentDictionary<int, Player>();
             Entities = new ConcurrentDictionary<int, Entity>();
-            SpawnPoint = worldGenerator.GetSpawnPoint();
+            SpawnPoint = worldGenerator.SpawnPoint;
         }
 
         private Timer TickTimer { get; set; }
