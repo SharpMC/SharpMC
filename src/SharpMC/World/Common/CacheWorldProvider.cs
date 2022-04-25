@@ -4,6 +4,7 @@ using SharpMC.Util;
 using SharpMC.World.Generators;
 using System.Collections.Generic;
 using System.Linq;
+using SharpMC.Data;
 using SharpMC.Storage.API;
 
 namespace SharpMC.World.Common
@@ -49,6 +50,7 @@ namespace SharpMC.World.Common
             }
 
             var chunk = new ChunkColumn();
+            chunk.AddAirToPalette();
             PopulateChunk(chunk, coordinates);
 
             lock (_syncLock)

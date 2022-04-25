@@ -36,7 +36,7 @@ namespace SharpMC.World
         {
             Enum.TryParse<LevelType>(name, true, out var type);
             Log.LogInformation($"Creating level '{name}' as '{type}'...");
-            var provider = LoadLevel(LevelType.Flatland); // TODO type
+            var provider = LoadLevel(type);
             IWorldGenerator generator;
             if (provider is IWorldGenerator gen)
                 generator = gen;

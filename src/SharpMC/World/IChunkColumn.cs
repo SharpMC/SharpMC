@@ -14,5 +14,7 @@ namespace SharpMC.World
         void SetBlock(int x, int y, int z, IBlock block);
 
         byte[] ToArray();
+
+        void SetBiomeId(int index, BiomeIds biomeId);
     }
 }

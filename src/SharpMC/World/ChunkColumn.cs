@@ -12,7 +12,7 @@ namespace SharpMC.World
         public int Depth { get; }
         private byte[] HeightMap { get; }
         private byte[] Biomes { get; }
-        private ChunkSection[] Sections { get; set; }
+        internal ChunkSection[] Sections { get; set; }
         private byte[] Cache { get; set; }
 
         public ChunkColumn(int width = 16, int depth = 16, int height = 24, int offset = -16)
@@ -58,7 +58,12 @@ namespace SharpMC.World
 
         private void SetBiome(int x, int z, byte biome)
         {
-            Biomes[(z << 4) + x] = biome;
+            SetBiome((z << 4) + x, biome);
+        }
+
+        private void SetBiome(int index, byte biome)
+        {
+            Biomes[index] = biome;
             Cache = null;
         }
 
@@ -101,6 +106,11 @@ namespace SharpMC.World
             Cache = bytes;
             IsDirty = false;
             return bytes;
+        }
+
+        public void SetBiomeId(int index, BiomeIds biomeId)
+        {
+            SetBiome(index, (byte) biomeId);
         }
 
         public void FromArray(byte[] bytes)

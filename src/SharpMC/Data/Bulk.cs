@@ -4,6 +4,7 @@ using System.Linq;
 using SharpMC.Blocks;
 using SharpMC.Chunky;
 using SharpMC.Chunky.Palette;
+using SharpMC.World;
 using ChunkSection = SharpMC.Chunky.ChunkSection;
 
 namespace SharpMC.Data
@@ -78,6 +79,14 @@ namespace SharpMC.Data
                 return data.Select(Finder.FindBlockByState).ToArray();
             }
             throw new InvalidOperationException(palette.GetType().FullName);
+        }
+
+        public static void AddAirToPalette(this ChunkColumn column)
+        {
+            foreach (var section in column.Sections)
+            {
+                section[(0, 0, 0)] = 0;
+            }
         }
 
         public static void CompactAirPalette(this ChunkSection[] sections)
