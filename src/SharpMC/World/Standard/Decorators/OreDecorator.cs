@@ -1,5 +1,4 @@
-﻿using SharpMC.Blocks;
-using SharpMC.World.Noises;
+﻿using SharpMC.World.Noises;
 using SharpMC.World.Standard.API;
 using SharpMC.Worlds.API;
 using static SharpMC.Blocks.KnownBlocks;
@@ -57,7 +56,7 @@ namespace SharpMC.World.Standard.Decorators
         {
             if (_generator.GetRandomNumber(0, 65) == 1)
             {
-                chunk.SetBlock(x, y, z, IronBlock);
+                chunk.SetBlock(x, y, z, IronOre);
             }
         }
 
@@ -73,7 +72,7 @@ namespace SharpMC.World.Standard.Decorators
         {
             if (_generator.GetRandomNumber(0, 80) == 1)
             {
-                chunk.SetBlock(x, y, z, LapisBlock);
+                chunk.SetBlock(x, y, z, LapisOre);
             }
         }
 
@@ -81,7 +80,7 @@ namespace SharpMC.World.Standard.Decorators
         {
             if (_generator.GetRandomNumber(0, 130) == 1)
             {
-                chunk.SetBlock(x, y, z, DiamondBlock);
+                chunk.SetBlock(x, y, z, DiamondOre);
             }
         }
     }

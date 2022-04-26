@@ -1,6 +1,6 @@
-﻿using SharpMC.Blocks;
-using SharpMC.World.Standard.API;
+﻿using SharpMC.World.Standard.API;
 using SharpMC.Worlds.API;
+using static SharpMC.Blocks.KnownBlocks;
 
 namespace SharpMC.World.Standard.Decorators
 {
@@ -24,8 +24,7 @@ namespace SharpMC.World.Standard.Decorators
                 {
                     if (chunk.GetBlock(x, y, z) == biome.TopBlock)
                     {
-                        var block = KnownBlocks.Grass;
-                        chunk.SetBlock(x, y + 1, z, block);
+                        chunk.SetBlock(x, y + 1, z, TallGrass);
                     }
                 }
             }

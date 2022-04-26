@@ -66,10 +66,11 @@ namespace SharpMC.World.Standard.Decorators
                         treeBasePositions[pos, 1] < 14 &&
                         treeBasePositions[pos, 1] > 4)
                     {
-                        if (chunk.GetBlock(treeBasePositions[pos, 0], y + 1, treeBasePositions[pos, 1]) ==
-                            biome.TopBlock)
+                        if (chunk.GetBlock(treeBasePositions[pos, 0], y + 1, treeBasePositions[pos, 1]) 
+                            == biome.TopBlock)
                         {
-                            GenerateTree(chunk, treeBasePositions[pos, 0], y + 1, treeBasePositions[pos, 1], biome);
+                            GenerateTree(chunk, treeBasePositions[pos, 0], y + 1, 
+                                treeBasePositions[pos, 1], biome);
                         }
                     }
                 }

@@ -34,16 +34,16 @@ namespace SharpMC.World.Standard.Structures
 
             var r = new Random();
             var height = r.Next(7, 8);
-            GenerateColumn(chunk, location, height, OakLog + 1);
+            GenerateColumn(chunk, location, height, SpruceWood);
             for (var yi = 1; yi < height; yi++)
             {
                 if (yi % 2 == 0)
                 {
-                    GenerateVanillaCircle(chunk, location + new Vector3(0, yi + 1, 0), leafRadius - 1, OakLog + 1);
+                    GenerateVanillaCircle(chunk, location + new Vector3(0, yi + 1, 0), leafRadius - 1, SpruceLeaves);
                     continue;
                 }
                 GenerateVanillaCircle(chunk, location + new Vector3(0, yi + 1, 0),
-                    leafRadius, OakLog + 1);
+                    leafRadius, SpruceLeaves);
             }
 
             GenerateTopper(chunk, location + new Vector3(0, height, 0), 0x1);
@@ -52,15 +52,15 @@ namespace SharpMC.World.Standard.Structures
         protected void GenerateTopper(IChunkColumn chunk, Vector3 location, byte type = 0x0)
         {
             var sectionRadius = 1;
-            GenerateCircle(chunk, location, sectionRadius, AcaciaLog + 1);
+            GenerateCircle(chunk, location, sectionRadius, SpruceLeaves);
             var top = location + new Vector3(0, 1, 0);
             var x = (int) location.X;
             var y = (int) location.Y + 1;
             var z = (int) location.Z;
-            chunk.SetBlock(x, y, z, AcaciaLog + 1);
+            chunk.SetBlock(x, y, z, SpruceLeaves);
             if (type == 0x1 && y < 256)
                 GenerateVanillaCircle(chunk, new Vector3(x, y, z),
-                    sectionRadius, AcaciaLog + 1);
+                    sectionRadius, SpruceLeaves);
         }
     }
 }

@@ -31,9 +31,9 @@ namespace SharpMC.World.Standard.Structures
             var leafRadius = Context.Settings.LeafRadius;
             var random = new Random();
             var height = random.Next(4, 5);
-            GenerateColumn(chunk, location, height, BirchLog + 2);
+            GenerateColumn(chunk, location, height, BirchWood);
             var leafLocation = location + new Vector3(0, height, 0);
-            GenerateVanillaLeaves(chunk, leafLocation, leafRadius, BirchLeaves + 2);
+            GenerateVanillaLeaves(chunk, leafLocation, leafRadius, BirchLeaves);
         }
 
         public bool ValidLocation(Vector3 location)
@@ -51,26 +51,25 @@ namespace SharpMC.World.Standard.Structures
             {
                 return new (IBlock, Vector3)[]
                 {
-                    (BirchLeaves, new Vector3(0, 0, 0)),
-                    (BirchLeaves, new Vector3(0, 1, 0)),
-                    (BirchLeaves, new Vector3(0, 2, 0)),
-                    (BirchLeaves, new Vector3(0, 3, 0)),
-                    (BirchLeaves, new Vector3(0, 4, 0)),
-                    (BirchLeaves, new Vector3(0, 5, 0)),
-
-                    (BirchLog, new Vector3(-1, 4, 1)),
-                    (BirchLog, new Vector3(1, 4, -1)),
-                    (BirchLog, new Vector3(-1, 4, -1)),
-                    (BirchLog, new Vector3(1, 4, 1)),
-                    (BirchLog, new Vector3(-1, 4, 0)),
-                    (BirchLog, new Vector3(1, 4, 0)),
-                    (BirchLog, new Vector3(0, 4, -1)),
-                    (BirchLog, new Vector3(0, 4, 1)),
-                    (BirchLog, new Vector3(-1, 5, 0)),
-                    (BirchLog, new Vector3(1, 5, 0)),
-                    (BirchLog, new Vector3(0, 5, -1)),
-                    (BirchLog, new Vector3(0, 5, 1)),
-                    (BirchLog, new Vector3(0, 6, 0))
+                    (BirchWood, new Vector3(0, 0, 0)),
+                    (BirchWood, new Vector3(0, 1, 0)),
+                    (BirchWood, new Vector3(0, 2, 0)),
+                    (BirchWood, new Vector3(0, 3, 0)),
+                    (BirchWood, new Vector3(0, 4, 0)),
+                    (BirchWood, new Vector3(0, 5, 0)),
+                    (BirchLeaves, new Vector3(-1, 4, 1)),
+                    (BirchLeaves, new Vector3(1, 4, -1)),
+                    (BirchLeaves, new Vector3(-1, 4, -1)),
+                    (BirchLeaves, new Vector3(1, 4, 1)),
+                    (BirchLeaves, new Vector3(-1, 4, 0)),
+                    (BirchLeaves, new Vector3(1, 4, 0)),
+                    (BirchLeaves, new Vector3(0, 4, -1)),
+                    (BirchLeaves, new Vector3(0, 4, 1)),
+                    (BirchLeaves, new Vector3(-1, 5, 0)),
+                    (BirchLeaves, new Vector3(1, 5, 0)),
+                    (BirchLeaves, new Vector3(0, 5, -1)),
+                    (BirchLeaves, new Vector3(0, 5, 1)),
+                    (BirchLeaves, new Vector3(0, 6, 0))
                 };
             }
         }

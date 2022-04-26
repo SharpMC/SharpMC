@@ -24,8 +24,8 @@ namespace SharpMC.World.Standard.Decorators
                 {
                     if (chunk.GetBlock(x, y, z) == biome.TopBlock)
                     {
-                        chunk.SetBlock(x, y + 1, z, Sunflower + 0);
-                        chunk.SetBlock(x, y + 2, z, Sunflower + 1);
+                        chunk.SetBlock(x, y + 1, z, Sunflower);
+                        chunk.SetBlock(x, y + 2, z, Lilac);
                     }
                 }
             }

@@ -2,6 +2,7 @@
 using System.Numerics;
 using SharpMC.Blocks;
 using SharpMC.World.Standard.API;
+using static SharpMC.Blocks.KnownBlocks;
 
 namespace SharpMC.World.Standard.Structures
 {
@@ -16,10 +17,10 @@ namespace SharpMC.World.Standard.Structures
 
         public virtual void Create(IChunkColumn chunk, int x, int y, int z)
         {
-            if (chunk.GetBlock(x, y + Height, z) == KnownBlocks.Air)
+            if (chunk.GetBlock(x, y + Height, z) == Air)
             {
                 if (Blocks != null)
-                    foreach (var (b,c) in Blocks)
+                    foreach (var (b, c) in Blocks)
                     {
                         var cx = (int) (x + c.X);
                         var cy = (int) (y + c.Y);
@@ -52,7 +53,6 @@ namespace SharpMC.World.Standard.Structures
         protected void GenerateVanillaCircle(IChunkColumn chunk, Vector3 location, int radius,
             IBlock block, double corner = 0)
         {
-            var air = KnownBlocks.Air;
             for (var I = -radius; I <= radius; I += 1)
             {
                 for (var j = -radius; j <= radius; j += 1)
@@ -68,7 +68,7 @@ namespace SharpMC.World.Standard.Structures
                         }
                         var x = location.X + I;
                         var z = location.Z + j;
-                        if (chunk.GetBlock((int) x, (int) location.Y, (int) z).Equals(air))
+                        if (chunk.GetBlock((int) x, (int) location.Y, (int) z).Equals(Air))
                         {
                             chunk.SetBlock((int) x, (int) location.Y, (int) z, block);
                         }
@@ -90,7 +90,6 @@ namespace SharpMC.World.Standard.Structures
 
         protected void GenerateCircle(IChunkColumn chunk, Vector3 location, int radius, IBlock block)
         {
-            var air = KnownBlocks.Air;
             for (var I = -radius; I <= radius; I += 1)
             {
                 for (var j = -radius; j <= radius; j += 1)
@@ -107,7 +106,7 @@ namespace SharpMC.World.Standard.Structures
                         var x = (int) lX;
                         var y = (int) location.Y;
                         var z = (int) lZ;
-                        if (chunk.GetBlock(x, y, z).Equals(air))
+                        if (chunk.GetBlock(x, y, z).Equals(Air))
                         {
                             chunk.SetBlock(x, y, z, block);
                         }

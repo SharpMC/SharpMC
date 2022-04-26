@@ -13,12 +13,12 @@ namespace SharpMC.World.Nether
             _context = context;
         }
 
-        public void Decorate(IChunkColumn chunk, IBiomeBase biome)
+        public void Decorate(IChunkColumn chunk, IBiomeBase biome, int sx, int sz)
         {
-            Decorate(chunk, biome, 0, 0);
+            Decorate(chunk, biome);
         }
 
-        public void Decorate(IChunkColumn chunk, IBiomeBase biome, int sx, int sz)
+        public void Decorate(IChunkColumn chunk, IBiomeBase _)
         {
             var waterLevel = _context.Settings.WaterLevel;
 

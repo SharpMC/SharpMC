@@ -31,9 +31,9 @@ namespace SharpMC.World.Standard.Structures
             var leafRadius = Context.Settings.LeafRadius;
             var random = new Random();
             var height = random.Next(4, 5);
-            GenerateColumn(chunk, location, height, OakSlab);
+            GenerateColumn(chunk, location, height, OakWood);
             var leafLocation = location + new Vector3(0, height, 0);
-            GenerateVanillaLeaves(chunk, leafLocation, leafRadius, OakSapling);
+            GenerateVanillaLeaves(chunk, leafLocation, leafRadius, OakLeaves);
         }
 
         public bool ValidLocation(Vector3 location)
@@ -51,25 +51,25 @@ namespace SharpMC.World.Standard.Structures
             {
                 return new (IBlock, Vector3)[]
                 {
-                    (OakSapling, new Vector3(0, 0, 0)),
-                    (OakSapling, new Vector3(0, 1, 0)),
-                    (OakSapling, new Vector3(0, 2, 0)),
-                    (OakSapling, new Vector3(0, 3, 0)),
-                    (OakSapling, new Vector3(0, 4, 0)),
-                    (OakSapling, new Vector3(0, 5, 0)),
-                    (OakLog, new Vector3(-1, 4, 1)),
-                    (OakLog, new Vector3(1, 4, -1)),
-                    (OakLog, new Vector3(-1, 4, -1)),
-                    (OakLog, new Vector3(1, 4, 1)),
-                    (OakLog, new Vector3(-1, 4, 0)),
-                    (OakLog, new Vector3(1, 4, 0)),
-                    (OakLog, new Vector3(0, 4, -1)),
-                    (OakLog, new Vector3(0, 4, 1)),
-                    (OakLog, new Vector3(-1, 5, 0)),
-                    (OakLog, new Vector3(1, 5, 0)),
-                    (OakLog, new Vector3(0, 5, -1)),
-                    (OakLog, new Vector3(0, 5, 1)),
-                    (OakLog, new Vector3(0, 6, 0))
+                    (OakWood , new Vector3(0, 0, 0)),
+                    (OakWood , new Vector3(0, 1, 0)),
+                    (OakWood, new Vector3(0, 2, 0)),
+                    (OakWood , new Vector3(0, 3, 0)),
+                    (OakWood, new Vector3(0, 4, 0)),
+                    (OakWood, new Vector3(0, 5, 0)),
+                    (OakLeaves, new Vector3(-1, 4, 1)),
+                    (OakLeaves, new Vector3(1, 4, -1)),
+                    (OakLeaves, new Vector3(-1, 4, -1)),
+                    (OakLeaves, new Vector3(1, 4, 1)),
+                    (OakLeaves, new Vector3(-1, 4, 0)),
+                    (OakLeaves , new Vector3(1, 4, 0)),
+                    (OakLeaves, new Vector3(0, 4, -1)),
+                    (OakLeaves, new Vector3(0, 4, 1)),
+                    (OakLeaves, new Vector3(-1, 5, 0)),
+                    (OakLeaves, new Vector3(1, 5, 0)),
+                    (OakLeaves, new Vector3(0, 5, -1)),
+                    (OakLeaves, new Vector3(0, 5, 1)),
+                    (OakLeaves, new Vector3(0, 6, 0))
                 };
             }
         }

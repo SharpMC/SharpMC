@@ -26,8 +26,8 @@ namespace SharpMC.World.Standard.Decorators
                     {
                         if (y < waterLevel)
                         {
-                            if (chunk.GetBlock(x, y, z) == Grass
-                                || chunk.GetBlock(x, y, z) == Dirt)
+                            var current = chunk.GetBlock(x, y, z);
+                            if (current == Grass || current == Dirt)
                             {
                                 if (generator.GetRandomNumber(1, 40) == 1
                                     && y < waterLevel - 4)

@@ -19,23 +19,23 @@ namespace SharpMC.World.Standard.Structures
             {
                 return new (IBlock, Vector3)[]
                 {
-                    (GoldBlock, new Vector3(0, 0, 0)),
-                    (BrickWall, new Vector3(0, 0, 0)),
-                    (BrickWall, new Vector3(1, 0, 0)),
-                    (BrickWall, new Vector3(2, 0, 0)),
-                    (BrickWall, new Vector3(3, 0, 0)),
-                    (BrickWall, new Vector3(0, 0, 1)),
-                    (BrickWall, new Vector3(1, 0, 1)),
-                    (BrickWall, new Vector3(2, 0, 1)),
-                    (BrickWall, new Vector3(3, 0, 1)),
-                    (BrickWall, new Vector3(0, 0, 2)),
-                    (BrickWall, new Vector3(1, 0, 2)),
-                    (BrickWall, new Vector3(2, 0, 2)),
-                    (BrickWall, new Vector3(3, 0, 2)),
-                    (BrickWall, new Vector3(0, 0, 3)),
-                    (BrickWall, new Vector3(1, 0, 3)),
-                    (BrickWall, new Vector3(2, 0, 3)),
-                    (BrickWall, new Vector3(3, 0, 3))
+                    (IronBlock, new Vector3(0, 0, 0)),
+                    (SandstoneSlab, new Vector3(0, 0, 0)),
+                    (SandstoneSlab, new Vector3(1, 0, 0)),
+                    (SandstoneSlab, new Vector3(2, 0, 0)),
+                    (SandstoneSlab, new Vector3(3, 0, 0)),
+                    (SandstoneSlab, new Vector3(0, 0, 1)),
+                    (SandstoneSlab, new Vector3(1, 0, 1)),
+                    (SandstoneSlab, new Vector3(2, 0, 1)),
+                    (SandstoneSlab, new Vector3(3, 0, 1)),
+                    (SandstoneSlab, new Vector3(0, 0, 2)),
+                    (SandstoneSlab, new Vector3(1, 0, 2)),
+                    (SandstoneSlab, new Vector3(2, 0, 2)),
+                    (SandstoneSlab, new Vector3(3, 0, 2)),
+                    (SandstoneSlab, new Vector3(0, 0, 3)),
+                    (SandstoneSlab, new Vector3(1, 0, 3)),
+                    (SandstoneSlab, new Vector3(2, 0, 3)),
+                    (SandstoneSlab, new Vector3(3, 0, 3))
                 };
             }
         }

@@ -10,7 +10,7 @@
         /// <summary>
         /// Changes the offset from y level 0
         /// </summary>
-        public double BottomOffset { get; set; } = 42.0; // Nether = 96.0
+        public virtual double BottomOffset { get; set; } = 42.0;
 
         /// <summary>
         /// Changes the scale of the overhang
@@ -27,18 +27,12 @@
         public double OverhangsMagnitude { get; set; } = 16.0;
         public double BottomsMagnitude { get; set; } = 32.0;
         public double Threshold { get; set; } = 0.1;
-        public double BottomsFrequency { get; set; } = 0.5; // Nether = 2.2
+        public virtual double BottomsFrequency { get; set; } = 0.5;
         public double BottomsAmplitude { get; set; } = 0.5;
         public double OverhangFrequency { get; set; } = 0.5;
         public double OverhangAmplitude { get; set; } = 0.5;
         public bool EnableOverhang { get; set; } = true;
-        public int WaterLevel { get; set; } = 72; // Nether = 82
-
-        public double TopOffset { get; set; } = 32.0;
-        public double TopMagnitude { get; set; } = 32.0;
-        public double Topscale { get; set; } = 256.0;
-        public double TopFrequency { get; set; } = 2.2;
-        public double TopAmplitude { get; set; } = 0.5;
+        public virtual int WaterLevel { get; set; } = 72;
 
         public int LeafRadius { get; set; } = 2;
         public bool UseVanillaTrees { get; set; } = false;
