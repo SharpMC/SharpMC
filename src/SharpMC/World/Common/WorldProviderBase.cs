@@ -4,10 +4,13 @@ using System.Linq;
 using System.Threading.Tasks;
 using System.Numerics;
 using SharpMC.API.Entities;
+using SharpMC.Players;
+using SharpMC.Util;
+using SharpMC.World.Generators;
 
 namespace SharpMC.World.Common
 {
-    public abstract class WorldProviderBase
+    public abstract class WorldProviderBase : IWorldProvider
     {
         public IEnumerable<IChunkColumn> GenerateChunks(int viewDistance,
             List<Tuple<int, int>> chunksUsed, IPlayer player)
@@ -67,5 +70,9 @@ namespace SharpMC.World.Common
         }
 
         protected abstract IChunkColumn GenerateChunkColumn(Vector2 vector);
+
+        public abstract void PopulateChunk(IChunkColumn chunk, ChunkCoordinates pos);
+
+        public abstract PlayerLocation SpawnPoint { get; }
     }
 }

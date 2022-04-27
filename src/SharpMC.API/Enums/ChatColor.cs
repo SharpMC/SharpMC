@@ -2,7 +2,7 @@ namespace SharpMC.API.Enums
 {
     public class ChatColor
     {
-        public char Value;
+        public readonly char Value;
 
         public ChatColor(char value)
         {
@@ -10,27 +10,27 @@ namespace SharpMC.API.Enums
         }
 
         public static ChatColor
-            Green = new ChatColor('a'),
-            Aqua = new ChatColor('b'),
-            Red = new ChatColor('c'),
-            Pink = new ChatColor('d'),
-            Yellow = new ChatColor('e'),
-            White = new ChatColor('f'),
-            Obfuscated = new ChatColor('k'),
-            Bold = new ChatColor('l'),
-            StrikeThrough = new ChatColor('m'),
-            Underline = new ChatColor('n'),
-            Italic = new ChatColor('o'),
-            Reset = new ChatColor('r'),
-            Black = new ChatColor('0'),
-            DarkBlue = new ChatColor('1'),
-            DarkGreen = new ChatColor('2'),
-            DarkAqua = new ChatColor('3'),
-            DarkRed = new ChatColor('4'),
-            DarkPurple = new ChatColor('5'),
-            Gold = new ChatColor('6'),
-            Gray = new ChatColor('7'),
-            DarkGray = new ChatColor('8'),
-            Indigo = new ChatColor('9');
+            Green = new('a'),
+            Aqua = new('b'),
+            Red = new('c'),
+            Pink = new('d'),
+            Yellow = new('e'),
+            White = new('f'),
+            Obfuscated = new('k'),
+            Bold = new('l'),
+            StrikeThrough = new('m'),
+            Underline = new('n'),
+            Italic = new('o'),
+            Reset = new('r'),
+            Black = new('0'),
+            DarkBlue = new('1'),
+            DarkGreen = new('2'),
+            DarkAqua = new('3'),
+            DarkRed = new('4'),
+            DarkPurple = new('5'),
+            Gold = new('6'),
+            Gray = new('7'),
+            DarkGray = new('8'),
+            Indigo = new('9');
     }
 }

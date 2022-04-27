@@ -53,12 +53,12 @@ namespace SharpMC.World.Anvil
             _waterOffsetY = (byte) Config.Custom.GetProperty("PCWaterOffset", 0);
         }
 
-        public void PopulateChunk(IChunkColumn chunk, ChunkCoordinates pos)
+        public override void PopulateChunk(IChunkColumn chunk, ChunkCoordinates pos)
         {
             throw new System.NotImplementedException();
         }
 
-        public PlayerLocation SpawnPoint
+        public override PlayerLocation SpawnPoint
         {
             get
             {

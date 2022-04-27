@@ -3,12 +3,12 @@ namespace SharpMC.API.Plugins
     public interface IPlugin
     {
         /// <summary>
-        ///     This function will be called on plugin initialization.
+        /// This function will be called on plugin initialization
         /// </summary>
         void OnEnable(IPluginContext context);
 
         /// <summary>
-        ///     This function will be called when the plugin will be disabled.
+        /// This function will be called when the plugin will be disabled
         /// </summary>
         void OnDisable();
     }
