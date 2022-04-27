@@ -32,5 +32,7 @@ namespace SharpMC.API.Entities
         IWorld World { get; }
 
         void PositionChanged(Vector3 vector, double value);
+
+        void UnloadChunk(int x, int z);
     }
 }

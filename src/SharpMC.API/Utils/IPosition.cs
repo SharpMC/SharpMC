@@ -11,5 +11,6 @@ namespace SharpMC.API.Utils
         float Y { get; set; }
         float Z { get; set; }
         float Pitch { get; set; }
+        bool OnGround { get; }
     }
 }
