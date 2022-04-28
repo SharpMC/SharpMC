@@ -1,4 +1,6 @@
-﻿namespace SharpMC.Items
+﻿using SharpMC.Items.Usables;
+
+namespace SharpMC.Items
 {
     public static class KnownItems
     {
@@ -1032,7 +1034,7 @@
         public static readonly Item WarpedStem = new Item { Id = 108, DisplayName = "Warped Stem", Name = "warped_stem", StackSize = 64 };
         public static readonly Item WarpedTrapdoor = new Item { Id = 648, DisplayName = "Warped Trapdoor", Name = "warped_trapdoor", StackSize = 64 };
         public static readonly Item WarpedWartBlock = new Item { Id = 447, DisplayName = "Warped Wart Block", Name = "warped_wart_block", StackSize = 64 };
-        public static readonly Item WaterBucket = new Item { Id = 777, DisplayName = "Water Bucket", Name = "water_bucket", StackSize = 1 };
+        public static readonly Item WaterBucket = new WaterBucketItem { Id = 777, DisplayName = "Water Bucket", Name = "water_bucket", StackSize = 1 };
         public static readonly Item WaxedCopperBlock = new Item { Id = 85, DisplayName = "Waxed Block of Copper", Name = "waxed_copper_block", StackSize = 64 };
         public static readonly Item WaxedCutCopper = new Item { Id = 89, DisplayName = "Waxed Cut Copper", Name = "waxed_cut_copper", StackSize = 64 };
         public static readonly Item WaxedCutCopperSlab = new Item { Id = 97, DisplayName = "Waxed Cut Copper Slab", Name = "waxed_cut_copper_slab", StackSize = 64 };

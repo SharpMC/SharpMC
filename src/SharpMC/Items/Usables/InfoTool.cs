@@ -1,7 +1,6 @@
 ﻿using System.Collections;
 using System.Numerics;
 using Microsoft.Extensions.Logging;
-using SharpMC.API.Entities;
 using SharpMC.API.Enums;
 using SharpMC.Blocks;
 using SharpMC.Logging;
@@ -17,7 +16,7 @@ namespace SharpMC.Items.Usables
             IsUsable = true;
         }
 
-        public override void UseItem(IItemLevel world, IPlayer player,
+        public override void UseItem(IItemLevel world, ILevelPlayer player,
             Vector3 coordinates, BlockFace face)
         {
             var block = world.GetBlock(coordinates);
