@@ -49,7 +49,7 @@ namespace SharpMC.Items.Usables
             return target;
         }
 
-        public byte ConvertToByte(BitArray bits)
+        public static byte ConvertToByte(BitArray bits)
         {
             if (bits.Count != 8)
             {
