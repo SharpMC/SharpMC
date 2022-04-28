@@ -494,7 +494,7 @@
         public static readonly Item IronBars = new Item { Id = 295, DisplayName = "Iron Bars", Name = "iron_bars", StackSize = 64 };
         public static readonly Item IronBlock = new Item { Id = 65, DisplayName = "Block of Iron", Name = "iron_block", StackSize = 64 };
         public static readonly Item IronBoots = new Item { Id = 749, DisplayName = "Iron Boots", Name = "iron_boots", StackSize = 1 };
-        public static readonly Item IronChestplate = new Item { Id = 747, DisplayName = "Iron Chestplate", Name = "iron_chestplate", StackSize = 1 };
+        public static readonly Item IronChestplate = new Item { Id = 747, DisplayName = "Iron Chestplate", Name = "iron_chestplate", StackSize = 1, ItemType = ItemType.Chestplate, ItemMaterial = ItemMaterial.Iron };
         public static readonly Item IronDoor = new Item { Id = 631, DisplayName = "Iron Door", Name = "iron_door", StackSize = 64 };
         public static readonly Item IronHelmet = new Item { Id = 746, DisplayName = "Iron Helmet", Name = "iron_helmet", StackSize = 1 };
         public static readonly Item IronHoe = new Item { Id = 718, DisplayName = "Iron Hoe", Name = "iron_hoe", StackSize = 1 };
