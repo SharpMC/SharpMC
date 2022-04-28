@@ -2,9 +2,9 @@
 using SharpMC.API.Entities;
 using SharpMC.API.Enums;
 
-namespace SharpMC.Items
+namespace SharpMC.Items.Usables
 {
-    public abstract class ItemBase : Item, IItem
+    public abstract class UsableItem : Item, IUsableItem
     {
         public bool IsUsable { get; protected set; }
 

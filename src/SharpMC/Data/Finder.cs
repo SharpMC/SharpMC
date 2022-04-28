@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using SharpMC.Blocks;
 using SharpMC.Items;
+using SharpMC.Items.Usables;
 
 namespace SharpMC.Data
 {

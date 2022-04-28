@@ -6,9 +6,9 @@ using SharpMC.API.Enums;
 using SharpMC.Blocks;
 using SharpMC.Logging;
 
-namespace SharpMC.Items
+namespace SharpMC.Items.Usables
 {
-    public class InfoTool : ItemBase
+    public class InfoTool : UsableItem
     {
         private static readonly ILogger Log = LogManager.GetLogger(typeof(InfoTool));
 
