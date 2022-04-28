@@ -20,13 +20,16 @@ namespace SharpMC.Plugins
     {
         private static readonly ILogger Log = LogManager.GetLogger(typeof(PluginManager));
 
-        private readonly Dictionary<MethodInfo, CommandAttribute> _pluginCommands
-            = new Dictionary<MethodInfo, CommandAttribute>();
+        private readonly Dictionary<MethodInfo, CommandAttribute> _pluginCommands;
+        private readonly Dictionary<MethodInfo, OnPlayerJoinAttribute> _pluginPlayerJoinEvents;
+        private readonly List<IPlugin> _plugins;
 
-        private readonly Dictionary<MethodInfo, OnPlayerJoinAttribute> _pluginPlayerJoinEvents
-            = new Dictionary<MethodInfo, OnPlayerJoinAttribute>();
-
-        private readonly List<IPlugin> _plugins = new List<IPlugin>();
+        public PluginManager()
+        {
+            _pluginCommands = new Dictionary<MethodInfo, CommandAttribute>();
+            _pluginPlayerJoinEvents = new Dictionary<MethodInfo, OnPlayerJoinAttribute>();
+            _plugins = new List<IPlugin>();
+        }
 
         public List<IPlugin> Plugins => _plugins;
 
@@ -383,7 +386,7 @@ namespace SharpMC.Plugins
         private static string GetPluginDirectory()
         {
             var assembly = Assembly.GetExecutingAssembly();
-            var assemblyPath = new Uri(assembly.CodeBase).LocalPath;
+            var assemblyPath = new Uri(assembly.Location).LocalPath;
             var pluginDir = Path.GetDirectoryName(assemblyPath);
             const string key = "PluginDirectory";
             pluginDir = Config.Custom.GetProperty(key, pluginDir);

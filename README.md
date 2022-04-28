@@ -8,7 +8,7 @@ This fork is made by xafero, updating everything and generating network protocol
 
 Screenshots
 ----------------
-![Screenshot1](/wiki/ingame2.png?raw=true)
+![Screenshot1](/wiki/ingame3.png?raw=true)
 ![Screenshot2](/wiki/ingame1.png?raw=true)
 
 Current Specs

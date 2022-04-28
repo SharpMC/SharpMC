@@ -4,11 +4,9 @@ namespace SharpMC.Util
 {
     public class ChatHandler
     {
-        private char _commandPrefix { get; set; }
-
         public ChatHandler()
         {
-            _commandPrefix = '/';
+            CommandPrefix = '/';
         }
 
         /// <summary>
@@ -22,10 +20,6 @@ namespace SharpMC.Util
             return $"<{source.Username}> {message}";
         }
 
-        public virtual char CommandPrefix
-        {
-            get => _commandPrefix;
-            set => _commandPrefix = value;
-        }
+        public virtual char CommandPrefix { get; }
     }
 }
