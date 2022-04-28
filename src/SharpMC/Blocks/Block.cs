@@ -18,6 +18,9 @@ namespace SharpMC.Blocks
         public double Hardness { get; set; }
         public int StackSize { get; set; }
 
+        public bool? IsReplacible { get; set; }
+        public bool? IsSolid { get; set; }
+
         public override string ToString() => Name;
 
         #region Helpers
