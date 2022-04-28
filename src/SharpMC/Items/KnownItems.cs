@@ -391,7 +391,7 @@ namespace SharpMC.Items
         public static readonly Item FishingRod = new Item { Id = 797, DisplayName = "Fishing Rod", Name = "fishing_rod", StackSize = 1 };
         public static readonly Item FletchingTable = new Item { Id = 1047, DisplayName = "Fletching Table", Name = "fletching_table", StackSize = 64 };
         public static readonly Item Flint = new Item { Id = 762, DisplayName = "Flint", Name = "flint", StackSize = 64 };
-        public static readonly Item FlintAndSteel = new Item { Id = 680, DisplayName = "Flint and Steel", Name = "flint_and_steel", StackSize = 1 };
+        public static readonly Item FlintAndSteel = new FlintAndSteelItem { Id = 680, DisplayName = "Flint and Steel", Name = "flint_and_steel", StackSize = 1 };
         public static readonly Item FlowerBannerPattern = new Item { Id = 1036, DisplayName = "Banner Pattern", Name = "flower_banner_pattern", StackSize = 1 };
         public static readonly Item FloweringAzalea = new Item { Id = 153, DisplayName = "Flowering Azalea", Name = "flowering_azalea", StackSize = 64 };
         public static readonly Item FloweringAzaleaLeaves = new Item { Id = 140, DisplayName = "Flowering Azalea Leaves", Name = "flowering_azalea_leaves", StackSize = 64 };

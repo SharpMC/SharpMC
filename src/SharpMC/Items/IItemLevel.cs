@@ -9,5 +9,7 @@ namespace SharpMC.Items
         IBlock GetBlock(Vector3 coordinates);
 
         void SetBlock(IBlock block, Vector3 coordinates, bool a, bool b);
+
+        void SetBlock(IBlock block, Vector3 coordinates);
     }
 }

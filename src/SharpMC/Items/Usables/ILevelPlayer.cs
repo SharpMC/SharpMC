@@ -6,5 +6,7 @@ namespace SharpMC.Items.Usables
     public interface ILevelPlayer : IPlayer
     {
         IInventory Inventory { get; }
+
+        int Direction { get; }
     }
 }
