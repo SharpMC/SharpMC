@@ -15,7 +15,11 @@
         Helmet,
         Chestplate,
         Leggings,
-        Boots
+        Boots,
+        #endregion
+
+        #region Foods
+        Seed
         #endregion
     }
 }

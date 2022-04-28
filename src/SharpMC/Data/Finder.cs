@@ -1,12 +1,14 @@
 ﻿using System;
 using System.Collections.Generic;
 using SharpMC.Blocks;
+using SharpMC.Items;
 
 namespace SharpMC.Data
 {
     public static class Finder
     {
         private static IDictionary<int, Block> StatesToBlocks { get; } = LoadBlockStates();
+        private static IDictionary<int, Item> IdsToItems { get; } = LoadItemIds();
 
         public static Block FindBlockByState(int state)
         {
@@ -26,6 +28,25 @@ namespace SharpMC.Data
                     var toAdd = stateId == offset ? block : new MetaBlock(block, stateId - offset);
                     dict.Add(stateId, toAdd);
                 }
+            }
+            return dict;
+        }
+
+        public static Item FindItemById(int id)
+        {
+            if (IdsToItems.TryGetValue(id, out var item))
+                return item;
+            if (id == 286)
+                return new InfoTool();
+            throw new InvalidOperationException($"Could not find item: {id}");
+        }
+
+        private static IDictionary<int, Item> LoadItemIds()
+        {
+            var dict = new SortedDictionary<int, Item>();
+            foreach (var item in KnownItems.All)
+            {
+                dict.Add(item.Id, item);
             }
             return dict;
         }
