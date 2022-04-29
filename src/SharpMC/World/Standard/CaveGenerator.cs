@@ -1,7 +1,5 @@
-using SharpMC.Noise.API;
 using SharpMC.Util;
 using SharpMC.World.API;
-using SharpMC.World.Noises;
 using SharpMC.World.Standard.API;
 using static SharpMC.Blocks.KnownBlocks;
 

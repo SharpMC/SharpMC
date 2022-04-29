@@ -7,7 +7,6 @@ using SharpMC.Admin;
 using SharpMC.Logging;
 using SharpMC.Noise.API;
 using SharpMC.Noise.Lib;
-using SharpMC.Noise.Open;
 using SharpMC.Players;
 using SharpMC.Storage;
 using SharpMC.Storage.API;
@@ -16,7 +15,6 @@ using SharpMC.World.Common;
 using SharpMC.World.Generators;
 using SharpMC.World.Nether;
 using SharpMC.World.Standard;
-using SharpMC.World.Standard.API;
 
 namespace SharpMC.World
 {

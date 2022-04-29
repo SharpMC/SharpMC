@@ -2,7 +2,6 @@
 using SharpMC.Util;
 using SharpMC.World.Generators;
 using System;
-using SharpMC.Noise.API;
 using SharpMC.World.API;
 using SharpMC.World.Noises;
 using SharpMC.World.Standard.API;

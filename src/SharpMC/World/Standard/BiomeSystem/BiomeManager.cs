@@ -2,9 +2,7 @@
 using System.Collections.Generic;
 using SharpMC.Noise.API;
 using SharpMC.World.API;
-using SharpMC.World.Noises;
 using SharpMC.World.Standard.API;
-using SharpMC.World.Standard.Settings;
 
 namespace SharpMC.World.Standard.BiomeSystem
 {
