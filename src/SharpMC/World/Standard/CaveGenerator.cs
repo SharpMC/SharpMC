@@ -1,6 +1,8 @@
+using SharpMC.Noise.API;
 using SharpMC.Util;
 using SharpMC.World.API;
 using SharpMC.World.Noises;
+using SharpMC.World.Standard.API;
 using static SharpMC.Blocks.KnownBlocks;
 
 namespace SharpMC.World.Standard
@@ -8,15 +10,17 @@ namespace SharpMC.World.Standard
     internal class CaveGenerator : ICaveGenerator
     {
         private readonly int _seed;
+        private readonly RandomCreator _creator;
 
-        public CaveGenerator(int seed)
+        public CaveGenerator(int seed, RandomCreator creator)
         {
+            _creator = creator;
             _seed = seed;
         }
 
         public void GenerateCave(IChunkColumn chunk, ChunkCoordinates pos)
         {
-            var random = new GcRandom(chunk, _seed, pos);
+            var random = _creator(_seed, (pos.X, pos.Z));
             for (var x = 0; x < 16; x++)
             {
                 for (var z = 0; z < 16; z++)

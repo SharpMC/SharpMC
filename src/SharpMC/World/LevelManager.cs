@@ -5,6 +5,9 @@ using System.Linq;
 using Microsoft.Extensions.Logging;
 using SharpMC.Admin;
 using SharpMC.Logging;
+using SharpMC.Noise.API;
+using SharpMC.Noise.Lib;
+using SharpMC.Noise.Open;
 using SharpMC.Players;
 using SharpMC.Storage;
 using SharpMC.Storage.API;
@@ -13,6 +16,7 @@ using SharpMC.World.Common;
 using SharpMC.World.Generators;
 using SharpMC.World.Nether;
 using SharpMC.World.Standard;
+using SharpMC.World.Standard.API;
 
 namespace SharpMC.World
 {
@@ -49,19 +53,24 @@ namespace SharpMC.World
 
         private IWorldProvider LoadLevel(LevelType lvlType)
         {
+            INoiseGenerator Creator(int seed, int octaves)
+                => new SimplexOctaveGenerator(seed, octaves);
+
+            IGcRandom RandomGen(int seed, (int X, int Z) pos)
+                => new GcRandom(seed, pos);
+
             switch (lvlType)
             {
                 case LevelType.Standard:
-                    return new StandardWorldProvider();
+                    return new StandardWorldProvider(Creator, RandomGen);
                 case LevelType.Flatland:
                     return new FlatWorldGenerator();
                 case LevelType.Anvil:
                     return new AnvilWorldProvider();
                 case LevelType.Nether:
-                    return new NetherWorldProvider();
+                    return new NetherWorldProvider(Creator);
                 default:
-                    throw new ArgumentOutOfRangeException(nameof(lvlType),
-                        lvlType, null);
+                    throw new ArgumentOutOfRangeException(nameof(lvlType), lvlType, null);
             }
         }
 

@@ -24,7 +24,7 @@ namespace SharpMC.World.Anvil
 
         public AnvilWorldProvider()
         {
-            _backEndGenerator = (IWorldGenerator) new StandardWorldProvider();
+            _backEndGenerator = (IWorldGenerator) new StandardWorldProvider(default, default);
             _chunkCache = new Dictionary<Tuple<int, int>, ChunkColumn>();
         }
 

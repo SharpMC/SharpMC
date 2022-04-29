@@ -1,25 +1,29 @@
 ﻿using System;
 using System.Collections.Generic;
+using SharpMC.Noise.API;
 using SharpMC.World.API;
 using SharpMC.World.Noises;
 using SharpMC.World.Standard.API;
+using SharpMC.World.Standard.Settings;
 
 namespace SharpMC.World.Standard.BiomeSystem
 {
     public class BiomeManager : IBiomeManager
     {
-        private readonly SimplexOctaveGenerator _octaveGenerator;
+        private readonly INoiseGenerator _octaveGenerator;
         private readonly List<IBiomeBase> _biomes;
         private readonly double _biomeHeight;
         private readonly double _biomeWidth;
+        private readonly NoiseCreator _creator;
 
-        public BiomeManager(int seed, double biomeHeight = 14.5, double biomeWidth = 12.3)
+        public BiomeManager(NoiseCreator creator, int seed, double biomeHeight = 14.5, double biomeWidth = 12.3)
         {
+            _creator = creator;
             _biomeHeight = biomeHeight;
             _biomeWidth = biomeWidth;
             _biomes = new List<IBiomeBase>();
 
-            _octaveGenerator = new SimplexOctaveGenerator(seed, 1);
+            _octaveGenerator = _creator(seed, 1);
             _octaveGenerator.SetScale(1 / 512.0);
         }
 

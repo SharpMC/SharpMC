@@ -25,6 +25,12 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMC.Network.Test", "Sha
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMC.Settings", "SharpMC.Settings\SharpMC.Settings.csproj", "{A10AC5D0-9FAF-43D2-ACD5-F9410A7BC93F}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMC.Noise.API", "SharpMC.Noise.API\SharpMC.Noise.API.csproj", "{82DF3ABE-085B-439C-B61C-7FF78DEE6F29}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMC.Noise.Lib", "SharpMC.Noise.Lib\SharpMC.Noise.Lib.csproj", "{8600E129-E9F7-46A1-B458-4DC7203D9A98}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMC.Noise.Open", "SharpMC.Noise.Open\SharpMC.Noise.Open.csproj", "{01B1D531-F173-4CDA-A1D1-08C23C5EAB62}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -78,5 +84,17 @@ Global
 		{A10AC5D0-9FAF-43D2-ACD5-F9410A7BC93F}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A10AC5D0-9FAF-43D2-ACD5-F9410A7BC93F}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A10AC5D0-9FAF-43D2-ACD5-F9410A7BC93F}.Release|Any CPU.Build.0 = Release|Any CPU
+		{82DF3ABE-085B-439C-B61C-7FF78DEE6F29}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{82DF3ABE-085B-439C-B61C-7FF78DEE6F29}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{82DF3ABE-085B-439C-B61C-7FF78DEE6F29}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{82DF3ABE-085B-439C-B61C-7FF78DEE6F29}.Release|Any CPU.Build.0 = Release|Any CPU
+		{8600E129-E9F7-46A1-B458-4DC7203D9A98}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{8600E129-E9F7-46A1-B458-4DC7203D9A98}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{8600E129-E9F7-46A1-B458-4DC7203D9A98}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{8600E129-E9F7-46A1-B458-4DC7203D9A98}.Release|Any CPU.Build.0 = Release|Any CPU
+		{01B1D531-F173-4CDA-A1D1-08C23C5EAB62}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{01B1D531-F173-4CDA-A1D1-08C23C5EAB62}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{01B1D531-F173-4CDA-A1D1-08C23C5EAB62}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{01B1D531-F173-4CDA-A1D1-08C23C5EAB62}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

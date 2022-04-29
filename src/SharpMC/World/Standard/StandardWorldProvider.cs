@@ -2,8 +2,10 @@
 using SharpMC.Util;
 using SharpMC.World.Generators;
 using System;
+using SharpMC.Noise.API;
 using SharpMC.World.API;
 using SharpMC.World.Noises;
+using SharpMC.World.Standard.API;
 using SharpMC.World.Standard.BiomeSystem;
 using SharpMC.World.Standard.Decorators;
 using SharpMC.World.Standard.Settings;
@@ -18,14 +20,16 @@ namespace SharpMC.World.Standard
         private readonly WorldTweaking _settings;
         private readonly IRandomGenerator _generator;
         private readonly WorldContext _context;
+        private readonly NoiseCreator _creator;
 
-        public StandardWorldProvider()
+        public StandardWorldProvider(NoiseCreator creator, RandomCreator rc)
         {
+            _creator = creator;
             _generator = new RandomGenerator();
             _settings = new WorldTweaking();
             _context = new WorldContext(_settings, _generator);
-            _caveGen = new CaveGenerator(_settings.Seed.GetHashCode());
-            _biomeManager = new BiomeManager(_settings.Seed.GetHashCode());
+            _caveGen = new CaveGenerator(_settings.Seed.GetHashCode(), rc);
+            _biomeManager = new BiomeManager(creator, _settings.Seed.GetHashCode());
             _biomeManager.AddBiomeType(new FlowerForestBiome(_context));
             _biomeManager.AddBiomeType(new ForestBiome(_context));
             _biomeManager.AddBiomeType(new BirchForestBiome(_context));
@@ -36,8 +40,8 @@ namespace SharpMC.World.Standard
 
         public void PopulateChunk(IChunkColumn chunk, ChunkCoordinates pos)
         {
-            var bottom = new SimplexOctaveGenerator(_settings.Seed.GetHashCode(), 8);
-            var overhang = new SimplexOctaveGenerator(_settings.Seed.GetHashCode(), 8);
+            var bottom = _creator(_settings.Seed.GetHashCode(), 8);
+            var overhang = _creator(_settings.Seed.GetHashCode(), 8);
             overhang.SetScale(1 / _settings.OverhangScale);
             bottom.SetScale(1 / _settings.Groundscale);
 

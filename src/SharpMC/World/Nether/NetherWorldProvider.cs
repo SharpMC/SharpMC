@@ -2,6 +2,7 @@
 using SharpMC.Util;
 using SharpMC.World.Generators;
 using SharpMC.World.Noises;
+using SharpMC.World.Standard.API;
 using SharpMC.World.Standard.BiomeSystem;
 using SharpMC.World.Standard.Settings;
 using static SharpMC.Blocks.KnownBlocks;
@@ -13,9 +14,11 @@ namespace SharpMC.World.Nether
         private readonly IRandomGenerator _generator;
         private readonly NetherTweaking _cfg;
         private readonly WorldContext _context;
+        private readonly NoiseCreator _creator;
 
-        public NetherWorldProvider()
+        public NetherWorldProvider(NoiseCreator creator)
         {
+            _creator = creator;
             _generator = new RandomGenerator();
             _cfg = new NetherTweaking();
             _context = new WorldContext(_cfg, _generator);
@@ -23,8 +26,8 @@ namespace SharpMC.World.Nether
 
         public void PopulateChunk(IChunkColumn chunk, ChunkCoordinates pos)
         {
-            var bottom = new SimplexOctaveGenerator(_cfg.Seed.GetHashCode(), 8);
-            var top = new SimplexOctaveGenerator(_cfg.Seed.GetHashCode(), 8);
+            var bottom = _creator(_cfg.Seed.GetHashCode(), 8);
+            var top = _creator(_cfg.Seed.GetHashCode(), 8);
             bottom.SetScale(1 / _cfg.Groundscale);
             top.SetScale(1 / _cfg.Topscale);
 
