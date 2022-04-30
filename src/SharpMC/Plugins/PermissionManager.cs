@@ -1,12 +1,14 @@
-using SharpMC.Players;
+﻿using SharpMC.API.Entities;
+using SharpMC.Plugin.API;
 
 namespace SharpMC.Plugins
 {
-    public class PermissionManager
+    internal sealed class PermissionManager : IPermissionManager
     {
-        public bool HasPermission(Player player, string permission)
+        public bool HasPermission(IPlayer player, string permissionId)
         {
-            throw new System.NotImplementedException();
+            // TODO Fix that!
+            return true;
         }
     }
 }

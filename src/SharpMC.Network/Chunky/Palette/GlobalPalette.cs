@@ -1,7 +1,6 @@
 ﻿using System;
-using SharpMC.Network.Chunky.Palette;
 
-namespace SharpMC.Chunky.Palette
+namespace SharpMC.Network.Chunky.Palette
 {
     public class GlobalPalette : IPalette, IEquatable<GlobalPalette>
     {

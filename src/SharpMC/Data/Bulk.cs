@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
-using SharpMC.Blocks;
-using SharpMC.Chunky;
-using SharpMC.Chunky.Palette;
+using SharpMC.Data.Blocks;
+using SharpMC.Network.Chunky;
+using SharpMC.Network.Chunky.Palette;
 using SharpMC.World;
-using ChunkSection = SharpMC.Chunky.ChunkSection;
+using ChunkSection = SharpMC.Network.Chunky.ChunkSection;
 
 namespace SharpMC.Data
 {

@@ -1,19 +1,21 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SharpMC.API\SharpMC.API.csproj" />
-    <ProjectReference Include="..\SharpMC.Logging\SharpMC.Logging.csproj" />
-    <ProjectReference Include="..\SharpMC.Network\SharpMC.Network.csproj" />
-    <ProjectReference Include="..\SharpMC.Noise.Lib\SharpMC.Noise.Lib.csproj" />
-    <ProjectReference Include="..\SharpMC.Settings\SharpMC.Settings.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="6.0.0" />
+    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="13.0.1" />
+    <ProjectReference Include="..\SharpMC.API\SharpMC.API.csproj" />
+    <ProjectReference Include="..\SharpMC.Data\SharpMC.Data.csproj" />
+    <ProjectReference Include="..\SharpMC.Network\SharpMC.Network.csproj" />
+    <ProjectReference Include="..\SharpMC.Plugin.API\SharpMC.Plugin.API.csproj" />
   </ItemGroup>
 
 </Project>

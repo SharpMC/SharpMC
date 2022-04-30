@@ -1,4 +1,6 @@
 ﻿using System;
+using SharpMC.Network.API;
+using SharpMC.Network.Packets.API;
 using SharpMC.Network.Util;
 using HS = SharpMC.Network.Packets.Handshake.ToServer;
 using LS = SharpMC.Network.Packets.Login.ToServer;

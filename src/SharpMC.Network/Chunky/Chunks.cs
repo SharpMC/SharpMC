@@ -1,9 +1,10 @@
 ﻿using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using SharpMC.Network.API;
 using SharpMC.Network.Util;
 
-namespace SharpMC.Chunky
+namespace SharpMC.Network.Chunky
 {
     public static class Chunks
     {

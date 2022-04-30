@@ -1,4 +1,5 @@
-using SharpMC.Blocks;
+using SharpMC.API.Blocks;
+using SharpMC.API.Worlds;
 
 namespace SharpMC.World
 {

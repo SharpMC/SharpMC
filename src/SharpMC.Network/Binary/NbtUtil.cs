@@ -10,7 +10,7 @@ namespace SharpMC.Network.Binary
     {
         private const FormatOptions Format = FormatOptions.Java;
 
-        public static CompoundTag ToCompound(this Stream stream)
+        public static CompoundTag? ToCompound(this Stream stream)
         {
             using var reader = new TagReader(stream, Format, true);
             var raw = reader.ReadTag();

@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using SharpNBT;
 
-namespace SharpMC.Network.Binary
+namespace SharpMC.Network.Binary.Model
 {
     public class LoginDimCodec : INbtSerializable
     {

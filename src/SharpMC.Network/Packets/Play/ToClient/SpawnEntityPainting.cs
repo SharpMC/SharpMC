@@ -1,5 +1,7 @@
-﻿using SharpMC.Network.Util;
+﻿using SharpMC.Network.Packets.API;
 using System;
+using SharpMC.Network.API;
+using System.Numerics;
 
 namespace SharpMC.Network.Packets.Play.ToClient
 {
@@ -10,7 +12,7 @@ namespace SharpMC.Network.Packets.Play.ToClient
         public int EntityId { get; set; }
         public Guid EntityUUID { get; set; }
         public int Title { get; set; }
-        public System.Numerics.Vector3 Location { get; set; }
+        public Vector3 Location { get; set; }
         public byte Direction { get; set; }
 
         public override void Decode(IMinecraftStream stream)

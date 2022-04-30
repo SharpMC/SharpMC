@@ -1,5 +1,6 @@
-﻿using SharpMC.Network.Binary.Special;
-using SharpMC.Network.Util;
+﻿using SharpMC.Network.API;
+using SharpMC.Network.Binary.Special;
+using SharpMC.Network.Packets.API;
 
 namespace SharpMC.Network.Packets.Play.ToClient
 {

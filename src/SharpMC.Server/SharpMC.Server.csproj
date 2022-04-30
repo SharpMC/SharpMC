@@ -1,16 +1,23 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SharpMC.API\SharpMC.API.csproj" />
-    <ProjectReference Include="..\SharpMC.Logging\SharpMC.Logging.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" Version="6.0.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+	  <Content Include="appsettings.json">
+      <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+    </Content>
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\SharpMC.Plugin.Admin\SharpMC.Plugin.Admin.csproj" />
-    <ProjectReference Include="..\SharpMC.Plugin.Pets\SharpMC.Plugin.Pets.csproj" />
-    <ProjectReference Include="..\SharpMC.Plugin.Test\SharpMC.Plugin.Test.csproj" />
     <ProjectReference Include="..\SharpMC\SharpMC.csproj" />
   </ItemGroup>
 

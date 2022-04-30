@@ -1,9 +1,7 @@
 ﻿using System;
-using SharpMC.Chunky.Palette;
-using SharpMC.Network.Chunky.Palette;
-using SharpMC.Network.Util;
+using SharpMC.Network.API;
 
-namespace SharpMC.Chunky
+namespace SharpMC.Network.Chunky.Palette
 {
     public class DataPalette : IEquatable<DataPalette>
     {

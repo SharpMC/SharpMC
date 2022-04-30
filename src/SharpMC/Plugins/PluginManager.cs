@@ -1,55 +1,106 @@
 using System;
 using System.Collections.Generic;
-using System.ComponentModel;
 using System.IO;
 using System.Linq;
+using Microsoft.Extensions.Logging;
+using SharpMC.API;
+using SharpMC.API.Worlds;
+using SharpMC.Config;
+using System.ComponentModel;
 using System.Reflection;
 using System.Text;
-using Microsoft.Extensions.Logging;
-using SharpMC.API.Attributes;
+using Microsoft.Extensions.Options;
 using SharpMC.API.Entities;
 using SharpMC.API.Enums;
-using SharpMC.API.Plugins;
-using SharpMC.Logging;
-using SharpMC.Players;
-using SharpMC.World;
+using SharpMC.Plugin.API;
+using SharpMC.Plugin.API.Attributes;
+using static SharpMC.Util.PathTool;
 
 namespace SharpMC.Plugins
 {
-    public class PluginManager
+    internal sealed class PluginManager : IPluginManager, IDisposable
     {
-        private static readonly ILogger Log = LogManager.GetLogger(typeof(PluginManager));
+        private readonly ILogger<PluginManager> _log;
+        private readonly IHostEnv _host;
+        private readonly IOptions<ServerSettings> _config;
+        private readonly ILevelManager _levelManager;
+        private readonly IPermissionManager _permissionManager;
+        private readonly ILoggerFactory _factory;
 
-        private readonly Dictionary<MethodInfo, CommandAttribute> _pluginCommands;
-        private readonly Dictionary<MethodInfo, OnPlayerJoinAttribute> _pluginPlayerJoinEvents;
         private readonly List<IPlugin> _plugins;
+        private readonly Dictionary<MethodInfo, CommandAttribute> _commands;
+        private readonly Dictionary<MethodInfo, OnPlayerJoinAttribute> _joinEvents;
 
-        public PluginManager()
+        public PluginManager(IHostEnv host, ILogger<PluginManager> log, ILevelManager levelMgr,
+            IOptions<ServerSettings> config, IEnumerable<IPlugin> builtIns, IPermissionManager permManager,
+            ILoggerFactory factory)
         {
-            _pluginCommands = new Dictionary<MethodInfo, CommandAttribute>();
-            _pluginPlayerJoinEvents = new Dictionary<MethodInfo, OnPlayerJoinAttribute>();
+            _commands = new Dictionary<MethodInfo, CommandAttribute>();
+            _joinEvents = new Dictionary<MethodInfo, OnPlayerJoinAttribute>();
+
+            _factory = factory;
+            _log = log;
+            _config = config;
+            _permissionManager = permManager;
+            _levelManager = levelMgr;
+            _host = host;
             _plugins = new List<IPlugin>();
+            Array.ForEach(builtIns.ToArray(), LoadPlugin);
         }
 
-        public List<IPlugin> Plugins => _plugins;
+        private string PluginDirectory
+            => Ensure(_host, _config.Value.Plugins?.Directory ?? nameof(Plugins));
+
+        public void EnablePlugins(ILevelManager levelManager)
+        {
+            foreach (var plugin in _plugins)
+            {
+                if (plugin is not { } one)
+                    continue;
+                try
+                {
+                    var context = new PluginContext(levelManager, default, _factory);
+                    one.OnEnable(context);
+                }
+                catch (Exception ex)
+                {
+                    _log.LogWarning(ex, "On enable plugin!");
+                }
+            }
+        }
+
+        public void DisablePlugins()
+        {
+            foreach (var plugin in _plugins)
+            {
+                if (plugin is not { } one)
+                    continue;
+                try
+                {
+                    one.OnDisable();
+                }
+                catch (Exception ex)
+                {
+                    _log.LogWarning(ex, "On disable plugin!");
+                }
+            }
+        }
 
         public void LoadPlugins()
         {
-            if (Config.Server.PluginDisabled)
+            if (_config.Value.Plugins?.Disabled ?? false)
                 return;
-            var pluginDirectory = GetPluginDirectory();
-            if (pluginDirectory == null)
-                return;
-            pluginDirectory = Path.GetFullPath(pluginDirectory);
-            var files = Directory.GetFiles(pluginDirectory, "*.dll", SearchOption.AllDirectories);
+            var dir = PluginDirectory;
+            const SearchOption o = SearchOption.AllDirectories;
+            var files = Directory.GetFiles(dir, "*.dll", o);
             foreach (var pluginPath in files)
                 try
                 {
                     LoadPlugin(pluginPath);
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
-                    // Ignore that!
+                    _log.LogWarning(ex, pluginPath);
                 }
         }
 
@@ -59,35 +110,55 @@ namespace SharpMC.Plugins
             var types = newAssembly.GetExportedTypes();
             foreach (var type in types)
             {
-                try
+                LoadPlugin(type, null);
+            }
+        }
+
+        private void LoadPlugin(IPlugin plugin)
+        {
+            LoadPlugin(plugin.GetType(), plugin);
+        }
+
+        private void LoadPlugin(Type type, object? instance)
+        {
+            try
+            {
+                if (!type.IsDefined(typeof(PluginAttribute), true) &&
+                    !typeof(IPlugin).IsAssignableFrom(type))
+                    return;
+                if (type.IsDefined(typeof(PluginAttribute), true))
                 {
-                    if (!type.IsDefined(typeof(PluginAttribute), true) &&
-                        !typeof(IPlugin).IsAssignableFrom(type))
-                        continue;
-                    if (type.IsDefined(typeof(PluginAttribute), true))
+                    if (Attribute.GetCustomAttribute(type, typeof(PluginAttribute), true)
+                        is PluginAttribute pluginAttribute)
                     {
-                        if (Attribute.GetCustomAttribute(type, typeof(PluginAttribute), true)
-                            is PluginAttribute pluginAttribute)
-                        {
-                            var key = $"{pluginAttribute.PluginName}.Enabled";
-                            if (!Config.Custom.GetProperty(key, true))
-                                continue;
-                        }
-                    }
-                    var ctor = type.GetConstructor(Type.EmptyTypes);
-                    if (ctor != null)
-                    {
-                        var plugin = ctor.Invoke(null);
-                        _plugins.Add((IPlugin) plugin);
-                        LoadCommands(type);
-                        LoadOnPlayerJoin(type);
+                        var key = $"{pluginAttribute.PluginName}.Enabled";
+                        // TODO Add specific disable switch
+                        if (_config.Value.Plugins?.Disabled ?? false)
+                            return;
                     }
                 }
-                catch (Exception ex)
-                {
-                    Log.LogWarning($"Failed loading plugin type {type} as a plugin.");
-                    Log.LogDebug(ex, "Plugin loader caught exception!");
-                }
+                var plugin = instance
+                             ?? type.GetConstructor(Type.EmptyTypes)?.Invoke(null);
+                _plugins.Add((IPlugin) plugin!);
+                LoadCommands(type);
+                LoadOnPlayerJoin(type);
+            }
+            catch (Exception ex)
+            {
+                _log.LogWarning($"Failed loading plugin type {type} as a plugin.");
+                _log.LogDebug(ex, "Plugin loader caught exception!");
+            }
+        }
+
+        private void LoadOnPlayerJoin(Type type)
+        {
+            var methods = type.GetMethods();
+            foreach (var method in methods)
+            {
+                if (!(Attribute.GetCustomAttribute(method, typeof(OnPlayerJoinAttribute), false)
+                        is OnPlayerJoinAttribute commandAttribute))
+                    continue;
+                _joinEvents.Add(method, commandAttribute);
             }
         }
 
@@ -119,57 +190,20 @@ namespace SharpMC.Plugins
                 if (Attribute.GetCustomAttribute(method, typeof(DescriptionAttribute), false)
                     is DescriptionAttribute descriptionAttribute)
                     commandAttribute.Description = descriptionAttribute.Description;
-                _pluginCommands.Add(method, commandAttribute);
+                _commands.Add(method, commandAttribute);
             }
         }
 
-        private void LoadOnPlayerJoin(Type type)
+        public void Dispose()
         {
-            var methods = type.GetMethods();
-            foreach (var method in methods)
-            {
-                if (!(Attribute.GetCustomAttribute(method, typeof(OnPlayerJoinAttribute), false)
-                        is OnPlayerJoinAttribute commandAttribute))
-                    continue;
-                _pluginPlayerJoinEvents.Add(method, commandAttribute);
-            }
+            _joinEvents.Clear();
+            _commands.Clear();
+            _plugins.Clear();
         }
 
-        public void EnablePlugins(LevelManager manager)
-        {
-            foreach (var plugin in _plugins)
-            {
-                if (!(plugin is IPlugin enablingPlugin))
-                    continue;
-                try
-                {
-                    enablingPlugin.OnEnable(new PluginContext(this));
-                }
-                catch (Exception ex)
-                {
-                    Log.LogWarning(ex, "On enable plugin!");
-                }
-            }
-        }
+        #region Execute
 
-        public void DisablePlugins()
-        {
-            foreach (var plugin in _plugins)
-            {
-                if (!(plugin is IPlugin enablingPlugin))
-                    continue;
-                try
-                {
-                    enablingPlugin.OnDisable();
-                }
-                catch (Exception ex)
-                {
-                    Log.LogWarning(ex, "On disable plugin!");
-                }
-            }
-        }
-
-        public void HandleCommand(string message, Player player)
+        public void HandleCommand(string message, IPlayer player)
         {
             try
             {
@@ -177,18 +211,16 @@ namespace SharpMC.Plugins
                 message = message.Replace(commandText, "").Trim();
                 commandText = commandText.Replace("/", "").Replace(".", "");
                 var arguments = message.Split(new[] {' '}, StringSplitOptions.RemoveEmptyEntries);
-                foreach (var handlerEntry in _pluginCommands)
+                foreach (var handlerEntry in _commands)
                 {
                     var commandAttribute = handlerEntry.Value;
                     if (!commandText.Equals(commandAttribute.Command, StringComparison.InvariantCultureIgnoreCase))
                         continue;
                     var method = handlerEntry.Key;
-                    if (method == null)
-                        return;
                     var authAttrs = method.GetCustomAttributes<PermissionAttribute>(true);
                     foreach (var authorizationAttribute in authAttrs)
                     {
-                        var permissionManager = Globals.Instance.PermissionManager;
+                        var permissionManager = _permissionManager;
                         if (!permissionManager.HasPermission(player, authorizationAttribute.Permission))
                         {
                             player.SendChat("You are not permitted to use this command!", ChatColor.Red);
@@ -201,17 +233,17 @@ namespace SharpMC.Plugins
             }
             catch (Exception ex)
             {
-                Log.LogWarning(ex.ToString());
+                _log.LogWarning(ex.ToString());
             }
             player.SendChat("Unknown command.", ChatColor.Red);
         }
 
-        private bool ExecuteCommand(MethodInfo method, Player player, string[] args, CommandAttribute commandAttribute)
+        private bool ExecuteCommand(MethodInfo method, IPlayer player, string[] args, CommandAttribute commandAttribute)
         {
             var parameters = method.GetParameters();
             var addLength = 0;
             var requiredParameters = 0;
-            if (parameters.Length > 0 && parameters[0].ParameterType == typeof(Player))
+            if (parameters.Length > 0 && parameters[0].ParameterType == typeof(IPlayer))
             {
                 addLength = 1;
                 requiredParameters = -1;
@@ -247,7 +279,7 @@ namespace SharpMC.Plugins
                         objectArgs[k] = player;
                         continue;
                     }
-                    Log.LogWarning($"Command method {method.Name} missing player as first argument.");
+                    _log.LogWarning($"Command method {method.Name} missing player as first argument.");
                     return false;
                 }
                 if (parameter.ParameterType == typeof(string[]))
@@ -307,8 +339,8 @@ namespace SharpMC.Plugins
                 }
                 if (parameter.ParameterType == typeof(IPlayer))
                 {
-                    var value = Globals.Instance.LevelManager.GetAllPlayers()
-                        .FirstOrDefault(p => p.Username.ToLower().Equals(args[i].ToLower()));
+                    var value = _levelManager.GetAllPlayers()
+                        .FirstOrDefault(p => p.UserName.ToLower().Equals(args[i].ToLower()));
                     if (value == null)
                     {
                         player.SendChat($"Player \"{args[i]}\" is not found!", ChatColor.Red);
@@ -328,10 +360,10 @@ namespace SharpMC.Plugins
                     objectArgs[stringArrayPosition] = stringArrayValues.ToArray();
                 }
             }
-            var pluginInstance = _plugins.FirstOrDefault(plugin => plugin.GetType() == method.DeclaringType);
+            var pluginInstance = _plugins.FirstOrDefault(p => p.GetType() == method.DeclaringType);
             if (pluginInstance == null)
             {
-                Log.LogDebug("Plugin instance is null!");
+                _log.LogDebug("Plugin instance is null!");
                 return false;
             }
             if (method.IsStatic)
@@ -340,30 +372,27 @@ namespace SharpMC.Plugins
             }
             else
             {
-                if (method.DeclaringType == null) return false;
-
+                if (method.DeclaringType == null)
+                    return false;
                 method.Invoke(pluginInstance, objectArgs);
             }
             return true;
         }
 
-        internal void HandlePlayerJoin(Player player)
+        internal void HandlePlayerJoin(IPlayer player)
         {
             try
             {
-                foreach (var handler in _pluginPlayerJoinEvents)
+                foreach (var handler in _joinEvents)
                 {
-                    var attrib = handler.Value;
                     var method = handler.Key;
-                    if (method == null) continue;
                     if (method.IsStatic)
                     {
                         method.Invoke(null, new object[] {player});
                     }
                     else
                     {
-                        var pluginInstance =
-                            _plugins.FirstOrDefault(plugin => plugin.GetType() == method.DeclaringType);
+                        var pluginInstance = _plugins.FirstOrDefault(p => p.GetType() == method.DeclaringType);
                         if (pluginInstance == null)
                             continue;
                         if (method.ReturnType == typeof(void))
@@ -379,18 +408,10 @@ namespace SharpMC.Plugins
             }
             catch (Exception ex)
             {
-                Log.LogWarning(ex, "Plugin error!");
+                _log.LogWarning(ex, "Plugin error!");
             }
         }
 
-        private static string GetPluginDirectory()
-        {
-            var assembly = Assembly.GetExecutingAssembly();
-            var assemblyPath = new Uri(assembly.Location).LocalPath;
-            var pluginDir = Path.GetDirectoryName(assemblyPath);
-            const string key = "PluginDirectory";
-            pluginDir = Config.Custom.GetProperty(key, pluginDir);
-            return pluginDir;
-        }
+        #endregion
     }
 }

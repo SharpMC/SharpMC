@@ -1,9 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
-using SharpMC.Network.Chunky.Palette;
-using SharpMC.Network.Util;
+using SharpMC.Network.API;
 
-namespace SharpMC.Chunky.Palette
+namespace SharpMC.Network.Chunky.Palette
 {
     public class MapPalette : IPalette, IEquatable<MapPalette>
     {

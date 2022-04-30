@@ -1,47 +1,36 @@
 ﻿using System;
-using System.Net;
-using Microsoft.Extensions.Logging;
-using SharpMC.API.Plugins;
-using SharpMC.Logging;
-using SharpMC.Network.API;
+using System.Threading.Tasks;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using SharpMC.API;
 using SharpMC.Plugin.Admin;
-using SharpMC.Plugin.Pets;
-using SharpMC.Plugin.Test;
-using SharpMC.Plugins;
+using SharpMC.Plugin.API;
 
 namespace SharpMC.Server
 {
-    internal class Program
+    internal static class Program
     {
-        private static readonly ILogger Log = LogManager.GetLogger(typeof(Program));
-
-        private static void Main()
+        private static async Task Main(string[] args)
         {
-            Log.LogInformation("Loading settings...");
-            Config.Check();
-            var config = Config.Server.Port;
-            var comm = new NetConfiguration
-            {
-                Host = IPAddress.Any, Port = config, Protocol = ProtocolType.Tcp
-            };
-            Log.LogInformation("Listening on {0}...", comm.ToString());
-            IServer server = new MinecraftServer(comm);
-            try
-            {
-                server.Start();
-                Console.ReadLine();
-            }
-            finally
-            {
-                server.Stop();
-            }
-            Log.LogInformation("Exited.");
+            await CreateHostBuilder(args).RunConsoleAsync();
         }
 
-        // ReSharper disable UnusedMember.Local
-        private static readonly IPlugin[] Dummy =
+        private static IHostBuilder CreateHostBuilder(string[] args)
         {
-            new MainPlugin(), new TestPlugin(), new PetPlugin()
-        };
+            var root = AppContext.BaseDirectory;
+            IHostEnv host = new CmdHost(root);
+            return Host.CreateDefaultBuilder(args)
+                .UseContentRoot(host.ContentRoot)
+                .ConfigureServices((context, services)
+                    => Configure(context, services.AddSingleton(host)));
+        }
+
+        private static void Configure(HostBuilderContext ctx, IServiceCollection services)
+        {
+            services
+                .AddHostedService<Worker>()
+                .AddServer(ctx.Configuration)
+                .AddSingleton<IPlugin, MainPlugin>();
+        }
     }
 }

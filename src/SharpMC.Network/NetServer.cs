@@ -4,7 +4,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using Microsoft.Extensions.Logging;
-using SharpMC.Logging;
 using SharpMC.Network.API;
 using SharpMC.Network.Events;
 using ProtocolType = SharpMC.Network.API.ProtocolType;
@@ -13,17 +12,19 @@ namespace SharpMC.Network
 {
     public class NetServer
     {
-        private static readonly ILogger Log = LogManager.GetLogger(typeof(NetServer));
-        
-		public NetConnectionFactory NetConnectionFactory { get; }
+        private readonly ILogger<NetServer> Log;
+
+        public NetConnectionFactory NetConnectionFactory { get; }
         internal INetConfiguration Configuration { get; }
 
 		private CancellationTokenSource CancellationToken { get; set; }
         private ConcurrentDictionary<EndPoint, NetConnection> Connections { get; set; }
         private Socket ListenerSocket { get; set; }
         
-        public NetServer(INetConfiguration config, NetConnectionFactory factory)
+        public NetServer(ILogger<NetServer> log, INetConfiguration config, 
+            NetConnectionFactory factory)
         {
+            Log = log;
             Configuration = config;
             NetConnectionFactory = factory;
             SetDefaults();

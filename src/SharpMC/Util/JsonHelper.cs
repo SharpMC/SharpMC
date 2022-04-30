@@ -6,7 +6,7 @@ namespace SharpMC.Util
 {
     internal static class JsonHelper
     {
-        private static readonly JsonSerializerSettings Config = new JsonSerializerSettings
+        private static readonly JsonSerializerSettings Config = new()
         {
             ContractResolver = new CamelCasePropertyNamesContractResolver()
         };

@@ -1,8 +1,7 @@
 ﻿using System;
-using SharpMC.Network.Chunky.Palette;
-using SharpMC.Network.Util;
+using SharpMC.Network.API;
 
-namespace SharpMC.Chunky.Palette
+namespace SharpMC.Network.Chunky.Palette
 {
     public class SingletonPalette : IPalette, IEquatable<SingletonPalette>
     {

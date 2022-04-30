@@ -7,28 +7,31 @@ using System.Threading;
 using System.Threading.Tasks;
 using Ionic.Zlib;
 using Microsoft.Extensions.Logging;
-using SharpMC.Logging;
+using SharpMC.Network.API;
+using SharpMC.Network.Core;
 using SharpMC.Network.Events;
 using SharpMC.Network.Packets;
+using SharpMC.Network.Packets.API;
 using SharpMC.Network.Util;
 
 namespace SharpMC.Network
 {
     public class NetConnection
     {
-        private static readonly ILogger Log = LogManager.GetLogger(typeof(NetConnection));
-        
-        private CancellationTokenSource CancellationToken { get; }
-        private EventHandler<ConnectionConfirmedArgs> ConnectionConfirmed { get; }
+		private readonly ILogger<NetConnection> Log;
+
+		private CancellationTokenSource CancellationToken { get; }
+        private EventHandler<ConnectionConfirmedArgs>? ConnectionConfirmed { get; }
         private Direction Direction { get; }
         private Socket Socket { get; }
 
-        public NetConnection(Direction direction, Socket socket,
-			EventHandler<ConnectionConfirmedArgs> confirmedAction = null)
+        public NetConnection(ILogger<NetConnection> log, Direction direction, Socket socket,
+			EventHandler<ConnectionConfirmedArgs>? confirmedAction = null)
         {
+            Log = log;
             Direction = direction;
             Socket = socket;
-            RemoteEndPoint = Socket.RemoteEndPoint;
+            RemoteEndPoint = Socket.RemoteEndPoint!;
             ConnectionConfirmed = confirmedAction;
             CancellationToken = new CancellationTokenSource();
 			ConnectionState = ConnectionState.Handshake;
@@ -36,8 +39,8 @@ namespace SharpMC.Network
 			PacketWriteQueue = new BlockingCollection<byte[]>();
         }
 
-        public EventHandler<PacketReceivedArgs> OnPacketReceived;
-        public EventHandler<ConnectionClosedArgs> OnConnectionClosed;
+        public EventHandler<PacketReceivedArgs>? OnPacketReceived;
+        public EventHandler<ConnectionClosedArgs>? OnConnectionClosed;
 
         public EndPoint RemoteEndPoint { get; private set; }
 		public ConnectionState ConnectionState { get; protected set; }

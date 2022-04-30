@@ -1,147 +1,76 @@
-﻿using Microsoft.Extensions.Logging;
-using SharpMC.Logging;
-using SharpMC.Net;
-using SharpMC.Network;
+﻿using System;
+using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
+using SharpMC.API;
+using SharpMC.API.Worlds;
+using SharpMC.Config;
+using SharpMC.Meta;
 using SharpMC.Network.Packets;
-using SharpMC.Players;
-using SharpMC.Util;
-using SharpMC.World;
-using System;
-using System.IO;
-using SharpMC.Admin;
-using SharpMC.API.Enums;
-using SharpMC.Network.API;
-using SharpMC.Plugins;
-using SharpMC.Plugins.Channel;
+using SharpMC.Plugin.API;
 
 namespace SharpMC
 {
-    public class MinecraftServer : IServer
+    internal sealed class MinecraftServer : IServer
     {
-        private static readonly ILogger Log = LogManager.GetLogger(typeof(MinecraftServer));
+        private readonly ILogger<MinecraftServer> _log;
+        private readonly IOptions<ServerSettings> _settings;
+        private readonly ILevelManager _levelManager;
+        private readonly IPluginManager _pluginManager;
 
-        private bool _initiated;
-        private NetServer Server { get; }
-        public ServerInfo Info { get; }
-        public EncryptionHolder RsaEncryption { get; }
-        public IPlayerFactory PlayerFactory { get; set; }
-        public LevelManager LevelManager { get; }
-
-        public MinecraftServer(INetConfiguration netConfig)
+        public MinecraftServer(ILogger<MinecraftServer> log, IOptions<ServerSettings> cfg,
+            ILevelManager levelManager, IPluginManager pluginManager)
         {
-            Info = new ServerInfo(this);
-            Log.LogInformation($"Initiating {ServerInfo.ProtocolName}");
-
-            Log.LogInformation("Enabling global error handling...");
-            var currentDomain = AppDomain.CurrentDomain;
-            currentDomain.UnhandledException += UnhandledException;
-
-            Log.LogInformation("Loading variables...");
-            InitiateVariables();
-
-            Log.LogInformation("Checking files and directories...");
-            CheckDirectoriesAndFiles();
-
-            Log.LogInformation("Loading plugins...");
-            LoadPlugins();
-
-            Log.LogInformation("Loading packets...");
-            MCPacketFactory.Load();
-
-            Server = new NetServer(netConfig, new McConnectionFactory(this));
-            PlayerFactory = new DefaultPlayerFactory(this);
-            LevelManager = new LevelManager();
-            LevelManager.GetLevel(null, "default");
-
-            Log.LogInformation("Generating RSA keypair...");
-            RsaEncryption = new EncryptionHolder();
-            _initiated = true;
+            _log = log;
+            _settings = cfg;
+            _levelManager = levelManager;
+            _pluginManager = pluginManager;
         }
 
-        private void CheckDirectoriesAndFiles()
-        {
-            if (Globals.Instance.LevelManager != null &&
-                !Directory.Exists(Globals.Instance.LevelManager.MainLevel.LvlName))
-                Directory.CreateDirectory(Globals.Instance.LevelManager.MainLevel.LvlName);
-            if (!Directory.Exists("Players"))
-                Directory.CreateDirectory("Players");
-        }
-
-        private void LoadPlugins()
-        {
-            Globals.Instance.PluginManager.LoadPlugins();
-        }
-
-        private static void UnhandledException(object sender, UnhandledExceptionEventArgs args)
-        {
-            var e = (Exception) args.ExceptionObject;
-            Log.LogError(e, $"An unhandled exception occured! Error message: {e.Message}");
-        }
-
-        private void InitiateVariables()
-        {
-            var globals = Globals.Instance;
-
-            globals.Rand = new Random();
-            Console.Title = ServerInfo.ProtocolName;
-
-            // TODO : globals.LevelManager = new LevelManager(LoadLevel());
-            // TODO : globals.LevelManager.AddLevel("nether", new NetherLevel("nether"));
-            // TODO : globals.ChatHandler = new Synchronized<ChatHandler>(new ChatHandler());
-            // TODO : globals.ServerKey = PacketCryptography.GenerateKeyPair();
-            // TODO : globals.ClientManager = new ClientManager();
-
-            globals.ConsolePlayer = new Player(null, this, "Console")
-            {
-                Uuid = Guid.NewGuid(),
-                Gamemode = GameMode.Spectator,
-                Level = globals.LevelManager?.MainLevel
-            };
-            // TODO : globals.ConsolePlayer.Wrapper.Player = Globals.ConsolePlayer;
-            globals.ConsolePlayer.IsOperator = true;
-
-            globals.MessageFactory = new MessageFactory();
-            globals.PluginManager = new PluginManager();
-            // TODO : globals.ServerListener = new BasicListener();
-
-            OperatorLoader.LoadOperators();
-        }
+        private ServerInfo? Info { get; set; }
 
         public void Start()
-        {            
-            if (!_initiated)
-                throw new Exception("Server not initiated!");
-            try
-            {
-                Log.LogInformation("Enabling plugins...");
-                EnablePlugins();
+        {
+            _log.LogInformation("Enabling global error handling...");
+            var currentDomain = AppDomain.CurrentDomain;
+            currentDomain.UnhandledException += HandleException;
 
-                Server.Start();
-                Log.LogInformation("Server ready for connections.");
-            }
-            catch (Exception ex)
-            {
-                UnhandledException(this, new UnhandledExceptionEventArgs(ex, false));
-            }
+            const string proto = ServerInfo.ProtocolName;
+            _log.LogInformation($"Initiating {proto}");
+            Info = new ServerInfo(_levelManager, _settings.Value);
+            Console.Title = $"{nameof(SharpMC)} {proto}";
+
+            _log.LogInformation("Loading plugins...");
+            _pluginManager.LoadPlugins();
+
+            _log.LogInformation("Enabling plugins...");
+            _pluginManager.EnablePlugins(_levelManager);
+
+            _log.LogInformation("Loading packets...");
+            MCPacketFactory.Load();
+
+            var comm = _settings.Value.Net!;
+            _log.LogInformation("Listening on {net}...", comm.ToString());
+            
+            // Create server ?!
+            // TODO Server.Start();
+            _log.LogInformation("Server ready for connections.");
         }
 
         public void Stop()
         {
-            Log.LogInformation("Disabling plugins...");
-            DisablePlugins();
+            _log.LogInformation("Disabling plugins...");
+            _pluginManager.DisablePlugins();
 
-            Server.Stop();
-            Log.LogInformation("Server stopped.");
+            // TODO Server.Stop();
+            Info = null;
+            _log.LogInformation("Server stopped.");
         }
 
-        private void EnablePlugins()
+        private void HandleException(object _, UnhandledExceptionEventArgs e)
         {
-            Globals.Instance.PluginManager.EnablePlugins(Globals.Instance.LevelManager);
-        }
-
-        private void DisablePlugins()
-        {
-            Globals.Instance.PluginManager.DisablePlugins();
+            var ex = (Exception) e.ExceptionObject;
+            var message = $"An unhandled exception occurred! Error message: {ex.Message}";
+            _log.LogError(ex, message);
         }
     }
 }

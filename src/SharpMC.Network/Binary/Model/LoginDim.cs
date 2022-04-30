@@ -1,7 +1,7 @@
 ﻿using SharpNBT;
 using static SharpMC.Network.Binary.NbtUtil;
 
-namespace SharpMC.Network.Binary
+namespace SharpMC.Network.Binary.Model
 {
     public class LoginDim : INbtSerializable
     {

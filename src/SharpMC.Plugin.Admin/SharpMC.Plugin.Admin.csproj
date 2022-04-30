@@ -2,10 +2,11 @@
 
   <PropertyGroup>
     <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
   </PropertyGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\SharpMC.API\SharpMC.API.csproj" />
+    <ProjectReference Include="..\SharpMC.Plugin.API\SharpMC.Plugin.API.csproj" />
   </ItemGroup>
 
 </Project>

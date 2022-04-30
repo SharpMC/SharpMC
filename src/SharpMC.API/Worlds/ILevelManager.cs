@@ -1,18 +1,18 @@
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using SharpMC.API.Entities;
 
 namespace SharpMC.API.Worlds
 {
     public interface ILevelManager
     {
-        void TeleportToLevel(IPlayer player, string name);
-        
-        void TeleportToMain(IPlayer player);
-        
         ILevel MainLevel { get; }
-        
+
         IEnumerable<ILevel> GetLevels();
-        
+
+        void TeleportToMain(IPlayer player);
+
+        void TeleportToLevel(IPlayer player, string levelName);
+
         IEnumerable<IPlayer> GetAllPlayers();
     }
 }

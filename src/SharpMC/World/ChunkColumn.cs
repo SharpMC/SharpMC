@@ -1,6 +1,7 @@
-using SharpMC.Blocks;
-using SharpMC.Chunky;
+using SharpMC.API.Blocks;
+using SharpMC.API.Worlds;
 using SharpMC.Data;
+using SharpMC.Network.Chunky;
 
 namespace SharpMC.World
 {

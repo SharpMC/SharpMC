@@ -1,8 +1,8 @@
 ﻿using System;
-using SharpMC.Chunky.Palette;
-using SharpMC.Network.Util;
+using SharpMC.Network.API;
+using SharpMC.Network.Chunky.Palette;
 
-namespace SharpMC.Chunky
+namespace SharpMC.Network.Chunky
 {
     public class ChunkSection : IEquatable<ChunkSection>
     {

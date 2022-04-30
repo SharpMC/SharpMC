@@ -10,9 +10,10 @@ using Org.BouncyCastle.Crypto.Engines;
 using Org.BouncyCastle.Crypto.IO;
 using Org.BouncyCastle.Crypto.Modes;
 using Org.BouncyCastle.Crypto.Parameters;
+using SharpMC.Network.API;
 using SharpMC.Network.Binary;
 using SharpMC.Network.Binary.Special;
-using SharpMC.Network.Packets;
+using SharpMC.Network.Packets.API;
 using SharpNBT;
 
 namespace SharpMC.Network.Util
@@ -698,7 +699,7 @@ namespace SharpMC.Network.Util
 
         #endregion
 
-        private object _disposeLock = new object();
+        private object _disposeLock = new();
 		private bool _disposed;
 
 		protected override void Dispose(bool disposing)

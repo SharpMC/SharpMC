@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using SharpNBT;
 
-namespace SharpMC.Network.Binary
+namespace SharpMC.Network.Binary.Model
 {
     public class WorldBiome : INbtSerializable
     {

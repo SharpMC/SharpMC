@@ -1,5 +1,5 @@
 ﻿using System;
-using SharpMC.Chunky;
+using SharpMC.Network.Chunky;
 
 namespace SharpMC.Data
 {

@@ -2,17 +2,17 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
-using SharpMC.Chunky;
-using SharpMC.Chunky.Palette;
 using SharpMC.Data;
+using SharpMC.Network.Chunky;
+using SharpMC.Network.Chunky.Palette;
 using SharpMC.Network.Util;
 using Xunit;
-using static SharpMC.Blocks.KnownBlocks;
-using static SharpMC.Chunky.DataPalette;
-using static SharpMC.Chunky.Palette.PaletteType;
+using static SharpMC.Data.Blocks.KnownBlocks;
+using static SharpMC.Network.Chunky.Palette.DataPalette;
+using static SharpMC.Network.Chunky.Palette.PaletteType;
 using static SharpMC.Data.Copier;
-using static SharpMC.Network.Test.DataBunch3;
-using static SharpMC.Network.Test.TestHelper;
+using static SharpMC.Network.Test.Data.DataBunch3;
+using static SharpMC.Network.Test.Util.TestHelper;
 
 namespace SharpMC.Network.Test
 {

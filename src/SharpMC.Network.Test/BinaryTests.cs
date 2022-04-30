@@ -1,6 +1,5 @@
 using System.Linq;
 using SharpMC.Data;
-using SharpMC.Network.Binary;
 using SharpMC.Network.Binary.Model;
 using SharpMC.Network.Binary.Special;
 using SharpMC.Network.Packets.Play.ToBoth;
@@ -8,11 +7,11 @@ using SharpMC.Network.Packets.Play.ToClient;
 using SharpMC.Network.Packets.Play.ToServer;
 using SharpNBT;
 using Xunit;
-using static SharpMC.Network.Test.DataBunch;
-using static SharpMC.Network.Test.DataBunch2;
-using static SharpMC.Network.Test.DataBunch3;
-using static SharpMC.Network.Test.DataBunch4;
-using static SharpMC.Network.Test.TestHelper;
+using static SharpMC.Network.Test.Data.DataBunch1;
+using static SharpMC.Network.Test.Data.DataBunch2;
+using static SharpMC.Network.Test.Data.DataBunch3;
+using static SharpMC.Network.Test.Data.DataBunch4;
+using static SharpMC.Network.Test.Util.TestHelper;
 using static SharpMC.Util.Numbers;
 
 namespace SharpMC.Network.Test

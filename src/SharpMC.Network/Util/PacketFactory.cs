@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-using SharpMC.Network.Packets;
+using SharpMC.Network.API;
+using SharpMC.Network.Packets.API;
 
 namespace SharpMC.Network.Util
 {
@@ -12,7 +13,7 @@ namespace SharpMC.Network.Util
 		private Dictionary<Type, TType> IdMap { get; }
  		private Dictionary<TType, Func<TPacket>> Packets { get; }
 
-		private readonly object _addLock = new object();
+		private readonly object _addLock = new();
 
 		public PacketFactory()
 		{

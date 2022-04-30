@@ -1,13 +1,14 @@
-﻿using System;
+﻿using SharpMC.Plugin.API;
 using System.Linq;
-using SharpMC.API.Attributes;
 using SharpMC.API.Entities;
 using SharpMC.API.Enums;
-using SharpMC.API.Plugins;
+using SharpMC.Plugin.API.Attributes;
+
+// ReSharper disable UnusedMember.Global
 
 namespace SharpMC.Plugin.Admin
 {
-    [Plugin]
+    [Plugin(PluginName = nameof(Admin))]
     public class MainPlugin : IPlugin
     {
         private IPluginContext _context;
@@ -41,21 +42,6 @@ namespace SharpMC.Plugin.Admin
             }
         }
 
-        [Permission(Permission = "Core.TNT")]
-        [Command(Command = "tnt")]
-        public void TntCommand(IPlayer player)
-        {
-            var rand = new Random();
-            // TODO
-            /*
-                new ActivatedTntEntity(player.Level)
-                {
-                    KnownPosition = player.KnownPosition, Fuse = rand.Next(0, 20) + 10
-                }
-                .SpawnEntity(); 
-            */
-        }
-
         [Permission(Permission = "Core.Tps")]
         [Command(Command = "TPS")]
         public void TpsCommand(IPlayer player)
@@ -65,7 +51,7 @@ namespace SharpMC.Plugin.Admin
 
         [Permission(Permission = "Core.Save")]
         [Command(Command = "save-all")]
-        public void SaveAllCommand(IPlayer player)
+        public void SaveAllCommand(IPlayer _)
         {
             foreach (var lvl in _context.LevelManager.GetLevels())
             {
@@ -123,38 +109,38 @@ namespace SharpMC.Plugin.Admin
         [Command(Command = "rain")]
         public void Rain(IPlayer player)
         {
-            player.Level.Timetorain = 0;
+            player.Level.TimeToRain = 0;
         }
 
         [Permission(Permission = "Core.Rain")]
         [Command(Command = "raintime", Description = "Set time until next rain or length of current rain")]
         public void Rain(IPlayer player, int time)
         {
-            player.Level.Timetorain = time;
+            player.Level.TimeToRain = time;
         }
 
         [Permission(Permission = "Core.Msg")]
         [Command(Command = "msg")]
         public void Msg(IPlayer player, IPlayer target, string message)
         {
-            target.SendChat(player.Username + ": " + message);
-            player.SendChat("Message sent to: " + target.Username);
+            target.SendChat(player.UserName + ": " + message);
+            player.SendChat("Message sent to: " + target.UserName);
         }
 
         [Permission(Permission = "Core.TP")]
         [Command(Command = "tp")]
-        public void Tp(IPlayer player, IPlayer target, IPlayer target2 = null)
+        public void Tp(IPlayer player, IPlayer target, IPlayer? target2 = null)
         {
             if (target2 != null)
             {
                 target.PositionChanged(target2.KnownPosition.ToVector3(), target2.KnownPosition.Yaw);
-                player.SendChat("Teleported " + target.Username + "to: " + target2.Username);
-                target.SendChat("You've been teleported to: " + target2.Username);
+                player.SendChat("Teleported " + target.UserName + "to: " + target2.UserName);
+                target.SendChat("You've been teleported to: " + target2.UserName);
             }
             else
             {
                 player.PositionChanged(target.KnownPosition.ToVector3(), target.KnownPosition.Yaw);
-                player.SendChat("Teleported you to: " + target.Username);
+                player.SendChat("Teleported you to: " + target.UserName);
             }
         }
 
@@ -162,8 +148,8 @@ namespace SharpMC.Plugin.Admin
         [Command(Command = "me")]
         public void Me(IPlayer player, string[] message)
         {
-            var fullMsg = "§5* §6" + player.Username + "§5 " +
-                          message.Aggregate("", (current, i) => current + (i + " "));
+            var fullMsg = "§5* §6" + player.UserName + "§5 " +
+                          message.Aggregate("", (current, i) => current + i + " ");
             var globals = _context.Globals;
             globals.BroadcastChat(fullMsg, player);
             player.SendChat(fullMsg);
@@ -173,7 +159,7 @@ namespace SharpMC.Plugin.Admin
         [Command(Command = "broadcast")]
         public void Broadcast(IPlayer player, string[] message)
         {
-            var fullMsg = $"<{player.Username}> {message.Aggregate("", (current, i) => current + (i + " "))}";
+            var fullMsg = $"<{player.UserName}> {message.Aggregate("", (current, i) => current + i + " ")}";
             var globals = _context.Globals;
             globals.BroadcastChat(fullMsg, player);
             player.SendChat(fullMsg);
@@ -181,7 +167,7 @@ namespace SharpMC.Plugin.Admin
 
         [Permission(Permission = "Core.Kick")]
         [Command(Command = "kick")]
-        public void Kick(IPlayer player, IPlayer target, string message = "You got da boot!")
+        public void Kick(IPlayer _, IPlayer target, string message = "You got da boot!")
         {
             target.Kick(message);
         }
@@ -193,12 +179,12 @@ namespace SharpMC.Plugin.Admin
             if (target.ToggleOperatorStatus())
             {
                 target.SendChat("You are now an Operator!", ChatColor.Yellow);
-                player.SendChat($"Player \"{target.Username}\" is now an Operator!", ChatColor.Yellow);
+                player.SendChat($"Player \"{target.UserName}\" is now an Operator!", ChatColor.Yellow);
             }
             else
             {
                 target.SendChat("You have been De-Opped!", ChatColor.Yellow);
-                player.SendChat($"Player \"{target.Username}\" has been De-Opped!", ChatColor.Yellow);
+                player.SendChat($"Player \"{target.UserName}\" has been De-Opped!", ChatColor.Yellow);
             }
         }
     }

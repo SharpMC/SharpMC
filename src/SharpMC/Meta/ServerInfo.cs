@@ -1,27 +1,29 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Linq;
-using SharpMC.Meta;
+using SharpMC.API.Worlds;
+using SharpMC.Config;
 using SharpMC.Util;
 
-namespace SharpMC
+namespace SharpMC.Meta
 {
     public class ServerInfo
     {
-        private readonly MinecraftServer _server;
-
-        public ServerInfo(MinecraftServer server)
-        {
-            _server = server;
-        }
+        #region Constants
 
         private const int Protocol = 758;
         internal const string ProtocolName = "1.18.2";
 
-        public string Motd { get; set; } = "A SharpMC Server";
-        public int MaxPlayers { get; set; } = 30;
+        #endregion
 
-        public int Players => _server.LevelManager.GetLevels().Sum(x => x.PlayerCount);
+        private readonly ILevelManager _levelManager;
+        private readonly ServerSettings _settings;
+
+        public ServerInfo(ILevelManager levelManager, ServerSettings settings)
+        {
+            _levelManager = levelManager;
+            _settings = settings;
+        }
 
         public string GetMotd()
         {
@@ -30,15 +32,19 @@ namespace SharpMC
                 Version = new MetaVersion {Name = ProtocolName, Protocol = Protocol},
                 Players = new MetaPlayers
                 {
-                    Max = MaxPlayers, Online = Players, Sample = new List<MetaSample>
+                    Max = _settings.General?.MaxPlayers ?? 1,
+                    Online = Players,
+                    Sample = new List<MetaSample>
                     {
-                        new MetaSample {Id = Guid.NewGuid().ToString(), Name = "johndoe"}
+                        new() {Id = Guid.NewGuid().ToString(), Name = "john_doe"}
                     }
                 },
-                Description = new MetaDescription {Text = Motd}
+                Description = new MetaDescription {Text = _settings.General?.Motd ?? "???"}
             };
             var json = JsonHelper.ToJson(message);
             return json;
         }
+
+        private int Players => _levelManager.GetLevels().Sum(x => x.PlayerCount);
     }
 }

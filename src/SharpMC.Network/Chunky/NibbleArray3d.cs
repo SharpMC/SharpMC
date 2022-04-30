@@ -1,8 +1,8 @@
 ﻿using System;
+using SharpMC.Network.API;
 using SharpMC.Network.Chunky.Utils;
-using SharpMC.Network.Util;
 
-namespace SharpMC.Chunky
+namespace SharpMC.Network.Chunky
 {
     public class NibbleArray3d : IEquatable<NibbleArray3d>
     {

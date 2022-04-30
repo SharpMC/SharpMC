@@ -1,4 +1,6 @@
-﻿using SharpMC.Network.Util;
+﻿using SharpMC.Network.API;
+using System.Numerics;
+using SharpMC.Network.Packets.API;
 
 namespace SharpMC.Network.Packets.Play.ToClient
 {
@@ -6,7 +8,7 @@ namespace SharpMC.Network.Packets.Play.ToClient
     {
         public byte ClientId => 0x08;
 
-        public System.Numerics.Vector3 Location { get; set; }
+        public Vector3 Location { get; set; }
         public int Block { get; set; }
         public int Status { get; set; }
         public bool Successful { get; set; }

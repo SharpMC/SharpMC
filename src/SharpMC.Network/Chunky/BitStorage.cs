@@ -2,7 +2,7 @@
 using SharpMC.Network.Chunky.Utils;
 using static SharpMC.Network.Chunky.Utils.Constants;
 
-namespace SharpMC.Chunky
+namespace SharpMC.Network.Chunky
 {
     public class BitStorage : IEquatable<BitStorage>
     {

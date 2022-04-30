@@ -5,8 +5,8 @@ namespace SharpMC.Network.Binary.Model
 {
     public class HeightMaps : INbtSerializable
     {
-        public long[] MotionBlocking { get; set; }
-        public long[] WorldSurface { get; set; }
+        public long[]? MotionBlocking { get; set; }
+        public long[]? WorldSurface { get; set; }
 
         public CompoundTag ToCompound()
         {
@@ -20,10 +20,10 @@ namespace SharpMC.Network.Binary.Model
 
         public void ToObject(CompoundTag tag)
         {
-            var motBlock = (LongArrayTag) tag["MOTION_BLOCKING"];
-            var worSurface = (LongArrayTag) tag["WORLD_SURFACE"];
-            MotionBlocking = motBlock.ToArray();
-            WorldSurface = worSurface.ToArray();
+            var motBlock = tag.AsLongArray("MOTION_BLOCKING");
+            var worSurface = tag.AsLongArray("WORLD_SURFACE");
+            MotionBlocking = motBlock?.ToArray();
+            WorldSurface = worSurface?.ToArray();
         }
     }
 }
