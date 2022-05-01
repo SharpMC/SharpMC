@@ -22,7 +22,7 @@ namespace SharpMC.Network.Packets.Play.ToServer
             Slot = stream.ReadShort();
             MouseButton = stream.ReadSByte();
             Mode = stream.ReadVarInt();
-            CursorItem = stream.ReadSlot();
+            CursorItem = (SlotData) stream.ReadSlot();
         }
 
         public override void Encode(IMinecraftStream stream)

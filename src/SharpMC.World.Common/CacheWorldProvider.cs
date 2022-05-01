@@ -1,6 +1,8 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using SharpMC.API.Chunks;
+using SharpMC.API.Players;
 using SharpMC.API.Utils;
 using SharpMC.API.Worlds;
 using SharpMC.World.API;
@@ -11,7 +13,7 @@ namespace SharpMC.World.Common
     public class CacheWorldProvider : IWorldGenerator, IDisposable
     {
         private readonly object _syncLock;
-        private readonly Dictionary<ICoordinates, IChunkColumn> _chunkCache;
+        private readonly Dictionary<ChunkCoordinates, IChunkColumn> _chunkCache;
         private readonly IWorldProvider _parent;
         private readonly IChunkRepository _repo;
         private readonly IChunkColumnFactory _factory;
@@ -23,16 +25,16 @@ namespace SharpMC.World.Common
             _syncLock = new object();
             _parent = parent;
             _repo = repo;
-            _chunkCache = new Dictionary<ICoordinates, IChunkColumn>();
+            _chunkCache = new Dictionary<ChunkCoordinates, IChunkColumn>();
         }
 
-        public void PopulateChunk(IChunkColumn chunk, ICoordinates pos)
+        public void PopulateChunk(IChunkColumn chunk, ChunkCoordinates pos)
             => _parent.PopulateChunk(chunk, pos);
 
-        public ILocation SpawnPoint
+        public PlayerLocation SpawnPoint
             => _parent.SpawnPoint;
 
-        public IChunkColumn GenerateChunkColumn(ICoordinates coordinates)
+        public IChunkColumn GenerateChunkColumn(ChunkCoordinates coordinates)
         {
             lock (_syncLock)
             {

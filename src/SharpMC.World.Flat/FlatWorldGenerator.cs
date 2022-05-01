@@ -1,4 +1,5 @@
 using System.Collections.Concurrent;
+using SharpMC.API.Chunks;
 using SharpMC.API.Players;
 using SharpMC.API.Utils;
 using SharpMC.API.Worlds;
@@ -11,35 +12,35 @@ namespace SharpMC.World.Flat
 {
     public class FlatWorldGenerator : IWorldGenerator
     {
-        private ConcurrentDictionary<ICoordinates, IChunkColumn> Chunks { get; }
+        private ConcurrentDictionary<ChunkCoordinates, IChunkColumn> Chunks { get; }
 
         private readonly IChunkColumnFactory _factory;
 
         public FlatWorldGenerator(IChunkColumnFactory factory)
         {
             _factory = factory;
-            Chunks = new ConcurrentDictionary<ICoordinates, IChunkColumn>();
+            Chunks = new ConcurrentDictionary<ChunkCoordinates, IChunkColumn>();
         }
 
-        public IChunkColumn GenerateChunkColumn(ICoordinates coordinates)
+        public IChunkColumn GenerateChunkColumn(ChunkCoordinates coordinates)
         {
             return Chunks.GetOrAdd(coordinates, CreateChunk);
         }
 
-        public ILocation SpawnPoint
+        public PlayerLocation SpawnPoint
             => new PlayerLocation(0.5, 4f, 0.5f);
 
-        public void PopulateChunk(IChunkColumn chunk, ICoordinates pos)
+        public void PopulateChunk(IChunkColumn chunk, ChunkCoordinates pos)
             => CreateChunk(chunk, pos);
 
-        private IChunkColumn CreateChunk(ICoordinates _)
+        private IChunkColumn CreateChunk(ChunkCoordinates _)
         {
             var column = _factory.CreateColumn();
             CreateChunk(column, _);
             return column;
         }
 
-        private static void CreateChunk(IChunkColumn column, ICoordinates _)
+        private static void CreateChunk(IChunkColumn column, ChunkCoordinates _)
         {
             column.SetBlock(0, 0, 0, Air);
             for (var y = 0; y < 4; y++)

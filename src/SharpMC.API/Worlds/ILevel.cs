@@ -4,7 +4,9 @@ using SharpMC.API.Chunks;
 using SharpMC.API.Entities;
 using SharpMC.API.Enums;
 using SharpMC.API.Net;
+using SharpMC.API.Players;
 using SharpMC.API.Utils;
+using SharpMC.Network.Packets.API;
 
 namespace SharpMC.API.Worlds
 {
@@ -22,14 +24,14 @@ namespace SharpMC.API.Worlds
 
         long GameTick { get; }
 
-        ILocation SpawnPoint { get; }
+        PlayerLocation SpawnPoint { get; }
 
         GameMode DefaultGameMode { get; }
 
         IEnumerable<IPlayer> GetPlayers();
 
-        void RelayBroadcast(INetPacket packet);
-        void RelayBroadcast(IPlayer[] players, INetPacket packet);
+        void RelayBroadcast(IPacket packet);
+        void RelayBroadcast(IPlayer[] players, IPacket packet);
 
         void AddPlayer(IPlayer player, bool spawn);
         void RemovePlayer(IPlayer player);

@@ -5,4 +5,8 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
 
+  <ItemGroup>
+    <ProjectReference Include="..\SharpMC.Network.API\SharpMC.Network.API.csproj" />
+  </ItemGroup>
+
 </Project>

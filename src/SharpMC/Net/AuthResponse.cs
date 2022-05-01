@@ -3,7 +3,7 @@ using SharpMC.API.Net;
 
 namespace SharpMC.Net
 {
-    public sealed class AuthResponse : IAuthResponse
+    internal sealed class AuthResponse : IAuthResponse
     {
         [JsonProperty("id")]
         public string Id;

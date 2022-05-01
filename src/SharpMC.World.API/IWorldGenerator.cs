@@ -1,9 +1,10 @@
+using SharpMC.API.Chunks;
 using SharpMC.API.Worlds;
 
 namespace SharpMC.World.API
 {
     public interface IWorldGenerator : IWorldProvider
     {
-        IChunkColumn GenerateChunkColumn(ICoordinates coordinates);
+        IChunkColumn GenerateChunkColumn(ChunkCoordinates coordinates);
     }
 }

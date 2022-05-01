@@ -15,7 +15,7 @@ namespace SharpMC.Network.API
         void WriteBool(bool value);
         void WriteByte(byte value);
         void WriteShort(short value);
-        void WriteSlot(SlotData value);
+        void WriteSlot(ISlotData value);
         void WriteFloat(float value);
         void WriteUuid(Guid value);
         void WritePosition(Vector3 value);

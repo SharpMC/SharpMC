@@ -1,4 +1,5 @@
-﻿using SharpMC.API.Players;
+﻿using SharpMC.API.Chunks;
+using SharpMC.API.Players;
 using SharpMC.API.Utils;
 using SharpMC.API.Worlds;
 using SharpMC.World.API;
@@ -23,7 +24,7 @@ namespace SharpMC.World.Nether
             _context = new WorldContext(_cfg, _generator);
         }
 
-        public void PopulateChunk(IChunkColumn chunk, ICoordinates pos)
+        public void PopulateChunk(IChunkColumn chunk, ChunkCoordinates pos)
         {
             var bottom = new SimplexOctaveGenerator(_cfg.Seed.GetHashCode(), 8);
             var top = new SimplexOctaveGenerator(_cfg.Seed.GetHashCode(), 8);
@@ -82,6 +83,6 @@ namespace SharpMC.World.Nether
             lava.Decorate(chunk, new PlainsBiome(_context));
         }
 
-        public ILocation SpawnPoint => new PlayerLocation(0, 82, 0);
+        public PlayerLocation SpawnPoint => new PlayerLocation(0, 82, 0);
     }
 }

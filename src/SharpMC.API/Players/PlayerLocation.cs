@@ -6,7 +6,7 @@ using SharpMC.API.Utils;
 namespace SharpMC.API.Players
 {
     public readonly record struct PlayerLocation(float X, float Y, float Z,
-        float Yaw, float Pitch, float HeadYaw, bool OnGround) : ILocation
+        float Yaw, float Pitch, float HeadYaw, bool OnGround)
     {
         public PlayerLocation(float x, float y, float z,
             float headYaw = 0f, float yaw = 0f, float pitch = 0f)
@@ -23,11 +23,6 @@ namespace SharpMC.API.Players
         public PlayerLocation(double x, double y, double z,
             float headYaw = 0f, float yaw = 0f, float pitch = 0f)
             : this((float) x, (float) y, (float) z, headYaw, yaw, pitch)
-        {
-        }
-
-        public PlayerLocation(ILocation loc) : this(loc.X, loc.Y, loc.Z,
-            loc.Yaw, loc.Pitch, loc.HeadYaw, loc.OnGround)
         {
         }
 
@@ -58,7 +53,7 @@ namespace SharpMC.API.Players
         public BlockCoordinates GetCoordinates3D() 
             => new((int) X, (int) Y, (int) Z);
 
-        public double DistanceTo(ILocation other)
+        public double DistanceTo(PlayerLocation other)
         {
             return Math.Sqrt(Square(other.X - X) +
                              Square(other.Y - Y) +

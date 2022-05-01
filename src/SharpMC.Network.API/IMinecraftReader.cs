@@ -15,7 +15,7 @@ namespace SharpMC.Network.API
         bool ReadBool();
         byte ReadByte();
         short ReadShort();
-        SlotData ReadSlot();
+        ISlotData ReadSlot();
         float ReadFloat();
         Guid ReadUuid();
         Vector3 ReadPosition();

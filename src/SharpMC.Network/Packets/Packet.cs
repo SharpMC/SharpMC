@@ -3,7 +3,7 @@ using SharpMC.Network.Packets.API;
 
 namespace SharpMC.Network.Packets
 {
-	public abstract class Packet : IPacket<IMinecraftStream>
+	public abstract class Packet : IPacket
 	{
 		public int PacketId { get; set; } = -1;
 

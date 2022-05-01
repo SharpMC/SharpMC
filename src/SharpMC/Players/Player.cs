@@ -14,6 +14,7 @@ using SharpMC.Data;
 using SharpMC.Net;
 using SharpMC.Network.Binary.Model;
 using SharpMC.Network.Binary.Special;
+using SharpMC.Network.Core;
 using SharpMC.Network.Packets.Play.ToBoth;
 using SharpMC.Network.Packets.Play.ToClient;
 using static SharpMC.Util.Numbers;
@@ -40,7 +41,7 @@ namespace SharpMC.Players
 
         public GameMode Gamemode { get; set; }
         public ILevel Level { get; set; }
-        public ILocation KnownPosition { get; set; }
+        public PlayerLocation KnownPosition { get; set; }
         public string DisplayName { get; set; }
         public IAuthResponse AuthResponse { get; set; }
 
@@ -60,11 +61,6 @@ namespace SharpMC.Players
         }
 
         public void PositionChanged(Vector3 pos, float yaw)
-        {
-            throw new System.NotImplementedException();
-        }
-
-        public void UnloadChunk(ICoordinates pos)
         {
             throw new System.NotImplementedException();
         }
@@ -123,7 +119,7 @@ namespace SharpMC.Players
                     },
                     BlockEntities = Array.Empty<ChunkBlockEntity>()
                 };
-                Connection.SendPacket(new NetPacket(map));
+                Connection.SendPacket(map);
             }
         }
 
@@ -134,7 +130,7 @@ namespace SharpMC.Players
 
         public void SendPlayerPositionAndLook()
         {
-            var loc = new PlayerLocation(KnownPosition);
+            var loc = KnownPosition with { };
             var packet = new Position
             {
                 Flags = 0,
@@ -145,7 +141,7 @@ namespace SharpMC.Players
                 Yaw = loc.Yaw,
                 Pitch = loc.Pitch
             };
-            Connection.SendPacket(new NetPacket(packet));
+            Connection.SendPacket(packet);
         }
 
         public void UnloadChunk(ChunkCoordinates coordinates)
@@ -155,7 +151,7 @@ namespace SharpMC.Players
                 ChunkX = coordinates.X,
                 ChunkZ = coordinates.Z
             };
-            Connection.SendPacket(new NetPacket(obj));
+            Connection.SendPacket(obj);
         }
 
         public void DespawnFromPlayers(IPlayer[] players)
@@ -165,7 +161,7 @@ namespace SharpMC.Players
                 Action = PlayerListAction.RemovePlayer,
                 UUID = Uuid
             };
-            Level.RelayBroadcast(players, new NetPacket(packet));
+            Level.RelayBroadcast(players, packet);
         }
 
         public void DespawnEntity()
@@ -199,7 +195,7 @@ namespace SharpMC.Players
                 },
                 Dimension = Defaults.CurrentDim
             };
-            Connection.SendPacket(new NetPacket(joinGame));
+            Connection.SendPacket(joinGame);
 
             SendJoinSuffix();
         }
@@ -211,7 +207,7 @@ namespace SharpMC.Players
                 _Difficulty = 1,
                 DifficultyLocked = false
             };
-            Connection.SendPacket(new NetPacket(diff));
+            Connection.SendPacket(diff);
 
             var able = new Abilities
             {
@@ -219,20 +215,20 @@ namespace SharpMC.Players
                 FlyingSpeed = 0.05000000074505806f,
                 WalkingSpeed = 0.10000000149011612f
             };
-            Connection.SendPacket(new NetPacket(able));
+            Connection.SendPacket(able);
 
             var slot = new HeldItemSlot
             {
                 Slot = 4
             };
-            Connection.SendPacket(new NetPacket(slot));
+            Connection.SendPacket(slot);
 
             var brand = new CustomPayload
             {
                 Channel = "minecraft:brand",
                 Data = new byte[] { 7, 118, 97, 110, 105, 108, 108, 97 }
             };
-            Connection.SendPacket(new NetPacket(brand));
+            Connection.SendPacket(brand);
         }
 
         public int EntityId { get; set; }
@@ -278,7 +274,7 @@ namespace SharpMC.Players
             {
                 packet.Properties = new[] { p };
             }
-            Level.RelayBroadcast(players, new NetPacket(packet));
+            Level.RelayBroadcast(players, packet);
             var spp = new NamedEntitySpawn
             {
                 EntityId = EntityId,
@@ -289,7 +285,7 @@ namespace SharpMC.Players
                 Z = KnownPosition.Z,
                 PlayerUUID = Uuid
             };
-            Level.RelayBroadcast(players, new NetPacket(spp));
+            Level.RelayBroadcast(players, spp);
         }
     }
 }

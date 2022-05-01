@@ -1,17 +1,18 @@
 ﻿using System;
+using SharpMC.API.Players;
 using SharpMC.API.Utils;
 using SharpMC.API.Worlds;
 
 namespace SharpMC.API.Chunks
 {
-    public readonly record struct ChunkCoordinates(int X, int Z) : ICoordinates
+    public readonly record struct ChunkCoordinates(int X, int Z)
     {
         public ChunkCoordinates(int value) : this(value, value)
         {
         }
 
-        public ChunkCoordinates(ILocation location)
-            : this((int) Math.Floor(location.X) >> 4, (int) Math.Floor(location.Z) >> 4)
+        public ChunkCoordinates(PlayerLocation loc)
+            : this((int) Math.Floor(loc.X) >> 4, (int) Math.Floor(loc.Z) >> 4)
         {
         }
 
@@ -104,10 +105,5 @@ namespace SharpMC.API.Chunks
         public static readonly ChunkCoordinates Right = new(1, 0);
 
         #endregion
-
-        public bool Equals(ICoordinates? other)
-        {
-            return X == other?.X && Z == other.Z;
-        }
     }
 }

@@ -279,7 +279,7 @@ namespace SharpMC.Net
             {
                 Message = ChatHelper.EncodeChatMessage($"<{Player.UserName}> {packet.Message}")
             };
-            Player.Level.RelayBroadcast(new NetPacket(obj));
+            Player.Level.RelayBroadcast(obj);
         }
 
         private void HandleClientSettings(SettingsPk packet)
@@ -341,10 +341,10 @@ namespace SharpMC.Net
 
         #endregion
 
-        public void SendPacket(INetPacket packet) 
-            => SendMyPacket(((NetPacket) packet).Payload);
-
-        private void SendMyPacket(Packet packet) 
-            => SendPacket(packet);
+        public void SendPacket(IPacket packet)
+        {
+            var raw = (Packet) packet;
+            base.SendPacket(raw);
+        }
     }
 }

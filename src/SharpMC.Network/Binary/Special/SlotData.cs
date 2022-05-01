@@ -3,7 +3,7 @@ using SharpMC.Network.Packets.API;
 
 namespace SharpMC.Network.Binary.Special
 {
-    public class SlotData : IPacket
+    public class SlotData : IPacket, ISlotData
     {
         public bool Present { get; set; }
         public int? ItemId { get; set; }

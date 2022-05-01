@@ -94,7 +94,7 @@ namespace SharpMC.Network.Util
 
         public T ReadNbt<T>() where T : INbtSerializable, new()
         {
-            var tag = this.ToCompound();
+            var tag = this.ToCompound()!;
             var obj = tag.ToObject<T>();
             return obj;
         }
@@ -145,7 +145,7 @@ namespace SharpMC.Network.Util
 			return IPAddress.NetworkToHostOrder(value);
 		}
 
-        public SlotData ReadSlot()
+        public ISlotData ReadSlot()
         {
             var slot = new SlotData();
             slot.Decode(this);
@@ -594,7 +594,7 @@ namespace SharpMC.Network.Util
 			Write(shortData);
 		}
 
-        public void WriteSlot(SlotData value)
+        public void WriteSlot(ISlotData value)
         {
             value.Encode(this);
         }

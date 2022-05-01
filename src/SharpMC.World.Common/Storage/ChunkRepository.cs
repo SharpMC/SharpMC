@@ -1,4 +1,5 @@
 ﻿using System.IO;
+using SharpMC.API.Chunks;
 using SharpMC.API.Worlds;
 using SharpMC.World.API.Chunks;
 using SharpMC.World.API.Storage;
@@ -21,7 +22,7 @@ namespace SharpMC.World.Common.Storage
                 Directory.CreateDirectory(folder);
         }
 
-        public void SaveChunk(IChunkColumn chunk, ICoordinates pos)
+        public void SaveChunk(IChunkColumn chunk, ChunkCoordinates pos)
         {
             var file = GetFileName(_folder, pos.X, pos.Z);
             var raw = chunk.ToArray();
@@ -29,14 +30,14 @@ namespace SharpMC.World.Common.Storage
             File.WriteAllBytes(file, output);
         }
 
-        public bool Exists(ICoordinates coordinates)
+        public bool Exists(ChunkCoordinates coordinates)
         {
             var x = coordinates.X;
             var z = coordinates.Z;
             return File.Exists(GetFileName(_folder, x, z));
         }
 
-        public IChunkColumn LoadChunk(ICoordinates pos)
+        public IChunkColumn LoadChunk(ChunkCoordinates pos)
         {
             var file = GetFileName(_folder, pos.X, pos.Z);
             var raw = File.ReadAllBytes(file);

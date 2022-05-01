@@ -1,14 +1,7 @@
 namespace SharpMC.API.Enums
 {
-    public class ChatColor
+    public sealed record ChatColor(char Value)
     {
-        public readonly char Value;
-
-        public ChatColor(char value)
-        {
-            Value = value;
-        }
-
         public static ChatColor
             Green = new('a'),
             Aqua = new('b'),

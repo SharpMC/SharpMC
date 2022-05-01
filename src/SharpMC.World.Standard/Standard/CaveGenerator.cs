@@ -1,3 +1,4 @@
+using SharpMC.API.Chunks;
 using SharpMC.API.Worlds;
 using SharpMC.World.API;
 using SharpMC.World.Noises;
@@ -14,7 +15,7 @@ namespace SharpMC.World.Standard
             _seed = seed;
         }
 
-        public void GenerateCave(IChunkColumn chunk, ICoordinates pos)
+        public void GenerateCave(IChunkColumn chunk, ChunkCoordinates pos)
         {
             var random = new GcRandom(chunk, _seed, pos);
             for (var x = 0; x < 16; x++)

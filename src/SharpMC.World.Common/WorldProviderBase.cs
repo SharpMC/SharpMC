@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using System.Numerics;
 using SharpMC.API.Chunks;
 using SharpMC.API.Entities;
+using SharpMC.API.Players;
 using SharpMC.API.Utils;
 using SharpMC.API.Worlds;
 using SharpMC.World.API;
@@ -73,8 +74,8 @@ namespace SharpMC.World.Common
 
         protected abstract IChunkColumn GenerateChunkColumn(Vector2 vector);
 
-        public abstract void PopulateChunk(IChunkColumn chunk, ICoordinates pos);
+        public abstract void PopulateChunk(IChunkColumn chunk, ChunkCoordinates pos);
 
-        public abstract ILocation SpawnPoint { get; }
+        public abstract PlayerLocation SpawnPoint { get; }
     }
 }

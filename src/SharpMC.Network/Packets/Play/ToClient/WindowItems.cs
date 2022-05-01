@@ -16,7 +16,7 @@ namespace SharpMC.Network.Packets.Play.ToClient
         {
             WindowId = stream.ReadByte();
             StateId = stream.ReadVarInt();
-            CarriedItem = stream.ReadSlot();
+            CarriedItem = (SlotData) stream.ReadSlot();
         }
 
         public override void Encode(IMinecraftStream stream)

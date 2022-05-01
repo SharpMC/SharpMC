@@ -1,5 +1,6 @@
 ﻿using LibNoise;
 using LibNoise.Primitive;
+using SharpMC.API.Chunks;
 using SharpMC.API.Worlds;
 
 namespace SharpMC.World.Noises
@@ -36,9 +37,9 @@ namespace SharpMC.World.Noises
         private readonly int _sxz = 200;
         private readonly int _sy = 100;
         public IChunkColumn Chunk;
-        private ICoordinates Pos;
+        private ChunkCoordinates Pos;
 
-        internal GcRandom(IChunkColumn chunk, int seed, ICoordinates pos)
+        internal GcRandom(IChunkColumn chunk, int seed, ChunkCoordinates pos)
         {
             var chunkX = pos.X;
             var chunkZ = pos.Z;

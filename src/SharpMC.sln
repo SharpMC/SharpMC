@@ -29,6 +29,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMC.World.Flat", "Sharp
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMC.World.Common", "SharpMC.World.Common\SharpMC.World.Common.csproj", "{6808EBC5-DE17-4FBB-80B5-F35FB335F7DD}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharpMC.Network.API", "SharpMC.Network.API\SharpMC.Network.API.csproj", "{C7019837-6498-44AA-8AF9-0D1F5829A49D}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -90,5 +92,9 @@ Global
 		{6808EBC5-DE17-4FBB-80B5-F35FB335F7DD}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{6808EBC5-DE17-4FBB-80B5-F35FB335F7DD}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{6808EBC5-DE17-4FBB-80B5-F35FB335F7DD}.Release|Any CPU.Build.0 = Release|Any CPU
+		{C7019837-6498-44AA-8AF9-0D1F5829A49D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{C7019837-6498-44AA-8AF9-0D1F5829A49D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{C7019837-6498-44AA-8AF9-0D1F5829A49D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{C7019837-6498-44AA-8AF9-0D1F5829A49D}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 EndGlobal

@@ -14,7 +14,7 @@ namespace SharpMC.Network.Packets.Play.ToServer
         public override void Decode(IMinecraftStream stream)
         {
             Slot = stream.ReadShort();
-            Item = stream.ReadSlot();
+            Item = (SlotData) stream.ReadSlot();
         }
 
         public override void Encode(IMinecraftStream stream)

@@ -12,8 +12,8 @@ namespace SharpMC.API.Blocks
         {
         }
 
-        public BlockCoordinates(ILocation location) : this((int) Math.Floor(location.X),
-            (int) Math.Floor(location.Y), (int) Math.Floor(location.Z))
+        public BlockCoordinates(PlayerLocation loc) : this((int) Math.Floor(loc.X),
+            (int) Math.Floor(loc.Y), (int) Math.Floor(loc.Z))
         {
         }
 

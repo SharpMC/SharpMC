@@ -9,8 +9,10 @@ using SharpMC.API.Chunks;
 using SharpMC.API.Entities;
 using SharpMC.API.Enums;
 using SharpMC.API.Net;
+using SharpMC.API.Players;
 using SharpMC.API.Utils;
 using SharpMC.API.Worlds;
+using SharpMC.Network.Packets.API;
 using SharpMC.World.API;
 
 namespace SharpMC.World
@@ -50,7 +52,7 @@ namespace SharpMC.World
         public GameMode DefaultGameMode { get; }
         public IEnumerable<IPlayer> GetPlayers() => Players.Values;
 
-        public ILocation SpawnPoint => _worldGenerator.SpawnPoint;
+        public PlayerLocation SpawnPoint => _worldGenerator.SpawnPoint;
 
         public void Initialize()
         {
@@ -124,7 +126,7 @@ namespace SharpMC.World
             }
         }
 
-        public void RelayBroadcast(IPlayer[] players, INetPacket packet)
+        public void RelayBroadcast(IPlayer[] players, IPacket packet)
         {
             foreach (var i in players)
             {
@@ -183,7 +185,7 @@ namespace SharpMC.World
             }
         }
 
-        public void RelayBroadcast(INetPacket packet)
+        public void RelayBroadcast(IPacket packet)
         {
             var players = Players.Values.ToArray();
             RelayBroadcast(players, packet);
