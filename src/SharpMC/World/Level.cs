@@ -146,14 +146,17 @@ namespace SharpMC.World
             }
         }
 
-        public void RemovePlayer(IPlayer player, bool despawn = true)
+        public void RemovePlayer(IPlayer player)
+            => RemovePlayer(player, true);
+
+        public void RemovePlayer(IPlayer player, bool despawn)
         {
             if (Players.TryRemove(player.EntityId, out var p))
             {
                 DespawnFromAll(player);
                 foreach (var entity in _entityManager.Entities.ToArray())
                 {
-                    entity.DespawnFromPlayers(new[] { player });
+                    entity.DespawnFromPlayers(new[] {player});
                 }
                 _entityManager.RemoveEntity(default, player);
             }

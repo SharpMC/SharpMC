@@ -27,7 +27,6 @@ namespace SharpMC
                 .AddSingleton<ILevelManager, LevelManager>()
                 .AddSingleton<IPluginManager, PluginManager>()
                 .AddSingleton<IPermissionManager, PermissionManager>()
-                .AddSingleton<IPlayerFactory, PlayerFactory>()
                 .AddSingleton<IEntityManager, EntityManager>()
                 .AddSingleton<IChunkColumnFactory, ChunkColumnFactory>();
         }

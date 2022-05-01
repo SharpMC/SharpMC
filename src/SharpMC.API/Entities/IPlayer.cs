@@ -1,4 +1,5 @@
-﻿using System.Numerics;
+﻿using System;
+using System.Numerics;
 using SharpMC.API.Enums;
 using SharpMC.API.Net;
 using SharpMC.API.Utils;
@@ -10,13 +11,19 @@ namespace SharpMC.API.Entities
     {
         GameMode Gamemode { get; set; }
 
-        ILevel Level { get; }
+        ILevel Level { get; set; }
 
-        ILocation KnownPosition { get; }
+        ILocation KnownPosition { get; set; }
 
-        string UserName { get; }
+        string UserName { get; set; }
+        Guid Uuid { get; set; }
+        string DisplayName { get; set; }
 
         INetConnection Connection { get; }
+
+        IAuthResponse AuthResponse { get; set; }
+
+        int ViewDistance { get; set; }
 
         void SendChat(string message, ChatColor? color = null);
 
@@ -29,5 +36,7 @@ namespace SharpMC.API.Entities
         void UnloadChunk(ICoordinates pos);
 
         void OnTick();
+
+        void InitiateGame();
     }
 }

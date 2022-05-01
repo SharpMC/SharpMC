@@ -1,10 +1,10 @@
 ﻿using System;
 using System.Net;
-using System.Net.Sockets;
+using SharpMC.Network.API;
 
 namespace SharpMC.Config
 {
-    public sealed class NetSettings
+    public sealed class NetSettings : INetConfiguration
     {
         public ProtocolType Protocol { get; set; }
 
@@ -33,5 +33,7 @@ namespace SharpMC.Config
             var proto = Protocol.ToString().ToLowerInvariant();
             return $"{HostObj} {proto}/{Port}";
         }
+
+        IPAddress INetConfiguration.Host => HostObj;
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using SharpMC.API.Entities;
+using SharpMC.API.Net;
 
 namespace SharpMC.API.Worlds
 {
@@ -16,5 +17,9 @@ namespace SharpMC.API.Worlds
         int PlayerCount { get; }
 
         IEnumerable<IPlayer> GetPlayers();
+
+        void RelayBroadcast(INetPacket packet);
+
+        void RemovePlayer(IPlayer player);
     }
 }

@@ -1,13 +1,14 @@
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using SharpMC.API;
 using SharpMC.API.Worlds;
 using SharpMC.Config;
 using SharpMC.Util;
 
 namespace SharpMC.Meta
 {
-    public class ServerInfo
+    public class ServerInfo : IServerInfo
     {
         #region Constants
 

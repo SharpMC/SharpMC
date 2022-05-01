@@ -1,3 +1,4 @@
+using System;
 using System.Numerics;
 using SharpMC.API;
 using SharpMC.API.Entities;
@@ -16,10 +17,13 @@ namespace SharpMC.Players
         }
 
         public GameMode Gamemode { get; set; }
-        public ILevel Level { get; }
-        public ILocation KnownPosition { get; }
-        public string UserName { get; }
+        public ILevel Level { get; set; }
+        public ILocation KnownPosition { get; set; }
+        public string UserName { get; set; }
+        public string DisplayName { get; set; }
         public INetConnection Connection { get; }
+        public IAuthResponse AuthResponse { get; set; }
+        public int ViewDistance { get; set; }
 
         public void SendChat(string message, ChatColor? color = null)
         {
@@ -51,9 +55,16 @@ namespace SharpMC.Players
             throw new System.NotImplementedException();
         }
 
+        public void InitiateGame()
+        {
+            throw new NotImplementedException();
+        }
+
         public int EntityId { get; set; }
 
         public bool IsSpawned { get; set; }
+
+        public Guid Uuid { get; set; }
 
         public void SpawnToPlayers(IPlayer[] players)
         {
