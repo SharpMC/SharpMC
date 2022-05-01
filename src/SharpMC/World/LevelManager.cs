@@ -3,9 +3,11 @@ using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using Microsoft.Extensions.Logging;
+using Microsoft.Extensions.Options;
 using SharpMC.API;
 using SharpMC.API.Entities;
 using SharpMC.API.Worlds;
+using SharpMC.Config;
 using SharpMC.World.API;
 
 namespace SharpMC.World
@@ -17,16 +19,19 @@ namespace SharpMC.World
         private readonly IEntityManager _entityManager;
         private readonly ILoggerFactory _factory;
         private readonly IWorldPackager _packager;
+        private readonly IOptions<ServerSettings> _settings;
 
         private ConcurrentDictionary<LevelType, Level> Levels { get; }
 
         public LevelManager(ILogger<LevelManager> log, IEnumerable<IWorldProvider> providers, 
-            IEntityManager entityManager, ILoggerFactory factory, IWorldPackager packager)
+            IEntityManager entityManager, ILoggerFactory factory, IWorldPackager packager,
+            IOptions<ServerSettings> settings)
         {
             _log = log;
             _entityManager = entityManager;
             _factory = factory;
             _packager = packager;
+            _settings = settings;
             Levels = new ConcurrentDictionary<LevelType, Level>();
             _providers = providers.ToList();
         }
@@ -49,9 +54,11 @@ namespace SharpMC.World
         public ILevel GetLevel(LevelType kind) 
             => Levels.GetOrAdd(kind, CreateLevel);
 
-        public ILevel? GetLevel(IPlayer player)
+        public ILevel? GetLevel(IPlayer _)
         {
-            throw new NotImplementedException();
+            var mode = _settings.Value.Level?.Type ?? default;
+            var level = GetLevel(mode);
+            return level;
         }
 
         public void RemoveLevel(LevelType kind)

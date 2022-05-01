@@ -14,6 +14,7 @@ using SharpMC.Network;
 using SharpMC.Network.API;
 using SharpMC.Network.Events;
 using SharpMC.Network.Packets;
+using SharpMC.Network.Packets.API;
 using SharpMC.Network.Packets.Handshake.ToServer;
 using SharpMC.Network.Packets.Login.ToClient;
 using SharpMC.Network.Packets.Login.ToServer;
@@ -100,6 +101,7 @@ namespace SharpMC.Net
         }
 
         #region Login
+
         private void HandleLogin(Packet packet)
         {
             if (packet is LoginStart start)
@@ -238,9 +240,11 @@ namespace SharpMC.Net
             }
             return p;
         }
+
         #endregion
 
         #region Play
+
         private void HandlePlay(Packet packet)
         {
             if (packet is KeepAlive keepAlive)
@@ -294,7 +298,7 @@ namespace SharpMC.Net
 
         private void HandlePlayerPosAndLook(PositionLook packet)
         {
-            var pos = (PlayerLocation)Player.KnownPosition;
+            var pos = (PlayerLocation) Player.KnownPosition;
             Player.KnownPosition = pos with
             {
                 X = (float) packet.X,
@@ -307,7 +311,7 @@ namespace SharpMC.Net
 
         private void HandlePlayerPos(Position packet)
         {
-            var pos = (PlayerLocation)Player.KnownPosition;
+            var pos = (PlayerLocation) Player.KnownPosition;
             Player.KnownPosition = pos with
             {
                 X = (float) packet.X,
@@ -334,16 +338,13 @@ namespace SharpMC.Net
             _lastKeepAlive = Rnd.Next();
             SendPacket(new KeepAlive {KeepAliveId = _lastKeepAlive});
         }
+
         #endregion
 
-        public void SendPacket(object packet)
-        {
-            base.SendPacket((Packet) packet);
-        }
+        public void SendPacket(INetPacket packet) 
+            => SendMyPacket(((NetPacket) packet).Payload);
 
-        public void SendPacket(INetPacket packet)
-        {
-            throw new NotImplementedException();
-        }
+        private void SendMyPacket(Packet packet) 
+            => SendPacket(packet);
     }
 }

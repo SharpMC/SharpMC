@@ -126,7 +126,10 @@ namespace SharpMC.World
 
         public void RelayBroadcast(IPlayer[] players, INetPacket packet)
         {
-            throw new NotImplementedException();
+            foreach (var i in players)
+            {
+                i.Connection.SendPacket(packet);
+            }
         }
 
         public void AddPlayer(IPlayer newPlayer, bool spawn)
@@ -184,14 +187,6 @@ namespace SharpMC.World
         {
             var players = Players.Values.ToArray();
             RelayBroadcast(players, packet);
-        }
-
-        public void RelayBroadcast(IEnumerable<IPlayer> players, INetPacket packet)
-        {
-            foreach (var i in players)
-            {
-                i.Connection.SendPacket(packet);
-            }
         }
 
         private readonly object _tickLock = new();
