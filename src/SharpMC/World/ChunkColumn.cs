@@ -124,7 +124,7 @@ namespace SharpMC.World
 
         public void AddAirToPalette()
         {
-            // TODO
+            Bulk.AddAirToPalette(this);
         }
 
         public bool IsDirty { get; private set; }
