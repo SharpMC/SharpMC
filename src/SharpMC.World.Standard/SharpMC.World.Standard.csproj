@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="LibNoise.NetStandart" Version="0.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
   </ItemGroup>
 
 </Project>

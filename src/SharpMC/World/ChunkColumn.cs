@@ -122,6 +122,11 @@ namespace SharpMC.World
             IsDirty = false;
         }
 
+        public void AddAirToPalette()
+        {
+            // TODO
+        }
+
         public bool IsDirty { get; private set; }
     }
 }

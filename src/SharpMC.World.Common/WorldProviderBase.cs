@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using System.Numerics;
+using SharpMC.API.Chunks;
 using SharpMC.API.Entities;
 using SharpMC.API.Utils;
 using SharpMC.API.Worlds;
@@ -53,7 +54,8 @@ namespace SharpMC.World.Common
                     if (!newOrders.ContainsKey(chunkKey))
                     {
                         chunksUsed.Remove(chunkKey);
-                        new Task(() => player.UnloadChunk(chunkKey.Item1, chunkKey.Item2)).Start();
+                        var pos = new ChunkCoordinates(chunkKey.Item1, chunkKey.Item2);
+                        new Task(() => player.UnloadChunk(pos)).Start();
                     }
                 }
 

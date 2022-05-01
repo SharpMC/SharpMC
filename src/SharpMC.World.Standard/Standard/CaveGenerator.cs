@@ -5,7 +5,7 @@ using static SharpMC.Data.Blocks.KnownBlocks;
 
 namespace SharpMC.World.Standard
 {
-    internal class CaveGenerator : ICaveGenerator
+    internal sealed class CaveGenerator : ICaveGenerator
     {
         private readonly int _seed;
 

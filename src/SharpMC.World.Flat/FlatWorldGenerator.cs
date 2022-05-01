@@ -34,7 +34,7 @@ namespace SharpMC.World.Flat
 
         private IChunkColumn CreateChunk(ICoordinates _)
         {
-            IChunkColumn column = _factory.CreateColumn();
+            var column = _factory.CreateColumn();
             CreateChunk(column, _);
             return column;
         }

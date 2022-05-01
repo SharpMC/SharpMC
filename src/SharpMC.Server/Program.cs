@@ -5,6 +5,9 @@ using Microsoft.Extensions.Hosting;
 using SharpMC.API;
 using SharpMC.Plugin.Admin;
 using SharpMC.Plugin.API;
+using SharpMC.World;
+using SharpMC.World.Common;
+using SharpMC.World.Flat;
 
 namespace SharpMC.Server
 {
@@ -30,6 +33,9 @@ namespace SharpMC.Server
             services
                 .AddHostedService<Worker>()
                 .AddServer(ctx.Configuration)
+                .AddCommon()
+                .AddFlatWorld()
+                .AddNormalWorld()
                 .AddSingleton<IPlugin, MainPlugin>();
         }
     }

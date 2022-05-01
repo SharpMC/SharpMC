@@ -1,11 +1,12 @@
 ﻿using System.Numerics;
 using SharpMC.API.Enums;
+using SharpMC.API.Net;
 using SharpMC.API.Utils;
 using SharpMC.API.Worlds;
 
 namespace SharpMC.API.Entities
 {
-    public interface IPlayer
+    public interface IPlayer : IEntity
     {
         GameMode Gamemode { get; set; }
 
@@ -15,6 +16,8 @@ namespace SharpMC.API.Entities
 
         string UserName { get; }
 
+        INetConnection Connection { get; }
+
         void SendChat(string message, ChatColor? color = null);
 
         void Kick(string name);
@@ -23,6 +26,8 @@ namespace SharpMC.API.Entities
 
         void PositionChanged(Vector3 pos, float yaw);
 
-        void UnloadChunk(int x, int z);
+        void UnloadChunk(ICoordinates pos);
+
+        void OnTick();
     }
 }

@@ -1,4 +1,5 @@
-﻿using SharpMC.API.Entities;
+﻿using System.Collections.Generic;
+using SharpMC.API.Entities;
 
 namespace SharpMC.API.Worlds
 {
@@ -13,5 +14,7 @@ namespace SharpMC.API.Worlds
         int WorldTime { get; set; }
 
         int PlayerCount { get; }
+
+        IEnumerable<IPlayer> GetPlayers();
     }
 }

@@ -48,6 +48,10 @@ namespace SharpMC
             _log.LogInformation("Loading packets...");
             MCPacketFactory.Load();
 
+            _log.LogInformation("Preparing world...");
+            var kind = _settings.Value.Level?.Type ?? default;
+            _levelManager.GetLevel(kind);
+
             var comm = _settings.Value.Net!;
             _log.LogInformation("Listening on {net}...", comm.ToString());
             

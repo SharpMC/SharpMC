@@ -18,6 +18,9 @@
 
   <ItemGroup>
     <ProjectReference Include="..\SharpMC.Plugin.Admin\SharpMC.Plugin.Admin.csproj" />
+    <ProjectReference Include="..\SharpMC.World.Common\SharpMC.World.Common.csproj" />
+    <ProjectReference Include="..\SharpMC.World.Flat\SharpMC.World.Flat.csproj" />
+    <ProjectReference Include="..\SharpMC.World.Standard\SharpMC.World.Standard.csproj" />
     <ProjectReference Include="..\SharpMC\SharpMC.csproj" />
   </ItemGroup>
 

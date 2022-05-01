@@ -12,6 +12,7 @@ namespace SharpMC.API.Worlds
 
         bool IsDirty { get; }
 
+        int Height { get; }
         int Width { get; }
         int Depth { get; }
 

@@ -32,8 +32,8 @@ namespace SharpMC.Plugins
         private readonly Dictionary<MethodInfo, OnPlayerJoinAttribute> _joinEvents;
 
         public PluginManager(IHostEnv host, ILogger<PluginManager> log, ILevelManager levelMgr,
-            IOptions<ServerSettings> config, IEnumerable<IPlugin> builtIns, IPermissionManager permManager,
-            ILoggerFactory factory)
+            IOptions<ServerSettings> config, IEnumerable<IPlugin> builtIns, 
+            IPermissionManager permManager, ILoggerFactory factory)
         {
             _commands = new Dictionary<MethodInfo, CommandAttribute>();
             _joinEvents = new Dictionary<MethodInfo, OnPlayerJoinAttribute>();

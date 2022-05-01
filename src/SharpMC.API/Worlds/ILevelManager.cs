@@ -5,14 +5,16 @@ namespace SharpMC.API.Worlds
 {
     public interface ILevelManager
     {
-        ILevel MainLevel { get; }
+        ILevel? MainLevel { get; }
 
-        IEnumerable<ILevel> GetLevels();
+        ILevel[] GetLevels();
 
         void TeleportToMain(IPlayer player);
 
         void TeleportToLevel(IPlayer player, string levelName);
 
         IEnumerable<IPlayer> GetAllPlayers();
+
+        ILevel GetLevel(LevelType type);
     }
 }
