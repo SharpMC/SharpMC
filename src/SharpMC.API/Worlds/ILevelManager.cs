@@ -16,5 +16,7 @@ namespace SharpMC.API.Worlds
         IEnumerable<IPlayer> GetAllPlayers();
 
         ILevel GetLevel(LevelType type);
+        
+        ILevel? GetLevel(IPlayer player);
     }
 }

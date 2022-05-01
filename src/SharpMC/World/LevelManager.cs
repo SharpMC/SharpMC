@@ -49,6 +49,11 @@ namespace SharpMC.World
         public ILevel GetLevel(LevelType kind) 
             => Levels.GetOrAdd(kind, CreateLevel);
 
+        public ILevel? GetLevel(IPlayer player)
+        {
+            throw new NotImplementedException();
+        }
+
         public void RemoveLevel(LevelType kind)
         {
             if (Levels.TryRemove(kind, out var level))

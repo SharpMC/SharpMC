@@ -21,7 +21,6 @@ using SharpMC.Network.Packets.Play.ToBoth;
 using SharpMC.Network.Packets.Play.ToServer;
 using SharpMC.Network.Packets.Status.ToBoth;
 using SharpMC.Network.Packets.Status.ToServer;
-using SharpMC.Players;
 using SharpMC.Util;
 using EncryptionBegin = SharpMC.Network.Packets.Login.ToServer.EncryptionBegin;
 using SettingsPk = SharpMC.Network.Packets.Play.ToServer.Settings;

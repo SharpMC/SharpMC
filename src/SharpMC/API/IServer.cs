@@ -1,4 +1,5 @@
 ﻿using SharpMC.API.Players;
+using SharpMC.API.Worlds;
 
 namespace SharpMC.API
 {
@@ -13,5 +14,7 @@ namespace SharpMC.API
         IPlayerFactory PlayerFactory { get; }
 
         IServerInfo Info { get; }
+
+        ILevelManager LevelManager { get; }
     }
 }

@@ -7,6 +7,7 @@ using System.Diagnostics;
 using System.Threading;
 using SharpMC.API.Chunks;
 using SharpMC.API.Entities;
+using SharpMC.API.Enums;
 using SharpMC.API.Net;
 using SharpMC.API.Utils;
 using SharpMC.API.Worlds;
@@ -46,6 +47,7 @@ namespace SharpMC.World
 
         public int PlayerCount => Players.Count;
 
+        public GameMode DefaultGameMode { get; }
         public IEnumerable<IPlayer> GetPlayers() => Players.Values;
 
         public ILocation SpawnPoint => _worldGenerator.SpawnPoint;
@@ -80,7 +82,7 @@ namespace SharpMC.World
                 {
                     for (var z = -radius; z <= radius; ++z)
                     {
-                        var distance = (x * x) + (z * z);
+                        var distance = x * x + z * z;
                         if (distance > radiusSquared)
                         {
                             // TODO ?! : continue;
@@ -121,7 +123,12 @@ namespace SharpMC.World
                 }
             }
         }
-        
+
+        public void RelayBroadcast(IPlayer[] players, INetPacket packet)
+        {
+            throw new NotImplementedException();
+        }
+
         public void AddPlayer(IPlayer newPlayer, bool spawn)
         {
             _entityManager.AddEntity(newPlayer);

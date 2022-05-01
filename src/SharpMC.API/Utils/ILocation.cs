@@ -13,6 +13,7 @@ namespace SharpMC.API.Utils
         float Y { get; }
         float Z { get; }
         float Yaw { get; }
+        float HeadYaw { get; }
         float Pitch { get; }
         bool OnGround { get; }
 

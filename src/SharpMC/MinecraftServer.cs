@@ -38,6 +38,7 @@ namespace SharpMC
         public IPlayerFactory PlayerFactory { get; set; }
         private NetServer? Server { get; set; }
         public IEncryption RsaEncryption { get; set; }
+        public ILevelManager LevelManager => _levelManager;
 
         public void Start()
         {
@@ -62,7 +63,7 @@ namespace SharpMC
             _log.LogInformation("Preparing world...");
             var kind = _settings.Value.Level?.Type ?? default;
             _levelManager.GetLevel(kind);
-            PlayerFactory = new PlayerFactory(this);
+            PlayerFactory = new PlayerFactory(this, _logFactory);
 
             _log.LogInformation("Generating RSA keypair...");
             var eLog = _logFactory.CreateLogger<EncryptionHolder>();

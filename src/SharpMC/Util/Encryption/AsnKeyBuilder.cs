@@ -180,7 +180,7 @@ namespace SharpMC.Util.Encryption
                 {
                     length = new byte[2];
                     length[0] = 0x81;
-                    length[1] = (byte) ((m_octets.Length & 0xFF));
+                    length[1] = (byte) (m_octets.Length & 0xFF);
                 }
 
                 //
@@ -193,7 +193,7 @@ namespace SharpMC.Util.Encryption
                     length = new byte[3];
                     length[0] = 0x82;
                     length[1] = (byte) ((m_octets.Length & 0xFF00) >> 8);
-                    length[2] = (byte) ((m_octets.Length & 0xFF));
+                    length[2] = (byte) (m_octets.Length & 0xFF);
                 }
 
                 // 0xFFFF < length <= 0xFFFFFF
@@ -203,7 +203,7 @@ namespace SharpMC.Util.Encryption
                     length[0] = 0x83;
                     length[1] = (byte) ((m_octets.Length & 0xFF0000) >> 16);
                     length[2] = (byte) ((m_octets.Length & 0xFF00) >> 8);
-                    length[3] = (byte) ((m_octets.Length & 0xFF));
+                    length[3] = (byte) (m_octets.Length & 0xFF);
                 }
                 // 0xFFFFFF < length <= 0xFFFFFFFF
                 else
@@ -213,7 +213,7 @@ namespace SharpMC.Util.Encryption
                     length[1] = (byte) ((m_octets.Length & 0xFF000000) >> 24);
                     length[2] = (byte) ((m_octets.Length & 0xFF0000) >> 16);
                     length[3] = (byte) ((m_octets.Length & 0xFF00) >> 8);
-                    length[4] = (byte) ((m_octets.Length & 0xFF));
+                    length[4] = (byte) (m_octets.Length & 0xFF);
                 }
 
                 m_length = length;
@@ -531,7 +531,7 @@ namespace SharpMC.Util.Encryption
                 parms.Flags = CspProviderFlags.NoFlags;
                 parms.KeyContainerName = Guid.NewGuid().ToString().ToUpperInvariant();
                 parms.ProviderType =
-                    ((Environment.OSVersion.Version.Major > 5) || ((Environment.OSVersion.Version.Major == 5) && (Environment.OSVersion.Version.Minor >= 1)))
+                    Environment.OSVersion.Version.Major > 5 || Environment.OSVersion.Version.Major == 5 && Environment.OSVersion.Version.Minor >= 1
                         ? 0x18
                         : 1;
 
@@ -623,7 +623,7 @@ namespace SharpMC.Util.Encryption
             }
 
             // Sequence: Tag 0x30 (16, Universal, Constructed)
-            return new AsnType((0x10 | 0x20), Concatenate(values));
+            return new AsnType(0x10 | 0x20, Concatenate(values));
         }
 
         /// <summary>
@@ -837,7 +837,7 @@ namespace SharpMC.Util.Encryption
 
             // Any unused bits?
             var lstrlen = value.Length;
-            var unusedBits = 8 - (lstrlen % 8);
+            var unusedBits = 8 - lstrlen % 8;
             if (8 == unusedBits)
             {
                 unusedBits = 0;
@@ -1333,7 +1333,7 @@ namespace SharpMC.Util.Encryption
             {
                 a += arcs[1];
             }
-            octets.Add((byte) (a));
+            octets.Add((byte) a);
 
             // Add remaining arcs (subidentifiers)
             for (var i = 2; i < arcs.Count; i++)
@@ -1655,7 +1655,7 @@ namespace SharpMC.Util.Encryption
             {
                 var inputBytesSize = inputBytes.Length;
 
-                if ((alignSize != -1) && (inputBytesSize < alignSize))
+                if (alignSize != -1 && inputBytesSize < alignSize)
                 {
                     var buf = new byte[alignSize];
                     for (var i = 0; i < inputBytesSize; ++i)
@@ -1717,7 +1717,7 @@ namespace SharpMC.Util.Encryption
                 else
                 {
                     assumedLength = (int) (logbase + 1.0);
-                    assumedLength = (int) (Math.Pow(2, assumedLength));
+                    assumedLength = (int) Math.Pow(2, assumedLength);
                     Debug.Assert(false);
                 }
 

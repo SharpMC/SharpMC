@@ -26,6 +26,11 @@ namespace SharpMC.API.Players
         {
         }
 
+        public PlayerLocation(ILocation loc) : this(loc.X, loc.Y, loc.Z,
+            loc.Yaw, loc.Pitch, loc.HeadYaw, loc.OnGround)
+        {
+        }
+
         public Vector3 ToVector3() => new(X, Y, Z);
 
         public Vector3 GetHeadDirection()

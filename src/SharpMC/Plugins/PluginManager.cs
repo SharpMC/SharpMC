@@ -257,7 +257,7 @@ namespace SharpMC.Plugins
             }
             if (args.Length < requiredParameters && !hasStringArray)
                 hasRequiredParameters = false;
-            if (!hasRequiredParameters || args.Length > (parameters.Length - addLength) && !hasStringArray)
+            if (!hasRequiredParameters || args.Length > parameters.Length - addLength && !hasStringArray)
             {
                 player.SendChat("Invalid command usage!", ChatColor.Red);
                 player.SendChat(commandAttribute.Usage, ChatColor.Red);

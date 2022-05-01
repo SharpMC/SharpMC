@@ -2,11 +2,9 @@
 using Microsoft.Extensions.DependencyInjection;
 using SharpMC.API;
 using SharpMC.API.Entities;
-using SharpMC.API.Players;
 using SharpMC.API.Worlds;
 using SharpMC.Config;
 using SharpMC.Entities;
-using SharpMC.Players;
 using SharpMC.Plugin.API;
 using SharpMC.Plugins;
 using SharpMC.World;

@@ -3,5 +3,9 @@
     public interface INetConnection
     {
         void SendPacket(INetPacket packet);
+
+        void SendKeepAlive();
+
+        bool KeepAliveReady { get; }
     }
 }
