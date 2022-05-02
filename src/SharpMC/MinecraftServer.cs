@@ -22,16 +22,18 @@ namespace SharpMC
         private readonly ILevelManager _levelManager;
         private readonly IPluginManager _pluginManager;
         private readonly ILoggerFactory _logFactory;
+        private readonly IHostEnv _env;
 
         public MinecraftServer(ILogger<MinecraftServer> log, IOptions<ServerSettings> cfg,
             ILevelManager levelManager, IPluginManager pluginManager, 
-            ILoggerFactory logFactory)
+            ILoggerFactory logFactory, IHostEnv env)
         {
             _log = log;
             _settings = cfg;
             _levelManager = levelManager;
             _pluginManager = pluginManager;
             _logFactory = logFactory;
+            _env = env;
         }
 
         public IServerInfo? Info { get; set; }
@@ -48,7 +50,7 @@ namespace SharpMC
 
             const string proto = ServerInfo.ProtocolName;
             _log.LogInformation($"Initiating {proto}");
-            Info = new ServerInfo(_levelManager, _settings.Value);
+            Info = new ServerInfo(_levelManager, _settings.Value, _env);
             Console.Title = $"{nameof(SharpMC)} {proto}";
 
             _log.LogInformation("Loading plugins...");

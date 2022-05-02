@@ -1,5 +1,6 @@
 using System;
 using System.Collections.Generic;
+using System.IO;
 using System.Linq;
 using SharpMC.API;
 using SharpMC.API.Worlds;
@@ -19,11 +20,13 @@ namespace SharpMC.Meta
 
         private readonly ILevelManager _levelManager;
         private readonly ServerSettings _settings;
+        private readonly IHostEnv _env;
 
-        public ServerInfo(ILevelManager levelManager, ServerSettings settings)
+        public ServerInfo(ILevelManager levelManager, ServerSettings settings, IHostEnv env)
         {
             _levelManager = levelManager;
             _settings = settings;
+            _env = env;
         }
 
         public string GetMotd()
@@ -42,6 +45,12 @@ namespace SharpMC.Meta
                 },
                 Description = new MetaDescription {Text = _settings.General?.Motd ?? "???"}
             };
+            if (_settings.General?.FavIcon is { } favIcon)
+            {
+                var path = Path.Combine(_env.ContentRoot, favIcon);
+                var favBytes = File.ReadAllBytes(path);
+                message.Favicon = $"data:image/png;base64,{Convert.ToBase64String(favBytes)}";
+            }
             var json = JsonHelper.ToJson(message);
             return json;
         }

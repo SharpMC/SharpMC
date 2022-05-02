@@ -8,7 +8,8 @@ namespace SharpMC.Util
     {
         private static readonly JsonSerializerSettings Config = new()
         {
-            ContractResolver = new CamelCasePropertyNamesContractResolver()
+            ContractResolver = new CamelCasePropertyNamesContractResolver(),
+            NullValueHandling = NullValueHandling.Ignore
         };
 
         public static string ToJson(MetaServer message)
