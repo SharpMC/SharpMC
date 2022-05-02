@@ -289,7 +289,7 @@ namespace SharpMC.Net
 
         private void HandlePlayerLook(Look packet)
         {
-            var pos = (PlayerLocation) Player.KnownPosition;
+            var pos = Player.KnownPosition;
             Player.KnownPosition = pos with
             {
                 Yaw = packet.Yaw, Pitch = packet.Pitch
@@ -298,7 +298,7 @@ namespace SharpMC.Net
 
         private void HandlePlayerPosAndLook(PositionLook packet)
         {
-            var pos = (PlayerLocation) Player.KnownPosition;
+            var pos = Player.KnownPosition;
             Player.KnownPosition = pos with
             {
                 X = (float) packet.X,
@@ -311,7 +311,7 @@ namespace SharpMC.Net
 
         private void HandlePlayerPos(Position packet)
         {
-            var pos = (PlayerLocation) Player.KnownPosition;
+            var pos = Player.KnownPosition;
             Player.KnownPosition = pos with
             {
                 X = (float) packet.X,

@@ -71,7 +71,8 @@ namespace SharpMC.World
 
         private Level CreateLevel(LevelType kind)
         {
-            _log.LogInformation($"Creating level '{kind}'...");
+            var mode = _settings.Value.Level?.GameMode ?? default;
+            _log.LogInformation($"Creating level '{kind}' ({mode})...");
             var provider = _providers.FirstOrDefault(p => IsMatch(p, kind));
             if (provider == null)
             {
@@ -79,7 +80,7 @@ namespace SharpMC.World
             }
             var generator = _packager.Wrap(provider);
             var log = _factory.CreateLogger<Level>();
-            var level = new Level(log, generator, _entityManager);
+            var level = new Level(log, generator, _entityManager, mode);
             level.Initialize();
             return level;
         }

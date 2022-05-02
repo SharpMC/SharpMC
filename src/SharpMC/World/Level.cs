@@ -24,12 +24,13 @@ namespace SharpMC.World
         private ConcurrentDictionary<int, IPlayer> Players { get; }
 
         public Level(ILogger<Level> log, IWorldGenerator worldGenerator, 
-            IEntityManager entityManager)
+            IEntityManager entityManager, GameMode mode)
         {
             _log = log;
             _worldGenerator = worldGenerator;
             _entityManager = entityManager;
             Players = new ConcurrentDictionary<int, IPlayer>();
+            DefaultGameMode = mode;
         }
 
         public int TimeToRain { get; set; }

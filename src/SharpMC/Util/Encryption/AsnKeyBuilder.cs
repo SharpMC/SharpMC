@@ -1470,7 +1470,7 @@ namespace SharpMC.Util.Encryption
                 c = new byte[d.Length + 1];
 
                 // Sign Extend....
-                c[0] = (byte) 0xFF;
+                c[0] = 0xFF;
 
                 Array.Copy(d, 0, c, 1, d.Length);
             }

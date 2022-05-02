@@ -28,7 +28,7 @@ namespace SharpMC.Players
         private IServer Server { get; }
         public string UserName { get; set; }
 
-        public Player(ILogger<Player> log, INetConnection connection, 
+        public Player(ILogger<Player> log, INetConnection connection,
             IServer server, string userName)
         {
             _log = log;
@@ -36,7 +36,9 @@ namespace SharpMC.Players
             Server = server;
             UserName = userName;
             ChunksUsed = new Dictionary<Tuple<int, int>, byte[]>();
+
             Uuid = Guid.NewGuid();
+            ViewDistance = 8;
         }
 
         public GameMode Gamemode { get; set; }
