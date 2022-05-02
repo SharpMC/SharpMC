@@ -1,7 +1,5 @@
 ﻿using System;
 using SharpMC.API.Players;
-using SharpMC.API.Utils;
-using SharpMC.API.Worlds;
 
 namespace SharpMC.API.Chunks
 {

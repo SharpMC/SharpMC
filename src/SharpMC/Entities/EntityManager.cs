@@ -8,7 +8,7 @@ namespace SharpMC.Entities
 {
     internal sealed class EntityManager : IEntityManager, IDisposable
     {
-        private const int EntityIdUndefined = -1;
+        internal const int EntityIdUndefined = -1;
         private int _entityId;
 
         private readonly ConcurrentDictionary<int, IEntity> _entities;

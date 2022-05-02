@@ -3,9 +3,7 @@ using System.Collections.Generic;
 using SharpMC.API.Chunks;
 using SharpMC.API.Entities;
 using SharpMC.API.Enums;
-using SharpMC.API.Net;
 using SharpMC.API.Players;
-using SharpMC.API.Utils;
 using SharpMC.Network.Packets.API;
 
 namespace SharpMC.API.Worlds
@@ -41,5 +39,9 @@ namespace SharpMC.API.Worlds
             Dictionary<Tuple<int, int>, byte[]> chunksUsed, double radius);
 
         void DespawnFromAll(IPlayer player);
+
+        void AddEntity(IEntity entity);
+
+        void RemoveEntity(IEntity entity);
     }
 }

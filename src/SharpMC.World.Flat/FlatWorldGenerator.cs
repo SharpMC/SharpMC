@@ -1,7 +1,6 @@
 using System.Collections.Concurrent;
 using SharpMC.API.Chunks;
 using SharpMC.API.Players;
-using SharpMC.API.Utils;
 using SharpMC.API.Worlds;
 using SharpMC.World.API;
 using SharpMC.World.API.Chunks;

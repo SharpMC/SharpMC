@@ -2,7 +2,6 @@
 using System.Numerics;
 using SharpMC.API.Chunks;
 using SharpMC.API.Players;
-using SharpMC.API.Utils;
 
 namespace SharpMC.API.Blocks
 {

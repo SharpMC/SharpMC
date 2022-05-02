@@ -4,7 +4,6 @@ using SharpMC.API.Chunks;
 using SharpMC.API.Enums;
 using SharpMC.API.Net;
 using SharpMC.API.Players;
-using SharpMC.API.Utils;
 using SharpMC.API.Worlds;
 
 namespace SharpMC.API.Entities

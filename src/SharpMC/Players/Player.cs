@@ -14,7 +14,6 @@ using SharpMC.Data;
 using SharpMC.Net;
 using SharpMC.Network.Binary.Model;
 using SharpMC.Network.Binary.Special;
-using SharpMC.Network.Core;
 using SharpMC.Network.Packets.Play.ToBoth;
 using SharpMC.Network.Packets.Play.ToClient;
 using static SharpMC.Util.Numbers;
@@ -37,6 +36,7 @@ namespace SharpMC.Players
             Server = server;
             UserName = userName;
             ChunksUsed = new Dictionary<Tuple<int, int>, byte[]>();
+            Uuid = Guid.NewGuid();
         }
 
         public GameMode Gamemode { get; set; }

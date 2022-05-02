@@ -94,6 +94,10 @@ namespace SharpMC.World
 
         public void Dispose()
         {
+            foreach (var level in Levels.Values.ToArray())
+            {
+                level.Dispose();
+            }
             Levels.Clear();
         }
     }

@@ -8,9 +8,7 @@ using System.Threading;
 using SharpMC.API.Chunks;
 using SharpMC.API.Entities;
 using SharpMC.API.Enums;
-using SharpMC.API.Net;
 using SharpMC.API.Players;
-using SharpMC.API.Utils;
 using SharpMC.API.Worlds;
 using SharpMC.Network.Packets.API;
 using SharpMC.World.API;
@@ -183,6 +181,16 @@ namespace SharpMC.World
             {
                 player.DespawnFromPlayers(new[] { newPlayer });
             }
+        }
+
+        public void AddEntity(IEntity entity)
+        {
+            throw new NotImplementedException();
+        }
+
+        public void RemoveEntity(IEntity entity)
+        {
+            throw new NotImplementedException();
         }
 
         public void RelayBroadcast(IPacket packet)
