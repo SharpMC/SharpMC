@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net6.0</TargetFramework>
+    <Nullable>enable</Nullable>
+	<RootNamespace>SharpMC.World</RootNamespace>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\SharpMC.Data\SharpMC.Data.csproj" />
+    <ProjectReference Include="..\SharpMC.World.API\SharpMC.World.API.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="LibNoise.NetStandart" Version="0.2.0" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="6.0.0" />
+  </ItemGroup>
+
+</Project>

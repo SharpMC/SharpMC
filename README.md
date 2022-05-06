@@ -1,32 +1,58 @@
 # SharpMC
 
-[![Join the chat at https://gitter.im/SharpMC/SharpMC](https://badges.gitter.im/Join%20Chat.svg)](https://gitter.im/SharpMC/SharpMC?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge)
-[![Build Status](http://94.23.50.5:8080/buildStatus/icon?job=SharpMC)](http://94.23.50.5:8080/job/SharpMC/)
-
 What is SharpMC?
 ----------------
 SharpMC is a Minecraft server written in C# made by Kennyvv.
 It is a hobby project, the goal is to create an alternative to Spigot/Bukkit/Sponge.
-Recently BuddyTex joined me, so please welcome him to the team! :)
+This fork is made by xafero, updating everything and generating network protocol.
 
-Will this be an alternative to Spigot/Bukkit/Sponge?
--------------------------------------------------------
-I must honestly say, i doubt it. It is a hobby project, i don't have the time to work on it that much.
-However, it is my goal! But you have to understand that i'm on my own working on this so it might take some time...
-
-Where can i find the latest build?
-----------------------------------
-We provide a direct download link right here! [Download latest build](http://94.23.50.5:8080/job/SharpMC/lastSuccessfulBuild/artifact/*zip*/archive.zip)
+Screenshots
+----------------
+![Screenshot1](/wiki/ingame3.png?raw=true)
+![Screenshot2](/wiki/ingame1.png?raw=true)
 
 Current Specs
 -----------------
-  - Protocol: #47 (1.8.*)
+  - Protocol: #758 (1.18.2)
   - World Format: Custom
   - Multiworld: Supported
   - Physics: Partial
   - Entities: Partial
   - Scripting: C# Plugins
-  - Platforms: Windows. (Mac & Linux using Mono.)
+  - Platforms: Windows, Mac, Linux under .NET 6
+
+How to run?
+----------------
+* git clone https://github.com/xafero/SharpMC.git
+* cd src
+* cd SharpMC.Server
+* dotnet run
+
+It should now listen on localhost (127.0.0.1).
+
+What is SharpCore?
+----------------
+SharpCore is the main plugin for SharpMC which provides the basic most basic commands needed for server operation.
+
+List of Commands & Permissions
+------------------------------
+
+| Command               | Permission                      | Description                                     |
+|-----------------------|---------------------------------|-------------------------------------------------|
+| /world                | Core.World                      | Teleport between worlds.                        |
+| /tnt                  | Core.TNT                        | Spawn an active TNT entity.                     |
+| /tps                  | Core.Tps                        | Get the current server TPS.                     |
+| /save-all             | Core.Save                       | Save all chunks.                                |
+| /gamemode             | Core.Gamemode                   | Change player gamemode.                         |
+| /stopserver           | Core.StopServer                 | Stops the server.                               |
+| /time                 | Core.Time                       | Gets the current time.                          |
+| /settime              | Core.Time                       | Allows you to set the current time.             |
+| /toggledownfall       | Core.Toggledownfall             | Toggles downfall                                |
+| /msg                  | Core.Msg                        | Message a player,                               |
+| /tp                   | Core.TP                         | Teleports a player to another player.           |
+| /me                   | Core.Me                         | Says something in the third person perspective. |
+| /broadcast            | Core.Broadcast                  | Broadcasts a message to all players.            |
+| /kick                 | Core.Kick                       | Allows the kicking of a player.                 |
 
 Made possible by
 ------------------
@@ -36,7 +62,7 @@ Made possible by
 
 Licensing
 ----------
-SharpMC uses the permissive MIT license.<br><br>
+SharpMC (including SharpCore) uses the permissive MIT license.<br><br>
 
 In a nutshell:<br>
 You are not restricted on usage of SharpMC; commercial, private, etc, all fine.<br>
